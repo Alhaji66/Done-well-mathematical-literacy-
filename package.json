@@ -1,0 +1,18 @@
+{
+  "name": "done-well-mathematical-literacy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Grade 11/12 Mathematical Literacy exam solutions and solver utilities for finance, data handling, measurement, and maps/plans.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
+    "typescript": "^5.6.3",
+    "vitest": "^4.1.10"
+  }
+}

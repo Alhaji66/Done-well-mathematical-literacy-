@@ -1,0 +1,77 @@
+import type { Assessment } from "../types";
+
+export const assessments: Assessment[] = [
+  {
+    id: "as-1",
+    title: "Weekly Test: Finance Basics",
+    gradeLevel: 12,
+    subjectId: "maths-lit",
+    topicIds: ["finance"],
+    totalMarks: 25,
+    durationMinutes: 30,
+    dueDate: "2026-02-06",
+    status: "completed",
+    scorePercent: 76,
+  },
+  {
+    id: "as-2",
+    title: "Weekly Test: Data Handling",
+    gradeLevel: 12,
+    subjectId: "maths-lit",
+    topicIds: ["data-handling"],
+    totalMarks: 20,
+    durationMinutes: 25,
+    dueDate: "2026-02-13",
+    status: "completed",
+    scorePercent: 64,
+  },
+  {
+    id: "as-3",
+    title: "Revision Test: Maps & Plans",
+    gradeLevel: 12,
+    subjectId: "maths-lit",
+    topicIds: ["maps-plans"],
+    totalMarks: 30,
+    durationMinutes: 40,
+    dueDate: "2026-02-20",
+    status: "completed",
+    scorePercent: 58,
+  },
+  {
+    id: "as-4",
+    title: "Term 1 Test: Finance & Measurement",
+    gradeLevel: 12,
+    subjectId: "maths-lit",
+    topicIds: ["finance", "measurement"],
+    totalMarks: 50,
+    durationMinutes: 60,
+    dueDate: "2026-03-05",
+    status: "upcoming",
+  },
+  {
+    id: "as-5",
+    title: "Weekly Test: Probability",
+    gradeLevel: 12,
+    subjectId: "maths-lit",
+    topicIds: ["probability"],
+    totalMarks: 20,
+    durationMinutes: 25,
+    dueDate: "2026-03-12",
+    status: "upcoming",
+  },
+  {
+    id: "as-6",
+    title: "Revision Test: Tariffs",
+    gradeLevel: 12,
+    subjectId: "maths-lit",
+    topicIds: ["tariffs"],
+    totalMarks: 25,
+    durationMinutes: 30,
+    dueDate: "2026-01-23",
+    status: "missed",
+  },
+];
+
+export function getAssessment(id: string) {
+  return assessments.find((a) => a.id === id);
+}

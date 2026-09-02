@@ -1,5 +1,12 @@
 import type { Assessment } from "../types";
 
+function offsetDate(days: number) {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
 export const assessments: Assessment[] = [
   {
     id: "as-1",
@@ -9,7 +16,7 @@ export const assessments: Assessment[] = [
     topicIds: ["finance"],
     totalMarks: 25,
     durationMinutes: 30,
-    dueDate: "2026-02-06",
+    dueDate: offsetDate(-26),
     status: "completed",
     scorePercent: 76,
   },
@@ -21,7 +28,7 @@ export const assessments: Assessment[] = [
     topicIds: ["data-handling"],
     totalMarks: 20,
     durationMinutes: 25,
-    dueDate: "2026-02-13",
+    dueDate: offsetDate(-19),
     status: "completed",
     scorePercent: 64,
   },
@@ -33,19 +40,19 @@ export const assessments: Assessment[] = [
     topicIds: ["maps-plans"],
     totalMarks: 30,
     durationMinutes: 40,
-    dueDate: "2026-02-20",
+    dueDate: offsetDate(-12),
     status: "completed",
     scorePercent: 58,
   },
   {
     id: "as-4",
-    title: "Term 1 Test: Finance & Measurement",
+    title: "Term Test: Finance & Measurement",
     gradeLevel: 12,
     subjectId: "maths-lit",
     topicIds: ["finance", "measurement"],
     totalMarks: 50,
     durationMinutes: 60,
-    dueDate: "2026-03-05",
+    dueDate: offsetDate(10),
     status: "upcoming",
   },
   {
@@ -56,7 +63,7 @@ export const assessments: Assessment[] = [
     topicIds: ["probability"],
     totalMarks: 20,
     durationMinutes: 25,
-    dueDate: "2026-03-12",
+    dueDate: offsetDate(17),
     status: "upcoming",
   },
   {
@@ -67,7 +74,7 @@ export const assessments: Assessment[] = [
     topicIds: ["tariffs"],
     totalMarks: 25,
     durationMinutes: 30,
-    dueDate: "2026-01-23",
+    dueDate: offsetDate(-33),
     status: "missed",
   },
 ];

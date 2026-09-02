@@ -72,7 +72,7 @@ export function SignIn() {
           ))}
         </div>
 
-        <Button as="link" to="/" variant="ghost" className="mt-8 text-navy-300 hover:bg-white/5 hover:text-white">
+        <Button as="link" to="/" variant="ghost-dark" className="mt-8">
           ← Back to homepage
         </Button>
       </div>

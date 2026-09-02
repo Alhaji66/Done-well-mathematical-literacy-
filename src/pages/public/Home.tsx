@@ -91,13 +91,7 @@ export function Home() {
             <Button as="link" to="/sign-in" variant="secondary" size="lg" icon={<IconArrowRight className="h-5 w-5" />} iconPosition="right">
               Try the demo
             </Button>
-            <Button
-              as="a"
-              href="#publications"
-              variant="outline"
-              size="lg"
-              className="border-navy-700 bg-transparent text-white hover:bg-white/10"
-            >
+            <Button as="a" href="#publications" variant="outline-dark" size="lg">
               See publications
             </Button>
           </div>

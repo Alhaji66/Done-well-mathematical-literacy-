@@ -1,14 +1,16 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { Link, type LinkProps } from "react-router-dom";
 
-type Variant = "primary" | "secondary" | "outline" | "ghost";
+type Variant = "primary" | "secondary" | "outline" | "outline-dark" | "ghost" | "ghost-dark";
 type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
   primary: "bg-navy-900 text-white hover:bg-navy-800 active:bg-navy-950",
   secondary: "bg-gold-500 text-navy-950 hover:bg-gold-400 active:bg-gold-600",
   outline: "border border-navy-200 text-navy-900 bg-white hover:bg-navy-50 active:bg-navy-100",
+  "outline-dark": "border border-white/30 text-white bg-transparent hover:bg-white/10 active:bg-white/15",
   ghost: "text-navy-700 hover:bg-navy-50 active:bg-navy-100",
+  "ghost-dark": "text-navy-200 hover:bg-white/10 hover:text-white active:bg-white/15",
 };
 
 const sizeClasses: Record<Size, string> = {

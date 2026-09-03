@@ -12,7 +12,7 @@ export function SchoolDashboard() {
     <div className="space-y-8">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">School Overview</p>
-        <h1 className="mt-1 text-2xl font-bold text-navy-900">Thuto Secondary School</h1>
+        <h1 className="mt-1 text-2xl font-bold text-navy-900">Gojela High School</h1>
         <p className="mt-1 text-sm text-navy-600">A whole-school snapshot of participation and performance.</p>
       </div>
 

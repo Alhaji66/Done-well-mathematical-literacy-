@@ -10,10 +10,10 @@ interface DemoAuthValue {
 }
 
 const roleNames: Record<DemoRole, string> = {
-  learner: 'Karabo Mokoena',
-  parent: 'Mrs. P. Mokoena',
-  teacher: 'Mrs. N. Zulu',
-  school: 'Thuto Secondary School',
+  learner: 'Tebogo Maluleke',
+  parent: "Tebogo's Guardian",
+  teacher: 'Alhaji T',
+  school: 'Gojela High School',
 }
 
 const STORAGE_KEY = 'donewell-demo-role'

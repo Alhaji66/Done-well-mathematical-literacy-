@@ -19,9 +19,9 @@ export const questions: Question[] = [
     difficulty: 'Moderate',
     marks: 4,
     prompt: 'A savings account offers 6.5% simple interest per year. If Nomvula invests R8 000, how much interest will she earn after 3 years?',
-    context: 'Simple interest formula: I = P × i × n',
+    context: 'First find one year\'s interest, then multiply by the number of years — with simple interest, every year earns interest on the original R8 000 only, never on interest already earned.',
     answer: 'R1 560',
-    explanation: 'I = 8 000 × 0.065 × 3 = R1 560. Simple interest is calculated only on the original amount each year.',
+    explanation: 'One year\'s interest: R8 000 × 6.5 ÷ 100 = R520. Over 3 years: R520 × 3 = R1 560. Simple interest is calculated only on the original amount each year, unlike compound interest.',
   },
   {
     id: 'fin-c1',

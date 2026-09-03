@@ -40,8 +40,8 @@ export const topics: Topic[] = [
     id: 'probability',
     subjectId: 'mat-lit',
     name: 'Probability',
-    description: 'Chance, likelihood, relative frequency and simple probability calculations.',
-    grades: [11, 12],
+    description: 'Chance, likelihood, relative frequency and simple probability calculations, applied across other topics.',
+    grades: [10, 11, 12],
   },
   {
     id: 'profit-loss-breakeven',

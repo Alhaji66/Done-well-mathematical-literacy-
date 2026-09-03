@@ -52,10 +52,10 @@ export const questions: Question[] = [
     explanation: 'Groceries vary month to month depending on needs and prices, so they are a variable expense. Rent, car instalments and insurance are usually fixed.',
   },
 
-  // Tariffs
+  // Finance — Tariffs
   {
     id: 'tar-e1',
-    topicId: 'tariffs',
+    topicId: 'finance',
     grade: 11,
     difficulty: 'Easy',
     marks: 2,
@@ -65,7 +65,7 @@ export const questions: Question[] = [
   },
   {
     id: 'tar-m1',
-    topicId: 'tariffs',
+    topicId: 'finance',
     grade: 11,
     difficulty: 'Moderate',
     marks: 5,
@@ -75,7 +75,7 @@ export const questions: Question[] = [
   },
   {
     id: 'tar-c1',
-    topicId: 'tariffs',
+    topicId: 'finance',
     grade: 12,
     difficulty: 'Challenge',
     marks: 6,
@@ -181,10 +181,10 @@ export const questions: Question[] = [
     explanation: 'Area = 5 × 4 = 20m². Boxes needed = 20 ÷ 1.8 = 11.1, round up to 12 boxes. Cost = 12 × 1.8 × 189.99 = R4 103.78... using full boxes: 12 boxes × R189.99×1.8 ≈ R4 559.76 (always round up boxes; you cannot buy part of a box).',
   },
 
-  // Probability
+  // Data Handling — Probability (integrated, per CAPS)
   {
     id: 'pro-e1',
-    topicId: 'probability',
+    topicId: 'data-handling',
     grade: 11,
     difficulty: 'Easy',
     marks: 2,
@@ -194,7 +194,7 @@ export const questions: Question[] = [
   },
   {
     id: 'pro-m1',
-    topicId: 'probability',
+    topicId: 'data-handling',
     grade: 12,
     difficulty: 'Moderate',
     marks: 4,
@@ -203,10 +203,10 @@ export const questions: Question[] = [
     explanation: 'Relative frequency = 8 ÷ 60 ≈ 0.133 (13.3%). Theoretical probability = 1 ÷ 6 ≈ 0.167 (16.7%). The observed result is slightly lower than expected.',
   },
 
-  // Profit, Loss & Breakeven
+  // Finance — Profit, Loss & Breakeven
   {
     id: 'plb-m1',
-    topicId: 'profit-loss-breakeven',
+    topicId: 'finance',
     grade: 12,
     difficulty: 'Moderate',
     marks: 5,
@@ -216,7 +216,7 @@ export const questions: Question[] = [
   },
   {
     id: 'plb-c1',
-    topicId: 'profit-loss-breakeven',
+    topicId: 'finance',
     grade: 12,
     difficulty: 'Challenge',
     marks: 7,

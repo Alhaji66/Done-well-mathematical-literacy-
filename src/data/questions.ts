@@ -30,9 +30,9 @@ export const questions: Question[] = [
     difficulty: 'Challenge',
     marks: 6,
     prompt: 'A loan of R12 000 is repaid with compound interest at 9% per year over 2 years. Calculate the total amount owed, rounded to the nearest rand.',
-    context: 'A = P(1 + i)ⁿ',
+    context: 'Work it out year by year: add 9% interest to the balance at the end of each year, then use that new balance to calculate the next year\'s interest.',
     answer: 'R14 257',
-    explanation: 'A = 12 000 × (1.09)² = 12 000 × 1.1881 = R14 257.20 ≈ R14 257. Compound interest grows on the previous total, not just the original amount.',
+    explanation: 'Year 1: R12 000 × 1.09 = R13 080.00. Year 2: R13 080.00 × 1.09 = R14 257.20 ≈ R14 257. Each year\'s interest is calculated on the previous year\'s total, not on the original R12 000 only — that\'s what makes it compound interest.',
   },
   {
     id: 'fin-e2',

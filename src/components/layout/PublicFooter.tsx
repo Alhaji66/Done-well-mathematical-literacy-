@@ -30,10 +30,21 @@ export function PublicFooter() {
           <h3 className="text-sm font-semibold text-white">Contact</h3>
           <ul className="mt-3 space-y-2 text-sm text-navy-300">
             <li>hello@donewellpublications.co.za</li>
-            <li>+27 (0) 11 000 0000</li>
+            <li>
+              <a href="tel:+27736045360" className="hover:text-white">
+                +27 73 604 5360
+              </a>
+            </li>
             <li className="flex items-center gap-1.5">
               <MessageIcon className="h-4 w-4 text-emerald-400" />
-              WhatsApp support (coming soon)
+              <a
+                href="https://wa.me/27717713275"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-white"
+              >
+                WhatsApp: +27 71 771 3275
+              </a>
             </li>
           </ul>
         </div>

@@ -33,12 +33,17 @@ export function ParentSupport() {
           </span>
           <div>
             <h3 className="font-semibold text-navy-900">Need to talk to someone?</h3>
-            <p className="mt-1 text-sm text-navy-600">WhatsApp support for parents is coming soon.</p>
+            <p className="mt-1 text-sm text-navy-600">Chat to us on WhatsApp: +27 71 771 3275.</p>
           </div>
         </div>
-        <button type="button" className="btn-outline btn-sm shrink-0" disabled>
-          Coming soon
-        </button>
+        <a
+          href="https://wa.me/27717713275"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-outline btn-sm shrink-0"
+        >
+          Message on WhatsApp
+        </a>
       </div>
     </div>
   )

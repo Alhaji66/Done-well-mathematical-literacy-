@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { filterQuestions } from '@/data/questions'
 import { topics, getTopic } from '@/data/topics'
+import { subjects } from '@/data/subjects'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { DifficultyBadge } from '@/components/ui/Badges'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -8,12 +9,18 @@ import { SparkleIcon, DownloadIcon, ClipboardIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import type { Difficulty, Grade } from '@/types'
 
+const teachableSubjectIds = ['mat-lit', 'mathematics']
+const teachableSubjects = subjects.filter((s) => teachableSubjectIds.includes(s.id))
+
 export function TeacherQuestionBank() {
+  const [subjectId, setSubjectId] = useState<string>('mat-lit')
   const [grade, setGrade] = useState<Grade>(12)
-  const [topicId, setTopicId] = useState<string>(topics[0].id)
+  const [topicId, setTopicId] = useState<string>(topics.find((t) => t.subjectId === 'mat-lit')!.id)
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
   const [worksheet, setWorksheet] = useState<ReturnType<typeof filterQuestions> | null>(null)
   const [view, setView] = useState<'worksheet' | 'memo'>('worksheet')
+
+  const topicOptions = topics.filter((t) => t.subjectId === subjectId)
 
   const matches = useMemo(
     () => filterQuestions({ topicId, grade, difficulty: difficulty === 'All' ? undefined : difficulty }),
@@ -22,6 +29,12 @@ export function TeacherQuestionBank() {
 
   const totalMarks = matches.reduce((s, q) => s + q.marks, 0)
   const topic = getTopic(topicId)
+  const subjectName = subjects.find((s) => s.id === subjectId)?.name ?? ''
+
+  const changeSubject = (id: string) => {
+    setSubjectId(id)
+    setTopicId(topics.find((t) => t.subjectId === id)?.id ?? '')
+  }
 
   const generate = () => {
     setWorksheet(matches)
@@ -35,6 +48,16 @@ export function TeacherQuestionBank() {
       <div className="card p-4">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div>
+            <label className="text-xs font-medium text-navy-500">Subject</label>
+            <select className="select mt-1" value={subjectId} onChange={(e) => changeSubject(e.target.value)}>
+              {teachableSubjects.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="text-xs font-medium text-navy-500">Grade</label>
             <select className="select mt-1" value={grade} onChange={(e) => setGrade(Number(e.target.value) as Grade)}>
               <option value={10}>Grade 10</option>
@@ -45,7 +68,7 @@ export function TeacherQuestionBank() {
           <div>
             <label className="text-xs font-medium text-navy-500">Topic</label>
             <select className="select mt-1" value={topicId} onChange={(e) => setTopicId(e.target.value)}>
-              {topics.map((t) => (
+              {topicOptions.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.name}
                 </option>
@@ -108,7 +131,7 @@ export function TeacherQuestionBank() {
 
           <div className="p-6 sm:p-8">
             <div className="mb-6 border-b border-dashed border-navy-200 pb-4 text-center">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">DONE WELL® Mathematical Literacy</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">DONE WELL® {subjectName}</p>
               <h2 className="mt-1 text-lg font-bold text-navy-900">
                 Grade {grade} — {topic?.name} {view === 'memo' ? '(Teacher Memo)' : 'Worksheet'}
               </h2>

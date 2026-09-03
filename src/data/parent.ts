@@ -14,7 +14,7 @@ export const homeActions: HomeAction[] = [
   },
   {
     id: 'ha-2',
-    topicId: 'profit-loss-breakeven',
+    topicId: 'finance',
     title: 'Talk through a household budget item',
     detail: 'Pick one monthly cost (e.g. airtime or transport) and ask Karabo to explain what it would take to "break even" if they were selling something to cover that cost.',
   },

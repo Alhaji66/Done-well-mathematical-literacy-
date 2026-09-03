@@ -5,21 +5,16 @@ export const topics: Topic[] = [
     id: 'finance',
     subjectId: 'mat-lit',
     name: 'Finance',
-    description: 'Budgets, income & expenditure, loans, interest, exchange rates and financial documents.',
-    grades: [10, 11, 12],
-  },
-  {
-    id: 'tariffs',
-    subjectId: 'mat-lit',
-    name: 'Tariffs',
-    description: 'Municipal accounts, electricity & water tariffs, phone contracts and cost comparisons.',
+    description:
+      'Financial documents, budgets, loans, interest, taxation, tariffs (electricity, water, phone, municipal), income & expenditure, profit/loss and break-even analysis.',
     grades: [10, 11, 12],
   },
   {
     id: 'data-handling',
     subjectId: 'mat-lit',
     name: 'Data Handling',
-    description: 'Collecting, organising, summarising and interpreting data using tables, graphs and averages.',
+    description:
+      'Collecting, organising, summarising and interpreting data using tables, graphs and averages — including probability, chance and relative frequency applied to real data.',
     grades: [10, 11, 12],
   },
   {
@@ -35,20 +30,6 @@ export const topics: Topic[] = [
     name: 'Measurement',
     description: 'Length, weight, volume, perimeter, area and conversions between units.',
     grades: [10, 11, 12],
-  },
-  {
-    id: 'probability',
-    subjectId: 'mat-lit',
-    name: 'Probability',
-    description: 'Chance, likelihood, relative frequency and simple probability calculations, applied across other topics.',
-    grades: [10, 11, 12],
-  },
-  {
-    id: 'profit-loss-breakeven',
-    subjectId: 'mat-lit',
-    name: 'Profit, Loss & Breakeven',
-    description: 'Cost and income functions, break-even analysis and small business scenarios.',
-    grades: [12],
   },
 ]
 

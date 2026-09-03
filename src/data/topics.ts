@@ -31,6 +31,48 @@ export const topics: Topic[] = [
     description: 'Length, weight, volume, perimeter, area and conversions between units.',
     grades: [10, 11, 12],
   },
+  {
+    id: 'math-algebra',
+    subjectId: 'mathematics',
+    name: 'Algebra, Equations & Inequalities',
+    description: 'Simplifying expressions, factorising, and solving linear, quadratic and simultaneous equations and inequalities.',
+    grades: [10, 11, 12],
+  },
+  {
+    id: 'math-functions',
+    subjectId: 'mathematics',
+    name: 'Functions & Graphs',
+    description: 'Linear, quadratic, exponential and hyperbolic functions — sketching graphs, intercepts, asymptotes and turning points.',
+    grades: [10, 11, 12],
+  },
+  {
+    id: 'math-trigonometry',
+    subjectId: 'mathematics',
+    name: 'Trigonometry',
+    description: 'Trig ratios, identities, reduction formulae, and solving trigonometric equations and triangles.',
+    grades: [10, 11, 12],
+  },
+  {
+    id: 'math-analytical-geometry',
+    subjectId: 'mathematics',
+    name: 'Analytical Geometry',
+    description: 'Distance, gradient and midpoint between points, and equations of lines and circles on the Cartesian plane.',
+    grades: [11, 12],
+  },
+  {
+    id: 'math-statistics',
+    subjectId: 'mathematics',
+    name: 'Statistics',
+    description: 'Measures of central tendency and spread, standard deviation, and interpreting statistical data and graphs.',
+    grades: [10, 11, 12],
+  },
+  {
+    id: 'math-finance-growth',
+    subjectId: 'mathematics',
+    name: 'Finance, Growth & Decay',
+    description: 'Simple and compound growth and decay, and annuities, using algebraic financial formulae.',
+    grades: [11, 12],
+  },
 ]
 
 export const getTopic = (id: string) => topics.find((t) => t.id === id)

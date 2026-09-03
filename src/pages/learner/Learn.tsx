@@ -11,28 +11,53 @@ import type { Grade } from '@/types'
 
 const grades: Grade[] = [10, 11, 12]
 
+const subjectOptions = [
+  { id: 'mat-lit', name: 'Mathematical Literacy' },
+  { id: 'mathematics', name: 'Mathematics' },
+]
+
 export function LearnerLearn() {
+  const [subjectId, setSubjectId] = useState(demoLearner.subjectId)
   const [grade, setGrade] = useState<Grade>(demoLearner.grade)
-  const topics = topicsForSubject('mat-lit', grade)
+  const topics = topicsForSubject(subjectId, grade)
+  const subjectName = subjectOptions.find((s) => s.id === subjectId)?.name ?? ''
 
   return (
     <div className="space-y-6">
-      <SectionHeading eyebrow="Learn" title="Mathematical Literacy topics" description="Choose a grade, then a topic to see what it covers before you practise." />
+      <SectionHeading eyebrow="Learn" title={`${subjectName} topics`} description="Choose a subject and grade, then a topic to see what it covers before you practise." />
 
-      <div className="inline-flex rounded-lg border border-navy-200 bg-white p-1">
-        {grades.map((g) => (
-          <button
-            key={g}
-            type="button"
-            onClick={() => setGrade(g)}
-            className={cn(
-              'rounded-md px-4 py-2 text-sm font-semibold transition-colors',
-              grade === g ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
-            )}
-          >
-            Grade {g}
-          </button>
-        ))}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="inline-flex flex-wrap rounded-lg border border-navy-200 bg-white p-1">
+          {subjectOptions.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => setSubjectId(s.id)}
+              className={cn(
+                'rounded-md px-4 py-2 text-sm font-semibold transition-colors',
+                subjectId === s.id ? 'bg-gold-500 text-navy-900' : 'text-navy-600 hover:bg-navy-50',
+              )}
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="inline-flex rounded-lg border border-navy-200 bg-white p-1">
+          {grades.map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => setGrade(g)}
+              className={cn(
+                'rounded-md px-4 py-2 text-sm font-semibold transition-colors',
+                grade === g ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+              )}
+            >
+              Grade {g}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

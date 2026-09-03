@@ -1,37 +1,57 @@
 import { useMemo, useState } from 'react'
 import { filterResources } from '@/data/resources'
 import { topics } from '@/data/topics'
+import { subjects } from '@/data/subjects'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { BookIcon, DownloadIcon, EyeIcon, FilterIcon } from '@/components/ui/Icons'
 import type { ResourceType } from '@/types'
 
 const resourceTypes: ResourceType[] = ['Learner Book', 'Workbook', 'Teacher Guide', 'Test', 'Memo']
+const teachableSubjectIds = ['mat-lit', 'mathematics']
+const teachableSubjects = subjects.filter((s) => teachableSubjectIds.includes(s.id))
 
 export function TeacherResources() {
+  const [subjectId, setSubjectId] = useState<string>('all')
   const [grade, setGrade] = useState<string>('all')
   const [topicId, setTopicId] = useState<string>('all')
   const [type, setType] = useState<string>('all')
 
+  const topicOptions = subjectId === 'all' ? topics : topics.filter((t) => t.subjectId === subjectId)
+
   const results = useMemo(
     () =>
       filterResources({
+        subjectId: subjectId === 'all' ? undefined : subjectId,
         grade: grade === 'all' ? undefined : Number(grade),
         topicId: topicId === 'all' ? undefined : topicId,
         type: type === 'all' ? undefined : type,
       }),
-    [grade, topicId, type],
+    [subjectId, grade, topicId, type],
   )
+
+  const changeSubject = (id: string) => {
+    setSubjectId(id)
+    setTopicId('all')
+  }
 
   return (
     <div className="space-y-6">
-      <SectionHeading eyebrow="Resources" title="Resource library" description="Filter by grade, topic and resource type to find what you need." />
+      <SectionHeading eyebrow="Resources" title="Resource library" description="Filter by subject, grade, topic and resource type to find what you need." />
 
       <div className="card p-4">
         <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-navy-500">
           <FilterIcon className="h-3.5 w-3.5" /> FILTERS
         </div>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <select className="select" value={subjectId} onChange={(e) => changeSubject(e.target.value)}>
+            <option value="all">All subjects</option>
+            {teachableSubjects.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
           <select className="select" value={grade} onChange={(e) => setGrade(e.target.value)}>
             <option value="all">All grades</option>
             <option value="10">Grade 10</option>
@@ -40,7 +60,7 @@ export function TeacherResources() {
           </select>
           <select className="select" value={topicId} onChange={(e) => setTopicId(e.target.value)}>
             <option value="all">All topics</option>
-            {topics.map((t) => (
+            {topicOptions.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
               </option>

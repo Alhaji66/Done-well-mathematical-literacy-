@@ -29,7 +29,11 @@ export function PublicFooter() {
         <div>
           <h3 className="text-sm font-semibold text-white">Contact</h3>
           <ul className="mt-3 space-y-2 text-sm text-navy-300">
-            <li>hello@donewellpublications.co.za</li>
+            <li>
+              <a href="mailto:donewellpublication@gmail.com" className="hover:text-white">
+                donewellpublication@gmail.com
+              </a>
+            </li>
             <li>
               <a href="tel:+27736045360" className="hover:text-white">
                 +27 73 604 5360

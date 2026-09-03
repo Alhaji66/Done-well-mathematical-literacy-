@@ -2,10 +2,10 @@ import type { LearnerProfile } from '@/types'
 
 export const demoLearner: LearnerProfile = {
   id: 'learner-1',
-  name: 'Tebogo Maluleke',
+  name: 'Karabo Mokoena',
   grade: 12,
   subjectId: 'mat-lit',
-  avatarInitials: 'TM',
+  avatarInitials: 'KM',
   weeklyActivity: [
     { label: 'Mon', minutes: 25 },
     { label: 'Tue', minutes: 40 },

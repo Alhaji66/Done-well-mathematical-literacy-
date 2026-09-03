@@ -8,12 +8,12 @@ export interface ClassLearner {
 }
 
 export const classLearners: ClassLearner[] = [
-  { id: 'l-1', name: 'Tebogo Maluleke', masteryPercent: 59, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
-  { id: 'l-2', name: 'Jessica', masteryPercent: 84, lastActive: 'Today', trend: 'up', riskLevel: 'low' },
+  { id: 'l-1', name: 'Karabo Mokoena', masteryPercent: 59, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
+  { id: 'l-2', name: 'Ayesha Patel', masteryPercent: 84, lastActive: 'Today', trend: 'up', riskLevel: 'low' },
   { id: 'l-3', name: 'Sipho Ndlovu', masteryPercent: 38, lastActive: '2 days ago', trend: 'down', riskLevel: 'high' },
-  { id: 'l-4', name: 'Amo', masteryPercent: 71, lastActive: 'Yesterday', trend: 'steady', riskLevel: 'low' },
+  { id: 'l-4', name: 'Lerato Dlamini', masteryPercent: 71, lastActive: 'Yesterday', trend: 'steady', riskLevel: 'low' },
   { id: 'l-5', name: 'Johan van der Merwe', masteryPercent: 45, lastActive: '3 days ago', trend: 'down', riskLevel: 'high' },
-  { id: 'l-6', name: 'Anna', masteryPercent: 63, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
+  { id: 'l-6', name: 'Naledi Khumalo', masteryPercent: 63, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
   { id: 'l-7', name: 'Kagiso Mahlangu', masteryPercent: 90, lastActive: 'Today', trend: 'steady', riskLevel: 'low' },
   { id: 'l-8', name: 'Precious Nkosi', masteryPercent: 29, lastActive: '5 days ago', trend: 'down', riskLevel: 'high' },
 ]

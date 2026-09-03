@@ -73,6 +73,34 @@ export const topics: Topic[] = [
     description: 'Simple and compound growth and decay, and annuities, using algebraic financial formulae.',
     grades: [11, 12],
   },
+  {
+    id: 'math-number-patterns',
+    subjectId: 'mathematics',
+    name: 'Number Patterns, Sequences & Series',
+    description: 'Arithmetic and geometric sequences and series, sigma notation, and the formulae for the sum of a series.',
+    grades: [11, 12],
+  },
+  {
+    id: 'math-calculus',
+    subjectId: 'mathematics',
+    name: 'Differential Calculus',
+    description: 'Limits, the derivative from first principles, differentiation rules, and sketching and applying cubic graphs.',
+    grades: [12],
+  },
+  {
+    id: 'math-counting-probability',
+    subjectId: 'mathematics',
+    name: 'Counting Principle & Probability',
+    description: 'Venn diagrams, tree diagrams, the addition and product rules, and the fundamental counting principle.',
+    grades: [10, 11, 12],
+  },
+  {
+    id: 'math-euclidean-geometry',
+    subjectId: 'mathematics',
+    name: 'Euclidean Geometry',
+    description: 'Circle theorems, similar triangles, the proportionality theorem, and riders requiring formal proof.',
+    grades: [10, 11, 12],
+  },
 ]
 
 export const getTopic = (id: string) => topics.find((t) => t.id === id)

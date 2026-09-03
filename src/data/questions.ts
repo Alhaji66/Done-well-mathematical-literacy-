@@ -380,6 +380,99 @@ export const questions: Question[] = [
     answer: 'A = R73 695.00',
     explanation: 'A = 120 000 × (1 − 0.15)³ = 120 000 × (0.85)³ = 120 000 × 0.614125 = R73 695.00.',
   },
+
+  // Mathematics — Number Patterns, Sequences & Series
+  {
+    id: 'mnp-e1',
+    topicId: 'math-number-patterns',
+    grade: 11,
+    difficulty: 'Easy',
+    marks: 2,
+    prompt: 'Determine the 10th term of the arithmetic sequence: 4, 7, 10, 13, ...',
+    context: 'Tₙ = a + (n − 1)d',
+    answer: 'T₁₀ = 31',
+    explanation: 'a = 4, d = 3. T₁₀ = 4 + (10 − 1)(3) = 4 + 27 = 31.',
+  },
+  {
+    id: 'mnp-m1',
+    topicId: 'math-number-patterns',
+    grade: 12,
+    difficulty: 'Moderate',
+    marks: 4,
+    prompt: 'Calculate the sum of the first 20 terms of the arithmetic series: 5 + 9 + 13 + 17 + ...',
+    context: 'Sₙ = n ÷ 2 × [2a + (n − 1)d]',
+    answer: 'S₂₀ = 860',
+    explanation: 'a = 5, d = 4, n = 20. S₂₀ = 20 ÷ 2 × [2(5) + 19(4)] = 10 × [10 + 76] = 10 × 86 = 860.',
+  },
+
+  // Mathematics — Differential Calculus
+  {
+    id: 'mcalc-m1',
+    topicId: 'math-calculus',
+    grade: 12,
+    difficulty: 'Moderate',
+    marks: 3,
+    prompt: 'Determine f′(x) for f(x) = 3x² − 5x + 2.',
+    answer: 'f′(x) = 6x − 5',
+    explanation: 'Using the power rule (d/dx)(axⁿ) = anxⁿ⁻¹ on each term: the derivative of 3x² is 6x, the derivative of −5x is −5, and the derivative of the constant 2 is 0. So f′(x) = 6x − 5.',
+  },
+  {
+    id: 'mcalc-c1',
+    topicId: 'math-calculus',
+    grade: 12,
+    difficulty: 'Challenge',
+    marks: 6,
+    prompt: 'Determine the derivative of f(x) = 2x² − 3x using first principles.',
+    context: 'f′(x) = lim (h→0) [f(x + h) − f(x)] ÷ h',
+    answer: 'f′(x) = 4x − 3',
+    explanation: 'f(x + h) = 2(x + h)² − 3(x + h) = 2x² + 4xh + 2h² − 3x − 3h. So f(x + h) − f(x) = 4xh + 2h² − 3h. Dividing by h gives 4x + 2h − 3. As h → 0, this approaches 4x − 3.',
+  },
+
+  // Mathematics — Counting Principle & Probability
+  {
+    id: 'mcp-e1',
+    topicId: 'math-counting-probability',
+    grade: 11,
+    difficulty: 'Easy',
+    marks: 2,
+    prompt: 'A bag contains 5 red, 3 blue and 2 green marbles. What is P(not red)?',
+    answer: 'P(not red) = 0.5',
+    explanation: 'P(red) = 5 ÷ 10 = 0.5. Using the complementary rule, P(not red) = 1 − P(red) = 1 − 0.5 = 0.5.',
+  },
+  {
+    id: 'mcp-m1',
+    topicId: 'math-counting-probability',
+    grade: 12,
+    difficulty: 'Moderate',
+    marks: 3,
+    prompt: 'A restaurant offers 4 starters, 6 mains and 3 desserts. Using the fundamental counting principle, how many different 3-course meals are possible?',
+    answer: '72 meals',
+    explanation: 'Fundamental counting principle: multiply the number of choices at each stage. 4 × 6 × 3 = 72.',
+  },
+
+  // Mathematics — Euclidean Geometry
+  {
+    id: 'meg-e1',
+    topicId: 'math-euclidean-geometry',
+    grade: 10,
+    difficulty: 'Easy',
+    marks: 3,
+    prompt: 'In triangle ABC, DE is drawn parallel to BC, with D on AB and E on AC. If AD = 4, DB = 2 and AE = 6, determine EC.',
+    context: 'A line drawn parallel to one side of a triangle divides the other two sides proportionally.',
+    answer: 'EC = 3',
+    explanation: 'AD ÷ DB = AE ÷ EC, so 4 ÷ 2 = 6 ÷ EC. This gives 2 = 6 ÷ EC, so EC = 6 ÷ 2 = 3.',
+  },
+  {
+    id: 'meg-m1',
+    topicId: 'math-euclidean-geometry',
+    grade: 11,
+    difficulty: 'Moderate',
+    marks: 3,
+    prompt: 'O is the centre of a circle. Chord AB subtends an angle of 70° at the centre. Determine the size of the angle subtended by AB at the circumference on the major arc.',
+    context: 'The angle subtended by a chord at the centre is twice the angle subtended at the circumference.',
+    answer: '35°',
+    explanation: 'Angle at centre = 2 × angle at circumference, so angle at circumference = 70° ÷ 2 = 35°.',
+  },
 ]
 
 export const questionsForTopic = (topicId: string) => questions.filter((q) => q.topicId === topicId)

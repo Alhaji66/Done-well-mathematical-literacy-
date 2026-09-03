@@ -44,13 +44,10 @@ export interface TopicPerformance {
 }
 
 export const classTopicPerformance: TopicPerformance[] = [
-  { topicId: 'finance', averagePercent: 68 },
-  { topicId: 'tariffs', averagePercent: 61 },
-  { topicId: 'data-handling', averagePercent: 72 },
+  { topicId: 'finance', averagePercent: 64 },
+  { topicId: 'data-handling', averagePercent: 71 },
   { topicId: 'maps-plans', averagePercent: 49 },
   { topicId: 'measurement', averagePercent: 65 },
-  { topicId: 'probability', averagePercent: 57 },
-  { topicId: 'profit-loss-breakeven', averagePercent: 40 },
 ]
 
 export interface QuestionPerformance {
@@ -80,7 +77,7 @@ export const schoolStats: SchoolStats = {
   activeLearners: 611,
   averagePracticeScore: 63,
   strongestTopicId: 'data-handling',
-  weakestTopicId: 'profit-loss-breakeven',
+  weakestTopicId: 'maps-plans',
   testCompletionPercent: 76,
 }
 
@@ -123,8 +120,8 @@ export interface InterventionPriority {
 export const interventionPriorities: InterventionPriority[] = [
   {
     id: 'ip-1',
-    label: 'Profit, Loss & Breakeven — Grade 12',
-    detail: 'Average of 40% across all Grade 12 classes. Recommend targeted small-group revision before the next formal test.',
+    label: 'Profit, Loss & Breakeven (within Finance) — Grade 12',
+    detail: 'This Finance sub-area is averaging 40% across all Grade 12 classes, well below the Finance topic average. Recommend targeted small-group revision before the next formal test.',
     severity: 'high',
   },
   {

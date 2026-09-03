@@ -5,8 +5,8 @@ import { UserIcon, HeartHandshakeIcon, BookIcon, SchoolIcon, CheckCircleIcon } f
 import { cn } from '@/lib/utils'
 
 const roleOptions: { role: DemoRole; label: string; desc: string; icon: (p: { className?: string }) => JSX.Element }[] = [
-  { role: 'learner', label: 'Learner', desc: 'Tebogo Maluleke · Grade 12', icon: UserIcon },
-  { role: 'parent', label: 'Parent', desc: "Tebogo's guardian", icon: HeartHandshakeIcon },
+  { role: 'learner', label: 'Learner', desc: 'Karabo Mokoena · Grade 12', icon: UserIcon },
+  { role: 'parent', label: 'Parent', desc: "Karabo's guardian", icon: HeartHandshakeIcon },
   { role: 'teacher', label: 'Teacher', desc: 'Alhaji T · Mathematical Literacy', icon: BookIcon },
   { role: 'school', label: 'School', desc: 'Gojela High School', icon: SchoolIcon },
 ]

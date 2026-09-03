@@ -10,8 +10,8 @@ interface DemoAuthValue {
 }
 
 const roleNames: Record<DemoRole, string> = {
-  learner: 'Tebogo Maluleke',
-  parent: "Tebogo's Guardian",
+  learner: 'Karabo Mokoena',
+  parent: 'Mrs. P. Mokoena',
   teacher: 'Alhaji T',
   school: 'Gojela High School',
 }

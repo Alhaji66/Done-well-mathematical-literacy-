@@ -8,12 +8,12 @@ export interface ClassLearner {
 }
 
 export const classLearners: ClassLearner[] = [
-  { id: 'l-1', name: 'Karabo Mokoena', masteryPercent: 56, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
-  { id: 'l-2', name: 'Ayesha Patel', masteryPercent: 84, lastActive: 'Today', trend: 'up', riskLevel: 'low' },
+  { id: 'l-1', name: 'Tebogo Maluleke', masteryPercent: 59, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
+  { id: 'l-2', name: 'Jessica', masteryPercent: 84, lastActive: 'Today', trend: 'up', riskLevel: 'low' },
   { id: 'l-3', name: 'Sipho Ndlovu', masteryPercent: 38, lastActive: '2 days ago', trend: 'down', riskLevel: 'high' },
-  { id: 'l-4', name: 'Lerato Dlamini', masteryPercent: 71, lastActive: 'Yesterday', trend: 'steady', riskLevel: 'low' },
+  { id: 'l-4', name: 'Amo', masteryPercent: 71, lastActive: 'Yesterday', trend: 'steady', riskLevel: 'low' },
   { id: 'l-5', name: 'Johan van der Merwe', masteryPercent: 45, lastActive: '3 days ago', trend: 'down', riskLevel: 'high' },
-  { id: 'l-6', name: 'Naledi Khumalo', masteryPercent: 63, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
+  { id: 'l-6', name: 'Anna', masteryPercent: 63, lastActive: 'Today', trend: 'up', riskLevel: 'medium' },
   { id: 'l-7', name: 'Kagiso Mahlangu', masteryPercent: 90, lastActive: 'Today', trend: 'steady', riskLevel: 'low' },
   { id: 'l-8', name: 'Precious Nkosi', masteryPercent: 29, lastActive: '5 days ago', trend: 'down', riskLevel: 'high' },
 ]
@@ -28,7 +28,7 @@ export interface TeacherProfile {
 
 export const demoTeacher: TeacherProfile = {
   id: 'teacher-1',
-  name: 'Mrs. N. Zulu',
+  name: 'Alhaji T',
   subjectId: 'mat-lit',
   grades: [11, 12],
   classes: [
@@ -91,8 +91,8 @@ export interface SchoolTeacherSummary {
 }
 
 export const schoolTeachers: SchoolTeacherSummary[] = [
-  { id: 't-1', name: 'Mrs. N. Zulu', subjectId: 'mat-lit', grades: [11, 12], learnerCount: 101, classAverage: 63 },
-  { id: 't-2', name: 'Mr. D. Botha', subjectId: 'mat-lit', grades: [10], learnerCount: 118, classAverage: 58 },
+  { id: 't-1', name: 'Alhaji T', subjectId: 'mat-lit', grades: [11, 12], learnerCount: 101, classAverage: 63 },
+  { id: 't-2', name: 'Mangyani T.S', subjectId: 'mat-lit', grades: [10], learnerCount: 118, classAverage: 58 },
   { id: 't-3', name: 'Ms. F. Adams', subjectId: 'mathematics', grades: [10, 11], learnerCount: 96, classAverage: 66 },
   { id: 't-4', name: 'Mr. T. Sithole', subjectId: 'life-sciences', grades: [11, 12], learnerCount: 88, classAverage: 61 },
 ]

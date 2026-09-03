@@ -3,6 +3,9 @@ import { PublicLayout } from '@/pages/public/PublicLayout'
 import { Home } from '@/pages/public/Home'
 import { RoleLanding } from '@/pages/public/RoleLanding'
 import { Publications } from '@/pages/public/Publications'
+import { PrivacyPolicy } from '@/pages/public/legal/PrivacyPolicy'
+import { TermsOfService } from '@/pages/public/legal/TermsOfService'
+import { PopiaNotice } from '@/pages/public/legal/PopiaNotice'
 import { SignIn } from '@/pages/auth/SignIn'
 
 import { RoleShell } from '@/components/layout/RoleShell'
@@ -42,6 +45,9 @@ export default function App() {
         <Route path="/teachers" element={<RoleLanding role="teacher" />} />
         <Route path="/schools" element={<RoleLanding role="school" />} />
         <Route path="/publications" element={<Publications />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/popia" element={<PopiaNotice />} />
       </Route>
 
       <Route path="/sign-in" element={<SignIn />} />

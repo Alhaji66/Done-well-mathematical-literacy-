@@ -1,27 +1,48 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { resources } from '@/data/resources'
 import { subjects } from '@/data/subjects'
 import { BookIcon, ChevronRightIcon } from '@/components/ui/Icons'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { cn } from '@/lib/utils'
 
 const typeOrder = ['Learner Book', 'Workbook', 'Teacher Guide', 'Test', 'Memo'] as const
+const publicationSubjectIds = ['mat-lit', 'mathematics']
+const publicationSubjects = subjects.filter((s) => publicationSubjectIds.includes(s.id))
 
 export function Publications() {
-  const matLit = subjects.find((s) => s.id === 'mat-lit')!
+  const [subjectId, setSubjectId] = useState(publicationSubjects[0].id)
+  const subject = publicationSubjects.find((s) => s.id === subjectId)!
   const grades = [12, 11, 10] as const
 
   return (
     <div className="container-page py-12 sm:py-16">
       <SectionHeading
         eyebrow="Publications"
-        title={`${matLit.name} resource library`}
+        title={`${subject.name} resource library`}
         description="Every Done Well publication connects: Learner Book → Workbook → Teacher Guide → Tests → Memos → Assessment Data → Targeted Intervention."
       />
+
+      <div className="mt-6 inline-flex flex-wrap rounded-lg border border-navy-200 bg-white p-1">
+        {publicationSubjects.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => setSubjectId(s.id)}
+            className={cn(
+              'rounded-md px-4 py-2 text-sm font-semibold transition-colors',
+              subjectId === s.id ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+            )}
+          >
+            {s.name}
+          </button>
+        ))}
+      </div>
 
       <div className="mt-10 space-y-10">
         {grades.map((grade) => {
           const items = resources
-            .filter((r) => r.subjectId === matLit.id && r.grade === grade)
+            .filter((r) => r.subjectId === subjectId && r.grade === grade)
             .sort((a, b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type))
           return (
             <div key={grade}>

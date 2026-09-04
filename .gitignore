@@ -6,3 +6,6 @@ dist-ssr
 npm-debug.log*
 .vite
 *.tsbuildinfo
+.env
+.env.*
+!.env.example

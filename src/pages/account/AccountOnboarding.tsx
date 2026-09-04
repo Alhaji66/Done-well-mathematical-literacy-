@@ -85,7 +85,17 @@ export function AccountOnboarding() {
       await refreshProfile()
       navigate('/account', { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      // Supabase's own errors (PostgrestError, AuthError) are plain objects with
+      // a .message string, not real Error instances -- `err instanceof Error`
+      // was silently swallowing the actual reason behind a generic message.
+      console.error('Onboarding failed:', err)
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'object' && err !== null && 'message' in err
+            ? String((err as { message: unknown }).message)
+            : 'Something went wrong. Please try again.'
+      setError(message)
     } finally {
       setSubmitting(false)
     }

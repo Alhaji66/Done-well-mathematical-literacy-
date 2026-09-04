@@ -5,6 +5,7 @@ import { filterQuestions } from '@/data/questions'
 import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
+import { TopicNotes } from '@/components/practise/TopicNotes'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PencilIcon } from '@/components/ui/Icons'
 import type { Difficulty } from '@/types'
@@ -111,6 +112,8 @@ export function LearnerPractise() {
         </div>
         </div>
       </div>
+
+      {topicId ? <TopicNotes topicId={topicId} /> : null}
 
       {questions.length === 0 ? (
         <EmptyState

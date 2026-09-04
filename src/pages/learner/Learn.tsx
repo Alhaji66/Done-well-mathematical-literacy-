@@ -6,6 +6,7 @@ import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { ChevronRightIcon, BookIcon } from '@/components/ui/Icons'
+import { TopicNotes } from '@/components/practise/TopicNotes'
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -85,6 +86,7 @@ export function LearnerLearn() {
                   <ProgressBar percent={progress.masteryPercent} size="sm" />
                 </div>
               ) : null}
+              <TopicNotes topicId={topic.id} defaultOpen={false} />
               <Link
                 to={`/app/learner/practise?topic=${topic.id}`}
                 className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-navy-700 hover:text-navy-900"

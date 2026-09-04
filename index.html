@@ -7,6 +7,21 @@
     <meta name="theme-color" content="#0B1F3A" />
     <title>DONE WELL® | School Support Platform</title>
     <meta name="description" content="DONE WELL® School Support Platform — affordable resources, practice, assessment and progress support for learners, parents, teachers and schools in South Africa." />
+    <script type="text/javascript">
+      // Undo the redirect encoding from 404.html (see public/404.html for why this exists).
+      ;(function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&')
+            })
+            .join('?')
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash)
+        }
+      })(window.location)
+    </script>
   </head>
   <body>
     <div id="root"></div>

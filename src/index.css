@@ -75,3 +75,38 @@
     background-size: 1rem;
   }
 }
+
+/*
+ * Print / "Save as PDF" support for printable worksheets (see .print-area usages,
+ * e.g. TeacherQuestionBank). Only the marked area should reach paper — everything
+ * else (nav, sidebar, filters, buttons) is hidden via the visibility trick below,
+ * which is more robust than tagging every chrome element individually.
+ */
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-area {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+}

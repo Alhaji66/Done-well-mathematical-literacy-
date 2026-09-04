@@ -129,7 +129,7 @@ export function TeacherQuestionBank() {
             </button>
           </div>
 
-          <div className="p-6 sm:p-8">
+          <div className="print-area p-6 sm:p-8">
             <div className="mb-6 border-b border-dashed border-navy-200 pb-4 text-center">
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">DONE WELL® {subjectName}</p>
               <h2 className="mt-1 text-lg font-bold text-navy-900">
@@ -138,11 +138,17 @@ export function TeacherQuestionBank() {
               <p className="mt-1 text-xs text-navy-500">
                 {worksheet.length} questions · {worksheet.reduce((s, q) => s + q.marks, 0)} marks total
               </p>
+              {view === 'worksheet' ? (
+                <div className="mt-4 flex justify-center gap-8 text-sm text-navy-600">
+                  <span>Name: _____________________________</span>
+                  <span>Date: _______________</span>
+                </div>
+              ) : null}
             </div>
 
             <div className="space-y-6">
               {worksheet.map((q, i) => (
-                <div key={q.id}>
+                <div key={q.id} className="print-avoid-break">
                   <div className="flex items-start justify-between gap-3">
                     <p className="text-sm font-semibold text-navy-900">
                       {i + 1}. {q.prompt}

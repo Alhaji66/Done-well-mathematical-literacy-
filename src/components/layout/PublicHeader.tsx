@@ -49,7 +49,7 @@ export function PublicHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Link to="/sign-in" className="btn-outline btn-sm">
+          <Link to="/account/sign-in" className="btn-outline btn-sm">
             Sign In
           </Link>
           <Link to="/sign-in" className="btn-primary btn-sm">
@@ -87,7 +87,7 @@ export function PublicHeader() {
               </NavLink>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-navy-100 pt-3">
-              <Link to="/sign-in" className="btn-outline w-full" onClick={() => setOpen(false)}>
+              <Link to="/account/sign-in" className="btn-outline w-full" onClick={() => setOpen(false)}>
                 Sign In
               </Link>
               <Link to="/sign-in" className="btn-primary w-full" onClick={() => setOpen(false)}>

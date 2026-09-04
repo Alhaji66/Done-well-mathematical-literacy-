@@ -67,9 +67,13 @@ $$;
 
 -- schools --------------------------------------------------------------
 
-create policy "Schools are viewable by their own members"
+-- Any signed-in user can look up schools by name (needed during onboarding,
+-- before their own profile/school_id exists yet -- a school's name isn't
+-- sensitive, and this is what lets a second teacher from the same school
+-- find it instead of accidentally creating a duplicate).
+create policy "Signed-in users can view schools"
   on public.schools for select
-  using (id = public.current_school_id());
+  using (auth.uid() is not null);
 
 create policy "A signed-in user can create a school"
   on public.schools for insert

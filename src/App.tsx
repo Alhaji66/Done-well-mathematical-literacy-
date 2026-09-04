@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { PublicLayout } from '@/pages/public/PublicLayout'
 import { Home } from '@/pages/public/Home'
 import { RoleLanding } from '@/pages/public/RoleLanding'
@@ -7,6 +7,11 @@ import { PrivacyPolicy } from '@/pages/public/legal/PrivacyPolicy'
 import { TermsOfService } from '@/pages/public/legal/TermsOfService'
 import { PopiaNotice } from '@/pages/public/legal/PopiaNotice'
 import { SignIn } from '@/pages/auth/SignIn'
+import { AccountAuthProvider } from '@/context/AccountAuthContext'
+import { AccountGate } from '@/components/layout/AccountGate'
+import { AccountSignIn } from '@/pages/account/AccountSignIn'
+import { AccountOnboarding } from '@/pages/account/AccountOnboarding'
+import { AccountDashboard } from '@/pages/account/AccountDashboard'
 
 import { RoleShell } from '@/components/layout/RoleShell'
 import { RoleAutoSet } from '@/components/layout/RoleAutoSet'
@@ -51,6 +56,23 @@ export default function App() {
       </Route>
 
       <Route path="/sign-in" element={<SignIn />} />
+
+      <Route
+        path="/account"
+        element={
+          <AccountAuthProvider>
+            <Outlet />
+          </AccountAuthProvider>
+        }
+      >
+        <Route path="sign-in" element={<AccountSignIn />} />
+        <Route element={<AccountGate require="session" />}>
+          <Route path="onboarding" element={<AccountOnboarding />} />
+        </Route>
+        <Route element={<AccountGate require="profile" />}>
+          <Route index element={<AccountDashboard />} />
+        </Route>
+      </Route>
 
       <Route
         path="/app/learner"

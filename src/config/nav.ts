@@ -51,3 +51,11 @@ export const accountLearnerNav: RoleNavItem[] = [
   { to: '/practise', label: 'Practise', icon: PencilIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
 ]
+
+// Real (non-demo) Teacher account nav -- Assessments and Analytics aren't
+// built for real accounts yet (they need schema decisions not yet made).
+export const accountTeacherNav: RoleNavItem[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/resources', label: 'Resources', icon: BookIcon },
+  { to: '/question-bank', label: 'Question Bank', icon: SparkleIcon },
+]

@@ -7,7 +7,36 @@ import { getTopic } from '@/data/topics'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { PencilIcon, TrendingUpIcon } from '@/components/ui/Icons'
+import { PencilIcon, TrendingUpIcon, ClipboardIcon, CheckIcon } from '@/components/ui/Icons'
+
+function FamilyLinkCode({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(code)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard access can be blocked (older browsers, permissions) --
+      // the code is still selectable text, so this is a nice-to-have.
+    }
+  }
+
+  return (
+    <div className="card p-5">
+      <h3 className="font-bold text-navy-900">Family link code</h3>
+      <p className="mt-1 text-sm text-navy-600">Share this with a parent so they can follow your progress -- they'll paste it into their Dashboard.</p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <code className="select-all break-all rounded-lg bg-navy-50 px-3 py-2 text-xs text-navy-700">{code}</code>
+        <button type="button" onClick={copy} className="btn-outline btn-sm inline-flex shrink-0 items-center gap-1.5">
+          {copied ? <CheckIcon className="h-4 w-4" /> : <ClipboardIcon className="h-4 w-4" />}
+          {copied ? 'Copied' : 'Copy'}
+        </button>
+      </div>
+    </div>
+  )
+}
 
 const subjectNames: Record<string, string> = {
   'mat-lit': 'Mathematical Literacy',
@@ -115,6 +144,8 @@ export function LearnerDashboard() {
           <TrendingUpIcon className="h-4 w-4" /> View full progress
         </Link>
       </div>
+
+      <FamilyLinkCode code={profile.id} />
     </div>
   )
 }

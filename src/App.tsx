@@ -22,6 +22,9 @@ import { ParentDashboard as AccountParentDashboard } from '@/pages/account/paren
 import { SchoolDashboard as AccountSchoolDashboard } from '@/pages/account/school/SchoolDashboard'
 import { SchoolLearners as AccountSchoolLearners } from '@/pages/account/school/SchoolLearners'
 import { SchoolTeachers as AccountSchoolTeachers } from '@/pages/account/school/SchoolTeachers'
+import { AssessmentsBrowse } from '@/components/assessments/AssessmentsBrowse'
+import { PaperPage } from '@/pages/account/assessments/PaperPage'
+import { MasteryAnalytics } from '@/components/analytics/MasteryAnalytics'
 
 import { RoleShell } from '@/components/layout/RoleShell'
 import { RoleAutoSet } from '@/components/layout/RoleAutoSet'
@@ -96,6 +99,8 @@ export default function App() {
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<AccountLearnerDashboard />} />
               <Route path="practise" element={<AccountLearnerPractise />} />
+              <Route path="assessments" element={<AssessmentsBrowse />} />
+              <Route path="assessments/:paperId" element={<PaperPage />} />
               <Route path="progress" element={<AccountLearnerProgress />} />
             </Route>
           </Route>
@@ -106,6 +111,9 @@ export default function App() {
               <Route path="dashboard" element={<AccountTeacherDashboard />} />
               <Route path="resources" element={<TeacherResources />} />
               <Route path="question-bank" element={<TeacherQuestionBank />} />
+              <Route path="assessments" element={<AssessmentsBrowse />} />
+              <Route path="assessments/:paperId" element={<PaperPage />} />
+              <Route path="analytics" element={<MasteryAnalytics />} />
             </Route>
           </Route>
 
@@ -123,6 +131,9 @@ export default function App() {
               <Route path="dashboard" element={<AccountSchoolDashboard />} />
               <Route path="learners" element={<AccountSchoolLearners />} />
               <Route path="teachers" element={<AccountSchoolTeachers />} />
+              <Route path="assessments" element={<AssessmentsBrowse />} />
+              <Route path="assessments/:paperId" element={<PaperPage />} />
+              <Route path="analytics" element={<MasteryAnalytics />} />
             </Route>
           </Route>
         </Route>

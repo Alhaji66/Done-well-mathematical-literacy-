@@ -43,3 +43,11 @@ export const schoolNav: RoleNavItem[] = [
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
 ]
+
+// Real (non-demo) Learner account nav -- deliberately smaller than the demo's
+// learnerNav above: Learn and Tests aren't built for real accounts yet.
+export const accountLearnerNav: RoleNavItem[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/practise', label: 'Practise', icon: PencilIcon },
+  { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
+]

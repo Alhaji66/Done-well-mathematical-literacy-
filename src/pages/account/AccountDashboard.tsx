@@ -4,15 +4,14 @@ import { supabase } from '@/lib/supabaseClient'
 import { LogOutIcon } from '@/components/ui/Icons'
 
 const roleLabels: Record<string, string> = {
-  parent: 'Parent',
   school: 'School',
 }
 
 /**
- * Placeholder for Parent/School real accounts -- Learner and Teacher each
- * have their own full multi-page experience now (/account/learner/* and
- * /account/teacher/*, see AccountIndexRedirect), which is why this
- * component no longer handles either role.
+ * Placeholder for School real accounts -- Learner, Teacher and Parent each
+ * have their own full multi-page experience now (/account/learner/*,
+ * /account/teacher/* and /account/parent/*, see AccountIndexRedirect),
+ * which is why this component no longer handles any of those roles.
  */
 export function AccountDashboard() {
   const { profile, signOut } = useAccountAuth()
@@ -48,7 +47,7 @@ export function AccountDashboard() {
 
         <div className="rounded-lg border border-gold-200 bg-gold-50 p-4 text-sm text-navy-700">
           <strong>This is a real account.</strong> The full {roleLabels[profile.role]} dashboard is still being built.
-          Learner and Teacher already have complete real experiences -- this role is next.
+          Learner, Teacher and Parent already have complete real experiences -- this role is next.
         </div>
       </div>
     </div>

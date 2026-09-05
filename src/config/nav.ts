@@ -59,3 +59,12 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/question-bank', label: 'Question Bank', icon: SparkleIcon },
 ]
+
+// Real (non-demo) Parent account nav -- My Child and Resources are folded
+// into Dashboard for now (Dashboard already shows each linked child's
+// progress); Resources needs per-child grade/subject filtering that isn't
+// built yet.
+export const accountParentNav: RoleNavItem[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/support', label: 'Support', icon: HeartHandshakeIcon },
+]

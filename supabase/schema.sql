@@ -164,3 +164,58 @@ create policy "School members can view progress within their school"
       and profiles.school_id = public.current_school_id()
     )
   );
+
+-- A linked parent also needs to see their child's name/grade/subject, not
+-- just their progress rows (the policy above only covers learner_progress).
+drop policy if exists "Linked parents can view their child's profile" on public.profiles;
+create policy "Linked parents can view their child's profile"
+  on public.profiles for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = profiles.id
+      and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+-- Parents link a child themselves, by pasting the exact "family link code"
+-- (the child's own profile id) shown on the learner's real dashboard. This
+-- runs as the function owner (security definer) so it can look the code up
+-- without needing a broad "any parent can browse all learners" policy --
+-- the only profile row a parent can ever reach this way is the one whose
+-- exact id they were given directly by their own child.
+create or replace function public.link_child(learner_code text)
+returns table (learner_id uuid, learner_full_name text)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_learner_id uuid;
+  v_full_name text;
+begin
+  if not exists (select 1 from public.profiles where id = auth.uid() and role = 'parent') then
+    raise exception 'Only parent accounts can link a child.';
+  end if;
+
+  if learner_code !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+    raise exception 'That code doesn''t look right. Copy it exactly from your child''s dashboard.';
+  end if;
+
+  select id, full_name into v_learner_id, v_full_name
+  from public.profiles
+  where id = learner_code::uuid and role = 'learner';
+
+  if v_learner_id is null then
+    raise exception 'No learner found with that code. Double-check it with your child.';
+  end if;
+
+  insert into public.parent_learner_links (parent_id, learner_id)
+  values (auth.uid(), v_learner_id)
+  on conflict (parent_id, learner_id) do nothing;
+
+  return query select v_learner_id, v_full_name;
+end;
+$$;
+
+grant execute on function public.link_child(text) to authenticated;

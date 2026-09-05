@@ -4,7 +4,15 @@ import { DifficultyBadge } from '@/components/ui/Badges'
 import { CheckCircleIcon, XCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 
-export function QuestionCard({ question, index }: { question: Question; index: number }) {
+interface QuestionCardProps {
+  question: Question
+  index: number
+  /** Optional: called once per attempt. `correct` is null for open-ended questions
+   * (self-assessed, not auto-gradable) and true/false for multiple choice. */
+  onAttempt?: (correct: boolean | null) => void
+}
+
+export function QuestionCard({ question, index, onAttempt }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [attemptedText, setAttemptedText] = useState('')
   const [revealed, setRevealed] = useState(false)
@@ -44,7 +52,10 @@ export function QuestionCard({ question, index }: { question: Question; index: n
                 key={opt.id}
                 type="button"
                 disabled={selectedOption !== null}
-                onClick={() => setSelectedOption(opt.id)}
+                onClick={() => {
+                  setSelectedOption(opt.id)
+                  onAttempt?.(opt.id === question.correctOptionId)
+                }}
                 className={cn(
                   'flex w-full items-center justify-between rounded-lg border px-4 py-3 text-left text-sm transition-colors disabled:cursor-default',
                   !showState && 'border-navy-200 hover:border-navy-400 hover:bg-navy-50',
@@ -78,7 +89,14 @@ export function QuestionCard({ question, index }: { question: Question; index: n
       )}
 
       {!isMcq && !revealed ? (
-        <button type="button" onClick={() => setRevealed(true)} className="btn-secondary btn-sm mt-4">
+        <button
+          type="button"
+          onClick={() => {
+            setRevealed(true)
+            onAttempt?.(null)
+          }}
+          className="btn-secondary btn-sm mt-4"
+        >
           Check answer
         </button>
       ) : null}

@@ -9,13 +9,18 @@ import { PopiaNotice } from '@/pages/public/legal/PopiaNotice'
 import { SignIn } from '@/pages/auth/SignIn'
 import { AccountAuthProvider } from '@/context/AccountAuthContext'
 import { AccountGate } from '@/components/layout/AccountGate'
+import { AccountRoleGate } from '@/components/layout/AccountRoleGate'
+import { AccountShell } from '@/components/layout/AccountShell'
 import { AccountSignIn } from '@/pages/account/AccountSignIn'
 import { AccountOnboarding } from '@/pages/account/AccountOnboarding'
-import { AccountDashboard } from '@/pages/account/AccountDashboard'
+import { AccountIndexRedirect } from '@/pages/account/AccountIndexRedirect'
+import { LearnerDashboard as AccountLearnerDashboard } from '@/pages/account/learner/LearnerDashboard'
+import { LearnerPractise as AccountLearnerPractise } from '@/pages/account/learner/LearnerPractise'
+import { LearnerProgress as AccountLearnerProgress } from '@/pages/account/learner/LearnerProgress'
 
 import { RoleShell } from '@/components/layout/RoleShell'
 import { RoleAutoSet } from '@/components/layout/RoleAutoSet'
-import { learnerNav, parentNav, teacherNav, schoolNav } from '@/config/nav'
+import { learnerNav, parentNav, teacherNav, schoolNav, accountLearnerNav } from '@/config/nav'
 
 import { LearnerDashboard } from '@/pages/learner/Dashboard'
 import { LearnerLearn } from '@/pages/learner/Learn'
@@ -70,7 +75,16 @@ export default function App() {
           <Route path="onboarding" element={<AccountOnboarding />} />
         </Route>
         <Route element={<AccountGate require="profile" />}>
-          <Route index element={<AccountDashboard />} />
+          <Route index element={<AccountIndexRedirect />} />
+
+          <Route element={<AccountRoleGate role="learner" />}>
+            <Route path="learner" element={<AccountShell basePath="/account/learner" navItems={accountLearnerNav} />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AccountLearnerDashboard />} />
+              <Route path="practise" element={<AccountLearnerPractise />} />
+              <Route path="progress" element={<AccountLearnerProgress />} />
+            </Route>
+          </Route>
         </Route>
       </Route>
 

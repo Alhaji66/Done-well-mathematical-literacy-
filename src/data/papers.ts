@@ -162,7 +162,7 @@ const p1SetA: Paper = {
           marks: 3,
           prompt: "Express Zanele's monthly Savings (R800.00) as a percentage of her income, rounded to one decimal place.",
           answer: '8.2%',
-          explanation: '(800 ÷ 9 800) × 100 = 8.163...% ≈ 8.2%.',
+          explanation: 'Percentage = (Savings ÷ Income) × 100 = (R800.00 ÷ R9 800.00) × 100 = 8.163...%, which rounds to 8.2%.',
         },
         {
           id: 'ml-p1-a-1-8',
@@ -404,7 +404,7 @@ const p1SetA: Paper = {
           prompt:
             'Building the new bedroom costs R2 850 per m² (materials and labour). Using your answer to 3.3, calculate the total cost of building the new bedroom.',
           answer: 'R95 760.00',
-          explanation: '33.6 m² × R2 850 = R95 760.00.',
+          explanation: 'The area from 3.3 was 33.6 m². Total cost = area × rate = 33.6 m² × R2 850 = R95 760.00.',
         },
       ],
     },
@@ -677,7 +677,7 @@ const p2SetA: Paper = {
           prompt:
             'Using the survey result in 1.10, if this percentage stayed the same, how many of 150 customers next month would be expected to recommend the shop?',
           answer: '90',
-          explanation: '60% × 150 = 90.',
+          explanation: 'If 60% of customers recommend the shop, the expected number out of 150 is 60% × 150 = 0.60 × 150 = 90 customers.',
         },
       ],
     },
@@ -1066,7 +1066,7 @@ const p1SetB: Paper = {
           marks: 4,
           prompt: 'Including the monthly instalment (1.4), calculate the TOTAL monthly cost of owning the car.',
           answer: 'R5 101',
-          explanation: 'R2 400 + R2 701 = R5 101.',
+          explanation: 'Total monthly cost = running costs + monthly instalment (from 1.4) = R2 400 + R2 701 = R5 101.',
         },
         {
           id: 'ml-p1-b-1-8',
@@ -1411,7 +1411,7 @@ const p1SetB: Paper = {
           prompt:
             'Using the mean petrol price from 4.2, and knowing the car uses 6.2 litres per 100 km (Question 2), estimate the cost of fuel for a 100 km trip, to the nearest rand.',
           answer: '≈ R144',
-          explanation: '6.2 × R23.24 = R144.088 ≈ R144.',
+          explanation: 'Fuel cost for 100 km = litres used × price per litre = 6.2 × R23.24 = R144.088, which rounds to R144.',
         },
       ],
     },
@@ -1502,7 +1502,7 @@ const p1SetC: Paper = {
           prompt:
             'Calculate the TOTAL amount the family will actually pay if they use the loan option instead (their R19 000 savings plus the total loan repayment of R63 225 from 1.3).',
           answer: 'R82 225',
-          explanation: 'R19 000 + R63 225 = R82 225.',
+          explanation: 'Total actual cost = savings used + total loan repayment (from 1.3) = R19 000 + R63 225 = R82 225.',
         },
         {
           id: 'ml-p1-c-1-7',
@@ -1736,7 +1736,7 @@ const p1SetC: Paper = {
           marks: 5,
           prompt: 'The island will cost R1 850 per m² to build, including the countertop. Using your answer to 3.3, calculate the total cost of the island.',
           answer: 'R1 332.00',
-          explanation: '0.72 m² × R1 850 = R1 332.00.',
+          explanation: 'The area from 3.3 was 0.72 m². Total cost = area × rate = 0.72 m² × R1 850 = R1 332.00.',
         },
       ],
     },
@@ -2003,7 +2003,7 @@ const p2SetB: Paper = {
           prompt:
             'Using the survey result in 1.10, if this percentage stayed the same, estimate how many of 300 customers next month would say the bread is fresh.',
           answer: '240',
-          explanation: '80% × 300 = 240.',
+          explanation: 'If 80% of customers say the bread is fresh, the expected number out of 300 is 80% × 300 = 0.80 × 300 = 240 customers.',
         },
       ],
     },
@@ -2408,7 +2408,7 @@ const p2SetC: Paper = {
           marks: 4,
           prompt: 'Calculate the percentage of the 640 attendees who were children.',
           answer: '37.5%',
-          explanation: '(240 ÷ 640) × 100 = 37.5%.',
+          explanation: 'Percentage of children = (number of children ÷ total attendees) × 100 = (240 ÷ 640) × 100 = 37.5%.',
         },
         {
           id: 'ml-p2-c-1-9',
@@ -2442,7 +2442,7 @@ const p2SetC: Paper = {
           marks: 3,
           prompt: 'If 45 of the 150 raffle tickets were bought by members of one large family, calculate the probability, as a percentage, that the family wins the raffle.',
           answer: '30%',
-          explanation: '(45 ÷ 150) × 100 = 30%.',
+          explanation: 'Probability = (tickets bought by the family ÷ total tickets) × 100 = (45 ÷ 150) × 100 = 30%.',
         },
       ],
     },
@@ -2525,7 +2525,7 @@ const p2SetC: Paper = {
           marks: 5,
           prompt: 'If each spectator needs 0.6 m² of standing space, calculate the maximum number of spectators the seating stand area can hold.',
           answer: '400',
-          explanation: '240 m² ÷ 0.6 m² = 400.',
+          explanation: 'Maximum spectators = total area ÷ space per spectator = 240 m² ÷ 0.6 m² = 400 spectators.',
         },
         {
           id: 'ml-p2-c-2-7',
@@ -2826,7 +2826,7 @@ const p1Y2025: Paper = {
           marks: 4,
           prompt: 'If Lindiwe works 5 Saturdays in a month and takings are the same each Saturday, calculate her total monthly Saturday takings (including VAT).',
           answer: 'R19 837.50',
-          explanation: 'R3 967.50 × 5 = R19 837.50.',
+          explanation: 'Total Saturday takings = daily takings × number of Saturdays = R3 967.50 × 5 = R19 837.50.',
         },
         {
           id: 'ml-p1-25-1-8',
@@ -2943,7 +2943,7 @@ const p1Y2025: Paper = {
           marks: 4,
           prompt: 'If each station generates an average of R850 per day, calculate the maximum possible daily income if all 7 stations are used.',
           answer: 'R5 950',
-          explanation: '7 × R850 = R5 950.',
+          explanation: 'Maximum daily income = number of stations × income per station = 7 × R850 = R5 950.',
         },
         {
           id: 'ml-p1-25-2-7',
@@ -3321,7 +3321,7 @@ const p2Y2025: Paper = {
           marks: 3,
           prompt: 'If this percentage stayed the same, estimate how many of 80 market customers next season would buy again.',
           answer: '60',
-          explanation: '75% × 80 = 60.',
+          explanation: 'Expected returning customers = percentage × total customers = 75% × 80 = 0.75 × 80 = 60 customers.',
         },
       ],
     },
@@ -3404,7 +3404,7 @@ const p2Y2025: Paper = {
           marks: 5,
           prompt: "Convert the field's area to hectares (1 hectare = 10 000 m²).",
           answer: '10 hectares',
-          explanation: '100 000 m² ÷ 10 000 = 10 hectares.',
+          explanation: 'Area in hectares = area in m² ÷ 10 000 = 100 000 m² ÷ 10 000 = 10 hectares.',
         },
         {
           id: 'ml-p2-25-2-7',
@@ -3706,7 +3706,7 @@ const p1Y2024: Paper = {
           marks: 4,
           prompt: 'The committee wants to raise an additional R5 000 by selling 100 raffle tickets. Calculate the price they must charge per ticket.',
           answer: 'R50',
-          explanation: 'R5 000 ÷ 100 = R50.',
+          explanation: 'Price per ticket = amount to raise ÷ number of tickets = R5 000 ÷ 100 = R50.',
         },
         {
           id: 'ml-p1-24-1-8',
@@ -3736,7 +3736,7 @@ const p1Y2024: Paper = {
           context: "The library's other monthly running costs are R2 100.",
           prompt: 'Using the monthly instalment (1.4), calculate the TOTAL monthly cost of the renovation loan plus running costs.',
           answer: '≈ R3 380.83',
-          explanation: 'R1 280.83 + R2 100 = R3 380.83.',
+          explanation: 'Total monthly cost = monthly instalment (from 1.4) + other running costs = R1 280.83 + R2 100 = R3 380.83.',
         },
         {
           id: 'ml-p1-24-1-10',
@@ -3917,7 +3917,7 @@ const p1Y2024: Paper = {
           marks: 5,
           prompt: 'Carpeting for the reading corner costs R320 per m². Using your answer to 3.2, calculate the total cost of carpeting the reading corner.',
           answer: 'R2 764.80',
-          explanation: '8.64 m² × R320 = R2 764.80.',
+          explanation: 'The area from 3.2 was 8.64 m². Total cost = area × rate = 8.64 m² × R320 = R2 764.80.',
         },
         {
           id: 'ml-p1-24-3-6',
@@ -4166,7 +4166,7 @@ const p2Y2024: Paper = {
           marks: 4,
           prompt: 'Calculate the percentage of 2024 participants who were children.',
           answer: '37.5%',
-          explanation: '(120 ÷ 320) × 100 = 37.5%.',
+          explanation: 'Percentage of children = (number of children ÷ total participants) × 100 = (120 ÷ 320) × 100 = 37.5%.',
         },
         {
           id: 'ml-p2-24-1-9',
@@ -4200,7 +4200,7 @@ const p2Y2024: Paper = {
           marks: 3,
           prompt: 'If 20 of the 80 lucky draw entries belonged to Grade 12 learners, calculate the probability, as a percentage, that a Grade 12 learner wins.',
           answer: '25%',
-          explanation: '(20 ÷ 80) × 100 = 25%.',
+          explanation: 'Probability = (Grade 12 entries ÷ total entries) × 100 = (20 ÷ 80) × 100 = 25%.',
         },
       ],
     },
@@ -4283,7 +4283,7 @@ const p2Y2024: Paper = {
           marks: 4,
           prompt: 'Water is bought in 5-litre containers. Calculate the minimum number of containers needed for 60 litres.',
           answer: '12 containers',
-          explanation: '60 ÷ 5 = 12.',
+          explanation: 'Minimum containers needed = total volume ÷ container size = 60 ÷ 5 = 12 containers.',
         },
         {
           id: 'ml-p2-24-2-7',
@@ -4432,7 +4432,7 @@ const p2Y2024: Paper = {
           prompt:
             "Using your answer to 4.2, and knowing each station uses 15 litres (from Question 2), calculate what percentage of the container's capacity this represents, rounded to one decimal place.",
           answer: '≈ 5.9%',
-          explanation: '(15 ÷ 254.5) × 100 = 5.893...% ≈ 5.9%.',
+          explanation: 'Percentage of capacity used = (litres used ÷ container capacity from 4.2) × 100 = (15 ÷ 254.5) × 100 = 5.893...%, which rounds to 5.9%.',
         },
         {
           id: 'ml-p2-24-4-4',
@@ -4585,7 +4585,7 @@ const p1Y2023: Paper = {
           marks: 4,
           prompt: 'A fixed sanitation fee of R95 is added to the water cost. Calculate the total municipal bill.',
           answer: 'R317',
-          explanation: 'R222 + R95 = R317.',
+          explanation: 'Total municipal bill = water cost + fixed sanitation fee = R222 + R95 = R317.',
         },
         {
           id: 'ml-p1-23-1-8',
@@ -4926,7 +4926,7 @@ const p1Y2023: Paper = {
           marks: 5,
           prompt: "If solar panels reduce electricity purchases by 30%, calculate the expected number of units the family would need to buy in a month, using June's usage (90 units) as a baseline.",
           answer: '63 units',
-          explanation: '90 × (1 − 0.30) = 90 × 0.70 = 63 units.',
+          explanation: 'A 30% reduction means the family buys 70% of the baseline usage: 90 × (1 − 0.30) = 90 × 0.70 = 63 units.',
         },
       ],
     },
@@ -5161,7 +5161,7 @@ const p2Y2023: Paper = {
           marks: 5,
           prompt: 'Each medical tent requires 24 m² of space. Calculate the maximum number of tents that could fit, based on area alone.',
           answer: '64 tents',
-          explanation: '1 536 ÷ 24 = 64.',
+          explanation: 'Maximum tents = total available area ÷ area per tent = 1 536 ÷ 24 = 64 tents.',
         },
         {
           id: 'ml-p2-23-2-7',
@@ -5581,7 +5581,7 @@ const p1Y2022: Paper = {
           marks: 4,
           prompt: 'The vegetable patch is covered with compost to a depth of 0.1 m. Calculate the volume of compost needed, in m³.',
           answer: '1.5 m³',
-          explanation: '15 m² × 0.1 m = 1.5 m³.',
+          explanation: 'Volume of compost = area × depth = 15 m² × 0.1 m = 1.5 m³.',
         },
         {
           id: 'ml-p1-22-2-7',
@@ -5682,7 +5682,7 @@ const p1Y2022: Paper = {
           marks: 5,
           prompt: 'A path from the gate to the vegetable patch is 6.2 m long on the actual ground. Calculate the length of this path on the plan (same scale, 1 : 200), in cm.',
           answer: '3.1 cm',
-          explanation: '6.2 m = 620 cm. 620 ÷ 200 = 3.1 cm.',
+          explanation: 'First convert to centimetres: 6.2 m = 620 cm. Then divide by the scale: 620 ÷ 200 = 3.1 cm.',
         },
         {
           id: 'ml-p1-22-3-6',
@@ -5813,7 +5813,7 @@ const p1Y2022: Paper = {
           prompt:
             'If the vegetable patch doubles in size (from 15 m² to 30 m²) and the harvest scales proportionally with area, estimate the expected total harvest over 6 weeks with the larger patch, using the original 6-week total of 34.9 kg.',
           answer: '69.8 kg',
-          explanation: '34.9 kg × 2 = 69.8 kg.',
+          explanation: 'Since the harvest scales proportionally with area, and the patch doubles in size, the expected harvest also doubles: 34.9 kg × 2 = 69.8 kg.',
         },
       ],
     },
@@ -5966,7 +5966,7 @@ const p2Y2022: Paper = {
           marks: 3,
           prompt: 'If 15 of the 60 raffle tickets were bought by the Grade 12 class, calculate the probability, as a percentage, that the Grade 12 class wins.',
           answer: '25%',
-          explanation: '(15 ÷ 60) × 100 = 25%.',
+          explanation: 'Probability = (tickets bought by the Grade 12 class ÷ total tickets) × 100 = (15 ÷ 60) × 100 = 25%.',
         },
       ],
     },
@@ -6350,7 +6350,7 @@ const p1Y2021: Paper = {
           marks: 4,
           prompt: 'If the taxi operates 26 days per month, calculate the total monthly income, assuming every trip is full.',
           answer: 'R34 944',
-          explanation: 'R1 344 × 26 = R34 944.',
+          explanation: 'Total monthly income = income per day × number of operating days = R1 344 × 26 = R34 944.',
         },
         {
           id: 'ml-p1-21-1-8',
@@ -6466,7 +6466,7 @@ const p1Y2021: Paper = {
           marks: 4,
           prompt: 'Calculate the total area covered by all 15 parking bays.',
           answer: '252 m²',
-          explanation: '15 × 16.8 m² = 252 m².',
+          explanation: 'Total parking area = number of bays × area per bay = 15 × 16.8 m² = 252 m².',
         },
         {
           id: 'ml-p1-21-2-7',
@@ -6697,7 +6697,7 @@ const p1Y2021: Paper = {
           marks: 5,
           prompt: 'Using the mean daily passengers (4.2) and knowing the taxi operates 26 days per month, estimate the total number of passengers carried in a month.',
           answer: '2 470',
-          explanation: '95 × 26 = 2 470.',
+          explanation: 'Total monthly passengers = mean daily passengers (from 4.2) × number of operating days = 95 × 26 = 2 470.',
         },
       ],
     },
@@ -6850,7 +6850,7 @@ const p2Y2021: Paper = {
           marks: 3,
           prompt: 'If 12 of the 50 raffle tickets were bought by teachers, calculate the probability, as a percentage, that a teacher wins.',
           answer: '24%',
-          explanation: '(12 ÷ 50) × 100 = 24%.',
+          explanation: 'Probability = (tickets bought by teachers ÷ total tickets) × 100 = (12 ÷ 50) × 100 = 24%.',
         },
       ],
     },
@@ -7235,7 +7235,7 @@ const p1Y2020: Paper = {
           marks: 4,
           prompt: "Using the monthly egg income (1.5) and the monthly coop instalment (1.2), calculate the family's net monthly gain from the chicken project.",
           answer: 'R1 180',
-          explanation: 'R1 680 − R500 = R1 180.',
+          explanation: 'Net monthly gain = monthly egg income (from 1.5) − monthly coop instalment (from 1.2) = R1 680 − R500 = R1 180.',
         },
         {
           id: 'ml-p1-20-1-8',
@@ -7454,7 +7454,7 @@ const p1Y2020: Paper = {
           marks: 5,
           prompt: 'A path from the house to the coop is 14 m long on the actual ground. Calculate the length of this path on the plan (same scale, 1 : 50), in cm.',
           answer: '28 cm',
-          explanation: '14 m = 1 400 cm. 1 400 ÷ 50 = 28 cm.',
+          explanation: 'First convert to centimetres: 14 m = 1 400 cm. Then divide by the scale: 1 400 ÷ 50 = 28 cm.',
         },
         {
           id: 'ml-p1-20-3-6',
@@ -7810,7 +7810,7 @@ const p2Y2020: Paper = {
           marks: 5,
           prompt: 'Using your answer to 2.2, calculate the maximum number of individual plots that could fit in the garden, based on area alone.',
           answer: '100 plots',
-          explanation: '1 000 ÷ 10 = 100.',
+          explanation: 'Maximum plots = total garden area (from 2.2) ÷ area per plot = 1 000 ÷ 10 = 100 plots.',
         },
         {
           id: 'ml-p2-20-2-6',
@@ -7882,7 +7882,7 @@ const p2Y2020: Paper = {
           marks: 4,
           prompt: 'Calculate this leftover amount as a percentage of the grant, rounded to one decimal place.',
           answer: '≈ 8.2%',
-          explanation: '(700 ÷ 8 500) × 100 = 8.235...% ≈ 8.2%.',
+          explanation: 'Percentage leftover = (amount left over ÷ grant amount) × 100 = (700 ÷ 8 500) × 100 = 8.235...%, which rounds to 8.2%.',
         },
         {
           id: 'ml-p2-20-3-4',
@@ -9206,7 +9206,7 @@ const mathP1SetB: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 6x + k = 0 have equal roots?',
           answer: 'k = 9',
-          explanation: '36 − 4k = 0, so k = 9.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −6, c = k, so 36 − 4k = 0, giving k = 9.',
         },
         {
           id: 'math-p1-b-4-5',
@@ -9404,7 +9404,7 @@ const mathP1SetB: Paper = {
           context: 'Since there is no replacement, the probability for the second draw changes.',
           prompt: 'A bag contains 5 red and 4 blue counters. Two are drawn one after another, without replacement. Determine the probability that both are blue.',
           answer: '1/6',
-          explanation: 'P(both blue) = 4/9 × 3/8 = 12/72 = 1/6.',
+          explanation: 'There are 9 counters in total, 4 of which are blue. P(first blue) = 4/9. After removing one blue counter without replacement, 8 counters remain with 3 blue, so P(second blue) = 3/8. P(both blue) = 4/9 × 3/8 = 12/72 = 1/6.',
         },
         {
           id: 'math-p1-b-6-4',
@@ -9702,7 +9702,7 @@ const mathP1SetC: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 8x + k = 0 have equal roots?',
           answer: 'k = 16',
-          explanation: '64 − 4k = 0, so k = 16.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −8, c = k, so 64 − 4k = 0, giving k = 16.',
         },
         {
           id: 'math-p1-c-4-5',
@@ -9900,7 +9900,7 @@ const mathP1SetC: Paper = {
           context: 'Since there is no replacement, the probability for the second draw changes.',
           prompt: 'A bag contains 6 red and 3 blue counters. Two are drawn one after another, without replacement. Determine the probability that both are red.',
           answer: '5/12',
-          explanation: 'P(both red) = 6/9 × 5/8 = 30/72 = 5/12.',
+          explanation: 'There are 9 counters in total, 6 of which are red. P(first red) = 6/9. After removing one red counter without replacement, 8 counters remain with 5 red, so P(second red) = 5/8. P(both red) = 6/9 × 5/8 = 30/72 = 5/12.',
         },
         {
           id: 'math-p1-c-6-4',
@@ -9979,7 +9979,7 @@ const mathP2SetB: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 10 and b = 2.5. Predict ŷ when x = 6.',
           answer: 'ŷ = 25',
-          explanation: 'ŷ = 10 + 2.5(6) = 10 + 15 = 25.',
+          explanation: 'Substitute a = 10, b = 2.5 and x = 6 into the regression equation ŷ = a + bx: ŷ = 10 + 2.5(6) = 10 + 15 = 25.',
         },
         {
           id: 'math-p2-b-1-5',
@@ -10338,7 +10338,7 @@ const mathP2SetC: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 12 and b = 1.8. Predict ŷ when x = 8.',
           answer: 'ŷ = 26.4',
-          explanation: 'ŷ = 12 + 1.8(8) = 12 + 14.4 = 26.4.',
+          explanation: 'Substitute a = 12, b = 1.8 and x = 8 into the regression equation ŷ = a + bx: ŷ = 12 + 1.8(8) = 12 + 14.4 = 26.4.',
         },
         {
           id: 'math-p2-c-1-5',
@@ -10916,7 +10916,7 @@ const mathP1Y2025: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 10x + k = 0 have equal roots?',
           answer: 'k = 25',
-          explanation: '100 − 4k = 0, so k = 25.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −10, c = k, so 100 − 4k = 0, giving k = 25.',
         },
         {
           id: 'math-p1-25-4-5',
@@ -11193,7 +11193,7 @@ const mathP2Y2025: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 8 and b = 3.2. Predict ŷ when x = 10.',
           answer: 'ŷ = 40',
-          explanation: 'ŷ = 8 + 3.2(10) = 8 + 32 = 40.',
+          explanation: 'Substitute a = 8, b = 3.2 and x = 10 into the regression equation ŷ = a + bx: ŷ = 8 + 3.2(10) = 8 + 32 = 40.',
         },
         {
           id: 'math-p2-25-1-5',
@@ -11771,7 +11771,7 @@ const mathP1Y2024: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 12x + k = 0 have equal roots?',
           answer: 'k = 36',
-          explanation: '144 − 4k = 0, so k = 36.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −12, c = k, so 144 − 4k = 0, giving k = 36.',
         },
         {
           id: 'math-p1-24-4-5',
@@ -12048,7 +12048,7 @@ const mathP2Y2024: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 15 and b = 2.4. Predict ŷ when x = 5.',
           answer: 'ŷ = 27',
-          explanation: 'ŷ = 15 + 2.4(5) = 15 + 12 = 27.',
+          explanation: 'Substitute a = 15, b = 2.4 and x = 5 into the regression equation ŷ = a + bx: ŷ = 15 + 2.4(5) = 15 + 12 = 27.',
         },
         {
           id: 'math-p2-24-1-5',
@@ -12626,7 +12626,7 @@ const mathP1Y2023: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 14x + k = 0 have equal roots?',
           answer: 'k = 49',
-          explanation: '196 − 4k = 0, so k = 49.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −14, c = k, so 196 − 4k = 0, giving k = 49.',
         },
         {
           id: 'math-p1-23-4-5',
@@ -12903,7 +12903,7 @@ const mathP2Y2023: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 6 and b = 1.5. Predict ŷ when x = 12.',
           answer: 'ŷ = 24',
-          explanation: 'ŷ = 6 + 1.5(12) = 6 + 18 = 24.',
+          explanation: 'Substitute a = 6, b = 1.5 and x = 12 into the regression equation ŷ = a + bx: ŷ = 6 + 1.5(12) = 6 + 18 = 24.',
         },
         {
           id: 'math-p2-23-1-5',
@@ -13481,7 +13481,7 @@ const mathP1Y2022: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 16x + k = 0 have equal roots?',
           answer: 'k = 64',
-          explanation: '256 − 4k = 0, so k = 64.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −16, c = k, so 256 − 4k = 0, giving k = 64.',
         },
         {
           id: 'math-p1-22-4-5',
@@ -13758,7 +13758,7 @@ const mathP2Y2022: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 20 and b = 1.2. Predict ŷ when x = 15.',
           answer: 'ŷ = 38',
-          explanation: 'ŷ = 20 + 1.2(15) = 20 + 18 = 38.',
+          explanation: 'Substitute a = 20, b = 1.2 and x = 15 into the regression equation ŷ = a + bx: ŷ = 20 + 1.2(15) = 20 + 18 = 38.',
         },
         {
           id: 'math-p2-22-1-5',
@@ -14336,7 +14336,7 @@ const mathP1Y2021: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 18x + k = 0 have equal roots?',
           answer: 'k = 81',
-          explanation: '324 − 4k = 0, so k = 81.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −18, c = k, so 324 − 4k = 0, giving k = 81.',
         },
         {
           id: 'math-p1-21-4-5',
@@ -14613,7 +14613,7 @@ const mathP2Y2021: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 5 and b = 2.8. Predict ŷ when x = 9.',
           answer: 'ŷ = 30.2',
-          explanation: 'ŷ = 5 + 2.8(9) = 5 + 25.2 = 30.2.',
+          explanation: 'Substitute a = 5, b = 2.8 and x = 9 into the regression equation ŷ = a + bx: ŷ = 5 + 2.8(9) = 5 + 25.2 = 30.2.',
         },
         {
           id: 'math-p2-21-1-5',
@@ -15191,7 +15191,7 @@ const mathP1Y2020: Paper = {
           marks: 5,
           prompt: 'For which value of k will the equation x² − 20x + k = 0 have equal roots?',
           answer: 'k = 100',
-          explanation: '400 − 4k = 0, so k = 100.',
+          explanation: 'For equal roots, the discriminant must equal zero: b² − 4ac = 0. Here a = 1, b = −20, c = k, so 400 − 4k = 0, giving k = 100.',
         },
         {
           id: 'math-p1-20-4-5',
@@ -15468,7 +15468,7 @@ const mathP2Y2020: Paper = {
           context: 'ŷ = a + bx',
           prompt: 'A least-squares regression line has a = 9 and b = 2.1. Predict ŷ when x = 11.',
           answer: 'ŷ = 32.1',
-          explanation: 'ŷ = 9 + 2.1(11) = 9 + 23.1 = 32.1.',
+          explanation: 'Substitute a = 9, b = 2.1 and x = 11 into the regression equation ŷ = a + bx: ŷ = 9 + 2.1(11) = 9 + 23.1 = 32.1.',
         },
         {
           id: 'math-p2-20-1-5',

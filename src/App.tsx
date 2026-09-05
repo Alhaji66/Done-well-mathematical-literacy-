@@ -19,10 +19,22 @@ import { LearnerPractise as AccountLearnerPractise } from '@/pages/account/learn
 import { LearnerProgress as AccountLearnerProgress } from '@/pages/account/learner/LearnerProgress'
 import { TeacherDashboard as AccountTeacherDashboard } from '@/pages/account/teacher/TeacherDashboard'
 import { ParentDashboard as AccountParentDashboard } from '@/pages/account/parent/ParentDashboard'
+import { SchoolDashboard as AccountSchoolDashboard } from '@/pages/account/school/SchoolDashboard'
+import { SchoolLearners as AccountSchoolLearners } from '@/pages/account/school/SchoolLearners'
+import { SchoolTeachers as AccountSchoolTeachers } from '@/pages/account/school/SchoolTeachers'
 
 import { RoleShell } from '@/components/layout/RoleShell'
 import { RoleAutoSet } from '@/components/layout/RoleAutoSet'
-import { learnerNav, parentNav, teacherNav, schoolNav, accountLearnerNav, accountTeacherNav, accountParentNav } from '@/config/nav'
+import {
+  learnerNav,
+  parentNav,
+  teacherNav,
+  schoolNav,
+  accountLearnerNav,
+  accountTeacherNav,
+  accountParentNav,
+  accountSchoolNav,
+} from '@/config/nav'
 
 import { LearnerDashboard } from '@/pages/learner/Dashboard'
 import { LearnerLearn } from '@/pages/learner/Learn'
@@ -102,6 +114,15 @@ export default function App() {
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<AccountParentDashboard />} />
               <Route path="support" element={<ParentSupport />} />
+            </Route>
+          </Route>
+
+          <Route element={<AccountRoleGate role="school" />}>
+            <Route path="school" element={<AccountShell basePath="/account/school" navItems={accountSchoolNav} />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AccountSchoolDashboard />} />
+              <Route path="learners" element={<AccountSchoolLearners />} />
+              <Route path="teachers" element={<AccountSchoolTeachers />} />
             </Route>
           </Route>
         </Route>

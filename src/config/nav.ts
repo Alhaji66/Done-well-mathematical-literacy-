@@ -68,3 +68,11 @@ export const accountParentNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/support', label: 'Support', icon: HeartHandshakeIcon },
 ]
+
+// Real (non-demo) School account nav -- Assessments and Analytics aren't
+// built for real accounts yet, same reasoning as Teacher's.
+export const accountSchoolNav: RoleNavItem[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/learners', label: 'Learners', icon: UsersIcon },
+  { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
+]

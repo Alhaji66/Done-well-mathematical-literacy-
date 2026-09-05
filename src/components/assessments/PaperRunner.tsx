@@ -6,9 +6,11 @@ interface PaperRunnerProps {
   paper: Paper
   /** Omit for a read-only review (Teacher/School) -- no progress is recorded. */
   onAttempt?: (topicId: string, correct: boolean | null) => void
+  /** Omit for a read-only review -- called once per question item the learner attempts, for the local per-paper progress indicator. */
+  onItemAnswered?: (itemId: string) => void
 }
 
-export function PaperRunner({ paper, onAttempt }: PaperRunnerProps) {
+export function PaperRunner({ paper, onAttempt, onItemAnswered }: PaperRunnerProps) {
   let itemIndex = 0
 
   return (
@@ -31,7 +33,14 @@ export function PaperRunner({ paper, onAttempt }: PaperRunnerProps) {
                 question={item}
                 index={index}
                 label={item.label}
-                onAttempt={onAttempt ? (correct) => onAttempt(item.topicId, correct) : undefined}
+                onAttempt={
+                  onAttempt
+                    ? (correct) => {
+                        onAttempt(item.topicId, correct)
+                        onItemAnswered?.(item.id)
+                      }
+                    : undefined
+                }
               />
             )
           })}

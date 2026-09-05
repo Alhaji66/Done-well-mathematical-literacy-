@@ -7,20 +7,26 @@
 -- demo -- it isn't user data and doesn't need a database table.
 --
 -- How to apply: paste this whole file into the Supabase SQL Editor
--- (left sidebar -> SQL Editor -> New query) and run it once. Safe to
--- re-run on a fresh project; it will error harmlessly if objects already
--- exist, which just means it already ran.
+-- (left sidebar -> SQL Editor -> New query) and run it. Every statement
+-- here is written to be safe to re-run: if a previous attempt partially
+-- succeeded (e.g. errored out partway through), running this again picks
+-- up wherever it left off instead of erroring on "already exists" and
+-- aborting before reaching the rest.
 
-create type public.user_role as enum ('learner', 'parent', 'teacher', 'school');
+do $$ begin
+  create type public.user_role as enum ('learner', 'parent', 'teacher', 'school');
+exception
+  when duplicate_object then null;
+end $$;
 
-create table public.schools (
+create table if not exists public.schools (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   created_at timestamptz not null default now()
 );
 
 -- One row per authenticated person, 1:1 with auth.users.
-create table public.profiles (
+create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   role public.user_role not null,
   full_name text not null,
@@ -31,7 +37,7 @@ create table public.profiles (
 );
 
 -- A parent can be linked to one or more learners (e.g. siblings).
-create table public.parent_learner_links (
+create table if not exists public.parent_learner_links (
   parent_id uuid not null references public.profiles (id) on delete cascade,
   learner_id uuid not null references public.profiles (id) on delete cascade,
   created_at timestamptz not null default now(),
@@ -40,7 +46,7 @@ create table public.parent_learner_links (
 
 -- Per-learner, per-topic mastery. topic_id matches the static topic ids
 -- used in the app's bundled curriculum data (e.g. 'finance', 'math-algebra').
-create table public.learner_progress (
+create table if not exists public.learner_progress (
   learner_id uuid not null references public.profiles (id) on delete cascade,
   topic_id text not null,
   mastery_percent smallint not null default 0 check (mastery_percent between 0 and 100),
@@ -71,60 +77,73 @@ $$;
 -- before their own profile/school_id exists yet -- a school's name isn't
 -- sensitive, and this is what lets a second teacher from the same school
 -- find it instead of accidentally creating a duplicate).
+drop policy if exists "Signed-in users can view schools" on public.schools;
 create policy "Signed-in users can view schools"
   on public.schools for select
   using (auth.uid() is not null);
 
+drop policy if exists "A signed-in user can create a school" on public.schools;
 create policy "A signed-in user can create a school"
   on public.schools for insert
   with check (auth.uid() is not null);
 
 -- profiles -------------------------------------------------------------
 
+drop policy if exists "Users can view their own profile" on public.profiles;
 create policy "Users can view their own profile"
   on public.profiles for select
   using (id = auth.uid());
 
+drop policy if exists "Users can view profiles at their own school" on public.profiles;
 create policy "Users can view profiles at their own school"
   on public.profiles for select
   using (school_id is not null and school_id = public.current_school_id());
 
+drop policy if exists "Users can create their own profile" on public.profiles;
 create policy "Users can create their own profile"
   on public.profiles for insert
   with check (id = auth.uid());
 
+drop policy if exists "Users can update their own profile" on public.profiles;
 create policy "Users can update their own profile"
   on public.profiles for update
   using (id = auth.uid());
 
 -- parent_learner_links ---------------------------------------------------
 
+drop policy if exists "Parents can view their own links" on public.parent_learner_links;
 create policy "Parents can view their own links"
   on public.parent_learner_links for select
   using (parent_id = auth.uid());
 
+drop policy if exists "Learners can view who is linked to them" on public.parent_learner_links;
 create policy "Learners can view who is linked to them"
   on public.parent_learner_links for select
   using (learner_id = auth.uid());
 
+drop policy if exists "Parents can create their own links" on public.parent_learner_links;
 create policy "Parents can create their own links"
   on public.parent_learner_links for insert
   with check (parent_id = auth.uid());
 
 -- learner_progress -------------------------------------------------------
 
+drop policy if exists "Learners can view their own progress" on public.learner_progress;
 create policy "Learners can view their own progress"
   on public.learner_progress for select
   using (learner_id = auth.uid());
 
+drop policy if exists "Learners can record their own progress" on public.learner_progress;
 create policy "Learners can record their own progress"
   on public.learner_progress for insert
   with check (learner_id = auth.uid());
 
+drop policy if exists "Learners can update their own progress" on public.learner_progress;
 create policy "Learners can update their own progress"
   on public.learner_progress for update
   using (learner_id = auth.uid());
 
+drop policy if exists "Linked parents can view their learner's progress" on public.learner_progress;
 create policy "Linked parents can view their learner's progress"
   on public.learner_progress for select
   using (
@@ -135,6 +154,7 @@ create policy "Linked parents can view their learner's progress"
     )
   );
 
+drop policy if exists "School members can view progress within their school" on public.learner_progress;
 create policy "School members can view progress within their school"
   on public.learner_progress for select
   using (

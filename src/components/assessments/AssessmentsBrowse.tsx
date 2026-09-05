@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAccountAuth } from '@/context/AccountAuthContext'
-import { papersForSubject } from '@/data/papers'
+import { papersForSubject, type Paper } from '@/data/papers'
+import { getAnsweredItemIds, countPaperItems } from '@/lib/paperProgress'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PaperListItem } from '@/components/assessments/PaperListItem'
@@ -45,6 +46,10 @@ export function AssessmentsBrowse() {
   const papers = papersForSubject(subjectId, paperNumber)
   const predicted = papers.filter((p) => p.kind === 'predicted').sort((a, b) => (a.setLabel ?? '').localeCompare(b.setLabel ?? ''))
   const past = papers.filter((p) => p.kind === 'past').sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+
+  const isLearner = profile.role === 'learner'
+  const progressFor = (paper: Paper) =>
+    isLearner ? { answered: getAnsweredItemIds(profile.id, paper.id).size, total: countPaperItems(paper) } : undefined
 
   return (
     <div className="space-y-6">
@@ -105,7 +110,7 @@ export function AssessmentsBrowse() {
         ) : (
           <div className="space-y-3">
             {predicted.map((p) => (
-              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} />
+              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} progress={progressFor(p)} />
             ))}
           </div>
         )}
@@ -123,7 +128,7 @@ export function AssessmentsBrowse() {
         ) : (
           <div className="space-y-3">
             {past.map((p) => (
-              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} />
+              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} progress={progressFor(p)} />
             ))}
           </div>
         )}

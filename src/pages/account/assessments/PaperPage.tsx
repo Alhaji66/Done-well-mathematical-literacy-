@@ -3,6 +3,7 @@ import { useParams, Navigate, Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { getPaper } from '@/data/papers'
 import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
+import { getAnsweredItemIds, markItemAnswered, countPaperItems } from '@/lib/paperProgress'
 import { PaperRunner } from '@/components/assessments/PaperRunner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ArrowLeftIcon } from '@/components/ui/Icons'
@@ -22,12 +23,20 @@ export function PaperPage() {
   const isLearner = profile?.role === 'learner'
   const paper = paperId ? getPaper(paperId) : undefined
 
+  const [answeredCount, setAnsweredCount] = useState(0)
+
   useEffect(() => {
     if (isLearner && profile) fetchLearnerProgress(profile.id).then(setProgress)
   }, [profile, isLearner])
 
+  useEffect(() => {
+    if (isLearner && profile && paper) setAnsweredCount(getAnsweredItemIds(profile.id, paper.id).size)
+  }, [profile, isLearner, paper])
+
   if (!profile) return null
   if (!paper) return <Navigate to=".." relative="path" replace />
+
+  const totalItems = countPaperItems(paper)
 
   const handleAttempt = isLearner
     ? async (topicId: string, correct: boolean | null) => {
@@ -38,6 +47,13 @@ export function PaperPage() {
           setSavedMessage('Progress saved')
           setTimeout(() => setSavedMessage(''), 2000)
         }
+      }
+    : undefined
+
+  const handleItemAnswered = isLearner
+    ? (itemId: string) => {
+        markItemAnswered(profile.id, paper.id, itemId)
+        setAnsweredCount(getAnsweredItemIds(profile.id, paper.id).size)
       }
     : undefined
 
@@ -61,7 +77,24 @@ export function PaperPage() {
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">{savedMessage}</div>
       ) : null}
 
-      <PaperRunner paper={paper} onAttempt={handleAttempt} />
+      {isLearner ? (
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-xs font-medium text-navy-500">
+            <span>Your progress on this paper</span>
+            <span>
+              {answeredCount} of {totalItems} answered
+            </span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-navy-100">
+            <div
+              className="h-full rounded-full bg-gold-500 transition-[width]"
+              style={{ width: `${totalItems === 0 ? 0 : Math.round((answeredCount / totalItems) * 100)}%` }}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      <PaperRunner paper={paper} onAttempt={handleAttempt} onItemAnswered={handleItemAnswered} />
     </div>
   )
 }

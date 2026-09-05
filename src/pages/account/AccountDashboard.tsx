@@ -5,15 +5,14 @@ import { LogOutIcon } from '@/components/ui/Icons'
 
 const roleLabels: Record<string, string> = {
   parent: 'Parent',
-  teacher: 'Teacher',
   school: 'School',
 }
 
 /**
- * Placeholder for Parent/Teacher/School real accounts -- the Learner role
- * has its own full multi-page experience at /account/learner/* now (see
- * AccountIndexRedirect), which is why this component no longer handles
- * that role at all.
+ * Placeholder for Parent/School real accounts -- Learner and Teacher each
+ * have their own full multi-page experience now (/account/learner/* and
+ * /account/teacher/*, see AccountIndexRedirect), which is why this
+ * component no longer handles either role.
  */
 export function AccountDashboard() {
   const { profile, signOut } = useAccountAuth()
@@ -49,8 +48,7 @@ export function AccountDashboard() {
 
         <div className="rounded-lg border border-gold-200 bg-gold-50 p-4 text-sm text-navy-700">
           <strong>This is a real account.</strong> The full {roleLabels[profile.role]} dashboard is still being built.
-          The Learner role already has a complete real experience (Dashboard, Practise, Progress) -- this role is
-          next.
+          Learner and Teacher already have complete real experiences -- this role is next.
         </div>
       </div>
     </div>

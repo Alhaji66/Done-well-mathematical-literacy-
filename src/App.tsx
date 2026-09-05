@@ -17,10 +17,11 @@ import { AccountIndexRedirect } from '@/pages/account/AccountIndexRedirect'
 import { LearnerDashboard as AccountLearnerDashboard } from '@/pages/account/learner/LearnerDashboard'
 import { LearnerPractise as AccountLearnerPractise } from '@/pages/account/learner/LearnerPractise'
 import { LearnerProgress as AccountLearnerProgress } from '@/pages/account/learner/LearnerProgress'
+import { TeacherDashboard as AccountTeacherDashboard } from '@/pages/account/teacher/TeacherDashboard'
 
 import { RoleShell } from '@/components/layout/RoleShell'
 import { RoleAutoSet } from '@/components/layout/RoleAutoSet'
-import { learnerNav, parentNav, teacherNav, schoolNav, accountLearnerNav } from '@/config/nav'
+import { learnerNav, parentNav, teacherNav, schoolNav, accountLearnerNav, accountTeacherNav } from '@/config/nav'
 
 import { LearnerDashboard } from '@/pages/learner/Dashboard'
 import { LearnerLearn } from '@/pages/learner/Learn'
@@ -83,6 +84,15 @@ export default function App() {
               <Route path="dashboard" element={<AccountLearnerDashboard />} />
               <Route path="practise" element={<AccountLearnerPractise />} />
               <Route path="progress" element={<AccountLearnerProgress />} />
+            </Route>
+          </Route>
+
+          <Route element={<AccountRoleGate role="teacher" />}>
+            <Route path="teacher" element={<AccountShell basePath="/account/teacher" navItems={accountTeacherNav} />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AccountTeacherDashboard />} />
+              <Route path="resources" element={<TeacherResources />} />
+              <Route path="question-bank" element={<TeacherQuestionBank />} />
             </Route>
           </Route>
         </Route>

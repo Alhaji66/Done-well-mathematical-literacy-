@@ -1,0 +1,983 @@
+import type { Question, Grade } from '@/types'
+
+/**
+ * Full-length practice papers ("Assessments"), organised the way a real NSC
+ * Mathematical Literacy/Mathematics paper is: numbered questions, each made
+ * up of several sub-questions sharing one context/scenario.
+ *
+ * These are ORIGINAL papers written by DONE WELL -- modelled on the real
+ * exam's style, topic weighting and difficulty, not transcriptions of any
+ * actual past exam. We don't have a verified, accurate copy of the real
+ * 2020-2025 papers to reproduce, so presenting invented content as if it
+ * were the literal historical paper would risk misleading learners
+ * studying for a real national exam. Every paper here is clearly labelled
+ * "DONE WELL Practice Paper" in its title for exactly that reason -- see
+ * the disclaimer shown in the Assessments UI.
+ *
+ * "Predicted" papers are DONE WELL's own best guess at likely topics and
+ * question styles, not a guarantee of what will appear in the real exam.
+ * Three independent sets are provided per paper so learners practise a
+ * range of framings rather than memorising one specific set of numbers.
+ *
+ * Like the rest of the curriculum content in this app, papers are static
+ * data (not database rows) -- only a learner's answers/progress are
+ * persisted, via the same learner_progress table and recordAttempt() flow
+ * used by ordinary topic practice (each sub-question already carries a
+ * topicId).
+ */
+
+export interface PaperQuestionItem extends Question {
+  /** Exam-style sub-question label, e.g. "1.1", "2.4". */
+  label: string
+}
+
+export interface PaperSection {
+  /** "QUESTION 1", "QUESTION 2", ... */
+  number: number
+  title: string
+  topicId: string
+  marks: number
+  items: PaperQuestionItem[]
+}
+
+export type PaperKind = 'predicted' | 'past'
+
+export interface Paper {
+  id: string
+  subjectId: string
+  paperNumber: 1 | 2
+  grade: Grade
+  kind: PaperKind
+  /** Only set when kind === 'past'. */
+  year?: number
+  /** Only set when kind === 'predicted'. */
+  setLabel?: 'A' | 'B' | 'C'
+  title: string
+  durationMinutes: number
+  totalMarks: number
+  sections: PaperSection[]
+}
+
+const p1SetA: Paper = {
+  id: 'ml-p1-pred-a',
+  subjectId: 'mat-lit',
+  paperNumber: 1,
+  grade: 12,
+  kind: 'predicted',
+  setLabel: 'A',
+  title: 'Predicted Paper 1 — Set A',
+  durationMinutes: 150,
+  totalMarks: 100,
+  sections: [
+    {
+      number: 1,
+      title: "Zanele's Municipal Account and Budget",
+      topicId: 'finance',
+      marks: 30,
+      items: [
+        {
+          id: 'ml-p1-a-1-1',
+          label: '1.1',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          context:
+            "TABLE 1: Zanele's municipal account (June)\nRates: R450.00\nRefuse removal: R180.00\nWater (12 kℓ): R216.00\nSewerage: R165.00\nSubtotal: R1 011.00\nVAT (15%, not charged on rates): (a)\nTOTAL: (b)\nNote: Property rates are VAT-exempt. VAT of 15% is added to all other municipal charges shown above.",
+          prompt: 'Write down the amount charged for Refuse removal.',
+          answer: 'R180.00',
+          explanation: 'Read the value directly from Table 1.',
+        },
+        {
+          id: 'ml-p1-a-1-2',
+          label: '1.2',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'Calculate the missing value (a): the VAT charged on the account.',
+          answer: 'R84.15',
+          explanation:
+            'VAT applies to everything except Rates: R180.00 + R216.00 + R165.00 = R561.00. VAT = R561.00 × 15% = R84.15.',
+        },
+        {
+          id: 'ml-p1-a-1-3',
+          label: '1.3',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'Calculate the missing value (b): the TOTAL amount owed.',
+          answer: 'R1 095.15',
+          explanation: 'TOTAL = Subtotal + VAT = R1 011.00 + R84.15 = R1 095.15.',
+        },
+        {
+          id: 'ml-p1-a-1-4',
+          label: '1.4',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'Which municipal charge on the account is VAT-exempt?',
+          options: [
+            { id: 'a', label: 'Rates' },
+            { id: 'b', label: 'Refuse removal' },
+            { id: 'c', label: 'Water' },
+            { id: 'd', label: 'Sewerage' },
+          ],
+          correctOptionId: 'a',
+          answer: 'Rates',
+          explanation: 'The note under Table 1 states that property rates are VAT-exempt; every other item is taxed at 15%.',
+        },
+        {
+          id: 'ml-p1-a-1-5',
+          label: '1.5',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          context:
+            "Zanele's monthly income is R9 800. Her monthly expenses are:\nMunicipal account: R1 095.15 (from Question 1.3)\nGroceries: R2 450.00\nTransport: R1 200.00\nCellphone contract: R399.00\nSavings: R800.00\nEntertainment: R350.00",
+          prompt: "Calculate Zanele's TOTAL monthly expenses.",
+          answer: 'R6 294.15',
+          explanation: 'R1 095.15 + R2 450.00 + R1 200.00 + R399.00 + R800.00 + R350.00 = R6 294.15.',
+        },
+        {
+          id: 'ml-p1-a-1-6',
+          label: '1.6',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'Calculate how much money Zanele has left over after her expenses (income − total expenses).',
+          answer: 'R3 505.85',
+          explanation: 'R9 800.00 − R6 294.15 = R3 505.85.',
+        },
+        {
+          id: 'ml-p1-a-1-7',
+          label: '1.7',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 3,
+          prompt: "Express Zanele's monthly Savings (R800.00) as a percentage of her income, rounded to one decimal place.",
+          answer: '8.2%',
+          explanation: '(800 ÷ 9 800) × 100 = 8.163...% ≈ 8.2%.',
+        },
+        {
+          id: 'ml-p1-a-1-8',
+          label: '1.8',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          context: 'Zanele takes out a personal loan of R5 000 at 12% per year simple interest, to be repaid after 2 years.',
+          prompt: 'Calculate the interest she will pay on the loan.',
+          answer: 'R1 200',
+          explanation: 'Simple interest = P × i × n = R5 000 × 0.12 × 2 = R1 200.',
+        },
+        {
+          id: 'ml-p1-a-1-9',
+          label: '1.9',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'Calculate the total amount Zanele must repay (loan + interest).',
+          answer: 'R6 200',
+          explanation: 'R5 000 + R1 200 = R6 200.',
+        },
+        {
+          id: 'ml-p1-a-1-10',
+          label: '1.10',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt:
+            'If the same R5 000 loan instead charged 12% per year compound interest, would the total repayment after 2 years be more, less, or the same as the simple interest option? Show a calculation to support your answer.',
+          answer: 'More. Compound total = R6 272.00, which is more than the simple-interest total of R6 200.',
+          explanation:
+            'Compound: R5 000 × 1.12² = R5 000 × 1.2544 = R6 272.00. Since R6 272.00 > R6 200.00, compound interest costs more over the same period.',
+        },
+      ],
+    },
+    {
+      number: 2,
+      title: 'Painting a Wall and a Water Tank',
+      topicId: 'measurement',
+      marks: 25,
+      items: [
+        {
+          id: 'ml-p1-a-2-1',
+          label: '2.1',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          context:
+            'A wall is 6.4 m long and 2.5 m high. It has one rectangular window measuring 1.2 m by 1.5 m, which will NOT be painted.',
+          prompt: 'Calculate the area of the whole wall (before subtracting the window).',
+          answer: '16 m²',
+          explanation: '6.4 m × 2.5 m = 16 m².',
+        },
+        {
+          id: 'ml-p1-a-2-2',
+          label: '2.2',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'Calculate the area that actually needs to be painted (wall area minus the window).',
+          answer: '14.2 m²',
+          explanation: 'Window area = 1.2 m × 1.5 m = 1.8 m². Area to paint = 16 m² − 1.8 m² = 14.2 m².',
+        },
+        {
+          id: 'ml-p1-a-2-3',
+          label: '2.3',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'One tin of paint covers 6 m², and only whole tins can be bought. Calculate how many tins Zanele must buy.',
+          answer: '3 tins',
+          explanation: '14.2 ÷ 6 = 2.37 tins. Since only whole tins can be bought, round UP to 3 tins.',
+        },
+        {
+          id: 'ml-p1-a-2-4',
+          label: '2.4',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'If one tin costs R249.99, calculate the total cost of the paint.',
+          answer: 'R749.97',
+          explanation: '3 × R249.99 = R749.97.',
+        },
+        {
+          id: 'ml-p1-a-2-5',
+          label: '2.5',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          context: 'A cylindrical water tank has a radius of 0.7 m and a height of 1.8 m. Use π = 3.142.',
+          prompt: 'Calculate the volume of the tank in m³, using Volume = π × r² × h.',
+          answer: '≈ 2.77 m³',
+          explanation: '3.142 × 0.7² × 1.8 = 3.142 × 0.49 × 1.8 = 2.771244 m³ ≈ 2.77 m³.',
+        },
+        {
+          id: 'ml-p1-a-2-6',
+          label: '2.6',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'Convert the volume of the tank to litres (1 m³ = 1 000 ℓ).',
+          answer: '≈ 2 770 litres',
+          explanation:
+            '2.77 m³ × 1 000 = 2 770 litres. (Accept anywhere from about 2 765 ℓ to 2 775 ℓ, depending on whether the rounded or unrounded volume from 2.5 was carried through.)',
+        },
+        {
+          id: 'ml-p1-a-2-7',
+          label: '2.7',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 3,
+          prompt:
+            'The tank is currently 3/4 full. Calculate how many litres of water are needed to fill it completely, using your answer to 2.6.',
+          answer: '≈ 692.5 litres',
+          explanation: 'The empty fraction is 1/4. 1/4 × 2 770 ℓ = 692.5 ℓ.',
+        },
+        {
+          id: 'ml-p1-a-2-8',
+          label: '2.8',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'Which unit would be most appropriate for measuring the radius of a water tank?',
+          options: [
+            { id: 'a', label: 'mm' },
+            { id: 'b', label: 'cm' },
+            { id: 'c', label: 'm' },
+            { id: 'd', label: 'km' },
+          ],
+          correctOptionId: 'c',
+          answer: 'm',
+          explanation: 'A tank radius (here, 0.7 m) is best measured in metres — millimetres and centimetres are too fine, kilometres far too large.',
+        },
+        {
+          id: 'ml-p1-a-2-9',
+          label: '2.9',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt:
+            'A second, larger tank has double the radius AND double the height of the original tank. Calculate its volume, and state whether it is double, more than double, or less than double the volume of the original tank.',
+          answer: 'More than double — the new volume is about 22.16 m³, which is 8 times the original.',
+          explanation:
+            'Doubling both radius and height scales volume by 2² × 2 = 8. New volume ≈ 8 × 2.77 m³ = 22.16 m³, far more than simply doubling (which would give ≈ 5.54 m³). Volume grows with the square of the radius, so doubling the radius alone already more than doubles the volume.',
+        },
+      ],
+    },
+    {
+      number: 3,
+      title: "Extending Zanele's House",
+      topicId: 'maps-plans',
+      marks: 20,
+      items: [
+        {
+          id: 'ml-p1-a-3-1',
+          label: '3.1',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 3,
+          context:
+            'The floor plan for a new bedroom being added to a house is drawn at a scale of 1 : 200. On the plan, the length of the new bedroom measures 3.5 cm.',
+          prompt: 'Calculate the actual length of the bedroom, in metres.',
+          answer: '7 m',
+          explanation: '3.5 cm × 200 = 700 cm = 7 m.',
+        },
+        {
+          id: 'ml-p1-a-3-2',
+          label: '3.2',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'On the plan, the width of the bedroom measures 2.4 cm. Calculate the actual width, in metres.',
+          answer: '4.8 m',
+          explanation: '2.4 cm × 200 = 480 cm = 4.8 m.',
+        },
+        {
+          id: 'ml-p1-a-3-3',
+          label: '3.3',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: 'Using your answers to 3.1 and 3.2, calculate the actual floor area of the bedroom.',
+          answer: '33.6 m²',
+          explanation: '7 m × 4.8 m = 33.6 m².',
+        },
+        {
+          id: 'ml-p1-a-3-4',
+          label: '3.4',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'A scale of 1 : 200 means...',
+          options: [
+            { id: 'a', label: '1 cm on the plan = 200 cm in real life' },
+            { id: 'b', label: '1 cm on the plan = 200 m in real life' },
+            { id: 'c', label: '200 cm on the plan = 1 cm in real life' },
+            { id: 'd', label: 'The plan is 200 times bigger than real life' },
+          ],
+          correctOptionId: 'a',
+          answer: '1 cm on the plan = 200 cm in real life',
+          explanation: 'A scale of 1 : 200 means every 1 unit on the plan represents 200 of the same unit in real life.',
+        },
+        {
+          id: 'ml-p1-a-3-5',
+          label: '3.5',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          context: 'The new bedroom door faces North-East.',
+          prompt: 'In which direction does the wall directly opposite the door face?',
+          answer: 'South-West',
+          explanation: 'The direction directly opposite (180° from) North-East is South-West.',
+        },
+        {
+          id: 'ml-p1-a-3-6',
+          label: '3.6',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 5,
+          prompt:
+            'Building the new bedroom costs R2 850 per m² (materials and labour). Using your answer to 3.3, calculate the total cost of building the new bedroom.',
+          answer: 'R95 760.00',
+          explanation: '33.6 m² × R2 850 = R95 760.00.',
+        },
+      ],
+    },
+    {
+      number: 4,
+      title: 'Transport Survey and Test Scores',
+      topicId: 'data-handling',
+      marks: 25,
+      items: [
+        {
+          id: 'ml-p1-a-4-1',
+          label: '4.1',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          context:
+            'A survey of 40 Grade 12 learners asked how they travel to school:\nWalk: 14 learners\nTaxi: 12 learners\nBus: 8 learners\nCar: 6 learners',
+          prompt: 'Write down the number of learners who travel by Bus.',
+          answer: '8',
+          explanation: 'Read the value directly from the survey data.',
+        },
+        {
+          id: 'ml-p1-a-4-2',
+          label: '4.2',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'Calculate the percentage of the 40 learners who Walk to school.',
+          answer: '35%',
+          explanation: '(14 ÷ 40) × 100 = 35%.',
+        },
+        {
+          id: 'ml-p1-a-4-3',
+          label: '4.3',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: 'Which mode of transport is the mode (most common), and what percentage of learners use it?',
+          answer: 'Walk, 35%',
+          explanation: 'Walk has the highest count (14 of 40 learners), which is 35% (as calculated in 4.2).',
+        },
+        {
+          id: 'ml-p1-a-4-4',
+          label: '4.4',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt:
+            'If one learner is chosen at random from the 40 surveyed, what is the probability, as a fraction in simplest form, that the learner travels by Car?',
+          options: [
+            { id: 'a', label: '6/40' },
+            { id: 'b', label: '3/20' },
+            { id: 'c', label: '3/10' },
+            { id: 'd', label: '6/34' },
+          ],
+          correctOptionId: 'b',
+          answer: '3/20',
+          explanation: '6 out of 40 travel by Car. 6/40 simplifies to 3/20.',
+        },
+        {
+          id: 'ml-p1-a-4-5',
+          label: '4.5',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: 'Calculate the probability, as a percentage, that a randomly chosen learner does NOT travel by Taxi.',
+          answer: '70%',
+          explanation: 'P(Taxi) = 12/40 = 30%. P(not Taxi) = 100% − 30% = 70%.',
+        },
+        {
+          id: 'ml-p1-a-4-6',
+          label: '4.6',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          context: 'The Mathematical Literacy test scores (out of 20) for a group of 7 learners were: 12, 15, 9, 18, 12, 20, 14.',
+          prompt: 'Calculate the mean test score.',
+          answer: '≈ 14.3',
+          explanation: '12 + 15 + 9 + 18 + 12 + 20 + 14 = 100. Mean = 100 ÷ 7 = 14.2857... ≈ 14.3.',
+        },
+        {
+          id: 'ml-p1-a-4-7',
+          label: '4.7',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt: 'Arrange the 7 scores in ascending order and determine the median.',
+          answer: '14',
+          explanation: 'Sorted: 9, 12, 12, 14, 15, 18, 20. With 7 (odd) values, the median is the 4th value: 14.',
+        },
+        {
+          id: 'ml-p1-a-4-8',
+          label: '4.8',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'Which measure of central tendency is most affected by an unusually high or low value (an outlier)?',
+          options: [
+            { id: 'a', label: 'Mean' },
+            { id: 'b', label: 'Median' },
+            { id: 'c', label: 'Mode' },
+            { id: 'd', label: 'Range' },
+          ],
+          correctOptionId: 'a',
+          answer: 'Mean',
+          explanation: 'The mean uses every value in its calculation, so one very high or low value pulls it noticeably. The median and mode are far less affected.',
+        },
+      ],
+    },
+  ],
+}
+
+const p2SetA: Paper = {
+  id: 'ml-p2-pred-a',
+  subjectId: 'mat-lit',
+  paperNumber: 2,
+  grade: 12,
+  kind: 'predicted',
+  setLabel: 'A',
+  title: 'Predicted Paper 2 — Set A',
+  durationMinutes: 150,
+  totalMarks: 100,
+  sections: [
+    {
+      number: 1,
+      title: "Sipho's Spaza Shop — Sales Data",
+      topicId: 'data-handling',
+      marks: 35,
+      items: [
+        {
+          id: 'ml-p2-a-1-1',
+          label: '1.1',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          context:
+            "TABLE 2: Sipho's spaza shop monthly sales\nJan: R8 200\nFeb: R7 650\nMar: R9 100\nApr: R8 800\nMay: R9 450\nJun: R10 200",
+          prompt: 'Write down the sales figure for March.',
+          answer: 'R9 100',
+          explanation: 'Read the value directly from Table 2.',
+        },
+        {
+          id: 'ml-p2-a-1-2',
+          label: '1.2',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: 'Calculate the mean monthly sales over the 6 months.',
+          answer: 'R8 900',
+          explanation:
+            'R8 200 + R7 650 + R9 100 + R8 800 + R9 450 + R10 200 = R53 400. Mean = R53 400 ÷ 6 = R8 900.',
+        },
+        {
+          id: 'ml-p2-a-1-3',
+          label: '1.3',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt: 'Calculate the range of the monthly sales.',
+          answer: 'R2 550',
+          explanation: 'Highest = R10 200 (Jun). Lowest = R7 650 (Feb). Range = R10 200 − R7 650 = R2 550.',
+        },
+        {
+          id: 'ml-p2-a-1-4',
+          label: '1.4',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'Calculate the percentage increase in sales from January to June.',
+          answer: '≈ 24.4%',
+          explanation: 'Increase = R10 200 − R8 200 = R2 000. Percentage increase = (2 000 ÷ 8 200) × 100 = 24.39...% ≈ 24.4%.',
+        },
+        {
+          id: 'ml-p2-a-1-5',
+          label: '1.5',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'In which month were sales the lowest?',
+          options: [
+            { id: 'a', label: 'January' },
+            { id: 'b', label: 'February' },
+            { id: 'c', label: 'March' },
+            { id: 'd', label: 'April' },
+          ],
+          correctOptionId: 'b',
+          answer: 'February',
+          explanation: 'February had the lowest sales at R7 650, the smallest value in Table 2.',
+        },
+        {
+          id: 'ml-p2-a-1-6',
+          label: '1.6',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          context:
+            "In June, Sipho's total sales of R10 200 were made up as follows:\nAirtime: R3 060\nGroceries: R5 100\nSnacks: R2 040",
+          prompt: "Calculate what percentage of June's sales came from Groceries.",
+          answer: '50%',
+          explanation: '(R5 100 ÷ R10 200) × 100 = 50%.',
+        },
+        {
+          id: 'ml-p2-a-1-7',
+          label: '1.7',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: "If Sipho makes a profit of 20% on Airtime sales, calculate his profit on Airtime for June.",
+          answer: 'R612',
+          explanation: '20% × R3 060 = R612.',
+        },
+        {
+          id: 'ml-p2-a-1-8',
+          label: '1.8',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt:
+            "Sipho wants to know whether Snacks or Airtime made up a bigger share of June's sales. Calculate the percentage each category contributed, and state which is bigger.",
+          answer: 'Airtime (30%) is bigger than Snacks (20%).',
+          explanation: 'Airtime: (3 060 ÷ 10 200) × 100 = 30%. Snacks: (2 040 ÷ 10 200) × 100 = 20%. 30% > 20%.',
+        },
+        {
+          id: 'ml-p2-a-1-9',
+          label: '1.9',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt:
+            "If one Rand of June's sales is selected at random, what is the probability, as a percentage, that it came from Snacks sales?",
+          answer: '20%',
+          explanation: 'This matches the relative frequency found in 1.8: Snacks made up 20% of June sales, so a randomly selected Rand has a 20% chance of coming from Snacks.',
+        },
+        {
+          id: 'ml-p2-a-1-10',
+          label: '1.10',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt:
+            'Sipho surveyed 30 random customers in June, and 18 said they would recommend his shop to a friend. Calculate this as a percentage.',
+          answer: '60%',
+          explanation: '(18 ÷ 30) × 100 = 60%.',
+        },
+        {
+          id: 'ml-p2-a-1-11',
+          label: '1.11',
+          topicId: 'data-handling',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 3,
+          prompt:
+            'Using the survey result in 1.10, if this percentage stayed the same, how many of 150 customers next month would be expected to recommend the shop?',
+          answer: '90',
+          explanation: '60% × 150 = 90.',
+        },
+      ],
+    },
+    {
+      number: 2,
+      title: 'Delivery Route and Shop Floor Plan',
+      topicId: 'maps-plans',
+      marks: 25,
+      items: [
+        {
+          id: 'ml-p2-a-2-1',
+          label: '2.1',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 3,
+          context:
+            "On a map drawn at a scale of 1 : 50 000, the straight-line distance from Sipho's Spaza Shop to Metro Wholesalers measures 8 cm.",
+          prompt: 'Calculate the actual straight-line distance, in kilometres.',
+          answer: '4 km',
+          explanation: '8 cm × 50 000 = 400 000 cm = 4 000 m = 4 km.',
+        },
+        {
+          id: 'ml-p2-a-2-2',
+          label: '2.2',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: "Sipho's van travels at an average speed of 40 km/h. Using your answer to 2.1, calculate how long the trip will take, in minutes.",
+          answer: '6 minutes',
+          explanation: 'Time = distance ÷ speed = 4 km ÷ 40 km/h = 0.1 hours = 6 minutes.',
+        },
+        {
+          id: 'ml-p2-a-2-3',
+          label: '2.3',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'If Sipho leaves at 08:15 and the trip takes 6 minutes, at what time will he arrive?',
+          options: [
+            { id: 'a', label: '08:19' },
+            { id: 'b', label: '08:21' },
+            { id: 'c', label: '08:25' },
+            { id: 'd', label: '08:31' },
+          ],
+          correctOptionId: 'b',
+          answer: '08:21',
+          explanation: '08:15 + 6 minutes = 08:21.',
+        },
+        {
+          id: 'ml-p2-a-2-4',
+          label: '2.4',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          context: "Sipho's shop floor plan is drawn at a scale of 1 : 100. On the plan, the shop measures 6 cm by 4 cm.",
+          prompt: 'Calculate the actual length and width of the shop, in metres.',
+          answer: 'Length = 6 m, Width = 4 m',
+          explanation: '6 cm × 100 = 600 cm = 6 m. 4 cm × 100 = 400 cm = 4 m.',
+        },
+        {
+          id: 'ml-p2-a-2-5',
+          label: '2.5',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: 'Using your answer to 2.4, calculate the actual floor area of the shop.',
+          answer: '24 m²',
+          explanation: '6 m × 4 m = 24 m².',
+        },
+        {
+          id: 'ml-p2-a-2-6',
+          label: '2.6',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 5,
+          prompt:
+            'New shelving will cover 30% of the floor area, leaving the rest as walking space for customers. Calculate the area, in m², that will be walking space.',
+          answer: '16.8 m²',
+          explanation: 'Shelving area = 30% × 24 m² = 7.2 m². Walking space = 24 m² − 7.2 m² = 16.8 m².',
+        },
+        {
+          id: 'ml-p2-a-2-7',
+          label: '2.7',
+          topicId: 'maps-plans',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 4,
+          prompt:
+            "The shop's entrance faces South. In which direction would a customer be facing if they turned to face directly away from the entrance?",
+          options: [
+            { id: 'a', label: 'North' },
+            { id: 'b', label: 'East' },
+            { id: 'c', label: 'West' },
+            { id: 'd', label: 'South-East' },
+          ],
+          correctOptionId: 'a',
+          answer: 'North',
+          explanation: 'Turning 180° from South (directly opposite) faces North.',
+        },
+      ],
+    },
+    {
+      number: 3,
+      title: "Sipho's Monthly Business Finances",
+      topicId: 'finance',
+      marks: 20,
+      items: [
+        {
+          id: 'ml-p2-a-3-1',
+          label: '3.1',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          context:
+            "Sipho's total income in June was R10 200 (as in Question 1). His June expenses were:\nStock: R6 500\nRent: R1 200\nElectricity: R450\nTransport: R380",
+          prompt: "Calculate Sipho's TOTAL expenses for June.",
+          answer: 'R8 530',
+          explanation: 'R6 500 + R1 200 + R450 + R380 = R8 530.',
+        },
+        {
+          id: 'ml-p2-a-3-2',
+          label: '3.2',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: "Calculate Sipho's profit for June (income − expenses).",
+          answer: 'R1 670',
+          explanation: 'R10 200 − R8 530 = R1 670.',
+        },
+        {
+          id: 'ml-p2-a-3-3',
+          label: '3.3',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt: "Calculate Sipho's profit as a percentage of his income, rounded to one decimal place.",
+          answer: '≈ 16.4%',
+          explanation: '(1 670 ÷ 10 200) × 100 = 16.372...% ≈ 16.4%.',
+        },
+        {
+          id: 'ml-p2-a-3-4',
+          label: '3.4',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'Sipho pays a monthly bank account fee of R89. Is this an income or an expense for his business?',
+          options: [
+            { id: 'a', label: 'Income' },
+            { id: 'b', label: 'Expense' },
+          ],
+          correctOptionId: 'b',
+          answer: 'Expense',
+          explanation: 'A bank fee is money paid out of the business, so it is an expense.',
+        },
+        {
+          id: 'ml-p2-a-3-5',
+          label: '3.5',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt: 'Sipho buys stock worth R6 500, and this price already includes 15% VAT. Calculate how much of the R6 500 was VAT.',
+          answer: '≈ R847.83',
+          explanation: 'Since the price already includes VAT, the VAT portion = R6 500 × 15/115 = R847.826... ≈ R847.83.',
+        },
+        {
+          id: 'ml-p2-a-3-6',
+          label: '3.6',
+          topicId: 'finance',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 3,
+          prompt: "Which of these is most likely a FIXED monthly expense for Sipho's shop?",
+          options: [
+            { id: 'a', label: 'Stock' },
+            { id: 'b', label: 'Rent' },
+            { id: 'c', label: 'Electricity' },
+            { id: 'd', label: 'None of these' },
+          ],
+          correctOptionId: 'b',
+          answer: 'Rent',
+          explanation: 'Rent is usually a fixed amount each month, while stock, electricity and similar costs vary with usage and sales.',
+        },
+      ],
+    },
+    {
+      number: 4,
+      title: 'Storing and Shelving Stock',
+      topicId: 'measurement',
+      marks: 20,
+      items: [
+        {
+          id: 'ml-p2-a-4-1',
+          label: '4.1',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 3,
+          context: 'Tins of beans are stored in boxes shaped like rectangular prisms. Each box measures 40 cm long, 30 cm wide, and 25 cm high.',
+          prompt: 'Calculate the volume of one box, in cm³.',
+          answer: '30 000 cm³',
+          explanation: '40 cm × 30 cm × 25 cm = 30 000 cm³.',
+        },
+        {
+          id: 'ml-p2-a-4-2',
+          label: '4.2',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 3,
+          prompt: 'Convert the volume of the box to litres (1 000 cm³ = 1 litre).',
+          answer: '30 litres',
+          explanation: '30 000 cm³ ÷ 1 000 = 30 litres.',
+        },
+        {
+          id: 'ml-p2-a-4-3',
+          label: '4.3',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Moderate',
+          marks: 4,
+          prompt: 'Each tin of beans has a volume of 600 cm³. Calculate the maximum number of tins that could fit in one box, based on volume alone.',
+          answer: '50 tins',
+          explanation: '30 000 cm³ ÷ 600 cm³ = 50 tins.',
+        },
+        {
+          id: 'ml-p2-a-4-4',
+          label: '4.4',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          context: 'A shelf is 1.2 m long and 0.4 m deep.',
+          prompt: 'Calculate the area of the shelf, in m².',
+          answer: '0.48 m²',
+          explanation: '1.2 m × 0.4 m = 0.48 m².',
+        },
+        {
+          id: 'ml-p2-a-4-5',
+          label: '4.5',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Challenge',
+          marks: 4,
+          prompt:
+            'Each box (from 4.1) has a base of 40 cm × 30 cm. Calculate how many boxes can be placed on the shelf in a single layer, without any box overhanging the edge of the shelf.',
+          answer: '4 boxes',
+          explanation:
+            'The shelf is 120 cm long and 40 cm deep. Turning each box so its 40 cm side matches the shelf depth exactly, the boxes take up 30 cm each along the 120 cm length: 120 ÷ 30 = 4 boxes.',
+        },
+        {
+          id: 'ml-p2-a-4-6',
+          label: '4.6',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: "Which of these is closest to the height of a shop counter (about 90 cm)?",
+          options: [
+            { id: 'a', label: '90 mm' },
+            { id: 'b', label: '90 cm' },
+            { id: 'c', label: '9 m' },
+            { id: 'd', label: '0.9 km' },
+          ],
+          correctOptionId: 'b',
+          answer: '90 cm',
+          explanation: 'A shop counter about waist-to-chest height is sensibly measured in the tens of centimetres, i.e. 90 cm.',
+        },
+        {
+          id: 'ml-p2-a-4-7',
+          label: '4.7',
+          topicId: 'measurement',
+          grade: 12,
+          difficulty: 'Easy',
+          marks: 2,
+          prompt: 'Convert the shelf depth of 0.4 m to centimetres.',
+          answer: '40 cm',
+          explanation: '0.4 m × 100 = 40 cm.',
+        },
+      ],
+    },
+  ],
+}
+
+export const papers: Paper[] = [p1SetA, p2SetA]
+
+export function papersForSubject(subjectId: string, paperNumber?: 1 | 2): Paper[] {
+  return papers.filter((p) => p.subjectId === subjectId && (paperNumber === undefined || p.paperNumber === paperNumber))
+}
+
+export function getPaper(id: string): Paper | undefined {
+  return papers.find((p) => p.id === id)
+}

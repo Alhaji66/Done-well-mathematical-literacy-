@@ -10,9 +10,12 @@ interface QuestionCardProps {
   /** Optional: called once per attempt. `correct` is null for open-ended questions
    * (self-assessed, not auto-gradable) and true/false for multiple choice. */
   onAttempt?: (correct: boolean | null) => void
+  /** Optional: overrides the "Question {index+1}" badge text -- used for exam-style
+   * sub-question numbering (e.g. "1.1") when this card is part of a Paper section. */
+  label?: string
 }
 
-export function QuestionCard({ question, index, onAttempt }: QuestionCardProps) {
+export function QuestionCard({ question, index, onAttempt, label }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [attemptedText, setAttemptedText] = useState('')
   const [revealed, setRevealed] = useState(false)
@@ -30,7 +33,7 @@ export function QuestionCard({ question, index, onAttempt }: QuestionCardProps) 
   return (
     <div className="card p-5">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="badge-navy">Question {index + 1}</span>
+        <span className="badge-navy">{label ?? `Question ${index + 1}`}</span>
         <DifficultyBadge difficulty={question.difficulty} />
         <span className="badge-slate">{question.marks} marks</span>
       </div>

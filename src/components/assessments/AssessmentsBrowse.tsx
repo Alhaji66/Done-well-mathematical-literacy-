@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { papersForSubject, type Paper } from '@/data/papers'
+import type { Grade } from '@/types'
 import { getAnsweredItemIds, countPaperItems } from '@/lib/paperProgress'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -38,12 +39,13 @@ export function AssessmentsBrowse() {
   const { profile } = useAccountAuth()
   const [subjectId, setSubjectId] = useState(profile?.subject_id ?? 'mat-lit')
   const [paperNumber, setPaperNumber] = useState<1 | 2>(1)
+  const [grade, setGrade] = useState<Grade>(profile?.grade ?? 12)
 
   if (!profile) return null
 
   const basePath = `/account/${profile.role}/assessments`
   const copy = roleCopy[profile.role as keyof typeof roleCopy] ?? roleCopy.learner
-  const papers = papersForSubject(subjectId, paperNumber)
+  const papers = papersForSubject(subjectId, paperNumber, grade)
   const predicted = papers.filter((p) => p.kind === 'predicted').sort((a, b) => (a.setLabel ?? '').localeCompare(b.setLabel ?? ''))
   const past = papers.filter((p) => p.kind === 'past').sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
 
@@ -89,6 +91,25 @@ export function AssessmentsBrowse() {
                 )}
               >
                 Paper {n}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-medium text-navy-500">Grade</p>
+          <div className="mt-1 inline-flex rounded-lg border border-navy-200 bg-white p-1">
+            {([11, 12] as const).map((g) => (
+              <button
+                key={g}
+                type="button"
+                onClick={() => setGrade(g)}
+                className={cn(
+                  'rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
+                  grade === g ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+                )}
+              >
+                Grade {g}
               </button>
             ))}
           </div>

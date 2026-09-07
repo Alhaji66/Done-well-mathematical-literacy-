@@ -15866,8 +15866,10 @@ export const papers: Paper[] = [
   mathP2Y2020,
 ]
 
-export function papersForSubject(subjectId: string, paperNumber?: 1 | 2): Paper[] {
-  return papers.filter((p) => p.subjectId === subjectId && (paperNumber === undefined || p.paperNumber === paperNumber))
+export function papersForSubject(subjectId: string, paperNumber?: 1 | 2, grade?: Grade): Paper[] {
+  return papers.filter(
+    (p) => p.subjectId === subjectId && (paperNumber === undefined || p.paperNumber === paperNumber) && (grade === undefined || p.grade === grade),
+  )
 }
 
 export function getPaper(id: string): Paper | undefined {

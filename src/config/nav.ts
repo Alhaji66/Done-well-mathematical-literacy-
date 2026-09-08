@@ -68,12 +68,12 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
 ]
 
-// Real (non-demo) Parent account nav -- My Child and Resources are folded
-// into Dashboard for now (Dashboard already shows each linked child's
-// progress); Resources needs per-child grade/subject filtering that isn't
-// built yet.
+// Real (non-demo) Parent account nav -- My Child is folded into Dashboard
+// (it already shows each linked child's progress); Resources filters
+// resources.ts to each linked child's real grade and subject.
 export const accountParentNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/support', label: 'Support', icon: HeartHandshakeIcon },
 ]
 

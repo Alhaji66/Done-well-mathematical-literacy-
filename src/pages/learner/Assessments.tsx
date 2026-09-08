@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { demoLearner } from '@/data/learner'
 import { papersForSubject, type Paper } from '@/data/papers'
 import type { Grade } from '@/types'
@@ -27,11 +27,22 @@ export function LearnerAssessments() {
   const [subjectId, setSubjectId] = useState(demoLearner.subjectId)
   const [paperNumber, setPaperNumber] = useState<1 | 2>(1)
   const [grade, setGrade] = useState<Grade>(demoLearner.grade)
+  const [papers, setPapers] = useState<Paper[] | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setPapers(null)
+    papersForSubject(subjectId, paperNumber, grade).then((result) => {
+      if (!cancelled) setPapers(result)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [subjectId, paperNumber, grade])
 
   const basePath = '/app/learner/assessments'
-  const papers = papersForSubject(subjectId, paperNumber, grade)
-  const predicted = papers.filter((p) => p.kind === 'predicted').sort((a, b) => (a.setLabel ?? '').localeCompare(b.setLabel ?? ''))
-  const past = papers.filter((p) => p.kind === 'past').sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+  const predicted = (papers ?? []).filter((p) => p.kind === 'predicted').sort((a, b) => (a.setLabel ?? '').localeCompare(b.setLabel ?? ''))
+  const past = (papers ?? []).filter((p) => p.kind === 'past').sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
 
   const progressFor = (paper: Paper) => ({
     answered: getAnsweredItemIds(demoLearner.id, paper.id).size,
@@ -111,7 +122,9 @@ export function LearnerAssessments() {
           Three independent DONE WELL predicted sets, so learners practise a range of question styles rather than one fixed set -- nobody
           can know exactly what will be asked.
         </p>
-        {predicted.length === 0 ? (
+        {papers === null ? (
+          <p className="text-sm text-navy-500">Loading…</p>
+        ) : predicted.length === 0 ? (
           <EmptyState
             icon={<ClipboardIcon className="h-6 w-6" />}
             title="Coming soon"
@@ -129,7 +142,9 @@ export function LearnerAssessments() {
       <div className="space-y-3">
         <h3 className="font-bold text-navy-900">Past-exam-style papers (2020–2025)</h3>
         <p className="text-sm text-navy-500">Written by DONE WELL in the style of each year, for extra practice -- not transcripts of the actual papers.</p>
-        {past.length === 0 ? (
+        {papers === null ? (
+          <p className="text-sm text-navy-500">Loading…</p>
+        ) : past.length === 0 ? (
           <EmptyState
             icon={<ClipboardIcon className="h-6 w-6" />}
             title="Coming soon"

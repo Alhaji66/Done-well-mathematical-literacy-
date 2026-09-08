@@ -46,6 +46,9 @@ const AccountTeacherDashboard = lazy(() =>
 const AccountParentDashboard = lazy(() =>
   import('@/pages/account/parent/ParentDashboard').then((m) => ({ default: m.ParentDashboard })),
 )
+const AccountParentResources = lazy(() =>
+  import('@/pages/account/parent/ParentResources').then((m) => ({ default: m.ParentResources })),
+)
 const AccountSchoolDashboard = lazy(() =>
   import('@/pages/account/school/SchoolDashboard').then((m) => ({ default: m.SchoolDashboard })),
 )
@@ -155,6 +158,7 @@ export default function App() {
               <Route path="parent" element={<AccountShell basePath="/account/parent" navItems={accountParentNav} />}>
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<AccountParentDashboard />} />
+                <Route path="resources" element={<AccountParentResources />} />
                 <Route path="support" element={<ParentSupport />} />
               </Route>
             </Route>

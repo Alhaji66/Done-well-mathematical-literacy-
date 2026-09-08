@@ -16,6 +16,7 @@ const roleOptions: { role: AccountRole; label: string; desc: string; icon: (p: {
 const subjectOptions = [
   { id: 'mat-lit', name: 'Mathematical Literacy' },
   { id: 'mathematics', name: 'Mathematics' },
+  { id: 'physical-sciences', name: 'Physical Sciences' },
 ]
 
 const grades: Grade[] = [10, 11, 12]

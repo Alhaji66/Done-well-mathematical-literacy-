@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 const subjectOptions = [
   { id: 'mat-lit', name: 'Mathematical Literacy' },
   { id: 'mathematics', name: 'Mathematics' },
+  { id: 'physical-sciences', name: 'Physical Sciences' },
 ]
 
 /**

@@ -17,6 +17,7 @@ const subjectOptions = [
   { id: 'mat-lit', name: 'Mathematical Literacy' },
   { id: 'mathematics', name: 'Mathematics' },
   { id: 'physical-sciences', name: 'Physical Sciences' },
+  { id: 'life-sciences', name: 'Life Sciences' },
 ]
 
 const grades: Grade[] = [10, 11, 12]

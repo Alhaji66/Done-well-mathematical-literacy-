@@ -50,10 +50,20 @@ function ChildResources({ child }: { child: LinkedChild }) {
                 <p className="mt-1 text-sm text-navy-600">{r.description}</p>
               </div>
               <div className="mt-auto flex gap-2 pt-2">
-                <button type="button" className="btn-outline btn-sm flex-1 inline-flex items-center justify-center gap-1.5">
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon — downloadable resource files aren't available in this preview yet."
+                  className="btn-outline btn-sm flex-1 inline-flex items-center justify-center gap-1.5"
+                >
                   <EyeIcon className="h-4 w-4" /> View
                 </button>
-                <button type="button" className="btn-secondary btn-sm flex-1 inline-flex items-center justify-center gap-1.5">
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon — downloadable resource files aren't available in this preview yet."
+                  className="btn-secondary btn-sm flex-1 inline-flex items-center justify-center gap-1.5"
+                >
                   <DownloadIcon className="h-4 w-4" /> Download
                 </button>
               </div>

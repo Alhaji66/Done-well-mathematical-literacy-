@@ -27,7 +27,12 @@ export function ParentResources() {
               <h3 className="font-semibold text-navy-900">{item.title}</h3>
               <p className="mt-1 text-sm text-navy-600">{item.description}</p>
             </div>
-            <button type="button" className="btn-outline btn-sm mt-auto inline-flex items-center gap-1.5 self-start">
+            <button
+              type="button"
+              disabled
+              title="Coming soon — downloadable resource files aren't available in this preview yet."
+              className="btn-outline btn-sm mt-auto inline-flex items-center gap-1.5 self-start"
+            >
               <EyeIcon className="h-4 w-4" /> Preview
             </button>
           </div>

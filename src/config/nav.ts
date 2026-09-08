@@ -17,7 +17,7 @@ export const learnerNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learn', label: 'Learn', icon: BookIcon },
   { to: '/practise', label: 'Practise', icon: PencilIcon },
-  { to: '/tests', label: 'Tests', icon: ClipboardIcon },
+  { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
 ]
 
@@ -45,9 +45,10 @@ export const schoolNav: RoleNavItem[] = [
 ]
 
 // Real (non-demo) Learner account nav -- deliberately smaller than the demo's
-// learnerNav above: Learn isn't built for real accounts yet. Tests is now
-// Assessments -- full-length practice papers instead of the demo's static
-// "Tests" list.
+// learnerNav above: Learn isn't built for real accounts yet. Assessments here
+// tracks real per-topic mastery server-side; the demo's Assessments (same
+// papers.ts content) only tracks per-paper progress locally, since there's no
+// signed-in account to save it against.
 export const accountLearnerNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/practise', label: 'Practise', icon: PencilIcon },

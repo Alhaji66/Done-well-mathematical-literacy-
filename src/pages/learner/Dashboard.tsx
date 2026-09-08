@@ -100,8 +100,8 @@ export function LearnerDashboard() {
           <SectionHeading
             title="Upcoming test"
             action={
-              <Link to="/app/learner/tests" className="text-sm font-semibold text-navy-700 hover:text-navy-900">
-                All tests
+              <Link to="/app/learner/assessments" className="text-sm font-semibold text-navy-700 hover:text-navy-900">
+                All assessments
               </Link>
             }
           />

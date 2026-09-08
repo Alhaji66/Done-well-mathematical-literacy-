@@ -108,10 +108,20 @@ export function TeacherAssessments() {
             </div>
 
             <div className="mt-4 flex gap-2">
-              <button type="button" className="btn-outline btn-sm inline-flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled
+                title="Coming soon — printable test exports aren't available in this preview yet."
+                className="btn-outline btn-sm inline-flex items-center gap-1.5"
+              >
                 <EyeIcon className="h-4 w-4" /> Preview
               </button>
-              <button type="button" className="btn-secondary btn-sm inline-flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled
+                title="Coming soon — printable test exports aren't available in this preview yet."
+                className="btn-secondary btn-sm inline-flex items-center gap-1.5"
+              >
                 <DownloadIcon className="h-4 w-4" /> Download
               </button>
             </div>

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { demoLearner } from '@/data/learner'
-import { getPaper } from '@/data/papers'
+import { getPaper, type Paper } from '@/data/papers'
 import { getAnsweredItemIds, markItemAnswered, countPaperItems } from '@/lib/paperProgress'
 import { PaperRunner } from '@/components/assessments/PaperRunner'
+import { RouteLoading } from '@/components/layout/RouteLoading'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ArrowLeftIcon } from '@/components/ui/Icons'
 
@@ -15,9 +16,31 @@ import { ArrowLeftIcon } from '@/components/ui/Icons'
  */
 export function LearnerAssessmentPaper() {
   const { paperId } = useParams()
-  const paper = paperId ? getPaper(paperId) : undefined
-  const [answeredCount, setAnsweredCount] = useState(() => (paper ? getAnsweredItemIds(demoLearner.id, paper.id).size : 0))
+  const [paper, setPaper] = useState<Paper | null>(null)
+  const [paperLoaded, setPaperLoaded] = useState(false)
+  const [answeredCount, setAnsweredCount] = useState(0)
 
+  useEffect(() => {
+    let cancelled = false
+    setPaperLoaded(false)
+    setPaper(null)
+    if (!paperId) {
+      setPaperLoaded(true)
+      return
+    }
+    getPaper(paperId).then((result) => {
+      if (!cancelled) {
+        setPaper(result ?? null)
+        setAnsweredCount(result ? getAnsweredItemIds(demoLearner.id, result.id).size : 0)
+        setPaperLoaded(true)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [paperId])
+
+  if (!paperLoaded) return <RouteLoading />
   if (!paper) return <Navigate to=".." relative="path" replace />
 
   const totalItems = countPaperItems(paper)

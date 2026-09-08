@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
-import { getPaper } from '@/data/papers'
+import { getPaper, type Paper } from '@/data/papers'
 import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
 import { getAnsweredItemIds, markItemAnswered, countPaperItems } from '@/lib/paperProgress'
 import { PaperRunner } from '@/components/assessments/PaperRunner'
+import { RouteLoading } from '@/components/layout/RouteLoading'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ArrowLeftIcon } from '@/components/ui/Icons'
 
@@ -21,9 +22,29 @@ export function PaperPage() {
   const [savedMessage, setSavedMessage] = useState('')
 
   const isLearner = profile?.role === 'learner'
-  const paper = paperId ? getPaper(paperId) : undefined
+  const [paper, setPaper] = useState<Paper | null>(null)
+  const [paperLoaded, setPaperLoaded] = useState(false)
 
   const [answeredCount, setAnsweredCount] = useState(0)
+
+  useEffect(() => {
+    let cancelled = false
+    setPaperLoaded(false)
+    setPaper(null)
+    if (!paperId) {
+      setPaperLoaded(true)
+      return
+    }
+    getPaper(paperId).then((result) => {
+      if (!cancelled) {
+        setPaper(result ?? null)
+        setPaperLoaded(true)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [paperId])
 
   useEffect(() => {
     if (isLearner && profile) fetchLearnerProgress(profile.id).then(setProgress)
@@ -34,6 +55,7 @@ export function PaperPage() {
   }, [profile, isLearner, paper])
 
   if (!profile) return null
+  if (!paperLoaded) return <RouteLoading />
   if (!paper) return <Navigate to=".." relative="path" replace />
 
   const totalItems = countPaperItems(paper)

@@ -99,7 +99,7 @@ export function AssessmentsBrowse() {
         <div>
           <p className="text-xs font-medium text-navy-500">Grade</p>
           <div className="mt-1 inline-flex rounded-lg border border-navy-200 bg-white p-1">
-            {([11, 12] as const).map((g) => (
+            {([10, 11, 12] as const).map((g) => (
               <button
                 key={g}
                 type="button"

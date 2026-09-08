@@ -66,7 +66,10 @@ const MasteryAnalytics = lazy(() =>
 const LearnerDashboard = lazy(() => import('@/pages/learner/Dashboard').then((m) => ({ default: m.LearnerDashboard })))
 const LearnerLearn = lazy(() => import('@/pages/learner/Learn').then((m) => ({ default: m.LearnerLearn })))
 const LearnerPractise = lazy(() => import('@/pages/learner/Practise').then((m) => ({ default: m.LearnerPractise })))
-const LearnerTests = lazy(() => import('@/pages/learner/Tests').then((m) => ({ default: m.LearnerTests })))
+const LearnerAssessments = lazy(() => import('@/pages/learner/Assessments').then((m) => ({ default: m.LearnerAssessments })))
+const LearnerAssessmentPaper = lazy(() =>
+  import('@/pages/learner/AssessmentPaper').then((m) => ({ default: m.LearnerAssessmentPaper })),
+)
 const LearnerProgress = lazy(() => import('@/pages/learner/Progress').then((m) => ({ default: m.LearnerProgress })))
 
 const ParentDashboard = lazy(() => import('@/pages/parent/Dashboard').then((m) => ({ default: m.ParentDashboard })))
@@ -183,7 +186,8 @@ export default function App() {
           <Route path="dashboard" element={<LearnerDashboard />} />
           <Route path="learn" element={<LearnerLearn />} />
           <Route path="practise" element={<LearnerPractise />} />
-          <Route path="tests" element={<LearnerTests />} />
+          <Route path="assessments" element={<LearnerAssessments />} />
+          <Route path="assessments/:paperId" element={<LearnerAssessmentPaper />} />
           <Route path="progress" element={<LearnerProgress />} />
         </Route>
 

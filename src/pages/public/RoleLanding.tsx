@@ -28,7 +28,7 @@ const content: Record<DemoRole, RoleContent> = {
     eyebrow: 'For Learners',
     title: 'I want to improve my marks.',
     description:
-      'Practise the topics that matter, sit realistic tests, and always know exactly what to study next — starting with Grade 12 Mathematical Literacy.',
+      'Practise the topics that matter, sit realistic tests, and always know exactly what to study next — across Grade 10–12 Mathematical Literacy and Mathematics.',
     points: [
       { icon: BookIcon, title: 'Browse by grade & topic', desc: 'Finance, Data Handling, Maps and Plans, Measurement, Probability, Tariffs and more.' },
       { icon: PencilIcon, title: 'Practise with instant feedback', desc: 'Easy, Moderate and Challenge questions with full explanations after every attempt.' },

@@ -71,14 +71,14 @@ export const topics: Topic[] = [
     subjectId: 'mathematics',
     name: 'Finance, Growth & Decay',
     description: 'Simple and compound growth and decay, and annuities, using algebraic financial formulae.',
-    grades: [11, 12],
+    grades: [10, 11, 12],
   },
   {
     id: 'math-number-patterns',
     subjectId: 'mathematics',
     name: 'Number Patterns, Sequences & Series',
     description: 'Arithmetic and geometric sequences and series, sigma notation, and the formulae for the sum of a series.',
-    grades: [11, 12],
+    grades: [10, 11, 12],
   },
   {
     id: 'math-calculus',

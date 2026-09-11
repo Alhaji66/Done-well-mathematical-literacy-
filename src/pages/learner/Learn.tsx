@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { subjects } from '@/data/subjects'
 import { topicsForSubject } from '@/data/topics'
-import { questionsForTopic } from '@/data/questions'
+import { topicQuestionCounts } from '@/data/questionBank'
 import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
@@ -12,16 +13,28 @@ import type { Grade } from '@/types'
 
 const grades: Grade[] = [10, 11, 12]
 
-const subjectOptions = [
-  { id: 'mat-lit', name: 'Mathematical Literacy' },
-  { id: 'mathematics', name: 'Mathematics' },
-]
+// Derived from the real subjects list rather than hardcoded, so adding a subject
+// only means adding its topics. English FAL is in subjects but has no topics yet,
+// so it would otherwise show up as an empty picker entry.
+const subjectOptions = subjects.filter((s) => topicsForSubject(s.id).length > 0)
 
 export function LearnerLearn() {
   const [subjectId, setSubjectId] = useState(demoLearner.subjectId)
   const [grade, setGrade] = useState<Grade>(demoLearner.grade)
   const topics = topicsForSubject(subjectId, grade)
   const subjectName = subjectOptions.find((s) => s.id === subjectId)?.name ?? ''
+
+  // Question counts come from the papers, which load per subject on demand.
+  const [questionCounts, setQuestionCounts] = useState<Record<string, number>>({})
+  useEffect(() => {
+    let cancelled = false
+    topicQuestionCounts(subjectId, grade).then((counts) => {
+      if (!cancelled) setQuestionCounts(counts)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [subjectId, grade])
 
   return (
     <div className="space-y-6">
@@ -64,7 +77,7 @@ export function LearnerLearn() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {topics.map((topic) => {
           const progress = demoLearner.topicProgress.find((tp) => tp.topicId === topic.id)
-          const questionCount = questionsForTopic(topic.id).length
+          const questionCount = questionCounts[topic.id] ?? 0
           return (
             <div key={topic.id} className="card flex flex-col gap-3 p-5">
               <div className="flex items-start justify-between">

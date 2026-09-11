@@ -1,22 +1,23 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { subjects } from '@/data/subjects'
 import { topicsForSubject, getTopic } from '@/data/topics'
-import { filterQuestions } from '@/data/questions'
+import { filterSubjectQuestions } from '@/data/questionBank'
 import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PencilIcon } from '@/components/ui/Icons'
-import type { Difficulty } from '@/types'
+import type { Difficulty, Question } from '@/types'
 import { cn } from '@/lib/utils'
 
 const difficulties: Difficulty[] = ['Easy', 'Moderate', 'Challenge']
 
-const subjectOptions = [
-  { id: 'mat-lit', name: 'Mathematical Literacy' },
-  { id: 'mathematics', name: 'Mathematics' },
-]
+// Derived from the real subjects list rather than hardcoded, so adding a subject
+// only means adding its topics. English FAL is in subjects but has no topics yet,
+// so it would otherwise show up as an empty picker entry.
+const subjectOptions = subjects.filter((s) => topicsForSubject(s.id).length > 0)
 
 export function LearnerPractise() {
   const [params, setParams] = useSearchParams()
@@ -27,10 +28,29 @@ export function LearnerPractise() {
   const [topicId, setTopicId] = useState(initialTopicId || topics[0]?.id || '')
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
 
-  const questions = useMemo(
-    () => filterQuestions({ topicId, difficulty: difficulty === 'All' ? undefined : difficulty }),
-    [topicId, difficulty],
-  )
+  // Paper-backed questions are lazy-loaded per subject, so this resolves after render.
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [loadingQuestions, setLoadingQuestions] = useState(false)
+
+  useEffect(() => {
+    if (!topicId) {
+      setQuestions([])
+      return
+    }
+    let cancelled = false
+    setLoadingQuestions(true)
+    filterSubjectQuestions(subjectId, {
+      topicId,
+      difficulty: difficulty === 'All' ? undefined : difficulty,
+    }).then((rows) => {
+      if (cancelled) return
+      setQuestions(rows)
+      setLoadingQuestions(false)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [subjectId, topicId, difficulty])
 
   const changeTopic = (id: string) => {
     setTopicId(id)
@@ -115,7 +135,9 @@ export function LearnerPractise() {
 
       {topicId ? <TopicNotes topicId={topicId} /> : null}
 
-      {questions.length === 0 ? (
+      {loadingQuestions ? (
+        <p className="text-sm text-navy-500">Loading questions…</p>
+      ) : questions.length === 0 ? (
         <EmptyState
           icon={<PencilIcon className="h-6 w-6" />}
           title="No sample questions at this difficulty yet"

@@ -906,8 +906,8 @@ export const questions: Question[] = [
     difficulty: 'Challenge',
     marks: 5,
     prompt: 'Determine, without a calculator, between which TWO consecutive integers √8 + √27 lies. Show your reasoning.',
-    answer: 'Between 7 and 8.',
-    explanation: '2 < √8 < 3 (since 4 < 8 < 9) and 5 < √27 < 6 (since 25 < 27 < 36), so the sum lies between 7 and 9. Tightening the estimate: √8 ≈ 2,8 and √27 ≈ 5,2, giving about 8,0 — checking 7,9² = 62,41 against the true value confirms the sum sits just below 8.',
+    answer: 'Between 8 and 9.',
+    explanation: 'Estimating each root separately gives 2 < √8 < 3 and 5 < √27 < 6, which only narrows the sum to between 7 and 9 — not enough. Squaring settles it: (√8 + √27)² = 8 + 27 + 2√216 = 35 + 2√216. Since 14,5² = 210,25 < 216 < 225 = 15², we have 14,5 < √216 < 15, so 64 < 35 + 2√216 < 65. As 8² = 64 and 9² = 81, the sum lies between 8 and 9.',
   },
   {
     id: 'num-c3',

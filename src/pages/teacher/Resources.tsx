@@ -8,8 +8,9 @@ import { BookIcon, DownloadIcon, EyeIcon, FilterIcon } from '@/components/ui/Ico
 import type { ResourceType } from '@/types'
 
 const resourceTypes: ResourceType[] = ['Learner Book', 'Workbook', 'Teacher Guide', 'Test', 'Memo']
-const teachableSubjectIds = ['mat-lit', 'mathematics']
-const teachableSubjects = subjects.filter((s) => teachableSubjectIds.includes(s.id))
+// Every subject that actually has topics -- previously hardcoded to the two
+// maths subjects, which hid Physical and Life Sciences from teachers.
+const teachableSubjects = subjects.filter((s) => topics.some((t) => t.subjectId === s.id))
 
 export function TeacherResources() {
   const [subjectId, setSubjectId] = useState<string>('all')

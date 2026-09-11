@@ -32,6 +32,14 @@ export const topics: Topic[] = [
     grades: [10, 11, 12],
   },
   {
+    id: 'math-number-systems',
+    subjectId: 'mathematics',
+    name: 'Number Systems and Surds',
+    description:
+      'Rational and irrational numbers, the real number system, recurring decimals, rounding, and estimating simple surds between integers.',
+    grades: [10],
+  },
+  {
     id: 'math-algebra',
     subjectId: 'mathematics',
     name: 'Algebra, Equations & Inequalities',

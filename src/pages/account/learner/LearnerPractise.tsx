@@ -51,6 +51,7 @@ export function LearnerPractise() {
     filterSubjectQuestions(subjectId, {
       topicId,
       difficulty: difficulty === 'All' ? undefined : difficulty,
+      grade: profile?.grade ?? undefined,
     }).then((rows) => {
       if (cancelled) return
       setQuestions(rows)
@@ -94,6 +95,20 @@ export function LearnerPractise() {
         title="Practise a topic"
         description={`Grade ${profile.grade} — every answer here is saved to your real account.`}
       />
+
+      {/* Grade, subject and topic stated explicitly: the same topic name appears in
+          more than one subject and every grade, so the heading alone is ambiguous. */}
+      <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">
+        Grade {profile.grade}
+        <span className="mx-2 text-navy-300">•</span>
+        {subjectOptions.find((s) => s.id === subjectId)?.name}
+        {topicId ? (
+          <>
+            <span className="mx-2 text-navy-300">•</span>
+            {topics.find((t) => t.id === topicId)?.name}
+          </>
+        ) : null}
+      </p>
 
       <div className="card flex flex-col gap-4 p-4">
         <div>

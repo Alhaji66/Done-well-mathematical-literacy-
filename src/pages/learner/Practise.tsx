@@ -42,6 +42,7 @@ export function LearnerPractise() {
     filterSubjectQuestions(subjectId, {
       topicId,
       difficulty: difficulty === 'All' ? undefined : difficulty,
+      grade: demoLearner.grade,
     }).then((rows) => {
       if (cancelled) return
       setQuestions(rows)

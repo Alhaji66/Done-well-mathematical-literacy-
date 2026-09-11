@@ -9,10 +9,10 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   base: process.env.GITHUB_PAGES ? '/Done-well-mathematical-literacy-/' : '/',
   // The exam-paper dataset (papers.ts) is deliberately one large lazy-loaded
-  // chunk, fetched only when a learner opens Assessments -- not part of the
-  // initial load, so it's exempt from the default 500kB warning.
+  // chunk per subject, fetched only when a learner opens Assessments -- not
+  // part of the initial load, so it's exempt from the default 500kB warning.
   build: {
-    chunkSizeWarningLimit: 1500,
+    chunkSizeWarningLimit: 2000,
   },
   plugins: [
     react(),

@@ -56,7 +56,9 @@ function LevelBar({ split, className }: { split: { easy: number; moderate: numbe
 }
 
 function GradePanel({ grade, subject }: { grade: GradeCoverage; subject: SubjectCoverage }) {
-  const { weighting } = subject
+  // The target is the grade's, not the subject's -- Mathematics sets a
+  // different one for Grade 12 than for Grades 10 and 11.
+  const { weighting } = grade
   const actualChallenge = sharePercent(grade.paperMarks.challenge, grade.paperMarks.total)
   const onTarget = weighting ? Math.abs(actualChallenge - weighting.level3and4) <= WEIGHTING_TOLERANCE : false
 
@@ -153,6 +155,14 @@ function GradePanel({ grade, subject }: { grade: GradeCoverage; subject: Subject
               </dd>
             </div>
           </dl>
+          {/* Without this, two grades of one subject showing different targets
+              reads as a bug in the page rather than as the curriculum. */}
+          {subject.weightingVariesByGrade ? (
+            <p className="mt-2 text-xs text-navy-500">
+              {subject.subjectName} sets a different weighting per grade, so this target is not the one shown for
+              the other grades on this page.
+            </p>
+          ) : null}
         </div>
       ) : null}
 

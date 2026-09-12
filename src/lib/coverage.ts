@@ -5,7 +5,12 @@ import { questionsForSubject } from '@/data/questionBank'
 import { papersForSubject } from '@/data/papers'
 import { getTopicNote } from '@/data/topicNotes'
 import { subtopicFor } from '@/data/subtopics'
-import { capsWeightingFor, WEIGHTING_TOLERANCE, type CapsWeighting } from '@/data/capsWeighting'
+import {
+  capsWeightingFor,
+  weightingVariesByGrade,
+  WEIGHTING_TOLERANCE,
+  type CapsWeighting,
+} from '@/data/capsWeighting'
 
 /**
  * Curriculum coverage report.
@@ -88,13 +93,20 @@ export interface GradeCoverage {
   paperMarks: LevelSplit
   /** The same marks by explicit CAPS cognitive level, where one is recorded. */
   capsMarks: CapsLevelMarks
+  /**
+   * The CAPS weighting for THIS grade. Mathematics sets a different one for
+   * Grade 12 than for Grades 10 and 11, so the target belongs to the grade
+   * rather than to the subject.
+   */
+  weighting: CapsWeighting | undefined
   findings: Finding[]
 }
 
 export interface SubjectCoverage {
   subjectId: string
   subjectName: string
-  weighting: CapsWeighting | undefined
+  /** True where the subject's targets differ between grades -- a note on the page. */
+  weightingVariesByGrade: boolean
   grades: GradeCoverage[]
 }
 
@@ -253,11 +265,13 @@ function buildFindings(
 
 export async function buildCoverage(subjectId: string): Promise<SubjectCoverage> {
   const subject = subjects.find((s) => s.id === subjectId)
-  const weighting = capsWeightingFor(subjectId)
   const allPapers = await papersForSubject(subjectId)
   const pool = await questionsForSubject(subjectId)
 
   const grades = (subject?.grades ?? []).map((grade) => {
+    // Resolved per grade, not per subject: Grade 12 Mathematics asks for 45% of
+    // marks at Levels 3-4 where Grades 10 and 11 ask for 30%.
+    const weighting = capsWeightingFor(subjectId, grade)
     const topics = topicsForSubject(subjectId, grade).map((t) => topicCoverage(pool, t.id, t.name, grade))
 
     const paperMarks = emptySplit()
@@ -293,6 +307,7 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
       papers,
       paperMarks,
       capsMarks,
+      weighting,
       findings: buildFindings(topics, papers, paperMarks, capsMarks, weighting),
     }
   })
@@ -300,7 +315,7 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
   return {
     subjectId,
     subjectName: subject?.name ?? subjectId,
-    weighting,
+    weightingVariesByGrade: weightingVariesByGrade(subjectId),
     grades,
   }
 }

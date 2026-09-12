@@ -22,7 +22,7 @@ export function TeacherDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">{subject.name} · Grades {demoTeacher.grades.join(' & ')}</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">{subject.name} · Grades {demoTeacher.grades.join(' & ')}</p>
         <h1 className="mt-1 text-2xl font-bold text-navy-900">Welcome back, {demoTeacher.name}</h1>
         <p className="mt-1 text-sm text-navy-600">Here's your class overview for this week.</p>
       </div>
@@ -83,7 +83,7 @@ export function TeacherDashboard() {
                     <span className="font-medium text-navy-900">{topic?.name}</span>
                     <span className="text-navy-600">{tp.averagePercent}%</span>
                   </div>
-                  <ProgressBar percent={tp.averagePercent} size="sm" className="mt-1.5" />
+                  <ProgressBar percent={tp.averagePercent} size="sm" className="mt-1.5" label={`${topic?.name} class average`} />
                 </div>
               )
             })}

@@ -26,6 +26,7 @@ export function TeacherAssessments() {
             <button
               key={a.id}
               type="button"
+              aria-pressed={selectedId === a.id}
               onClick={() => setSelectedId(a.id)}
               className={cn(
                 'card block w-full p-4 text-left transition-colors',
@@ -64,6 +65,7 @@ export function TeacherAssessments() {
               <div className="inline-flex rounded-lg border border-navy-200 bg-white p-1">
                 <button
                   type="button"
+                  aria-pressed={view === 'learner'}
                   onClick={() => setView('learner')}
                   className={cn('rounded-md px-3 py-1.5 text-xs font-semibold sm:text-sm', view === 'learner' ? 'bg-navy-900 text-white' : 'text-navy-600')}
                 >
@@ -71,6 +73,7 @@ export function TeacherAssessments() {
                 </button>
                 <button
                   type="button"
+                  aria-pressed={view === 'memo'}
                   onClick={() => setView('memo')}
                   className={cn('rounded-md px-3 py-1.5 text-xs font-semibold sm:text-sm', view === 'memo' ? 'bg-navy-900 text-white' : 'text-navy-600')}
                 >

@@ -104,7 +104,7 @@ export function MasteryAnalytics() {
                     <span className="font-medium text-navy-900">{topic?.name ?? topicId}</span>
                     <span className="text-navy-600">{avg}%</span>
                   </div>
-                  <ProgressBar percent={avg} size="sm" className="mt-1.5" />
+                  <ProgressBar percent={avg} size="sm" className="mt-1.5" label={`${topic?.name ?? topicId} class average`} />
                 </div>
               ))}
             </div>

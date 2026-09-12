@@ -23,7 +23,7 @@ export function LearnerProgress() {
           <h3 className="font-bold text-navy-900">Overall mastery</h3>
           <span className="text-xl font-extrabold text-navy-900">{demoLearner.overallMasteryPercent}%</span>
         </div>
-        <ProgressBar percent={demoLearner.overallMasteryPercent} className="mt-3" />
+        <ProgressBar percent={demoLearner.overallMasteryPercent} className="mt-3" label="Overall mastery" />
         <p className="mt-2 text-xs text-navy-500">Based on {demoLearner.topicProgress.reduce((s, t) => s + t.questionsAttempted, 0)} practice attempts across all topics.</p>
       </div>
 
@@ -40,7 +40,7 @@ export function LearnerProgress() {
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {nextUp.map((t) => (
-                <Link key={t.topicId} to={`/app/learner/practise?topic=${t.topicId}`} className="btn-primary btn-sm">
+                <Link key={t.topicId} to={`/app/learner/practise?subject=${getTopic(t.topicId)?.subjectId ?? demoLearner.subjectId}&grade=${demoLearner.grade}&topic=${t.topicId}`} className="btn-primary btn-sm">
                   Practise {getTopic(t.topicId)?.name}
                 </Link>
               ))}
@@ -65,7 +65,7 @@ export function LearnerProgress() {
                   <span className="text-lg font-bold text-navy-900">{tp.masteryPercent}%</span>
                 </div>
               </div>
-              <ProgressBar percent={tp.masteryPercent} className="mt-3" />
+              <ProgressBar percent={tp.masteryPercent} className="mt-3" label={`${topic.name} mastery`} />
             </div>
           )
         })}

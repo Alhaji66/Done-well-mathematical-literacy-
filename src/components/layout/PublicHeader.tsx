@@ -26,7 +26,7 @@ export function PublicHeader() {
             </svg>
           </span>
           <span className="text-lg font-extrabold tracking-tight text-navy-900">
-            DONE WELL<span className="align-super text-[0.6em] text-gold-600">®</span>
+            DONE WELL<span className="align-super text-[0.6em] text-gold-700">®</span>
           </span>
         </Link>
 

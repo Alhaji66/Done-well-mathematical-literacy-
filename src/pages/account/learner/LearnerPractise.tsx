@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { topicsForSubject, getTopic } from '@/data/topics'
@@ -8,6 +8,8 @@ import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/lea
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
+import { SubtopicSection } from '@/components/practise/SubtopicSection'
+import { groupBySubtopic } from '@/data/subtopics'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PencilIcon } from '@/components/ui/Icons'
 import type { Difficulty, Question } from '@/types'
@@ -25,13 +27,32 @@ export function LearnerPractise() {
   const [params, setParams] = useSearchParams()
   const [progress, setProgress] = useState<ProgressRow[]>([])
 
+  // The link that brought the learner here carries the whole identity of what
+  // they are practising -- subject, grade and topic -- so a shared or bookmarked
+  // link opens the same thing it did before. Topic-only links from older builds
+  // still work: the subject is recovered from the topic, and the grade from the
+  // profile.
   const initialTopicId = params.get('topic') ?? ''
-  const initialSubjectId = getTopic(initialTopicId)?.subjectId ?? profile?.subject_id ?? 'mat-lit'
+  const initialSubjectId =
+    params.get('subject') ?? getTopic(initialTopicId)?.subjectId ?? profile?.subject_id ?? 'mat-lit'
   const [subjectId, setSubjectId] = useState(initialSubjectId)
   const topics = topicsForSubject(subjectId, profile?.grade ?? undefined)
   const [topicId, setTopicId] = useState(initialTopicId || topics[0]?.id || '')
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
+  const [subtopic, setSubtopic] = useState(params.get('subtopic') ?? 'All')
   const [savedMessage, setSavedMessage] = useState('')
+
+  const routeFor = (next: { topic?: string; subtopic?: string; subject?: string }) => {
+    const query: Record<string, string> = {
+      subject: next.subject ?? subjectId,
+      topic: next.topic ?? topicId,
+    }
+    if (profile?.grade) query.grade = String(profile.grade)
+    const sub = next.subtopic ?? subtopic
+    if (sub && sub !== 'All') query.subtopic = sub
+    if (!query.topic) delete query.topic
+    return query
+  }
 
   useEffect(() => {
     if (profile) fetchLearnerProgress(profile.id).then(setProgress)
@@ -64,7 +85,13 @@ export function LearnerPractise() {
 
   const changeTopic = (id: string) => {
     setTopicId(id)
-    setParams({ topic: id })
+    setSubtopic('All')
+    setParams(routeFor({ topic: id, subtopic: 'All' }))
+  }
+
+  const changeSubtopic = (name: string) => {
+    setSubtopic(name)
+    setParams(routeFor({ subtopic: name }))
   }
 
   const changeSubject = (id: string) => {
@@ -72,8 +99,14 @@ export function LearnerPractise() {
     const nextTopics = topicsForSubject(id, profile?.grade ?? undefined)
     const nextTopicId = nextTopics[0]?.id ?? ''
     setTopicId(nextTopicId)
-    setParams(nextTopicId ? { topic: nextTopicId } : {})
+    setSubtopic('All')
+    setParams(routeFor({ subject: id, topic: nextTopicId, subtopic: 'All' }))
   }
+
+  // Group once per question set, not per render: Finance alone runs to several
+  // hundred items and the classifier walks each one.
+  const groups = useMemo(() => groupBySubtopic(topicId, questions), [topicId, questions])
+  const shown = subtopic === 'All' ? groups : groups.filter((g) => g.name === subtopic)
 
   const handleAttempt = async (correct: boolean | null) => {
     if (!profile || !topicId) return
@@ -118,6 +151,7 @@ export function LearnerPractise() {
               <button
                 key={s.id}
                 type="button"
+                aria-pressed={subjectId === s.id}
                 onClick={() => changeSubject(s.id)}
                 className={cn(
                   'rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
@@ -151,6 +185,7 @@ export function LearnerPractise() {
                 <button
                   key={d}
                   type="button"
+                  aria-pressed={difficulty === d}
                   onClick={() => setDifficulty(d)}
                   className={cn(
                     'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
@@ -163,9 +198,38 @@ export function LearnerPractise() {
             </div>
           </div>
         </div>
+
+        {groups.length > 1 ? (
+          <div>
+            <p className="text-xs font-medium text-navy-500">Sub-topic</p>
+            <div className="mt-1 flex flex-wrap gap-1 rounded-lg border border-navy-200 bg-white p-1">
+              {['All', ...groups.map((g) => g.name)].map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  aria-pressed={subtopic === name}
+                  onClick={() => changeSubtopic(name)}
+                  className={cn(
+                    'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors',
+                    subtopic === name ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+                  )}
+                >
+                  {name === 'All' ? 'All sub-topics' : name}
+                  {name !== 'All' ? (
+                    <span className={cn('ml-1.5', subtopic === name ? 'text-navy-300' : 'text-navy-400')}>
+                      {groups.find((g) => g.name === name)?.questions.length}
+                    </span>
+                  ) : null}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {topicId ? <TopicNotes topicId={topicId} /> : null}
+      {/* The topic overview only. Each sub-topic's own explanation is rendered
+          directly above its questions, where it is actually needed. */}
+      {topicId ? <TopicNotes topicId={topicId} showSubtopics={false} /> : null}
 
       {savedMessage ? (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
@@ -182,9 +246,19 @@ export function LearnerPractise() {
           description="Try a different difficulty level, or choose another topic — more questions are added regularly."
         />
       ) : (
-        <div className="space-y-4">
-          {questions.map((q, i) => (
-            <QuestionCard key={q.id} question={q} index={i} onAttempt={handleAttempt} />
+        <div className="space-y-8">
+          {shown.map((group, groupIndex) => (
+            <SubtopicSection
+              key={group.name}
+              name={group.name}
+              points={group.points}
+              count={group.questions.length}
+              index={subtopic === 'All' ? groupIndex : groups.findIndex((g) => g.name === group.name)}
+            >
+              {group.questions.map((q, i) => (
+                <QuestionCard key={q.id} question={q} index={i} onAttempt={handleAttempt} />
+              ))}
+            </SubtopicSection>
           ))}
         </div>
       )}

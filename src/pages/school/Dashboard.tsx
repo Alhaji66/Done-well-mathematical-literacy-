@@ -11,7 +11,7 @@ export function SchoolDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">School Overview</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">School Overview</p>
         <h1 className="mt-1 text-2xl font-bold text-navy-900">Gojela High School</h1>
         <p className="mt-1 text-sm text-navy-600">A whole-school snapshot of participation and performance.</p>
       </div>
@@ -58,7 +58,7 @@ export function SchoolDashboard() {
                 <span className="font-medium text-navy-900">Grade {g.grade} · {g.learnerCount} learners</span>
                 <span className="text-navy-600">{g.averageScore}% average</span>
               </div>
-              <ProgressBar percent={g.averageScore} className="mt-1.5" />
+              <ProgressBar percent={g.averageScore} className="mt-1.5" label={`Grade ${g.grade} average score`} />
             </div>
           ))}
         </div>

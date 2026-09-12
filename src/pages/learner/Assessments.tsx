@@ -65,6 +65,7 @@ export function LearnerAssessments() {
               <button
                 key={s.id}
                 type="button"
+                aria-pressed={subjectId === s.id}
                 onClick={() => setSubjectId(s.id)}
                 className={cn(
                   'rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
@@ -84,6 +85,7 @@ export function LearnerAssessments() {
               <button
                 key={n}
                 type="button"
+                aria-pressed={paperNumber === n}
                 onClick={() => setPaperNumber(n)}
                 className={cn(
                   'rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
@@ -103,6 +105,7 @@ export function LearnerAssessments() {
               <button
                 key={g}
                 type="button"
+                aria-pressed={grade === g}
                 onClick={() => setGrade(g)}
                 className={cn(
                   'rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors sm:text-sm',

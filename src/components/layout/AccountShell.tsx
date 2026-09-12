@@ -21,6 +21,9 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
 
   return (
     <div className="min-h-screen bg-neutral-50">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <header className="sticky top-0 z-30 border-b border-navy-100 bg-white">
         <div className="container-page flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -31,7 +34,7 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
               </svg>
             </span>
             <span className="text-base font-extrabold tracking-tight text-navy-900">
-              DONE WELL<span className="align-super text-[0.55em] text-gold-600">®</span>
+              DONE WELL<span className="align-super text-[0.55em] text-gold-700">®</span>
             </span>
           </Link>
 
@@ -70,7 +73,7 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-24 md:pb-6">
+        <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 pb-24 md:pb-6">
           <Outlet />
         </main>
       </div>

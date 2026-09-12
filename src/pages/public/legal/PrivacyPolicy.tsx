@@ -1,12 +1,17 @@
+import { Link } from 'react-router-dom'
 import { LegalLayout } from '@/components/layout/LegalLayout'
 
 export function PrivacyPolicy() {
   return (
     <LegalLayout title="Privacy Policy" updated="September 2026">
       <div className="rounded-lg border border-gold-200 bg-gold-50 p-4 text-sm text-navy-700">
-        <strong>Prototype notice:</strong> DONE WELL® is currently a demo. No real accounts exist yet, and the site
-        does not collect or store any real learner, parent or teacher information — every name and result you see is
-        sample data. This policy describes how your information will be handled once real accounts launch.
+        <strong>Demo and real accounts:</strong> you can browse this site and try the demo without an account, and we
+        collect nothing about you when you do — every name and result in the demo is sample data. Real accounts do
+        exist: if you create one, we hold the information set out in our{' '}
+        <Link to="/popia" className="font-semibold underline">
+          POPIA notice
+        </Link>
+        , which lists it item by item.
       </div>
 
       <section>
@@ -59,16 +64,22 @@ export function PrivacyPolicy() {
       <section>
         <h2 className="text-lg font-bold text-navy-900">5. Storage and security</h2>
         <p className="mt-2">
-          When real accounts launch, information will be stored with reputable hosting providers, protected with
-          encryption in transit, and accessible only to authorised staff who need it to operate the platform.
+          Your information is stored in a hosted database, encrypted in transit, and access is enforced in the
+          database itself row by row, so one account cannot read another's records. We sign you in with a one-time
+          link, so there is no password for us to store.
         </p>
       </section>
 
       <section>
         <h2 className="text-lg font-bold text-navy-900">6. Your rights</h2>
         <p className="mt-2">
-          Once you have a real account, you will be able to ask us to access, correct, or delete your personal
-          information, or object to how it is used, by contacting us at the email address above.
+          Signed in, open <strong>Privacy &amp; data</strong> in your account. You can see everything we hold,
+          download a copy of it, see and remove anyone who can read your progress, withdraw your consent, and delete
+          the account outright — without having to ask us. Our{' '}
+          <Link to="/popia" className="font-semibold underline">
+            POPIA notice
+          </Link>{' '}
+          explains each right and the one step that still needs an email.
         </p>
       </section>
 

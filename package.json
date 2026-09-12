@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:reachability": "tsx tools/reachability.mts",
+    "check:subtopics": "tsx tools/subtopic-coverage.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

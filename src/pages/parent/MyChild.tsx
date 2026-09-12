@@ -40,7 +40,7 @@ export function ParentMyChild() {
                     <span className="text-sm font-bold text-navy-800">{tp.masteryPercent}%</span>
                   </div>
                 </div>
-                <ProgressBar percent={tp.masteryPercent} className="mt-2.5" />
+                <ProgressBar percent={tp.masteryPercent} className="mt-2.5" label={`${topic.name} mastery`} />
               </div>
             )
           })}

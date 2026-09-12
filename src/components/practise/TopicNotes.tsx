@@ -3,7 +3,20 @@ import { getTopicNote } from '@/data/topicNotes'
 import { BookIcon, SparkleIcon, ChevronRightIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 
-export function TopicNotes({ topicId, defaultOpen = true }: { topicId: string; defaultOpen?: boolean }) {
+/**
+ * `showSubtopics` is off where the page renders each sub-topic's explanation
+ * above its own questions -- Practise does. Printing the same points twice on
+ * one screen is worse than printing them once in the right place.
+ */
+export function TopicNotes({
+  topicId,
+  defaultOpen = true,
+  showSubtopics = true,
+}: {
+  topicId: string
+  defaultOpen?: boolean
+  showSubtopics?: boolean
+}) {
   const note = getTopicNote(topicId)
   const [open, setOpen] = useState(defaultOpen)
 
@@ -46,7 +59,7 @@ export function TopicNotes({ topicId, defaultOpen = true }: { topicId: string; d
             </ul>
           </div>
 
-          {note.subtopics?.length ? (
+          {showSubtopics && note.subtopics?.length ? (
             <div>
               <h4 className="text-xs font-semibold uppercase tracking-wide text-navy-500">What this topic covers</h4>
               <div className="mt-2 space-y-3">

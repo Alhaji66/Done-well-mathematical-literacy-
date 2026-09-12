@@ -82,7 +82,7 @@ export function LearnerProgress() {
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {nextUp.map((t) => (
-                      <Link key={t.topic_id} to={`/account/learner/practise?topic=${t.topic_id}`} className="btn-primary btn-sm">
+                      <Link key={t.topic_id} to={`/account/learner/practise?subject=${getTopic(t.topic_id)?.subjectId ?? profile?.subject_id ?? ""}&grade=${profile?.grade ?? ""}&topic=${t.topic_id}`} className="btn-primary btn-sm">
                         Practise {getTopic(t.topic_id)?.name}
                       </Link>
                     ))}

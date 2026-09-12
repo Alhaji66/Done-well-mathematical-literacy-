@@ -103,7 +103,7 @@ export function LearnerLearn() {
               ) : null}
               <TopicNotes topicId={topic.id} defaultOpen={false} />
               <Link
-                to={`/app/learner/practise?topic=${topic.id}`}
+                to={`/app/learner/practise?subject=${subjectId}&grade=${grade}&topic=${topic.id}`}
                 className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-navy-700 hover:text-navy-900"
               >
                 Start practising <ChevronRightIcon className="h-4 w-4" />

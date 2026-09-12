@@ -42,6 +42,106 @@ export const topicNotes: TopicNote[] = [
       'Tariffs (electricity, water, airtime, municipal accounts): total cost = fixed charge + (rate × amount used)',
       'Break-even: the point where income from sales equals total costs — below it there is a loss, above it a profit',
     ],
+    subtopics: [
+      {
+        name: 'Number formats, rounding and percentages',
+        points: [
+          'Money is written to two decimal places: R1 234,50 — not R1 234,5.',
+          'Round only at the very end of a calculation. Rounding partway through and carrying that rounded value forward is the commonest way to lose marks in this topic.',
+          'To find a percentage of an amount, multiply: 15% of R240 = 0,15 × R240 = R36.',
+          'To write one amount as a percentage of another, divide then multiply by 100: R36 out of R240 = 36 ÷ 240 × 100 = 15%.',
+          'A percentage increase or decrease is always worked out on the ORIGINAL amount, never on the new one.',
+        ],
+      },
+      {
+        name: 'Income, expenditure and household budgets',
+        points: [
+          'Income is money coming in, expenditure is money going out, and balance = income − expenditure.',
+          'A positive balance is a surplus; a negative balance is a shortfall (a deficit).',
+          'Fixed expenses stay the same every month — rent, school fees, insurance. Variable expenses change — electricity, food, transport.',
+          'A budget is a plan made in advance; actual figures are what really happened. Questions often ask you to compare the two and explain the difference.',
+          'When asked to advise someone who is short of money, cut variable expenses first: fixed expenses are usually contractual and cannot simply be reduced.',
+        ],
+      },
+      {
+        name: 'Financial documents: payslips, bills and statements',
+        points: [
+          'A payslip shows gross salary, deductions (tax, UIF, pension, medical aid) and net salary. Net salary = gross salary − total deductions.',
+          'Gross is before deductions; net is what actually reaches the bank account. Reading the wrong one is a frequent error.',
+          'A bank statement lists deposits (money in), withdrawals (money out) and a running balance. A negative balance means the account is overdrawn.',
+          'A till slip or invoice shows the VAT-exclusive amount, the VAT, and the VAT-inclusive total.',
+          'A municipal account shows the previous balance, payments received, new charges and the amount now due.',
+        ],
+      },
+      {
+        name: 'Tariffs and municipal accounts',
+        points: [
+          'Total cost = fixed charge + (rate × units used). The fixed charge is paid even in a month when nothing is used.',
+          'A stepped (block) tariff charges a different rate for each block of usage. Charge each block at its own rate and add the results — do NOT put the whole amount through the highest rate.',
+          'Read the block boundaries carefully: "the next 150 kWh" means the 150 units after the first block, not the first 150.',
+          'Comparing two tariff options means finding the usage at which they cost the same, then saying which is cheaper on each side of that point.',
+          'Electricity is measured in kilowatt-hours (kWh), water in kilolitres (kℓ), and calls usually per second or per minute.',
+        ],
+      },
+      {
+        name: 'Interest, loans and investments',
+        points: [
+          'Simple interest adds the same amount every year, always calculated on the original amount.',
+          'Compound interest calculates each year\'s interest on the new balance, so the amount added grows every year.',
+          'Over the same period and rate, compound interest always yields more than simple interest — a standard "explain why" question.',
+          'On a loan, total repaid = monthly instalment × number of instalments, and the cost of the loan = total repaid − amount borrowed.',
+          'A longer loan term means smaller instalments but more interest in total. Be ready to explain that trade-off in words.',
+        ],
+      },
+      {
+        name: 'Taxation: income tax, VAT and UIF',
+        points: [
+          'Income tax is read off a bracket table: find the bracket, take the fixed amount, then add the stated percentage of the income ABOVE that bracket\'s lower limit.',
+          'Never apply the bracket percentage to the whole income — only to the portion above the threshold shown in that row.',
+          'Rebates are subtracted after the tax has been calculated. The primary rebate applies to everyone; secondary and tertiary rebates apply from age 65 and 75.',
+          'VAT in South Africa is 15%. To add VAT, multiply by 1,15. To find the VAT inside an inclusive price, multiply by 15 and divide by 115.',
+          'To get back to the exclusive price from an inclusive one, divide by 1,15. Subtracting 15% is wrong and is heavily penalised.',
+          'Zero-rated items such as brown bread, maize meal, rice, milk, fruit, vegetables and paraffin carry no VAT.',
+          'UIF is 1% of gross salary from the employee and 1% from the employer, up to a monthly earnings ceiling.',
+        ],
+      },
+      {
+        name: 'Break-even, profit and business decisions',
+        points: [
+          'Fixed costs do not change with the number of items made; variable costs do.',
+          'Total cost = fixed cost + (variable cost per item × number of items), and income = selling price × number sold.',
+          'Break-even is where income equals total cost. Below it the business runs at a loss; above it, at a profit.',
+          'Profit = income − total cost. Percentage profit is taken on the cost price unless the question says otherwise.',
+          'Where a graph is given, the break-even point is where the income line crosses the cost line — read it off rather than calculating it again.',
+        ],
+      },
+      {
+        name: 'Exchange rates and inflation',
+        points: [
+          'A rate such as R18,50 = $1 converts one way by multiplying and the other by dividing. Decide which way you are going before you touch the calculator.',
+          'A weaker rand means more rands per dollar: imports cost more, and exports become cheaper for overseas buyers.',
+          'Inflation is the percentage rise in prices over a year. Applied over several years it is a compound calculation, not a simple one.',
+          'To compare prices across two countries, convert both to the same currency first, then compare.',
+        ],
+      },
+    ],
+    formulae: [
+      'Balance = income − expenditure',
+      'Total tariff cost = fixed charge + (rate × units used)',
+      'Simple interest: A = P(1 + i × n)',
+      'Compound interest: A = P(1 + i)ⁿ',
+      'VAT at 15%: inclusive = exclusive × 1,15  |  VAT inside an inclusive price = price × 15 ÷ 115',
+      'Break-even: selling price × n = fixed cost + (variable cost × n)',
+      'Percentage change = (new − old) ÷ old × 100',
+    ],
+    commonMistakes: [
+      'Applying a tax-bracket percentage to the whole income instead of only the part above the threshold.',
+      'Putting all electricity or water usage through the highest tariff block instead of charging each block at its own rate.',
+      'Confusing gross and net salary on a payslip.',
+      'Working out a percentage increase on the new amount instead of the original.',
+      'Rounding money partway through a calculation and carrying the rounded figure forward.',
+      'Subtracting 15% to get a VAT-exclusive price, instead of dividing by 1,15.',
+    ],
     example: {
       problem:
         'A cellphone contract costs a fixed R99 per month plus R1.50 per minute of calls. Calculate the total bill for a month with 40 minutes of calls.',
@@ -64,6 +164,91 @@ export const topicNotes: TopicNote[] = [
       'Range = highest value − lowest value, a simple measure of spread',
       'Probability of an event = number of favourable outcomes ÷ total number of possible outcomes',
     ],
+    subtopics: [
+      {
+        name: 'Collecting and organising data',
+        points: [
+          'The population is everyone the study is about; a sample is the part actually asked. A sample must be representative or the conclusion is unreliable.',
+          'Discrete data is counted (number of learners); continuous data is measured (height, mass, time).',
+          'A tally and frequency table turns a raw list into something readable. Check that the frequencies add up to the number of data values.',
+          'Grouped data uses class intervals such as 10 – 19, 20 – 29. Intervals must not overlap and must not leave gaps.',
+        ],
+      },
+      {
+        name: 'Mean, median and mode',
+        points: [
+          'Mean = sum of all values ÷ number of values. It uses every value, so one extreme value pulls it.',
+          'Median = the middle value once the data is in order. With an even number of values, average the two middle ones.',
+          'Mode = the value that appears most often. A set can have no mode, or more than one.',
+          'Always arrange the data in order before finding the median. Forgetting to sort is the commonest error in this section.',
+          'Where there is an outlier, the median is the better measure, because it is not dragged by one unusually large or small value.',
+        ],
+      },
+      {
+        name: 'Spread: range, quartiles and box-and-whisker',
+        points: [
+          'Range = highest − lowest. Simple, but it uses only two values.',
+          'The quartiles split ordered data into four equal parts: Q1, the median (Q2), and Q3.',
+          'Interquartile range = Q3 − Q1. It describes the middle half of the data and ignores the extremes.',
+          'The five-number summary is minimum, Q1, median, Q3, maximum — exactly what a box-and-whisker diagram draws.',
+          'A long whisker on one side means the data is spread out on that side; a short box means the middle half is tightly bunched.',
+        ],
+      },
+      {
+        name: 'Representing data in tables and graphs',
+        points: [
+          'Bar graphs compare separate categories, so the bars have gaps between them.',
+          'Histograms show grouped numerical data, so the bars touch — the intervals run continuously.',
+          'Line graphs show change over time. Pie charts show parts of a whole, each slice being a percentage of 360°.',
+          'A compound (stacked) bar graph shows totals and their parts at the same time.',
+          'Every graph needs a title, labelled axes with units, and a sensible scale. Questions do ask you to name what is missing.',
+        ],
+      },
+      {
+        name: 'Interpreting and comparing graphs',
+        points: [
+          'Read the axis labels and the scale before reading any value off the graph.',
+          'When comparing two data sets, compare both a centre (mean or median) and a spread (range or IQR) — one alone is not an answer.',
+          'A trend is the general direction over time, not every individual rise and fall.',
+          'When asked to justify, quote the actual numbers. "It is higher" earns nothing; "it rose from 42% to 67%" earns the mark.',
+        ],
+      },
+      {
+        name: 'Misleading graphs and data quality',
+        points: [
+          'A vertical axis that does not start at zero exaggerates differences. This is the most commonly examined trick.',
+          'Unequal intervals on an axis, or pictures drawn at different sizes, distort the comparison.',
+          'A small or self-selected sample cannot support a claim about a whole population.',
+          'When asked whether a conclusion is valid, name the specific flaw in the data or the graph, then say what it does to the conclusion.',
+        ],
+      },
+      {
+        name: 'Probability, chance and relative frequency',
+        points: [
+          'Probability = favourable outcomes ÷ total possible outcomes, written as a fraction, decimal or percentage between 0 and 1.',
+          'Theoretical probability comes from the situation itself; relative frequency comes from what actually happened in a trial.',
+          'The more trials are run, the closer relative frequency tends to get to theoretical probability.',
+          'P(not A) = 1 − P(A).',
+          'A two-way table or a tree diagram organises two-stage situations. Read the total you need from the correct row, column or branch.',
+        ],
+      },
+    ],
+    formulae: [
+      'Mean = sum of values ÷ number of values',
+      'Range = maximum − minimum',
+      'Interquartile range = Q3 − Q1',
+      'P(event) = favourable outcomes ÷ total outcomes',
+      'P(not A) = 1 − P(A)',
+      'Relative frequency = number of times the event happened ÷ number of trials',
+    ],
+    commonMistakes: [
+      'Finding the median without first arranging the data in order.',
+      'Reading a value off a graph without checking where the scale starts.',
+      'Giving the frequency instead of the data value when asked for the mode.',
+      'Comparing two data sets using only the mean, with nothing said about spread.',
+      'Writing a probability greater than 1, or adding probabilities that should have been multiplied.',
+      'Saying a graph is misleading without naming what exactly is wrong with it.',
+    ],
     example: {
       problem: 'Seven learners scored these marks out of 100 in a test: 45, 60, 55, 70, 60, 80, 50. Find the mean, median and mode.',
       steps: [
@@ -84,6 +269,79 @@ export const topicNotes: TopicNote[] = [
       'Compass directions and bearings describe the direction from one point to another',
       'Floor plans use a scale to show real room dimensions on paper — always check the scale given before measuring',
     ],
+    subtopics: [
+      {
+        name: 'Scale: number scales and bar scales',
+        points: [
+          'A number scale such as 1 : 500 means one unit on the plan stands for 500 of the same units in real life.',
+          'Real distance = map distance × scale. Map distance = real distance ÷ scale.',
+          'Convert units at the end: 1 : 500 with a 4 cm measurement gives 2 000 cm, which is 20 m.',
+          'A bar scale is measured with a ruler against the printed bar. It stays correct even if the page is enlarged or reduced; a number scale does not.',
+          'A larger second number means a more zoomed-out map: 1 : 50 000 shows far more ground than 1 : 1 000.',
+        ],
+      },
+      {
+        name: 'Distance, direction and bearings',
+        points: [
+          'The compass directions run N, NE, E, SE, S, SW, W, NW clockwise from north.',
+          'A true bearing is measured clockwise from north and is always written with three digits: 045°, 130°, 270°.',
+          'To describe the way back along the same line, add or subtract 180°.',
+          'On a street map, give directions as a sequence someone could actually follow: which street, which way to turn, how far.',
+        ],
+      },
+      {
+        name: 'Route planning and travel time',
+        points: [
+          'Distance = speed × time, time = distance ÷ speed, speed = distance ÷ time.',
+          'Convert time properly: 1 h 30 min is 1,5 hours, not 1,3.',
+          'A distance table between towns is read where the row and the column meet. Read it once, carefully.',
+          'The shortest route is not always the quickest — road type, stops and traffic matter, and questions often ask you to justify a choice.',
+          'Add rest stops and border or fuel delays to the driving time when the question gives them.',
+        ],
+      },
+      {
+        name: 'Floor plans and elevation drawings',
+        points: [
+          'A floor plan is the view looking straight down from above; an elevation is the view of one side from ground level.',
+          'North, south, east and west elevations each show a different face of the same building.',
+          'Use the scale to turn plan measurements into real room dimensions, then use those for area, perimeter, flooring or paint quantities.',
+          'Doors, windows and fittings have standard symbols. Read the key before answering.',
+          'For flooring or tiles, work out the room area, divide by the area one unit covers, then round UP — you cannot buy part of a tile.',
+        ],
+      },
+      {
+        name: 'Seating, layout and packing plans',
+        points: [
+          'A seating or stand plan question is usually about counting rows and seats, or finding a seat from a block, row and number.',
+          'Packing questions ask how many small items fit into a larger space: divide along each dimension separately and round each one DOWN before multiplying.',
+          'Never simply divide the big volume by the small volume — that ignores the wasted space where items do not fit whole.',
+          'Check whether items may be turned on their side or stacked; the question normally says.',
+        ],
+      },
+      {
+        name: 'Models, assembly diagrams and instructions',
+        points: [
+          'A model is a scaled physical version. If lengths are scaled by k, areas scale by k² and volumes by k³.',
+          'Assembly instructions are read in order; questions test whether you can follow a sequence and identify the parts needed.',
+          'When asked whether something will fit, compare every dimension, not only the largest one.',
+        ],
+      },
+    ],
+    formulae: [
+      'Real distance = map distance × scale factor',
+      'Map distance = real distance ÷ scale factor',
+      'Distance = speed × time',
+      'Items that fit along a side = length available ÷ length of one item, rounded down',
+      'Scaling a model: length × k, area × k², volume × k³',
+    ],
+    commonMistakes: [
+      'Forgetting to convert centimetres to metres or kilometres after applying the scale.',
+      'Writing a bearing with fewer than three digits.',
+      'Reading 1 h 45 min as 1,45 hours instead of 1,75 hours.',
+      'Dividing total volume by item volume in a packing question instead of fitting along each dimension.',
+      'Rounding down the number of tiles or tins of paint needed instead of up.',
+      'Using a number scale on a map that has been photocopied at a different size.',
+    ],
     example: {
       problem: 'A map has a scale of 1 : 50 000. The distance between two towns measured on the map is 8 cm. Find the actual distance in kilometres.',
       steps: [
@@ -102,6 +360,94 @@ export const topicNotes: TopicNote[] = [
       'Area of a rectangle = length × breadth; area of a triangle = ½ × base × height',
       'Volume of a rectangular prism (box) = length × breadth × height',
       'Common conversions: 1 m = 100 cm, 1 kg = 1 000 g, 1 kl = 1 000 l, 1 m³ = 1 000 litres',
+    ],
+    subtopics: [
+      {
+        name: 'Units and conversions',
+        points: [
+          'Length: 10 mm = 1 cm, 100 cm = 1 m, 1 000 m = 1 km.',
+          'Mass: 1 000 mg = 1 g, 1 000 g = 1 kg, 1 000 kg = 1 t.',
+          'Capacity: 1 000 mℓ = 1 ℓ, 1 000 ℓ = 1 kℓ. And 1 cm³ = 1 mℓ, so 1 000 cm³ = 1 ℓ and 1 m³ = 1 000 ℓ.',
+          'Going to a smaller unit multiplies; going to a larger unit divides. Decide which way first, then convert.',
+          'Area units square the conversion: 1 m² = 10 000 cm². Volume units cube it: 1 m³ = 1 000 000 cm³.',
+        ],
+      },
+      {
+        name: 'Perimeter and distance around a shape',
+        points: [
+          'Perimeter is the total distance around the outside, measured in ordinary length units.',
+          'Rectangle: P = 2(l + b). For a circle the perimeter is called the circumference, C = 2πr or πd.',
+          'For an irregular shape, add every outside edge. Missing side lengths can usually be worked out from the sides that are given.',
+          'Fencing, skirting and edging questions are perimeter questions.',
+        ],
+      },
+      {
+        name: 'Area',
+        points: [
+          'Rectangle: A = l × b. Triangle: A = ½ × base × perpendicular height. Circle: A = πr².',
+          'The height of a triangle must be perpendicular to the base you used — not a slanted side.',
+          'Break a composite shape into rectangles, triangles and part-circles, find each area, then add (or subtract for a hole).',
+          'Paint, tiling, carpeting and lawn questions are area questions: divide the area by the coverage of one unit, then round up.',
+          'Area is always in square units: m², cm², km².',
+        ],
+      },
+      {
+        name: 'Volume and capacity',
+        points: [
+          'Rectangular prism: V = l × b × h. Cylinder: V = πr²h. For any prism, V = area of base × height.',
+          'Volume is the space inside; capacity is how much liquid it holds. They are linked by 1 cm³ = 1 mℓ and 1 m³ = 1 000 ℓ.',
+          'Watch the radius: tanks and pipes are usually described by diameter, and r = d ÷ 2.',
+          'A tank filled to a stated depth uses that depth as the height, not the full height of the tank.',
+          'Volume is in cubic units: m³, cm³, mm³.',
+        ],
+      },
+      {
+        name: 'Surface area',
+        points: [
+          'Surface area is the total area of every face — it is an area, so it is measured in square units.',
+          'Rectangular prism: SA = 2(lb + lh + bh).',
+          'Closed cylinder: SA = 2πr² + 2πrh. An open cylinder drops one circle: SA = πr² + 2πrh.',
+          'Read whether the object is open or closed, and whether the base is included. That decides which faces you count.',
+          'Painting the outside of a container is a surface-area question; filling it is a volume question.',
+        ],
+      },
+      {
+        name: 'Mass, rates and practical calculations',
+        points: [
+          'A rate links two different quantities: R/kg, km/ℓ, ℓ per 100 km, litres per minute.',
+          'To use a rate, multiply or divide so that the unwanted unit cancels.',
+          'Fuel given as ℓ per 100 km: litres needed = distance ÷ 100 × consumption.',
+          'A flow rate fills a container: time = volume ÷ flow rate, with both in matching units.',
+          'Cooking and dosage questions scale a recipe or a dose in proportion — set up the ratio and keep the units consistent.',
+        ],
+      },
+      {
+        name: 'Time, temperature and reading instruments',
+        points: [
+          'The 24-hour clock runs 00:00 to 23:59, so 14:30 is half past two in the afternoon.',
+          'Time differences are worked out in hours and minutes, not decimal hours, unless decimals are asked for.',
+          'Temperature in °C: water freezes at 0 °C and boils at 100 °C. °F = °C × 1,8 + 32.',
+          'Reading a measuring jug, thermometer or tape means first working out what one small division is worth.',
+        ],
+      },
+    ],
+    formulae: [
+      'Rectangle: P = 2(l + b), A = l × b',
+      'Triangle: A = ½ × base × perpendicular height',
+      'Circle: C = 2πr, A = πr²',
+      'Rectangular prism: V = l × b × h, SA = 2(lb + lh + bh)',
+      'Cylinder: V = πr²h, closed SA = 2πr² + 2πrh',
+      'Any prism: V = area of base × height',
+      '1 cm³ = 1 mℓ, 1 m³ = 1 000 ℓ',
+      '°F = °C × 1,8 + 32',
+    ],
+    commonMistakes: [
+      'Using a slanted side as the height of a triangle instead of the perpendicular height.',
+      'Using the diameter in place of the radius in πr² or πr²h.',
+      'Converting area with a single factor (×100) instead of squaring it (×10 000).',
+      'Giving a surface area in cubic units, or a volume in square units.',
+      'Including the lid of an open container in a surface-area calculation.',
+      'Rounding down the number of tins, tiles or bags needed instead of up.',
     ],
     example: {
       problem: 'A rectangular water tank is 2 m long, 1.5 m wide and 1.2 m high. Calculate how many litres of water it can hold.',
@@ -123,6 +469,99 @@ export const topicNotes: TopicNote[] = [
       'Simultaneous equations can be solved by substitution or elimination',
       'When multiplying or dividing an inequality by a negative number, the inequality sign must flip direction',
     ],
+    subtopics: [
+      {
+        name: 'Exponents and surds',
+        points: [
+          'The laws: aᵐ × aⁿ = aᵐ⁺ⁿ, aᵐ ÷ aⁿ = aᵐ⁻ⁿ, (aᵐ)ⁿ = aᵐⁿ, a⁰ = 1, a⁻ⁿ = 1 ÷ aⁿ.',
+          'A fractional exponent is a root: a^(m/n) is the n-th root of aᵐ.',
+          'Before applying a law, write every base as a power of the same number: 8 = 2³, 27 = 3³, 0,25 = 2⁻².',
+          'Rationalising a denominator means multiplying top and bottom by the surd, or by the conjugate when the denominator is a binomial.',
+          'Exponential equations are solved by making the bases equal and then equating the exponents.',
+        ],
+      },
+      {
+        name: 'Simplifying and factorising expressions',
+        points: [
+          'Always take out the highest common factor first. Many questions are only difficult because this step was skipped.',
+          'Difference of two squares: a² − b² = (a − b)(a + b).',
+          'Trinomials: find two numbers that multiply to give the product of the first and last coefficients and add to give the middle one.',
+          'Sum and difference of two cubes: a³ + b³ = (a + b)(a² − ab + b²) and a³ − b³ = (a − b)(a² + ab + b²).',
+          'Grouping in pairs handles four-term expressions: factorise each pair, then take out the common bracket.',
+        ],
+      },
+      {
+        name: 'Algebraic fractions',
+        points: [
+          'Factorise every numerator and denominator before cancelling anything.',
+          'You may cancel factors, never terms. Cancelling across a + or − sign is always wrong.',
+          'To add or subtract, find the lowest common denominator from the factorised forms.',
+          'To divide, multiply by the reciprocal of the second fraction.',
+          'State any restrictions: a denominator can never equal zero.',
+        ],
+      },
+      {
+        name: 'Linear equations and inequalities',
+        points: [
+          'Whatever you do to one side you must do to the other.',
+          'Clear fractions early by multiplying every term by the lowest common denominator.',
+          'When you multiply or divide an inequality by a negative number, the inequality sign turns around.',
+          'Give inequality answers in the form asked for: interval notation, set-builder notation, or on a number line.',
+        ],
+      },
+      {
+        name: 'Quadratic equations',
+        points: [
+          'Get everything to one side so the equation reads = 0 before you factorise.',
+          'If the product of two factors is zero, at least one of them is zero — that is why the = 0 step matters.',
+          'The quadratic formula x = (−b ± √(b² − 4ac)) ÷ 2a works for every quadratic, factorising or not.',
+          'Completing the square rewrites ax² + bx + c in the form a(x + p)² + q, which also gives the turning point.',
+          'A k-substitution turns an equation such as x⁴ − 5x² + 4 = 0 into a quadratic in k = x².',
+        ],
+      },
+      {
+        name: 'Nature of the roots',
+        points: [
+          'The discriminant is Δ = b² − 4ac.',
+          'Δ > 0 gives two real unequal roots; Δ = 0 gives two real equal roots; Δ < 0 gives no real roots.',
+          'If Δ is a perfect square (and a, b, c are rational) the roots are rational; otherwise they are irrational.',
+          'Questions asking for the values of k that make roots real, equal or non-real are discriminant questions — set up the inequality in k.',
+        ],
+      },
+      {
+        name: 'Simultaneous equations',
+        points: [
+          'Two linear equations can be solved by substitution or by elimination.',
+          'With one linear and one quadratic equation, always make a variable the subject of the LINEAR one and substitute into the quadratic.',
+          'Each value of x has its own matching value of y. Pair them correctly and state both solutions.',
+          'Check a solution by substituting into the equation you did not use to find it.',
+        ],
+      },
+      {
+        name: 'Word problems and setting up equations',
+        points: [
+          'Say clearly what the variable stands for, with units, before writing anything else.',
+          'Translate each sentence into one equation; the number of equations usually matches the number of unknowns.',
+          'Consecutive numbers are n, n + 1, n + 2. Consecutive even or odd numbers are n, n + 2, n + 4.',
+          'Check the answer against the situation and reject any root that makes no sense — a negative length or a fractional person.',
+        ],
+      },
+    ],
+    formulae: [
+      'x = (−b ± √(b² − 4ac)) ÷ 2a',
+      'Δ = b² − 4ac',
+      'a² − b² = (a − b)(a + b)',
+      'a³ ± b³ = (a ± b)(a² ∓ ab + b²)',
+      'aᵐ × aⁿ = aᵐ⁺ⁿ,  (aᵐ)ⁿ = aᵐⁿ,  a⁻ⁿ = 1 ÷ aⁿ',
+    ],
+    commonMistakes: [
+      'Solving a quadratic by factorising without first moving everything to one side of the equals sign.',
+      'Cancelling a term rather than a factor in an algebraic fraction.',
+      'Forgetting to reverse the inequality sign after multiplying or dividing by a negative.',
+      'Substituting the quadratic equation into the linear one instead of the other way round.',
+      'Losing the second root of a quadratic by dividing both sides by x.',
+      'Giving the discriminant as b² − 4ac but then testing it against the wrong inequality.',
+    ],
     example: {
       problem: 'Solve for x: x² − 5x + 6 = 0',
       steps: [
@@ -141,6 +580,86 @@ export const topicNotes: TopicNote[] = [
       'For a parabola y = ax² + bx + c, the turning point has x-coordinate = −b ÷ 2a',
       'An exponential function y = a·bˣ + q has a horizontal asymptote at y = q',
       'A hyperbola y = a ÷ (x − p) + q has asymptotes at x = p and y = q',
+    ],
+    subtopics: [
+      {
+        name: 'Linear functions',
+        points: [
+          'y = mx + c, where m is the gradient and c is the y-intercept.',
+          'The x-intercept is found by setting y = 0; the y-intercept by setting x = 0.',
+          'A positive gradient rises from left to right; a negative gradient falls.',
+          'Parallel lines have equal gradients; perpendicular lines have gradients whose product is −1.',
+        ],
+      },
+      {
+        name: 'Quadratic functions (parabolas)',
+        points: [
+          'Standard form y = ax² + bx + c, turning-point form y = a(x − p)² + q with turning point (p, q).',
+          'The axis of symmetry is x = −b ÷ 2a, and that x-value gives the turning point.',
+          'a > 0 opens upwards and has a minimum; a < 0 opens downwards and has a maximum.',
+          'The x-intercepts are the roots of ax² + bx + c = 0. No real roots means the graph never crosses the x-axis.',
+          'Domain is always x ∈ ℝ; the range depends on the turning point and which way the parabola opens.',
+        ],
+      },
+      {
+        name: 'Hyperbolic functions',
+        points: [
+          'y = a ÷ (x − p) + q has a vertical asymptote at x = p and a horizontal asymptote at y = q.',
+          'The graph never touches either asymptote, so x ≠ p and y ≠ q — that is the domain and range.',
+          'The two branches sit in opposite quadrants relative to the asymptotes; the sign of a says which pair.',
+          'The axes of symmetry pass through the point where the asymptotes cross, with gradients 1 and −1.',
+        ],
+      },
+      {
+        name: 'Exponential and logarithmic functions',
+        points: [
+          'y = a·bˣ + q has a horizontal asymptote at y = q and no vertical asymptote.',
+          'b > 1 gives growth; 0 < b < 1 gives decay.',
+          'The logarithmic function y = log_b x is the inverse of y = bˣ, so its graph is the reflection in the line y = x.',
+          'For y = log_b x the domain is x > 0 and the range is y ∈ ℝ — the exact swap of the exponential\'s.',
+        ],
+      },
+      {
+        name: 'Transformations of graphs',
+        points: [
+          'y = f(x) + q shifts the graph q units up; y = f(x − p) shifts it p units right.',
+          'y = −f(x) reflects in the x-axis; y = f(−x) reflects in the y-axis.',
+          'y = a·f(x) stretches vertically by a factor of a.',
+          'Describe a transformation in words when asked, and give the new turning point or asymptote to prove it.',
+        ],
+      },
+      {
+        name: 'Inverse functions',
+        points: [
+          'To find an inverse, swap x and y and then make y the subject.',
+          'The graph of an inverse is the reflection of the original in the line y = x.',
+          'The domain of the inverse is the range of the original, and vice versa.',
+          'y = x² is not one-to-one, so its inverse is only a function once the domain is restricted to x ≥ 0 or x ≤ 0.',
+        ],
+      },
+      {
+        name: 'Interpreting graphs',
+        points: [
+          'Points of intersection are found by setting the two functions equal to each other.',
+          'f(x) > 0 means the graph lies above the x-axis; f(x) > g(x) means one graph lies above the other.',
+          'The maximum vertical distance between two graphs is found by writing f(x) − g(x) and maximising it.',
+          'Always state a domain or range using the correct notation, and check whether the endpoint is included.',
+        ],
+      },
+    ],
+    formulae: [
+      'Straight line: y = mx + c',
+      'Parabola: y = a(x − p)² + q, axis of symmetry x = −b ÷ 2a',
+      'Hyperbola: y = a ÷ (x − p) + q, asymptotes x = p and y = q',
+      'Exponential: y = a·b^(x − p) + q, asymptote y = q',
+      'Inverse: swap x and y, then make y the subject',
+    ],
+    commonMistakes: [
+      'Reading the turning point of y = a(x − p)² + q as (−p, q) instead of (p, q).',
+      'Giving the range of a parabola as all real numbers.',
+      'Forgetting to exclude the asymptote values from the domain and range of a hyperbola.',
+      'Writing the inverse of an exponential without restricting x > 0 in the domain.',
+      'Confusing f(x) > 0 (above the x-axis) with x > 0 (right of the y-axis).',
     ],
     example: {
       problem: 'For f(x) = x² − 2x − 8, find the y-intercept, the x-intercepts, and the turning point.',
@@ -161,6 +680,92 @@ export const topicNotes: TopicNote[] = [
       'Reduction formulae relate angles in different quadrants, e.g. sin(180° − θ) = sin θ and cos(180° − θ) = −cos θ',
       'The sine rule and cosine rule are used to solve triangles that do not have a right angle',
     ],
+    subtopics: [
+      {
+        name: 'Trig ratios in right-angled triangles',
+        points: [
+          'sin θ = opposite ÷ hypotenuse, cos θ = adjacent ÷ hypotenuse, tan θ = opposite ÷ adjacent.',
+          'Label the sides relative to the angle you are using, not relative to the page.',
+          'In the Cartesian plane with a point (x, y) and r = √(x² + y²): sin θ = y ÷ r, cos θ = x ÷ r, tan θ = y ÷ x.',
+          'Given one ratio, sketch the triangle in the correct quadrant and use Pythagoras to find the third side before answering.',
+        ],
+      },
+      {
+        name: 'Special angles and the calculator',
+        points: [
+          'Know the exact values for 0°, 30°, 45°, 60° and 90° without a calculator.',
+          'sin 30° = ½, cos 60° = ½, tan 45° = 1, sin 60° = √3 ÷ 2, cos 30° = √3 ÷ 2.',
+          'Make sure the calculator is in degree mode before any numerical trig work.',
+          'Give answers to the number of decimal places asked for, and round only at the end.',
+        ],
+      },
+      {
+        name: 'Reduction formulae and the CAST diagram',
+        points: [
+          'CAST: all ratios are positive in the first quadrant, only sine in the second, only tangent in the third, only cosine in the fourth.',
+          'sin(180° − θ) = sin θ, cos(180° − θ) = −cos θ, tan(180° + θ) = tan θ.',
+          'sin(−θ) = −sin θ and cos(−θ) = cos θ.',
+          'Co-functions: sin(90° − θ) = cos θ and cos(90° − θ) = sin θ.',
+          'Reduce to an acute angle first, then evaluate. Work in one step at a time and write the reduction you used.',
+        ],
+      },
+      {
+        name: 'Identities',
+        points: [
+          'The square identity: sin²θ + cos²θ = 1, which rearranges to sin²θ = 1 − cos²θ.',
+          'The quotient identity: tan θ = sin θ ÷ cos θ.',
+          'Compound angles: sin(A ± B) = sin A cos B ± cos A sin B, and cos(A ± B) = cos A cos B ∓ sin A sin B.',
+          'Double angles: sin 2A = 2 sin A cos A, and cos 2A = cos²A − sin²A = 1 − 2sin²A = 2cos²A − 1.',
+          'When proving an identity, work on one side only until it matches the other. Never move terms across the equals sign.',
+        ],
+      },
+      {
+        name: 'Trigonometric equations and general solution',
+        points: [
+          'Solve for the reference angle first, then use CAST to find every quadrant that works.',
+          'The general solution for sine and cosine adds k·360°; for tangent it adds k·180°, with k ∈ ℤ.',
+          'For sin θ = a the second solution is 180° − reference angle; for cos θ = a it is 360° − reference angle.',
+          'Once you have the general solution, substitute values of k to list the specific solutions inside the given interval.',
+        ],
+      },
+      {
+        name: 'Trigonometric graphs',
+        points: [
+          'y = sin x and y = cos x have period 360° and range [−1, 1]; y = tan x has period 180° and asymptotes at 90° + k·180°.',
+          'In y = a·sin(bx) + q, a changes the amplitude, b changes the period to 360° ÷ b, and q shifts the graph vertically.',
+          'A horizontal shift comes from y = sin(x − p), moving the graph p units right.',
+          'Read amplitude, period and asymptotes off a given graph before trying to write its equation.',
+        ],
+      },
+      {
+        name: 'Sine, cosine and area rules in 2D and 3D',
+        points: [
+          'Sine rule: a ÷ sin A = b ÷ sin B = c ÷ sin C. Use it with two angles and a side, or two sides and a non-included angle.',
+          'Cosine rule: a² = b² + c² − 2bc·cos A. Use it with three sides, or two sides and the included angle.',
+          'Area of a triangle = ½·ab·sin C, using the angle between the two sides.',
+          'The ambiguous case can give two possible triangles when using the sine rule with two sides and a non-included angle.',
+          'In a 3D problem, pick out one triangle at a time, redraw it flat, and mark what is known before choosing a rule.',
+        ],
+      },
+    ],
+    formulae: [
+      'sin²θ + cos²θ = 1',
+      'tan θ = sin θ ÷ cos θ',
+      'sin(A ± B) = sin A cos B ± cos A sin B',
+      'cos(A ± B) = cos A cos B ∓ sin A sin B',
+      'sin 2A = 2 sin A cos A,  cos 2A = 1 − 2sin²A',
+      'Sine rule: a ÷ sin A = b ÷ sin B',
+      'Cosine rule: a² = b² + c² − 2bc·cos A',
+      'Area = ½·ab·sin C',
+    ],
+    commonMistakes: [
+      'Leaving the calculator in radian mode.',
+      'Giving only the first-quadrant solution to a trig equation and missing the others.',
+      'Moving terms across the equals sign while proving an identity.',
+      'Using the cosine rule when only one side is known, or the sine rule when no angle-side pair is complete.',
+      'Reading the period of y = sin 2x as 720° instead of 180°.',
+      'Using the wrong angle in the area rule — it must be the angle between the two sides.',
+    ],
     example: {
       problem: 'In a right-angled triangle, the side opposite angle θ is 5 units and the hypotenuse is 13 units. Find θ, rounded to two decimal places.',
       steps: [
@@ -180,6 +785,88 @@ export const topicNotes: TopicNote[] = [
       'Midpoint formula: ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2)',
       'A circle centred at the origin with radius r has equation x² + y² = r²',
     ],
+    subtopics: [
+      {
+        name: 'Distance between two points',
+        points: [
+          'd = √((x₂ − x₁)² + (y₂ − y₁)²).',
+          'The order of the points does not matter, because the differences are squared.',
+          'Use distance to prove a shape: equal sides for a rhombus, equal diagonals for a rectangle.',
+          'Leave the answer in surd form unless a decimal is asked for.',
+        ],
+      },
+      {
+        name: 'Midpoint',
+        points: [
+          'M = ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2) — the average of the coordinates.',
+          'If the midpoint and one endpoint are given, work backwards: x₂ = 2x_M − x₁.',
+          'Diagonals of a parallelogram bisect each other, so their midpoints coincide. That is a standard proof.',
+          'The midpoint of a circle\'s diameter is the centre of the circle.',
+        ],
+      },
+      {
+        name: 'Gradient, parallel and perpendicular lines',
+        points: [
+          'm = (y₂ − y₁) ÷ (x₂ − x₁).',
+          'Parallel lines have equal gradients: m₁ = m₂.',
+          'Perpendicular lines have m₁ × m₂ = −1.',
+          'A horizontal line has gradient 0; a vertical line has an undefined gradient.',
+          'Three points are collinear when the gradient between any two pairs is the same.',
+        ],
+      },
+      {
+        name: 'Equation of a straight line',
+        points: [
+          'Point-gradient form: y − y₁ = m(x − x₁).',
+          'With two points, find the gradient first, then substitute either point.',
+          'For a perpendicular bisector, use the midpoint of the segment and the negative reciprocal of its gradient.',
+          'A median joins a vertex to the midpoint of the opposite side; an altitude is perpendicular to the opposite side.',
+        ],
+      },
+      {
+        name: 'Angle of inclination',
+        points: [
+          'tan θ = m, where θ is the angle the line makes with the positive x-axis.',
+          'If the gradient is negative, the calculator gives a negative angle — add 180° to get the inclination between 0° and 180°.',
+          'The angle between two lines is the difference of their inclinations.',
+          'State the angle to one decimal place unless told otherwise.',
+        ],
+      },
+      {
+        name: 'Circles in the Cartesian plane',
+        points: [
+          'Centre at the origin: x² + y² = r².',
+          'Centre at (a, b): (x − a)² + (y − b)² = r².',
+          'Complete the square on both x and y to turn a general equation into centre-radius form.',
+          'A point lies inside, on, or outside the circle according to whether its distance from the centre is less than, equal to, or greater than r.',
+        ],
+      },
+      {
+        name: 'Tangents to a circle',
+        points: [
+          'The tangent at a point is perpendicular to the radius drawn to that point.',
+          'Find the gradient of the radius, take the negative reciprocal, then use point-gradient form at the point of contact.',
+          'The distance from the centre to a tangent line equals the radius.',
+          'Two circles touch externally when the distance between their centres equals the sum of their radii.',
+        ],
+      },
+    ],
+    formulae: [
+      'd = √((x₂ − x₁)² + (y₂ − y₁)²)',
+      'M = ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2)',
+      'm = (y₂ − y₁) ÷ (x₂ − x₁)',
+      'y − y₁ = m(x − x₁)',
+      'm₁ × m₂ = −1 for perpendicular lines',
+      'tan θ = m',
+      '(x − a)² + (y − b)² = r²',
+    ],
+    commonMistakes: [
+      'Subtracting the coordinates in a different order in the numerator and the denominator of the gradient.',
+      'Reading the centre of (x − 3)² + (y + 2)² = 25 as (−3, 2) instead of (3, −2).',
+      'Giving a negative angle of inclination instead of adding 180°.',
+      'Using the gradient of the radius as the gradient of the tangent.',
+      'Forgetting to halve the coefficient before squaring when completing the square.',
+    ],
     example: {
       problem: 'Find the distance between A(1, 2) and B(4, 6), and the midpoint of AB.',
       steps: [
@@ -197,6 +884,89 @@ export const topicNotes: TopicNote[] = [
       'Standard deviation measures how spread out the data is from the mean — a larger value means more variability',
       'The five-number summary (minimum, lower quartile, median, upper quartile, maximum) is used to draw a box-and-whisker plot',
       'A data set with values clustered close to the mean has a small standard deviation',
+    ],
+    subtopics: [
+      {
+        name: 'Measures of central tendency',
+        points: [
+          'Mean = Σx ÷ n. Median is the middle value of ordered data. Mode is the most frequent value.',
+          'For grouped data, the estimated mean uses the midpoint of each interval: Σ(f × midpoint) ÷ Σf.',
+          'The modal class is the interval with the highest frequency, not the frequency itself.',
+          'The mean is affected by outliers; the median is not. Say which is more appropriate and why.',
+        ],
+      },
+      {
+        name: 'Measures of dispersion',
+        points: [
+          'Range = maximum − minimum. Interquartile range = Q3 − Q1.',
+          'Standard deviation measures how far, on average, the values sit from the mean. A larger value means more spread.',
+          'Use the calculator\'s statistics mode for standard deviation; you are not expected to compute it by hand.',
+          'Adding the same constant to every value leaves the standard deviation unchanged; multiplying every value by k multiplies it by k.',
+          'Values within one standard deviation of the mean lie between x̄ − σ and x̄ + σ.',
+        ],
+      },
+      {
+        name: 'Five-number summary and box-and-whisker plots',
+        points: [
+          'The five-number summary is minimum, Q1, median, Q3, maximum.',
+          'With n values, Q1 sits at position (n + 1) ÷ 4 and Q3 at 3(n + 1) ÷ 4.',
+          'A box-and-whisker diagram is drawn to scale against a number line.',
+          'Skewness shows in the plot: a longer right whisker means positively skewed, a longer left whisker means negatively skewed.',
+          'An outlier is usually taken as any value more than 1,5 × IQR beyond Q1 or Q3.',
+        ],
+      },
+      {
+        name: 'Grouped data, histograms and frequency polygons',
+        points: [
+          'Class intervals must not overlap and must cover the whole range.',
+          'A histogram\'s bars touch, because the horizontal scale is continuous.',
+          'A frequency polygon joins the midpoints of the tops of the bars.',
+          'When reading a histogram, read the frequency off the vertical axis and the interval off the horizontal one.',
+        ],
+      },
+      {
+        name: 'Ogives (cumulative frequency curves)',
+        points: [
+          'Cumulative frequency is a running total. Plot it against the UPPER boundary of each interval.',
+          'The curve starts on the horizontal axis at the lower boundary of the first interval.',
+          'Read the median at half the total frequency, Q1 at a quarter and Q3 at three quarters.',
+          'To find how many values exceed a given amount, read up from that value and subtract from the total.',
+        ],
+      },
+      {
+        name: 'Scatter plots, correlation and regression',
+        points: [
+          'A scatter plot shows the relationship between two variables; describe it as strong or weak, positive or negative, linear or not.',
+          'The least-squares regression line is ŷ = a + bx, found with the calculator\'s statistics mode.',
+          'The correlation coefficient r lies between −1 and 1. Values near ±1 mean a strong linear relationship, near 0 mean almost none.',
+          'Correlation is not causation. Say so when asked to comment on a relationship.',
+          'Interpolating inside the data range is reasonable; extrapolating far beyond it is not reliable.',
+        ],
+      },
+      {
+        name: 'Outliers and their effect',
+        points: [
+          'An outlier is a value that sits far from the rest of the data.',
+          'Outliers pull the mean and inflate the standard deviation and the range; the median and IQR barely move.',
+          'On a scatter plot, one outlier can noticeably shift the regression line.',
+          'Never simply delete an outlier — say what effect it has, and whether it is likely to be a genuine value or an error.',
+        ],
+      },
+    ],
+    formulae: [
+      'Mean: x̄ = Σx ÷ n',
+      'Estimated mean for grouped data: Σ(f × midpoint) ÷ Σf',
+      'IQR = Q3 − Q1',
+      'Outlier boundaries: Q1 − 1,5 × IQR and Q3 + 1,5 × IQR',
+      'Regression line: ŷ = a + bx',
+      'Correlation coefficient: −1 ≤ r ≤ 1',
+    ],
+    commonMistakes: [
+      'Plotting an ogive against the midpoint of each interval instead of the upper boundary.',
+      'Giving the modal frequency when the modal class was asked for.',
+      'Computing the median of grouped data without first ordering or cumulating.',
+      'Claiming that a strong correlation proves that one variable causes the other.',
+      'Using the lower boundary of the first interval as the first cumulative frequency point.',
     ],
     example: {
       problem: 'Find the mean of the data set: 2, 4, 4, 4, 5, 5, 7, 9.',
@@ -217,6 +987,87 @@ export const topicNotes: TopicNote[] = [
       'Compound decay: A = P(1 − i)ⁿ',
       'P = original amount, i = interest rate (as a decimal), n = number of periods, A = final amount',
     ],
+    subtopics: [
+      {
+        name: 'Simple and compound interest',
+        points: [
+          'Simple interest: A = P(1 + in). Compound interest: A = P(1 + i)ⁿ.',
+          'i is the interest rate per period written as a decimal, and n is the number of periods.',
+          'If interest is compounded monthly, divide the annual rate by 12 and multiply the number of years by 12.',
+          'Compound interest always exceeds simple interest over the same rate and period beyond the first.',
+        ],
+      },
+      {
+        name: 'Nominal and effective interest rates',
+        points: [
+          'A nominal rate is quoted per year but compounded more often; an effective rate is the true annual rate.',
+          '1 + i_eff = (1 + i_nom ÷ m)^m, where m is the number of compounding periods in a year.',
+          'Compare two investments by converting both to effective annual rates first.',
+          'More frequent compounding at the same nominal rate gives a higher effective rate.',
+        ],
+      },
+      {
+        name: 'Depreciation',
+        points: [
+          'Straight-line (simple) depreciation: A = P(1 − in) — the same amount is lost each year.',
+          'Reducing-balance depreciation: A = P(1 − i)ⁿ — the loss is calculated on the current value each year.',
+          'Reducing balance never reaches zero; straight-line depreciation eventually does.',
+          'Read the wording carefully: "on a reducing balance" or "on the diminishing value" signals the second formula.',
+        ],
+      },
+      {
+        name: 'Timelines and changing interest rates',
+        points: [
+          'Draw a timeline first, marking every deposit, withdrawal and rate change.',
+          'Move each amount to the required date separately, then add.',
+          'A withdrawal reduces the balance at that point and everything after it grows from the reduced figure.',
+          'When the rate changes, split the calculation at the change and apply each rate over its own period only.',
+        ],
+      },
+      {
+        name: 'Future value annuities',
+        points: [
+          'F = x[(1 + i)ⁿ − 1] ÷ i, where x is the regular payment.',
+          'This applies when equal payments are made at the end of each period — a savings plan or a sinking fund.',
+          'n counts the number of payments, not the number of years, unless payments are annual.',
+          'A sinking fund question usually asks for the payment x needed to reach a target F; rearrange the formula.',
+        ],
+      },
+      {
+        name: 'Present value annuities and loans',
+        points: [
+          'P = x[1 − (1 + i)⁻ⁿ] ÷ i.',
+          'This is the loan amount that a series of equal repayments will settle — a bond or a vehicle finance agreement.',
+          'If repayments start later than one period after the loan is taken, grow the loan forward to one period before the first payment, then apply the formula.',
+          'A longer term reduces the instalment but increases the total interest paid.',
+        ],
+      },
+      {
+        name: 'Outstanding balance',
+        points: [
+          'The balance outstanding equals the present value of the payments still to be made.',
+          'Alternatively, grow the original loan forward and subtract the future value of the payments already made. Both methods must agree.',
+          'Count the remaining payments carefully — an off-by-one in n is the usual source of a wrong answer.',
+          'The final payment is often smaller than the rest; questions ask you to find it.',
+        ],
+      },
+    ],
+    formulae: [
+      'Simple interest: A = P(1 + in)',
+      'Compound interest: A = P(1 + i)ⁿ',
+      'Simple depreciation: A = P(1 − in)',
+      'Reducing-balance depreciation: A = P(1 − i)ⁿ',
+      'Effective rate: 1 + i_eff = (1 + i_nom ÷ m)^m',
+      'Future value annuity: F = x[(1 + i)ⁿ − 1] ÷ i',
+      'Present value annuity: P = x[1 − (1 + i)⁻ⁿ] ÷ i',
+    ],
+    commonMistakes: [
+      'Using the annual rate without dividing by 12 when interest compounds monthly.',
+      'Counting years instead of payments for n in an annuity formula.',
+      'Using the future value formula for a loan repayment question.',
+      'Applying a single rate across a period in which the rate changed.',
+      'Forgetting to grow the loan forward when the first repayment is deferred.',
+    ],
     example: {
       problem: 'R5 000 is invested at 8% p.a. compound interest for 3 years. Calculate the final amount.',
       steps: [
@@ -235,6 +1086,77 @@ export const topicNotes: TopicNote[] = [
       'Geometric sequence (constant ratio r): Tₙ = a·rⁿ⁻¹',
       'Sum of an arithmetic series: Sₙ = n/2 [2a + (n − 1)d]',
       'Sum of a geometric series: Sₙ = a(rⁿ − 1) ÷ (r − 1), for r ≠ 1',
+    ],
+    subtopics: [
+      {
+        name: 'Linear (arithmetic) patterns',
+        points: [
+          'The first difference between consecutive terms is constant.',
+          'General term: Tₙ = a + (n − 1)d, where a is the first term and d the common difference.',
+          'To test whether a value is a term of the sequence, set Tₙ equal to it and check that n is a positive whole number.',
+          'The common difference can be negative, giving a decreasing sequence.',
+        ],
+      },
+      {
+        name: 'Quadratic patterns',
+        points: [
+          'The SECOND difference is constant. The first differences themselves form a linear pattern.',
+          'General term: Tₙ = an² + bn + c, with 2a = second difference.',
+          'Find a from the second difference, then use T₁ and T₂ to solve for b and c.',
+          'The maximum or minimum term occurs where the first difference changes sign.',
+        ],
+      },
+      {
+        name: 'Arithmetic sequences and series',
+        points: [
+          'A series is the sum of a sequence\'s terms.',
+          'Sₙ = n ÷ 2 [2a + (n − 1)d], or Sₙ = n ÷ 2 (a + l) when the last term l is known.',
+          'To find how many terms give a particular sum, set Sₙ equal to it and solve the resulting quadratic in n.',
+          'Reject any solution for n that is negative or not a whole number.',
+        ],
+      },
+      {
+        name: 'Geometric sequences and series',
+        points: [
+          'Each term is the previous one multiplied by a constant ratio r, so r = Tₙ ÷ Tₙ₋₁.',
+          'General term: Tₙ = a·r^(n − 1).',
+          'Sum: Sₙ = a(rⁿ − 1) ÷ (r − 1) for r > 1, or a(1 − rⁿ) ÷ (1 − r) for r < 1.',
+          'Check that the ratio is genuinely constant between several pairs of terms before assuming the sequence is geometric.',
+        ],
+      },
+      {
+        name: 'Sigma notation',
+        points: [
+          'Σ from k = 1 to n of Tₖ means add the terms from k = 1 up to k = n.',
+          'The number of terms is (upper limit − lower limit + 1), not just the upper limit.',
+          'Identify whether the expression inside is arithmetic or geometric, then use the matching sum formula.',
+          'A sum starting at k = 3 can be handled by taking the full sum from k = 1 and subtracting the first two terms.',
+        ],
+      },
+      {
+        name: 'Convergence and the sum to infinity',
+        points: [
+          'An infinite geometric series converges only when −1 < r < 1.',
+          'S∞ = a ÷ (1 − r).',
+          'Questions asking for the values of x for which a series converges are inequality questions in r; solve −1 < r < 1.',
+          'A recurring decimal can be written as an infinite geometric series and summed to give its exact fraction.',
+        ],
+      },
+    ],
+    formulae: [
+      'Arithmetic: Tₙ = a + (n − 1)d',
+      'Arithmetic sum: Sₙ = n ÷ 2 [2a + (n − 1)d]',
+      'Quadratic pattern: Tₙ = an² + bn + c, 2a = second difference',
+      'Geometric: Tₙ = a·r^(n − 1)',
+      'Geometric sum: Sₙ = a(rⁿ − 1) ÷ (r − 1)',
+      'Sum to infinity: S∞ = a ÷ (1 − r), valid only for −1 < r < 1',
+    ],
+    commonMistakes: [
+      'Using Tₙ = a + nd instead of a + (n − 1)d.',
+      'Assuming a pattern is quadratic after checking only one second difference.',
+      'Counting the terms in a sigma sum as the upper limit, ignoring where it started.',
+      'Applying the sum-to-infinity formula when |r| ≥ 1.',
+      'Taking r as the difference between terms instead of the ratio.',
     ],
     example: {
       problem: 'Find the 10th term of the arithmetic sequence 3, 7, 11, 15, ...',
@@ -255,6 +1177,90 @@ export const topicNotes: TopicNote[] = [
       'Stationary (turning) points occur where f\'(x) = 0',
       'The derivative shows where a graph is increasing (f\'(x) > 0) or decreasing (f\'(x) < 0)',
     ],
+    subtopics: [
+      {
+        name: 'Limits and differentiation from first principles',
+        points: [
+          'f′(x) = lim(h→0) [f(x + h) − f(x)] ÷ h.',
+          'Expand f(x + h) fully, subtract f(x), and simplify before dividing by h.',
+          'Only once every remaining term contains an h may you cancel and let h → 0.',
+          'Keep the notation: the limit sign must appear on every line until you take the limit.',
+        ],
+      },
+      {
+        name: 'Rules of differentiation',
+        points: [
+          'If y = axⁿ then dy/dx = anx^(n − 1).',
+          'The derivative of a constant is 0.',
+          'Rewrite roots and fractions as powers before differentiating: √x is x^(1/2), and 1 ÷ x² is x⁻².',
+          'Differentiate term by term; you may not differentiate a numerator and denominator separately.',
+          'Notation: D_x[...], dy/dx and f′(x) all mean the same thing.',
+        ],
+      },
+      {
+        name: 'Gradients and equations of tangents',
+        points: [
+          'The derivative gives the gradient of the tangent at any point.',
+          'Substitute the x-value into f′(x) to get the gradient, and into f(x) to get the y-coordinate.',
+          'Then use y − y₁ = m(x − x₁) for the tangent\'s equation.',
+          'A tangent parallel to a given line has the same gradient — set f′(x) equal to that gradient and solve.',
+        ],
+      },
+      {
+        name: 'Sketching cubic graphs',
+        points: [
+          'Find the y-intercept by setting x = 0, and the x-intercepts by factorising f(x) = 0.',
+          'Find the stationary points by solving f′(x) = 0.',
+          'The point of inflection is where f″(x) = 0, and for a cubic it lies midway between the turning points.',
+          'A positive leading coefficient means the graph rises to the right; a negative one means it falls.',
+          'Label every intercept and turning point on the sketch — marks are given for each.',
+        ],
+      },
+      {
+        name: 'Stationary points and concavity',
+        points: [
+          'Stationary points occur where f′(x) = 0.',
+          'f″(x) < 0 at a local maximum; f″(x) > 0 at a local minimum.',
+          'Concave up means the curve holds water; concave down means it sheds it. Concavity changes at the point of inflection.',
+          'f′(x) > 0 means the function is increasing; f′(x) < 0 means it is decreasing.',
+        ],
+      },
+      {
+        name: 'Optimisation',
+        points: [
+          'Write the quantity to be maximised or minimised as a function of one variable.',
+          'Use the constraint given in the question to eliminate the second variable.',
+          'Differentiate, set the derivative equal to zero, and solve.',
+          'Check that the answer makes sense in context and reject impossible values such as a negative length.',
+          'Answer the question actually asked — sometimes it wants the maximum value, sometimes the x that produces it.',
+        ],
+      },
+      {
+        name: 'Rates of change',
+        points: [
+          'The derivative is a rate of change: how fast one quantity changes with respect to another.',
+          'For motion, if s(t) is distance then s′(t) is velocity and s″(t) is acceleration.',
+          '"The rate at which" always signals differentiation.',
+          'Include the units in the answer: metres per second, litres per minute, rands per item.',
+        ],
+      },
+    ],
+    formulae: [
+      'f′(x) = lim(h→0) [f(x + h) − f(x)] ÷ h',
+      'd/dx (axⁿ) = anx^(n − 1)',
+      'Tangent: y − y₁ = f′(x₁)(x − x₁)',
+      'Stationary points: f′(x) = 0',
+      'Point of inflection of a cubic: f″(x) = 0',
+      'Velocity = s′(t), acceleration = s″(t)',
+    ],
+    commonMistakes: [
+      'Dropping the limit notation while working from first principles.',
+      'Cancelling h before every remaining term contains a factor of h.',
+      'Differentiating a fraction by differentiating the numerator and denominator separately.',
+      'Giving the x-value of a turning point when the y-value was asked for.',
+      'Forgetting to use the constraint to reduce an optimisation problem to one variable.',
+      'Leaving out units in a rate-of-change answer.',
+    ],
     example: {
       problem: 'Differentiate f(x) = x³ − 3x² + 2 and find its stationary points.',
       steps: [
@@ -274,6 +1280,96 @@ export const topicNotes: TopicNote[] = [
       'Independent events: P(A and B) = P(A) × P(B)',
       'Fundamental counting principle: multiply the number of choices available at each stage to find the total number of outcomes',
     ],
+    subtopics: [
+      {
+        name: 'Basic probability',
+        points: [
+          'P(A) = number of favourable outcomes ÷ total number of possible outcomes.',
+          'Every probability lies between 0 and 1 inclusive.',
+          'P(not A) = 1 − P(A). This complementary rule often turns a long calculation into a short one.',
+          'The probabilities of all possible outcomes of one experiment add to 1.',
+        ],
+      },
+      {
+        name: 'Venn diagrams',
+        points: [
+          'Fill in the intersection first, then work outwards, subtracting as you go.',
+          'n(A ∪ B) is everything in either set; n(A ∩ B) is only what is in both.',
+          'Anything outside both circles still belongs to the sample space and must be counted.',
+          'Check that all the regions add up to the total given in the question before answering.',
+        ],
+      },
+      {
+        name: 'Mutually exclusive and complementary events',
+        points: [
+          'Mutually exclusive events cannot happen together, so P(A and B) = 0.',
+          'For mutually exclusive events, P(A or B) = P(A) + P(B).',
+          'Complementary events are mutually exclusive AND cover everything, so their probabilities add to 1.',
+          'Two events can be mutually exclusive without being complementary.',
+        ],
+      },
+      {
+        name: 'The addition rule',
+        points: [
+          'P(A or B) = P(A) + P(B) − P(A and B).',
+          'The subtraction is needed because the overlap would otherwise be counted twice.',
+          'If the events are mutually exclusive the last term is zero and the rule simplifies.',
+          'Use the rule in reverse to find a missing intersection when the other three values are given.',
+        ],
+      },
+      {
+        name: 'Independent events and the product rule',
+        points: [
+          'Events are independent when one happening does not change the probability of the other.',
+          'For independent events, P(A and B) = P(A) × P(B). This equality is also the test for independence.',
+          'Drawing with replacement gives independent events; drawing without replacement does not.',
+          'Independent and mutually exclusive are different ideas — do not use one to justify the other.',
+        ],
+      },
+      {
+        name: 'Tree diagrams and two-way tables',
+        points: [
+          'Multiply along the branches of a tree; add across separate branches that both satisfy the condition.',
+          'The probabilities leaving any one node must add to 1.',
+          'Without replacement, the denominator drops by one at the second stage — and the numerator too, if the same kind was taken.',
+          'A two-way table suits two categorical variables; read the row total, column total or grand total that the question needs.',
+        ],
+      },
+      {
+        name: 'The fundamental counting principle',
+        points: [
+          'If one choice can be made in m ways and the next in n ways, together they can be made in m × n ways.',
+          'The number of arrangements of n different objects is n!.',
+          'If r objects are chosen from n and order matters, the count is n × (n − 1) × … down to r factors.',
+          'Identical items are handled by dividing by the factorial of the number of repeats.',
+        ],
+      },
+      {
+        name: 'Arrangements with restrictions',
+        points: [
+          'If certain items must stay together, treat the group as a single unit, then multiply by the arrangements within it.',
+          'If two items may not be adjacent, count all arrangements and subtract those where they are together.',
+          'For a position restriction — a letter first, a digit last — fill the restricted positions first.',
+          'Probability from counting is the number of favourable arrangements ÷ the total number of arrangements.',
+        ],
+      },
+    ],
+    formulae: [
+      'P(A) = favourable outcomes ÷ total outcomes',
+      'P(not A) = 1 − P(A)',
+      'P(A or B) = P(A) + P(B) − P(A and B)',
+      'Independent events: P(A and B) = P(A) × P(B)',
+      'Counting principle: m × n ways',
+      'Arrangements of n different objects: n!',
+    ],
+    commonMistakes: [
+      'Adding probabilities that should be multiplied, or the other way round.',
+      'Treating mutually exclusive events as independent.',
+      'Forgetting to subtract the overlap in the addition rule.',
+      'Keeping the same denominator at the second stage of a without-replacement tree diagram.',
+      'Ignoring the region outside both circles in a Venn diagram.',
+      'Counting arrangements as though repeated identical letters were different.',
+    ],
     example: {
       problem: 'A restaurant offers 3 starters and 4 main courses. How many different starter-and-main combinations are possible?',
       steps: [
@@ -291,6 +1387,96 @@ export const topicNotes: TopicNote[] = [
       'Angles in the same segment of a circle, subtended by the same arc, are equal',
       'Opposite angles of a cyclic quadrilateral are supplementary (add up to 180°)',
       'Proportionality theorem: a line drawn parallel to one side of a triangle divides the other two sides in the same proportion',
+    ],
+    subtopics: [
+      {
+        name: 'Lines, angles and triangles',
+        points: [
+          'Angles on a straight line add to 180°; angles around a point add to 360°.',
+          'With parallel lines: corresponding angles are equal, alternate angles are equal, and co-interior angles add to 180°.',
+          'The angles of a triangle add to 180°; an exterior angle equals the sum of the two opposite interior angles.',
+          'Always give the reason next to each statement. In this topic the reason carries the mark.',
+        ],
+      },
+      {
+        name: 'Congruency and similarity',
+        points: [
+          'Congruent triangles are identical in shape and size: SSS, SAS, AAS or RHS.',
+          'Similar triangles have equal angles and sides in proportion (AAA, or three sides in proportion).',
+          'Name corresponding vertices in the same order when writing a congruency or similarity statement.',
+          'Similarity gives you a ratio to solve for an unknown side; congruency gives you equality directly.',
+        ],
+      },
+      {
+        name: 'Properties of quadrilaterals',
+        points: [
+          'A parallelogram has both pairs of opposite sides parallel and equal, and its diagonals bisect each other.',
+          'A rectangle is a parallelogram with equal diagonals; a rhombus is a parallelogram with diagonals that bisect at right angles.',
+          'A square is both a rectangle and a rhombus.',
+          'To prove a shape, prove the minimum set of properties the definition needs — not every property it happens to have.',
+        ],
+      },
+      {
+        name: 'Circle geometry: centre and chord theorems',
+        points: [
+          'The line from the centre perpendicular to a chord bisects that chord, and the converse also holds.',
+          'The angle at the centre is twice the angle at the circumference on the same arc.',
+          'The angle in a semicircle is 90°.',
+          'Equal chords are equidistant from the centre.',
+        ],
+      },
+      {
+        name: 'Circle geometry: same segment and cyclic quadrilaterals',
+        points: [
+          'Angles in the same segment, subtended by the same chord, are equal.',
+          'Opposite angles of a cyclic quadrilateral add to 180°.',
+          'The exterior angle of a cyclic quadrilateral equals the interior opposite angle.',
+          'To prove points concyclic, show either that opposite angles sum to 180° or that two angles on the same side of a line segment are equal.',
+        ],
+      },
+      {
+        name: 'Tangents and the tan-chord theorem',
+        points: [
+          'A tangent is perpendicular to the radius at the point of contact.',
+          'Two tangents drawn from the same external point are equal in length.',
+          'Tan-chord: the angle between a tangent and a chord equals the angle in the alternate segment.',
+          'Tan-chord is the theorem most often needed and most often missed — look for it whenever a tangent appears in a diagram.',
+        ],
+      },
+      {
+        name: 'Proportionality and the mid-point theorem',
+        points: [
+          'A line parallel to one side of a triangle divides the other two sides proportionally.',
+          'The mid-point theorem: the line joining the midpoints of two sides is parallel to the third side and half its length.',
+          'The converse holds: a line through one midpoint parallel to another side bisects the third side.',
+          'In similar triangles, the ratio of the areas is the square of the ratio of corresponding sides.',
+        ],
+      },
+      {
+        name: 'Writing a geometry proof',
+        points: [
+          'Mark everything you are given onto the diagram before writing anything.',
+          'Write one statement per line with its reason beside it, in the accepted wording.',
+          'Work backwards from what is to be proved to see which theorem would deliver it, then write the proof forwards.',
+          'Redraw a crowded diagram, or the one triangle you need, separately — most lost marks in this topic come from misreading the figure.',
+        ],
+      },
+    ],
+    formulae: [
+      'Angles on a straight line = 180°, angles round a point = 360°',
+      'Angle at centre = 2 × angle at circumference',
+      'Opposite angles of a cyclic quadrilateral add to 180°',
+      'Tan-chord: angle between tangent and chord = angle in alternate segment',
+      'Mid-point theorem: the joining line is parallel to the third side and half its length',
+      'Similar triangles: ratio of areas = (ratio of sides)²',
+    ],
+    commonMistakes: [
+      'Giving a correct statement with no reason, or with a reason that does not match it.',
+      'Assuming a line is a diameter or a tangent because it looks like one in the diagram.',
+      'Naming corresponding vertices out of order in a similarity statement.',
+      'Using the angle-at-centre theorem when the two angles are not on the same arc.',
+      'Missing the tan-chord theorem whenever a tangent appears.',
+      'Taking the ratio of areas as the ratio of sides instead of its square.',
     ],
     example: {
       problem: 'ABCD is a cyclic quadrilateral. Angle A = 110°. Find angle C.',

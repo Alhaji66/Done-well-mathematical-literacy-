@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { subjects } from '@/data/subjects'
 import { topicsForSubject, getTopic } from '@/data/topics'
@@ -7,9 +7,11 @@ import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
+import { SubtopicSection } from '@/components/practise/SubtopicSection'
+import { groupBySubtopic } from '@/data/subtopics'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PencilIcon } from '@/components/ui/Icons'
-import type { Difficulty, Question } from '@/types'
+import type { Difficulty, Grade, Question } from '@/types'
 import { cn } from '@/lib/utils'
 
 const difficulties: Difficulty[] = ['Easy', 'Moderate', 'Challenge']
@@ -24,9 +26,34 @@ export function LearnerPractise() {
   const initialTopicId = params.get('topic') ?? ''
   const initialSubjectId = getTopic(initialTopicId)?.subjectId ?? demoLearner.subjectId
   const [subjectId, setSubjectId] = useState(initialSubjectId)
-  const topics = topicsForSubject(subjectId, demoLearner.grade)
+
+  // Learn lets you browse any grade, so a card there can link here for Grade 10
+  // while the demo learner is in Grade 12. Taking the grade from the link rather
+  // than from the demo profile is what stops that combination returning "no
+  // sample questions at this difficulty yet" for a topic Learn has just
+  // advertised a question count for.
+  const linkedGrade = Number(params.get('grade')) as Grade
+  const [grade, setGrade] = useState<Grade>(
+    ([10, 11, 12] as Grade[]).includes(linkedGrade) ? linkedGrade : demoLearner.grade,
+  )
+  const topics = topicsForSubject(subjectId, grade)
   const [topicId, setTopicId] = useState(initialTopicId || topics[0]?.id || '')
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
+  const [subtopic, setSubtopic] = useState(params.get('subtopic') ?? 'All')
+
+  // The demo carries the same subject/grade/topic identity in its URL as the
+  // real app, so a link into it opens what it says it opens.
+  const routeFor = (next: { topic?: string; subtopic?: string; subject?: string; grade?: Grade }) => {
+    const query: Record<string, string> = {
+      subject: next.subject ?? subjectId,
+      topic: next.topic ?? topicId,
+      grade: String(next.grade ?? grade),
+    }
+    const sub = next.subtopic ?? subtopic
+    if (sub && sub !== 'All') query.subtopic = sub
+    if (!query.topic) delete query.topic
+    return query
+  }
 
   // Paper-backed questions are lazy-loaded per subject, so this resolves after render.
   const [questions, setQuestions] = useState<Question[]>([])
@@ -42,7 +69,7 @@ export function LearnerPractise() {
     filterSubjectQuestions(subjectId, {
       topicId,
       difficulty: difficulty === 'All' ? undefined : difficulty,
-      grade: demoLearner.grade,
+      grade,
     }).then((rows) => {
       if (cancelled) return
       setQuestions(rows)
@@ -51,12 +78,21 @@ export function LearnerPractise() {
     return () => {
       cancelled = true
     }
-  }, [subjectId, topicId, difficulty])
+  }, [subjectId, topicId, difficulty, grade])
 
   const changeTopic = (id: string) => {
     setTopicId(id)
-    setParams({ topic: id })
+    setSubtopic('All')
+    setParams(routeFor({ topic: id, subtopic: 'All' }))
   }
+
+  const changeSubtopic = (name: string) => {
+    setSubtopic(name)
+    setParams(routeFor({ subtopic: name }))
+  }
+
+  const groups = useMemo(() => groupBySubtopic(topicId, questions), [topicId, questions])
+  const shown = subtopic === 'All' ? groups : groups.filter((g) => g.name === subtopic)
 
   const changeSubject = (id: string) => {
     setSubjectId(id)
@@ -115,6 +151,33 @@ export function LearnerPractise() {
         </div>
 
         <div>
+          <p className="text-xs font-medium text-navy-500">Grade</p>
+          <div className="mt-1 inline-flex rounded-lg border border-navy-200 bg-white p-1">
+            {([10, 11, 12] as const).map((g) => (
+              <button
+                key={g}
+                type="button"
+                aria-pressed={grade === g}
+                onClick={() => {
+                  setGrade(g)
+                  const next = topicsForSubject(subjectId, g)
+                  const nextTopicId = next.some((t) => t.id === topicId) ? topicId : (next[0]?.id ?? '')
+                  setTopicId(nextTopicId)
+                  setSubtopic('All')
+                  setParams(routeFor({ grade: g, topic: nextTopicId, subtopic: 'All' }))
+                }}
+                className={cn(
+                  'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
+                  grade === g ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+                )}
+              >
+                Grade {g}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
           <p className="text-xs font-medium text-navy-500">Difficulty</p>
           <div className="mt-1 inline-flex rounded-lg border border-navy-200 bg-white p-1">
             {(['All', ...difficulties] as const).map((d) => (
@@ -134,9 +197,37 @@ export function LearnerPractise() {
           </div>
         </div>
         </div>
+
+        {groups.length > 1 ? (
+          <div>
+            <p className="text-xs font-medium text-navy-500">Sub-topic</p>
+            <div className="mt-1 flex flex-wrap gap-1 rounded-lg border border-navy-200 bg-white p-1">
+              {['All', ...groups.map((g) => g.name)].map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  aria-pressed={subtopic === name}
+                  onClick={() => changeSubtopic(name)}
+                  className={cn(
+                    'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors',
+                    subtopic === name ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+                  )}
+                >
+                  {name === 'All' ? 'All sub-topics' : name}
+                  {name !== 'All' ? (
+                    <span className={cn('ml-1.5', subtopic === name ? 'text-navy-300' : 'text-navy-400')}>
+                      {groups.find((g) => g.name === name)?.questions.length}
+                    </span>
+                  ) : null}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {topicId ? <TopicNotes topicId={topicId} /> : null}
+      {/* Each sub-topic's own explanation is rendered above its questions. */}
+      {topicId ? <TopicNotes topicId={topicId} showSubtopics={false} /> : null}
 
       {loadingQuestions ? (
         <p className="text-sm text-navy-500">Loading questions…</p>
@@ -147,9 +238,19 @@ export function LearnerPractise() {
           description="Try a different difficulty level, or choose another topic — more questions are added regularly."
         />
       ) : (
-        <div className="space-y-4">
-          {questions.map((q, i) => (
-            <QuestionCard key={q.id} question={q} index={i} />
+        <div className="space-y-8">
+          {shown.map((group, groupIndex) => (
+            <SubtopicSection
+              key={group.name}
+              name={group.name}
+              points={group.points}
+              count={group.questions.length}
+              index={subtopic === 'All' ? groupIndex : groups.findIndex((g) => g.name === group.name)}
+            >
+              {group.questions.map((q, i) => (
+                <QuestionCard key={q.id} question={q} index={i} />
+              ))}
+            </SubtopicSection>
           ))}
         </div>
       )}

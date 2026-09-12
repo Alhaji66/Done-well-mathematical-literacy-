@@ -83,7 +83,7 @@ export function LearnerDashboard() {
               <ProgressBar percent={weakest.masteryPercent} label={`${weakestTopic?.name ?? "Weakest topic"} mastery`} />
             </div>
             <Link
-              to={`/app/learner/practise?topic=${weakest.topicId}`}
+              to={`/app/learner/practise?subject=${weakestTopic?.subjectId ?? demoLearner.subjectId}&grade=${demoLearner.grade}&topic=${weakest.topicId}`}
               className="btn-primary btn-sm mt-4 w-full"
             >
               Practise now

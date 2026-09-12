@@ -27,7 +27,7 @@ export function LearnerDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">
           Grade {demoLearner.grade} · {subject.name}
         </p>
         <h1 className="mt-1 text-2xl font-bold text-navy-900">Welcome back, {demoLearner.name.split(' ')[0]}</h1>
@@ -72,7 +72,7 @@ export function LearnerDashboard() {
         <div className="card flex flex-col gap-4 p-5">
           <h3 className="font-bold text-navy-900">Recommended practice</h3>
           <div className="rounded-xl bg-navy-50 p-4">
-            <p className="text-xs font-semibold uppercase text-gold-600">Focus topic</p>
+            <p className="text-xs font-semibold uppercase text-gold-700">Focus topic</p>
             <p className="mt-1 font-semibold text-navy-900">{weakestTopic?.name}</p>
             <p className="mt-1 text-sm text-navy-600">{weakestTopic?.description}</p>
             <div className="mt-3">
@@ -80,7 +80,7 @@ export function LearnerDashboard() {
                 <span>Mastery</span>
                 <span>{weakest.masteryPercent}%</span>
               </div>
-              <ProgressBar percent={weakest.masteryPercent} />
+              <ProgressBar percent={weakest.masteryPercent} label={`${weakestTopic?.name ?? "Weakest topic"} mastery`} />
             </div>
             <Link
               to={`/app/learner/practise?topic=${weakest.topicId}`}
@@ -158,7 +158,7 @@ export function LearnerDashboard() {
                   <TrendBadge trend={tp.trend} />
                 </div>
                 <div className="mt-2 flex items-center gap-3">
-                  <ProgressBar percent={tp.masteryPercent} className="flex-1" size="sm" />
+                  <ProgressBar percent={tp.masteryPercent} className="flex-1" size="sm" label={`${topic.name} mastery`} />
                   <span className="w-10 text-right text-xs font-semibold text-navy-600">{tp.masteryPercent}%</span>
                 </div>
               </div>

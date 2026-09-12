@@ -46,6 +46,7 @@ export function LearnerLearn() {
             <button
               key={s.id}
               type="button"
+              aria-pressed={subjectId === s.id}
               onClick={() => setSubjectId(s.id)}
               className={cn(
                 'rounded-md px-4 py-2 text-sm font-semibold transition-colors',
@@ -62,6 +63,7 @@ export function LearnerLearn() {
             <button
               key={g}
               type="button"
+              aria-pressed={grade === g}
               onClick={() => setGrade(g)}
               className={cn(
                 'rounded-md px-4 py-2 text-sm font-semibold transition-colors',
@@ -96,7 +98,7 @@ export function LearnerLearn() {
                     <span>Your mastery</span>
                     <span>{progress.masteryPercent}%</span>
                   </div>
-                  <ProgressBar percent={progress.masteryPercent} size="sm" />
+                  <ProgressBar percent={progress.masteryPercent} size="sm" label={`${topic.name} mastery`} />
                 </div>
               ) : null}
               <TopicNotes topicId={topic.id} defaultOpen={false} />

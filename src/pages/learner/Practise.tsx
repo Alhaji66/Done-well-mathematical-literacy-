@@ -82,6 +82,7 @@ export function LearnerPractise() {
               <button
                 key={s.id}
                 type="button"
+                aria-pressed={subjectId === s.id}
                 onClick={() => changeSubject(s.id)}
                 className={cn(
                   'rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
@@ -120,6 +121,7 @@ export function LearnerPractise() {
               <button
                 key={d}
                 type="button"
+                aria-pressed={difficulty === d}
                 onClick={() => setDifficulty(d)}
                 className={cn(
                   'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm',

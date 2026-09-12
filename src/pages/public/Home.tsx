@@ -151,7 +151,7 @@ export function Home() {
       <section className="container-page py-16 sm:py-20">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-gold-600">Built on Done Well Publications</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-gold-700">Built on Done Well Publications</p>
             <h2 className="mt-1 text-2xl font-bold text-navy-900 sm:text-3xl">One connected set of resources</h2>
             <p className="mt-2 max-w-2xl text-sm text-navy-600 sm:text-base">
               Learner Book → Workbook → Teacher Guide → Tests → Memos — every resource on Done Well connects to real
@@ -179,13 +179,13 @@ export function Home() {
       <section className="bg-navy-50 py-16 sm:py-20">
         <div className="container-page">
           <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gold-600">How it works</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-gold-700">How it works</p>
             <h2 className="mt-1 text-2xl font-bold text-navy-900 sm:text-3xl">A simple loop that drives real progress</h2>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {steps.map((step, i) => (
               <div key={step.label} className="card relative p-5">
-                <span className="text-xs font-bold text-gold-600">STEP {i + 1}</span>
+                <span className="text-xs font-bold text-gold-700">STEP {i + 1}</span>
                 <h3 className="mt-1 text-base font-bold text-navy-900">{step.label}</h3>
                 <p className="mt-1.5 text-sm text-navy-600">{step.desc}</p>
               </div>
@@ -239,10 +239,10 @@ export function Home() {
                     <StarIcon className="h-3.5 w-3.5" /> Most popular
                   </span>
                 ) : null}
-                <h3 className="text-lg font-bold">{tier.name}</h3>
+                <h3 className={cn('text-lg font-bold', tier.highlight ? 'text-navy-900' : 'text-white')}>{tier.name}</h3>
                 <p className="mt-1 text-2xl font-extrabold">
                   {tier.price}
-                  {tier.period ? <span className="text-sm font-medium opacity-70">{tier.period}</span> : null}
+                  {tier.period ? <span className={cn('text-sm font-medium', tier.highlight ? 'text-navy-700' : 'text-navy-200')}>{tier.period}</span> : null}
                 </p>
                 <p className={cn('mt-2 text-sm', tier.highlight ? 'text-navy-800' : 'text-navy-300')}>{tier.desc}</p>
                 <ul className="mt-4 flex-1 space-y-2">

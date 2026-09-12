@@ -28,6 +28,7 @@ export function Publications() {
           <button
             key={s.id}
             type="button"
+            aria-pressed={subjectId === s.id}
             onClick={() => setSubjectId(s.id)}
             className={cn(
               'rounded-md px-4 py-2 text-sm font-semibold transition-colors',

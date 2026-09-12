@@ -100,14 +100,14 @@ export function TopicNotes({ topicId, defaultOpen = true }: { topicId: string; d
           {[note.example, ...(note.moreExamples ?? [])].map((example, exampleIndex) => (
             <div key={exampleIndex} className="rounded-lg bg-navy-50 p-4">
               <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-navy-500">
-                <SparkleIcon className="h-3.5 w-3.5 text-gold-600" />
+                <SparkleIcon className="h-3.5 w-3.5 text-gold-700" />
                 Worked example{note.moreExamples?.length ? ` ${exampleIndex + 1}` : ''}
               </h4>
               <p className="mt-2 text-sm font-medium leading-relaxed text-navy-900">{example.problem}</p>
               <ol className="mt-3 space-y-1.5">
                 {example.steps.map((step, i) => (
                   <li key={i} className="flex gap-2 text-sm leading-relaxed text-navy-600">
-                    <span className="shrink-0 font-semibold text-navy-400">{i + 1}.</span>
+                    <span className="shrink-0 font-semibold text-navy-500">{i + 1}.</span>
                     <span>{step}</span>
                   </li>
                 ))}

@@ -10,6 +10,12 @@ const base = (props: IconProps) => ({
   strokeWidth: 1.8,
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
+  // Every icon in this app sits next to its own visible label, so an icon is
+  // decoration and a screen reader should skip it rather than announce a
+  // second, redundant name. A caller that needs an icon to carry meaning on
+  // its own can pass aria-hidden={false} and its own aria-label.
+  'aria-hidden': true,
+  focusable: false,
   ...props,
 })
 

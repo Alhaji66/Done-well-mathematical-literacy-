@@ -33,7 +33,7 @@ export function SchoolTeachers() {
                   <span>Class average</span>
                   <span>{t.classAverage}%</span>
                 </div>
-                <ProgressBar percent={t.classAverage} size="sm" />
+                <ProgressBar percent={t.classAverage} size="sm" label={`${t.name} class average`} />
               </div>
             </div>
           )

@@ -6222,3 +6222,15 @@ export const topicNotes: TopicNote[] = [
 ]
 
 export const getTopicNote = (topicId: string) => topicNotes.find((n) => n.topicId === topicId)
+
+/**
+ * The sub-topic names a topic is taught in, in teaching order.
+ *
+ * This is the CURATED list from the notes above, not the list derived from
+ * whichever questions happen to be loaded. The topic picker needs a stable
+ * list it can show before anything is fetched, and a learner looking for
+ * taxation should find it under Finance whether or not the current
+ * difficulty filter leaves any taxation questions showing.
+ */
+export const subtopicNamesFor = (topicId: string): string[] =>
+  getTopicNote(topicId)?.subtopics?.map((s) => s.name) ?? []

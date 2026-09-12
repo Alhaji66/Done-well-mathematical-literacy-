@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { subjects } from '@/data/subjects'
 import { topicsForSubject, getTopic } from '@/data/topics'
-import { filterSubjectQuestions } from '@/data/questionBank'
+import { filterSubjectQuestions, questionsForSubject } from '@/data/questionBank'
 import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
+import { subtopicNamesFor } from '@/data/topicNotes'
 import { SubtopicSection } from '@/components/practise/SubtopicSection'
 import { groupBySubtopic } from '@/data/subtopics'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -55,6 +56,29 @@ export function LearnerPractise() {
     return query
   }
 
+  // Which sub-topics actually have a question somewhere in this subject.
+  // The picker lists the full curriculum, but an entry the classifier has
+  // placed nothing under is shown greyed out rather than quietly dropped --
+  // dropping it would hide a gap, and offering it would be a dead end.
+  const [liveSubtopics, setLiveSubtopics] = useState<Set<string> | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setLiveSubtopics(null)
+    questionsForSubject(subjectId).then((pool) => {
+      if (cancelled) return
+      const live = new Set<string>()
+      for (const t of topicsForSubject(subjectId)) {
+        const rows = pool.filter((q) => q.topicId === t.id)
+        for (const g of groupBySubtopic(t.id, rows)) live.add(`${t.id}::${g.name}`)
+      }
+      setLiveSubtopics(live)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [subjectId])
+
   // Paper-backed questions are lazy-loaded per subject, so this resolves after render.
   const [questions, setQuestions] = useState<Question[]>([])
   const [loadingQuestions, setLoadingQuestions] = useState(false)
@@ -80,10 +104,15 @@ export function LearnerPractise() {
     }
   }, [subjectId, topicId, difficulty, grade])
 
-  const changeTopic = (id: string) => {
-    setTopicId(id)
-    setSubtopic('All')
-    setParams(routeFor({ topic: id, subtopic: 'All' }))
+  /**
+   * The topic picker offers topics AND their sub-topics in one list, so its
+   * value is either a topic id or `topicId::Sub-topic name`.
+   */
+  const changeTopicOrSubtopic = (value: string) => {
+    const [nextTopic, nextSubtopic] = value.split('::')
+    setTopicId(nextTopic)
+    setSubtopic(nextSubtopic ?? 'All')
+    setParams(routeFor({ topic: nextTopic, subtopic: nextSubtopic ?? 'All' }))
   }
 
   const changeSubtopic = (name: string) => {
@@ -134,19 +163,40 @@ export function LearnerPractise() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1">
           <label className="text-xs font-medium text-navy-500" htmlFor="topic-select">
-            Topic
+            Topic and sub-topic
           </label>
+          {/* Sub-topics sit under their topic as an optgroup, so a learner
+              stuck on taxation can pick it straight from this box instead of
+              choosing Finance and hunting through the whole topic. */}
           <select
             id="topic-select"
             className="select mt-1"
-            value={topicId}
-            onChange={(e) => changeTopic(e.target.value)}
+            value={subtopic === 'All' ? topicId : `${topicId}::${subtopic}`}
+            onChange={(e) => changeTopicOrSubtopic(e.target.value)}
           >
-            {topics.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
+            {topics.map((t) => {
+              const names = subtopicNamesFor(t.id)
+              if (names.length === 0)
+                return (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                )
+              return (
+                <optgroup key={t.id} label={t.name}>
+                  <option value={t.id}>All of {t.name}</option>
+                  {names.map((name) => {
+                    const dead = liveSubtopics !== null && !liveSubtopics.has(`${t.id}::${name}`)
+                    return (
+                      <option key={name} value={`${t.id}::${name}`} disabled={dead}>
+                        {name}
+                        {dead ? ' — none yet' : ''}
+                      </option>
+                    )
+                  })}
+                </optgroup>
+              )
+            })}
           </select>
         </div>
 
@@ -236,6 +286,20 @@ export function LearnerPractise() {
           icon={<PencilIcon className="h-6 w-6" />}
           title="No sample questions at this difficulty yet"
           description="Try a different difficulty level, or choose another topic — more questions are added regularly."
+        />
+      ) : shown.length === 0 ? (
+        /* The picker lists every sub-topic a topic is taught in, so a learner
+           can land on one with no questions at the current difficulty. Say
+           which sub-topic is empty rather than showing a blank page. */
+        <EmptyState
+          icon={<PencilIcon className="h-6 w-6" />}
+          title={`No ${subtopic} questions at this difficulty yet`}
+          description={`There are ${questions.length} other questions in ${getTopic(topicId)?.name ?? 'this topic'}. Change the difficulty, or choose "All sub-topics" to see them.`}
+          action={
+            <button type="button" className="btn-secondary" onClick={() => changeSubtopic('All')}>
+              Show all sub-topics
+            </button>
+          }
         />
       ) : (
         <div className="space-y-8">

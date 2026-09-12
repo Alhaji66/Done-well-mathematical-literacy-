@@ -2242,6 +2242,2797 @@ export const topicNotes: TopicNote[] = [
       },
     ],
   },
+  {
+    topicId: 'phys-vectors-scalars-g10',
+    summary: 'The difference between scalars and vectors, and how to add vectors in one dimension to find a resultant.',
+    keyIdeas: [
+      'A scalar has magnitude only; a vector has magnitude and direction',
+      'Distance and speed are scalars; displacement, velocity, acceleration and force are vectors',
+      'A vector is drawn as an arrow: its length shows the magnitude and the arrowhead shows the direction',
+      'The resultant is the single vector that has the same effect as all the vectors together',
+      'Choose a positive direction first, then treat vectors in the opposite direction as negative',
+    ],
+    subtopics: [
+      {
+        name: 'Scalars and vectors',
+        points: [
+          'Scalars: distance, speed, mass, time, energy, temperature',
+          'Vectors: displacement, velocity, acceleration, force, momentum, weight',
+          'A vector answer is incomplete without a direction, for example 15 N to the right',
+        ],
+      },
+      {
+        name: 'Adding vectors in one dimension',
+        points: [
+          'Set a positive direction and state it, for example take right as positive',
+          'Add the vectors algebraically, using a negative sign for the opposite direction',
+          'A negative resultant simply means the resultant points in the negative direction you chose',
+        ],
+      },
+      {
+        name: 'Resultant and equilibrant',
+        points: [
+          'The resultant replaces all the vectors acting together',
+          'The equilibrant is equal in magnitude to the resultant but opposite in direction, so it produces equilibrium',
+          'When forces are balanced the resultant is zero and the object does not accelerate',
+        ],
+      },
+    ],
+    commonMistakes: [
+      'Distance and displacement differ: a runner completing one lap has run a distance but has zero displacement',
+      'A vector answer without a direction loses a mark',
+      'The negative sign in a vector answer is a direction, not a smaller quantity',
+    ],
+    example: {
+      problem: 'A learner walks 12 m east, then 5 m west. Calculate the distance walked and the resultant displacement.',
+      steps: [
+        'Distance is a scalar, so add the path lengths without regard to direction: 12 + 5 = 17 m.',
+        'For displacement, take east as positive, so the two vectors are +12 m and -5 m.',
+        'Add them: (+12) + (-5) = +7 m.',
+        'The positive sign means the resultant points east.',
+      ],
+      answer: 'Distance = 17 m; displacement = 7 m east.',
+    },
+    moreExamples: [
+      {
+        problem: 'Two forces act on a box along the same line: 25 N to the right and 40 N to the left. Determine the resultant force and the equilibrant.',
+        steps: [
+          'Take right as positive, so the forces are +25 N and -40 N.',
+          'Resultant = (+25) + (-40) = -15 N, which is 15 N to the left.',
+          'The equilibrant has the same magnitude but the opposite direction.',
+          'The equilibrant is therefore 15 N to the right.',
+        ],
+        answer: 'Resultant = 15 N to the left; equilibrant = 15 N to the right.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-motion-1d',
+    summary: 'Describing motion in a straight line using position, displacement, velocity and acceleration, the equations of motion, and motion graphs.',
+    keyIdeas: [
+      'Average speed uses distance; average velocity uses displacement',
+      'Acceleration is the rate of change of velocity, so it is zero when velocity is constant',
+      'The equations of motion apply only when acceleration is uniform',
+      'On a position-time graph the gradient gives velocity; on a velocity-time graph the gradient gives acceleration and the area gives displacement',
+      'Free fall means gravity is the only force acting, giving an acceleration of 9.8 m/s2 downwards',
+    ],
+    subtopics: [
+      {
+        name: 'Quantities',
+        points: [
+          'Position is measured from a chosen reference point; displacement is the change in position',
+          'Average velocity = displacement / time; average speed = distance / time',
+          'Instantaneous velocity is the velocity at one moment, given by the gradient of the tangent',
+        ],
+      },
+      {
+        name: 'Equations of motion',
+        points: [
+          'Use them only for uniform acceleration, and keep one consistent positive direction throughout',
+          'List what is given and what is required before choosing the equation',
+          'In free fall a = 9.8 m/s2 downwards, whether the object is rising or falling',
+        ],
+      },
+      {
+        name: 'Motion graphs',
+        points: [
+          'Position-time: gradient is velocity; a horizontal line means at rest',
+          'Velocity-time: gradient is acceleration; area under the graph is displacement',
+          'Acceleration-time: area under the graph is the change in velocity',
+          'A curved position-time graph means the velocity is changing, so there is acceleration',
+        ],
+      },
+    ],
+    formulae: [
+      'vf = vi + a t',
+      'dx = vi t + 1/2 a t^2',
+      'vf^2 = vi^2 + 2 a dx',
+      'dx = ((vi + vf) / 2) t',
+    ],
+    commonMistakes: [
+      'A ball at the top of its flight has zero velocity but its acceleration is still 9.8 m/s2 downwards',
+      'Choose one positive direction and keep it for the whole problem, including for gravity',
+      'Area under a velocity-time graph below the axis is negative displacement',
+    ],
+    example: {
+      problem: 'A car accelerates uniformly from rest to 20 m/s in 8 s. Calculate the acceleration and the distance travelled.',
+      steps: [
+        'List the values: vi = 0 m/s, vf = 20 m/s, t = 8 s.',
+        'Use vf = vi + a t, so 20 = 0 + a(8), giving a = 20 / 8 = 2.5 m/s2.',
+        'For the distance use dx = ((vi + vf) / 2) t = ((0 + 20) / 2) x 8.',
+        'Work it out: 10 x 8 = 80 m.',
+      ],
+      answer: 'a = 2.5 m/s2 in the direction of motion; distance = 80 m.',
+    },
+    moreExamples: [
+      {
+        problem: 'A stone is thrown straight up at 15 m/s. Calculate the maximum height it reaches. Ignore air resistance.',
+        steps: [
+          'Take upwards as positive, so vi = +15 m/s and a = -9.8 m/s2.',
+          'At the maximum height the stone is momentarily at rest, so vf = 0 m/s.',
+          'Use vf^2 = vi^2 + 2 a dx: 0 = 15^2 + 2(-9.8) dx.',
+          'So 0 = 225 - 19.6 dx, giving dx = 225 / 19.6 = 11.48 m.',
+        ],
+        answer: 'About 11.5 m above the throwing point.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-mechanical-energy-g10',
+    summary: 'Gravitational potential energy, kinetic energy, and the conservation of mechanical energy in the absence of friction.',
+    keyIdeas: [
+      'Gravitational potential energy depends on mass, gravity and height above a reference point',
+      'Kinetic energy depends on mass and the square of the speed',
+      'Mechanical energy is the sum of potential and kinetic energy',
+      'In the absence of friction, mechanical energy is conserved: what is lost as potential energy is gained as kinetic energy',
+      'Energy is a scalar, so it has no direction',
+    ],
+    subtopics: [
+      {
+        name: 'Potential and kinetic energy',
+        points: [
+          'Ep = m g h, measured from a stated reference level, usually the ground',
+          'Ek = 1/2 m v^2, so doubling the speed gives four times the kinetic energy',
+          'Both are measured in joules',
+        ],
+      },
+      {
+        name: 'Conservation of mechanical energy',
+        points: [
+          'Total mechanical energy at the start equals total mechanical energy at the end, when only gravity does work',
+          'At the highest point the energy is all potential; just before landing it is nearly all kinetic',
+          'Mass often cancels from both sides, so the final speed of a falling object does not depend on its mass',
+        ],
+      },
+      {
+        name: 'When friction acts',
+        points: [
+          'With friction, mechanical energy is no longer conserved: some is transferred to heat and sound',
+          'The object then arrives with less kinetic energy than the conservation calculation predicts',
+          'The energy is not destroyed; the total energy of the system is still conserved',
+        ],
+      },
+    ],
+    formulae: [
+      'Ep = m g h',
+      'Ek = 1/2 m v^2',
+      'Emechanical = Ep + Ek',
+      'Ep(start) + Ek(start) = Ep(end) + Ek(end), if friction is absent',
+    ],
+    commonMistakes: [
+      'Kinetic energy depends on v squared, so tripling the speed gives nine times the energy, not three times',
+      'Height must be measured from the stated reference level, not from the nearest surface',
+      'Energy is a scalar and is never negative because of direction',
+    ],
+    example: {
+      problem: 'A 2 kg ball is dropped from a height of 5 m. Calculate its speed just before it hits the ground. Ignore friction. Use g = 9.8 m/s2.',
+      steps: [
+        'At the top the ball is at rest, so all its mechanical energy is potential: Ep = m g h = 2 x 9.8 x 5 = 98 J.',
+        'Just before landing the height is zero, so all of it is kinetic: Ek = 98 J.',
+        'Use Ek = 1/2 m v^2: 98 = 1/2 x 2 x v^2, so 98 = v^2.',
+        'Take the square root: v = 9.90 m/s.',
+      ],
+      answer: 'About 9.9 m/s downwards.',
+    },
+    moreExamples: [
+      {
+        problem: 'The same ball, dropped from the same height, lands at 8 m/s instead of 9.9 m/s. Calculate the energy lost and explain where it went.',
+        steps: [
+          'Kinetic energy on landing = 1/2 x 2 x 8^2 = 64 J.',
+          'Potential energy at the top was 98 J.',
+          'Energy lost = 98 - 64 = 34 J.',
+          'Mechanical energy was not conserved because air resistance did work on the ball; the 34 J was transferred to heat and sound in the surrounding air.',
+        ],
+        answer: '34 J was lost, transferred to heat and sound by air resistance.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-transverse-waves-g10',
+    summary: 'Pulses and transverse waves, the quantities that describe them, and what happens when waves meet or reach a boundary.',
+    keyIdeas: [
+      'In a transverse wave the particles vibrate perpendicular to the direction the wave travels',
+      'Amplitude is the maximum displacement from the rest position and is linked to the energy carried',
+      'Wavelength is the distance between two successive points in phase, such as crest to crest',
+      'Frequency is the number of waves passing a point each second, measured in hertz',
+      'The wave equation links them: v = f x wavelength',
+    ],
+    subtopics: [
+      {
+        name: 'Describing a wave',
+        points: [
+          'Crest is the highest point, trough the lowest',
+          'Period T is the time for one complete wave, and f = 1 / T',
+          'Points in phase are at the same position in their cycle and moving the same way',
+          'A wave transfers energy without transferring matter',
+        ],
+      },
+      {
+        name: 'Superposition',
+        points: [
+          'Constructive interference: two crests meet, and the amplitudes add to give a larger pulse',
+          'Destructive interference: a crest meets a trough, and the amplitudes subtract',
+          'After passing through each other the pulses continue unchanged',
+        ],
+      },
+      {
+        name: 'Reflection',
+        points: [
+          'A pulse reflected from a fixed end is inverted, that is the phase changes by 180 degrees',
+          'A pulse reflected from a free end is not inverted',
+          'Reflection changes direction but not the speed or the wavelength in the same medium',
+        ],
+      },
+    ],
+    formulae: [
+      'v = f x wavelength',
+      'T = 1 / f',
+      'f = 1 / T',
+    ],
+    commonMistakes: [
+      'A wave transfers energy, not matter: the particles vibrate about a fixed point and do not travel with the wave',
+      'Reflection at a fixed end inverts the pulse; at a free end it does not',
+      'Amplitude is measured from the rest position to the crest, not from trough to crest',
+    ],
+    example: {
+      problem: 'A transverse wave has a frequency of 5 Hz and a wavelength of 0.4 m. Calculate its speed and its period.',
+      steps: [
+        'Use the wave equation v = f x wavelength.',
+        'Substitute: v = 5 x 0.4 = 2 m/s.',
+        'The period is the reciprocal of the frequency: T = 1 / f.',
+        'T = 1 / 5 = 0.2 s.',
+      ],
+      answer: 'v = 2 m/s; T = 0.2 s.',
+    },
+    moreExamples: [
+      {
+        problem: 'Two pulses travel towards each other on a rope. One has an amplitude of 3 cm upwards and the other 2 cm downwards. Describe what happens as they meet and after they have passed.',
+        steps: [
+          'As they overlap the principle of superposition applies, so the displacements add algebraically.',
+          'Taking upwards as positive: (+3) + (-2) = +1 cm, so at the moment of full overlap the rope shows a single pulse 1 cm high.',
+          'This is destructive interference, because the resulting amplitude is smaller than the larger original.',
+          'After passing, each pulse continues unchanged with its original amplitude and direction.',
+        ],
+        answer: 'They interfere destructively to give a 1 cm upward pulse while overlapping, then continue unchanged at 3 cm up and 2 cm down.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-longitudinal-waves-g10',
+    summary: 'Longitudinal waves, how they differ from transverse waves, and the quantities used to describe them.',
+    keyIdeas: [
+      'In a longitudinal wave the particles vibrate parallel to the direction the wave travels',
+      'A compression is a region where the particles are close together; a rarefaction is where they are spread apart',
+      'Wavelength is the distance from one compression to the next',
+      'Longitudinal waves need a medium, so they cannot travel through a vacuum',
+      'The same wave equation applies: v = f x wavelength',
+    ],
+    subtopics: [
+      {
+        name: 'Structure of a longitudinal wave',
+        points: [
+          'Compressions correspond to high pressure and rarefactions to low pressure',
+          'One wavelength is compression to compression, or rarefaction to rarefaction',
+          'Amplitude relates to how much the particles are displaced from their rest positions',
+        ],
+      },
+      {
+        name: 'Comparison with transverse waves',
+        points: [
+          'Transverse: particle motion perpendicular to wave motion; examples are light and water ripples',
+          'Longitudinal: particle motion parallel to wave motion; the main example is sound',
+          'Only transverse waves can be polarised',
+          'Electromagnetic waves are transverse and need no medium; sound is longitudinal and does',
+        ],
+      },
+      {
+        name: 'Speed in different media',
+        points: [
+          'Sound travels fastest in solids, slower in liquids and slowest in gases',
+          'Closer particles transmit the vibration more quickly, which is why solids are fastest',
+          'A vacuum has no particles, so sound cannot travel through it at all',
+        ],
+      },
+    ],
+    formulae: [
+      'v = f x wavelength',
+      'T = 1 / f',
+    ],
+    commonMistakes: [
+      'Sound cannot travel through a vacuum, because there are no particles to compress',
+      'Compressions are high-pressure regions, not regions where the wave is stronger',
+      'Longitudinal waves cannot be polarised',
+    ],
+    example: {
+      problem: 'A sound wave in air has a frequency of 440 Hz. The speed of sound in air is 340 m/s. Calculate its wavelength.',
+      steps: [
+        'Use the wave equation v = f x wavelength, rearranged as wavelength = v / f.',
+        'Substitute the values: wavelength = 340 / 440.',
+        'Work it out: 0.7727 m.',
+        'Round appropriately: about 0.77 m.',
+      ],
+      answer: 'About 0.77 m',
+    },
+    moreExamples: [
+      {
+        problem: 'An astronaut on the Moon strikes a metal rod but hears nothing, although a second astronaut touching the rod feels the vibration. Explain.',
+        steps: [
+          'Sound is a longitudinal wave and requires a medium whose particles can be compressed and rarefied.',
+          'The Moon has effectively no atmosphere, so there are no air particles between the rod and the astronaut ear.',
+          'The vibration therefore cannot be transmitted through the space around the rod and no sound is heard.',
+          'The rod itself is a solid medium, so the vibration travels through it and can be felt by direct contact.',
+        ],
+        answer: 'Sound needs a medium; there is no air on the Moon to carry it, though the solid rod can still transmit the vibration by contact.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-sound-g10',
+    summary: 'How sound is produced and transmitted, the link between the physical properties of a sound wave and what we hear, and the uses of ultrasound.',
+    keyIdeas: [
+      'Sound is produced by a vibrating object and travels as a longitudinal wave',
+      'Pitch is determined by frequency: higher frequency gives a higher pitch',
+      'Loudness is determined by amplitude: larger amplitude gives a louder sound',
+      'The human audible range is about 20 Hz to 20 000 Hz',
+      'Ultrasound is sound above 20 000 Hz, which is above the human hearing range',
+    ],
+    subtopics: [
+      {
+        name: 'Properties of sound',
+        points: [
+          'Pitch depends on frequency, measured in hertz',
+          'Loudness depends on amplitude, and intensity is measured in decibels',
+          'Quality, or timbre, is why a guitar and a piano playing the same note sound different',
+        ],
+      },
+      {
+        name: 'Transmission and speed',
+        points: [
+          'Sound needs a medium and travels fastest in solids, then liquids, then gases',
+          'In air at about 20 degrees Celsius the speed is roughly 340 m/s',
+          'Speed increases with temperature in a gas, because the particles move faster',
+        ],
+      },
+      {
+        name: 'Ultrasound and hearing damage',
+        points: [
+          'Ultrasound is used for prenatal imaging, for detecting flaws in metal, and by bats and dolphins for echolocation',
+          'Echo timing gives distance: the wave travels there and back, so the distance is half the total path',
+          'Prolonged exposure above about 85 decibels damages hearing permanently',
+        ],
+      },
+    ],
+    formulae: [
+      'v = f x wavelength',
+      'Distance to a reflector = (v x t) / 2, where t is the total echo time',
+    ],
+    commonMistakes: [
+      'Pitch is set by frequency and loudness by amplitude; the two are often swapped',
+      'In an echo calculation the sound travels to the object and back, so the distance is half the total path',
+      'Sound travels faster in solids than in air, not slower',
+    ],
+    example: {
+      problem: 'A ship sends a sonar pulse to the seabed and receives the echo 0.4 s later. Sound travels at 1 500 m/s in seawater. Calculate the depth.',
+      steps: [
+        'The pulse travels down to the seabed and back, so the total path takes 0.4 s.',
+        'Total distance = v x t = 1 500 x 0.4 = 600 m.',
+        'The depth is half the total distance, because the path there and back are equal.',
+        'Depth = 600 / 2 = 300 m.',
+      ],
+      answer: '300 m',
+    },
+    moreExamples: [
+      {
+        problem: 'Two guitar strings are plucked. String A sounds higher and softer than string B. Compare the frequency and amplitude of the two waves.',
+        steps: [
+          'Pitch is determined by frequency, and string A sounds higher.',
+          'String A therefore has the higher frequency.',
+          'Loudness is determined by amplitude, and string A sounds softer.',
+          'String A therefore has the smaller amplitude, so string B has the lower frequency and the larger amplitude.',
+        ],
+        answer: 'String A has a higher frequency and a smaller amplitude; string B has a lower frequency and a larger amplitude.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-em-radiation-g10',
+    summary: 'The electromagnetic spectrum, the dual nature of light, and the relationship between frequency, wavelength and photon energy.',
+    keyIdeas: [
+      'Electromagnetic waves are transverse and travel through a vacuum at 3 x 10^8 m/s',
+      'The spectrum runs from radio waves, through microwaves, infrared, visible light, ultraviolet and X-rays, to gamma rays',
+      'Frequency and wavelength are inversely proportional, since c is constant',
+      'Photon energy is proportional to frequency, so gamma rays carry the most energy per photon',
+      'Light behaves as both a wave and a particle, which is its dual nature',
+    ],
+    subtopics: [
+      {
+        name: 'The spectrum',
+        points: [
+          'In order of increasing frequency: radio, microwave, infrared, visible, ultraviolet, X-ray, gamma',
+          'Visible light runs from red, which has the longest wavelength, to violet, which has the shortest',
+          'All electromagnetic waves travel at the same speed in a vacuum',
+        ],
+      },
+      {
+        name: 'Wave and particle nature',
+        points: [
+          'Wave nature is shown by diffraction and interference',
+          'Particle nature is shown by the photoelectric effect, where light behaves as photons',
+          'A photon is a packet of energy given by E = h f',
+        ],
+      },
+      {
+        name: 'Effects and uses',
+        points: [
+          'Radio and microwave: communication and cooking',
+          'Infrared: heating and thermal imaging; ultraviolet: causes sunburn and skin cancer',
+          'X-rays and gamma rays are ionising and damage living tissue, so exposure must be limited',
+        ],
+      },
+    ],
+    formulae: [
+      'c = f x wavelength, with c = 3 x 10^8 m/s',
+      'E = h f, with h = 6.63 x 10^-34 J s',
+      'E = h c / wavelength',
+    ],
+    commonMistakes: [
+      'All electromagnetic waves travel at the same speed in a vacuum; only their frequency and wavelength differ',
+      'Higher frequency means shorter wavelength, because their product is constant',
+      'The energy of a photon depends on frequency, not on the brightness of the source',
+    ],
+    example: {
+      problem: 'Green light has a wavelength of 5.5 x 10^-7 m. Calculate its frequency and the energy of one photon.',
+      steps: [
+        'Use c = f x wavelength, rearranged as f = c / wavelength.',
+        'f = (3 x 10^8) / (5.5 x 10^-7) = 5.45 x 10^14 Hz.',
+        'Use E = h f with h = 6.63 x 10^-34 J s.',
+        'E = (6.63 x 10^-34) x (5.45 x 10^14) = 3.61 x 10^-19 J.',
+      ],
+      answer: 'f = 5.45 x 10^14 Hz; E = 3.61 x 10^-19 J.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain why ultraviolet radiation can cause skin cancer but visible light cannot, even when the visible light is much brighter.',
+        steps: [
+          'The energy carried by a single photon is given by E = h f, so it depends only on the frequency.',
+          'Ultraviolet has a higher frequency than visible light, so each ultraviolet photon carries more energy.',
+          'Ultraviolet photons carry enough energy to ionise molecules and damage DNA in skin cells; visible photons do not.',
+          'Increasing the brightness of visible light delivers more photons, but each one is still too weak to cause that damage.',
+        ],
+        answer: 'Photon energy depends on frequency, not brightness; ultraviolet photons are energetic enough to damage DNA while visible photons are not, however many arrive.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-classification-matter',
+    summary: 'How matter is classified into mixtures and pure substances, and the physical methods used to separate mixtures.',
+    keyIdeas: [
+      'Matter is either a mixture or a pure substance',
+      'A pure substance is either an element or a compound, and has a fixed composition and a sharp melting point',
+      'A mixture contains two or more substances not chemically joined, in any proportion',
+      'Homogeneous mixtures are uniform throughout; heterogeneous mixtures are not',
+      'Mixtures are separated by physical methods that exploit a difference in physical properties',
+    ],
+    subtopics: [
+      {
+        name: 'Pure substances',
+        points: [
+          'An element cannot be broken down chemically and contains one kind of atom',
+          'A compound contains two or more elements chemically bonded in a fixed ratio',
+          'A compound has properties quite different from the elements it is made of',
+          'A pure substance melts and boils at one sharp temperature',
+        ],
+      },
+      {
+        name: 'Mixtures',
+        points: [
+          'Homogeneous: a solution such as salt water, uniform throughout, with particles that cannot be seen',
+          'Heterogeneous: sand and water, or granite, with visibly distinct parts',
+          'The components keep their own properties and can be present in any ratio',
+        ],
+      },
+      {
+        name: 'Separation methods',
+        points: [
+          'Filtration separates an insoluble solid from a liquid',
+          'Evaporation or crystallisation recovers a dissolved solid from a solution',
+          'Distillation separates liquids with different boiling points, and recovers the solvent',
+          'Chromatography separates dissolved substances by how far they travel; magnetism separates magnetic material; a separating funnel separates immiscible liquids',
+        ],
+      },
+    ],
+    commonMistakes: [
+      'A compound has fixed proportions and needs a chemical reaction to separate; a mixture does not',
+      'Filtration cannot remove a dissolved solid, because the particles pass through the filter paper',
+      'Air is a mixture, not a compound, which is why its composition can vary',
+    ],
+    example: {
+      problem: 'A sample is a mixture of insoluble chalk powder and potassium permanganate, which dissolves in water. Describe, with reasons, how you would separate the two.',
+      steps: [
+        'Add water and stir: the potassium permanganate dissolves to form a purple solution while the chalk does not dissolve.',
+        'Filter the mixture: the insoluble chalk is trapped as residue on the filter paper and can be dried.',
+        'Collect the purple filtrate, which contains the dissolved potassium permanganate.',
+        'Evaporate the water from the filtrate, or allow it to crystallise, to recover the solid potassium permanganate.',
+      ],
+      answer: 'Dissolve in water, filter off the chalk as residue, then evaporate or crystallise the filtrate to recover the potassium permanganate.',
+    },
+    moreExamples: [
+      {
+        problem: 'A learner is given a colourless liquid and asked to decide whether it is pure water or salt water, without tasting it. Describe a test.',
+        steps: [
+          'Heat the liquid and record the temperature at which it boils, using a thermometer.',
+          'Pure water boils at exactly 100 degrees Celsius at sea level, and the temperature stays constant while it boils.',
+          'A solution boils above 100 degrees Celsius, and the boiling point rises as the solution becomes more concentrated.',
+          'A sharp, constant boiling point at 100 degrees Celsius therefore indicates pure water.',
+        ],
+        answer: 'Measure the boiling point: pure water boils sharply at 100 degrees Celsius, while salt water boils higher and over a rising range.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-states-matter-kmt',
+    summary: 'The kinetic molecular theory, how it explains the three states of matter and the changes between them, and how it accounts for diffusion and pressure.',
+    keyIdeas: [
+      'All matter is made of particles that are in constant motion',
+      'Temperature is a measure of the average kinetic energy of the particles',
+      'The state of a substance depends on the strength of the forces between its particles relative to their kinetic energy',
+      'During a change of state the temperature stays constant while the forces between particles are overcome',
+      'Pressure in a gas is caused by particles colliding with the container walls',
+    ],
+    subtopics: [
+      {
+        name: 'The three states',
+        points: [
+          'Solid: particles closely packed in a fixed pattern, vibrating in place; fixed shape and volume',
+          'Liquid: particles close but able to slide past one another; fixed volume, takes the shape of the container',
+          'Gas: particles far apart and moving rapidly at random; no fixed shape or volume, and compressible',
+        ],
+      },
+      {
+        name: 'Changes of state',
+        points: [
+          'Melting, evaporation and sublimation absorb energy; freezing, condensation and deposition release it',
+          'During melting or boiling the temperature does not rise, because the energy goes into breaking the forces between particles, not into speeding them up',
+          'A heating curve therefore shows flat sections at the melting and boiling points',
+        ],
+      },
+      {
+        name: 'Diffusion and pressure',
+        points: [
+          'Diffusion is the spreading of particles from high to low concentration due to their random motion',
+          'Lighter particles diffuse faster at the same temperature, because they move faster',
+          'Gas pressure rises if the temperature rises, if the volume decreases, or if more gas is added',
+        ],
+      },
+    ],
+    commonMistakes: [
+      'The temperature does not rise while a substance is melting or boiling, even though heat is still being supplied',
+      'Particles in a solid are still moving: they vibrate about fixed positions',
+      'Gas pressure comes from particle collisions with the walls, not from the particles pushing each other',
+    ],
+    example: {
+      problem: 'A liquid is heated steadily until it boils. Describe, using the kinetic molecular theory, what happens to the temperature and the particles during boiling.',
+      steps: [
+        'Before boiling, the supplied energy increases the average kinetic energy of the particles, so the temperature rises.',
+        'At the boiling point the temperature stops rising and remains constant, even though heating continues.',
+        'The energy supplied is used to overcome the forces of attraction between the liquid particles rather than to speed them up.',
+        'Once the particles are free of these forces they escape as a gas, and only then does further heating raise the temperature again.',
+      ],
+      answer: 'The temperature stays constant during boiling because the energy supplied breaks the forces between particles instead of increasing their kinetic energy.',
+    },
+    moreExamples: [
+      {
+        problem: 'A bottle of perfume is opened at the front of a classroom and the smell reaches the back a little later. Explain using the kinetic molecular theory, and state what would happen on a colder day.',
+        steps: [
+          'The perfume particles evaporate and move randomly at high speed in all directions.',
+          'They spread from the high concentration near the bottle to the lower concentration across the room, which is diffusion.',
+          'They collide constantly with air particles, so their path is indirect, which is why it takes time rather than arriving instantly.',
+          'On a colder day the particles have less average kinetic energy and move more slowly, so diffusion is slower and the smell takes longer to reach the back.',
+        ],
+        answer: 'Random particle motion causes diffusion from high to low concentration; on a colder day the particles move more slowly, so it takes longer.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-the-atom',
+    summary: 'The structure of the atom, the meaning of atomic number and mass number, isotopes, and how electrons are arranged.',
+    keyIdeas: [
+      'An atom has a small dense nucleus of protons and neutrons, surrounded by electrons',
+      'Protons are positive, electrons negative and neutrons neutral; an atom overall is neutral',
+      'Atomic number Z is the number of protons and identifies the element',
+      'Mass number A is the number of protons plus neutrons',
+      'Isotopes are atoms of the same element with different numbers of neutrons',
+    ],
+    subtopics: [
+      {
+        name: 'Subatomic particles',
+        points: [
+          'Proton: charge +1, mass 1 unit, in the nucleus',
+          'Neutron: charge 0, mass 1 unit, in the nucleus',
+          'Electron: charge -1, negligible mass, in energy levels around the nucleus',
+          'In a neutral atom the number of electrons equals the number of protons',
+        ],
+      },
+      {
+        name: 'Isotopes and relative atomic mass',
+        points: [
+          'Isotopes have the same atomic number but different mass numbers',
+          'They have identical chemical properties, because chemistry is decided by the electrons',
+          'Relative atomic mass is the weighted average of the isotope masses, according to their abundance',
+          'This is why relative atomic masses on the periodic table are rarely whole numbers',
+        ],
+      },
+      {
+        name: 'Electron arrangement',
+        points: [
+          'Energy levels fill from the lowest upwards; the first holds 2 electrons and the second holds 8',
+          'Valence electrons are those in the outermost energy level and determine chemical behaviour',
+          'Atoms react so as to achieve a full outer energy level',
+        ],
+      },
+    ],
+    formulae: [
+      'Number of neutrons = A - Z',
+      'Relative atomic mass = sum of (isotope mass x percentage abundance) / 100',
+    ],
+    commonMistakes: [
+      'Isotopes differ in neutrons, not in protons; changing the protons changes the element',
+      'Almost all the mass of an atom is in the nucleus, even though the nucleus is tiny',
+      'An ion is charged because it has gained or lost electrons, not protons',
+    ],
+    example: {
+      problem: 'An atom has a mass number of 39 and an atomic number of 19. State the numbers of protons, neutrons and electrons.',
+      steps: [
+        'The atomic number is the number of protons, so there are 19 protons.',
+        'The atom is neutral, so the number of electrons equals the number of protons: 19 electrons.',
+        'Neutrons = mass number - atomic number = 39 - 19.',
+        'That gives 20 neutrons.',
+      ],
+      answer: '19 protons, 20 neutrons and 19 electrons.',
+    },
+    moreExamples: [
+      {
+        problem: 'Chlorine exists as two isotopes: 75% chlorine-35 and 25% chlorine-37. Calculate the relative atomic mass, and explain why the isotopes behave identically in chemical reactions.',
+        steps: [
+          'Relative atomic mass = (35 x 75 + 37 x 25) / 100.',
+          'That is (2 625 + 925) / 100 = 3 550 / 100 = 35.5.',
+          'Chemical behaviour is determined by the valence electrons, and both isotopes have 17 protons and therefore 17 electrons.',
+          'Since the electron arrangement is identical, the two isotopes react in exactly the same way; only their masses differ.',
+        ],
+        answer: 'Relative atomic mass = 35.5; the isotopes react identically because they have the same electron arrangement and differ only in neutrons.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-periodic-table',
+    summary: 'How the periodic table is arranged, the trends down groups and across periods, and how position predicts chemical behaviour.',
+    keyIdeas: [
+      'Elements are arranged in order of increasing atomic number',
+      'A group is a vertical column; all its members have the same number of valence electrons',
+      'A period is a horizontal row; the energy level being filled is the same across it',
+      'Chemical properties repeat periodically because the valence electron arrangement repeats',
+      'Metals are on the left, non-metals on the right, with a staircase of semi-metals between',
+    ],
+    subtopics: [
+      {
+        name: 'Groups',
+        points: [
+          'Group 1, alkali metals: one valence electron, very reactive, reactivity increases down the group',
+          'Group 2, alkaline earth metals: two valence electrons',
+          'Group 17, halogens: seven valence electrons, very reactive non-metals, reactivity decreases down the group',
+          'Group 18, noble gases: full outer energy level, so they are unreactive',
+        ],
+      },
+      {
+        name: 'Trends',
+        points: [
+          'Atomic radius increases down a group, as energy levels are added',
+          'Atomic radius decreases across a period, as the increasing nuclear charge pulls the same energy level inwards',
+          'Ionisation energy decreases down a group and increases across a period',
+          'Metallic character decreases across a period and increases down a group',
+        ],
+      },
+      {
+        name: 'Predicting behaviour',
+        points: [
+          'Metals lose electrons to form positive ions; non-metals gain electrons to form negative ions',
+          'An element in group 1 loses one electron to form a 1+ ion; one in group 17 gains one to form a 1- ion',
+          'Elements in the same group react similarly because they have the same number of valence electrons',
+        ],
+      },
+    ],
+    commonMistakes: [
+      'Atomic radius decreases across a period even though electrons are being added, because the nuclear charge rises and pulls the same shell inwards',
+      'Group 1 reactivity increases downwards, while group 17 reactivity decreases downwards',
+      'Noble gases are unreactive because their outer level is full, not because they have no electrons to spare',
+    ],
+    example: {
+      problem: 'Explain why sodium (group 1) is far more reactive than magnesium (group 2).',
+      steps: [
+        'Sodium has one valence electron and magnesium has two.',
+        'To react, a metal must lose its valence electrons and form a positive ion.',
+        'Losing one electron requires less energy than losing two, so sodium forms its ion more readily.',
+        'Sodium therefore reacts more vigorously, for example with water.',
+      ],
+      answer: 'Sodium needs to lose only one valence electron while magnesium must lose two, which takes more energy.',
+    },
+    moreExamples: [
+      {
+        problem: 'Predict the formula of the compound formed between magnesium and chlorine, and explain your reasoning from their positions in the periodic table.',
+        steps: [
+          'Magnesium is in group 2, so it has two valence electrons and loses both to form Mg2+.',
+          'Chlorine is in group 17, so it has seven valence electrons and gains one to form Cl-.',
+          'The compound must be electrically neutral, so two chloride ions are needed to balance one magnesium ion.',
+          'The formula is therefore MgCl2.',
+        ],
+        answer: 'MgCl2, because Mg loses 2 electrons to form Mg2+ and each Cl gains 1 to form Cl-, so two chlorides balance one magnesium.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-chemical-bonding-g10',
+    summary: 'Why atoms bond, the three main types of bond, and how the type of bonding explains the properties of a substance.',
+    keyIdeas: [
+      'Atoms bond to achieve a full outer energy level, which is a more stable arrangement',
+      'Ionic bonding transfers electrons from a metal to a non-metal',
+      'Covalent bonding shares electrons between non-metals',
+      'Metallic bonding is positive ions in a sea of delocalised electrons',
+      'The properties of a substance follow directly from its bonding and structure',
+    ],
+    subtopics: [
+      {
+        name: 'Ionic bonding',
+        points: [
+          'A metal loses electrons to form a cation and a non-metal gains them to form an anion',
+          'The oppositely charged ions attract in a giant lattice',
+          'High melting point, brittle, and conducts electricity only when molten or dissolved, because only then are the ions free to move',
+        ],
+      },
+      {
+        name: 'Covalent bonding',
+        points: [
+          'Two non-metal atoms share one or more pairs of electrons',
+          'A single bond shares one pair, a double bond two pairs, a triple bond three',
+          'Simple molecular substances have low melting points, because the weak forces between molecules are easily overcome, not the strong bonds within them',
+          'They generally do not conduct electricity, because there are no free charged particles',
+        ],
+      },
+      {
+        name: 'Metallic bonding',
+        points: [
+          'Positive metal ions in a lattice, with delocalised valence electrons free to move',
+          'Good conductors of heat and electricity, because the delocalised electrons carry charge and energy',
+          'Malleable and ductile, because layers of ions can slide over one another without breaking the bond',
+        ],
+      },
+    ],
+    commonMistakes: [
+      'Melting a simple covalent substance breaks the weak forces between molecules, not the covalent bonds inside them',
+      'An ionic solid does not conduct, because its ions are locked in the lattice; it conducts only when molten or dissolved',
+      'Metals conduct because of delocalised electrons, not because of their ions moving',
+    ],
+    example: {
+      problem: 'Sodium chloride has a melting point of 801 degrees Celsius, while chlorine gas melts at -101 degrees Celsius. Explain the difference in terms of bonding.',
+      steps: [
+        'Sodium chloride is ionic: oppositely charged ions are held in a giant lattice by strong electrostatic forces acting in all directions.',
+        'Melting it requires breaking many of these strong forces, so a very high temperature is needed.',
+        'Chlorine is a simple covalent molecule, Cl2. The covalent bond within each molecule is strong, but the forces between separate molecules are very weak.',
+        'Melting chlorine only requires overcoming those weak intermolecular forces, so a very low temperature suffices.',
+      ],
+      answer: 'Sodium chloride has a giant ionic lattice held by strong electrostatic forces, while chlorine is made of separate molecules held together only by weak intermolecular forces.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain why copper wire is used for electrical cables and why it can be drawn into a thin wire without snapping.',
+        steps: [
+          'Copper is a metal, so it consists of positive ions in a lattice surrounded by delocalised valence electrons.',
+          'These delocalised electrons are free to move through the whole structure, so they carry charge and copper conducts electricity well.',
+          'When a force is applied, the layers of positive ions slide over one another.',
+          'The delocalised electrons continue to hold the structure together as the layers move, so the metal deforms rather than shattering, which makes it ductile.',
+        ],
+        answer: 'Its delocalised electrons are free to move and carry charge, and they hold the lattice together as ion layers slide, so it conducts well and is ductile.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-physical-chemical-change',
+    summary: 'Distinguishing physical from chemical change, and applying conservation of mass and energy to chemical reactions.',
+    keyIdeas: [
+      'In a physical change no new substance is formed, and the change is usually easy to reverse',
+      'In a chemical change a new substance with new properties is formed, and bonds are broken and made',
+      'Mass is conserved in a chemical reaction: the total mass of reactants equals the total mass of products',
+      'An exothermic reaction releases energy and the temperature of the surroundings rises',
+      'An endothermic reaction absorbs energy and the temperature of the surroundings falls',
+    ],
+    subtopics: [
+      {
+        name: 'Telling them apart',
+        points: [
+          'Signs of chemical change: a colour change, a gas given off, a precipitate forming, a temperature change, or light produced',
+          'Physical changes include changes of state, dissolving, and cutting or crushing',
+          'In a physical change the particles themselves are unchanged; only their arrangement or separation changes',
+        ],
+      },
+      {
+        name: 'Conservation of mass',
+        points: [
+          'Atoms are neither created nor destroyed, only rearranged',
+          'A balanced equation therefore has the same number of each kind of atom on both sides',
+          'If a gas escapes, the mass in an open container appears to fall, but the total mass is still conserved',
+        ],
+      },
+      {
+        name: 'Energy in reactions',
+        points: [
+          'Breaking bonds absorbs energy; making bonds releases energy',
+          'Exothermic: more energy is released in making bonds than is absorbed in breaking them, so the container feels warm',
+          'Endothermic: more energy is absorbed than released, so the container feels cold',
+          'Combustion and neutralisation are exothermic; photosynthesis and thermal decomposition are endothermic',
+        ],
+      },
+    ],
+    commonMistakes: [
+      'Dissolving salt in water is a physical change: the salt can be recovered by evaporation and no new substance forms',
+      'Mass is still conserved when a gas escapes; it only appears to be lost because the gas has left the container',
+      'Exothermic means the surroundings warm up, so the reaction itself is losing energy',
+    ],
+    example: {
+      problem: 'A 5 g strip of magnesium is burnt in air and the ash produced has a mass of 8.3 g. Explain why the mass increased, and state whether the law of conservation of mass has been broken.',
+      steps: [
+        'Burning magnesium is a chemical change: magnesium reacts with oxygen from the air to form magnesium oxide.',
+        'The oxygen atoms that join the magnesium come from the air and add to the mass of the solid product.',
+        'The mass increase of 3.3 g is therefore the mass of oxygen that reacted.',
+        'The law is not broken: the total mass of magnesium plus oxygen equals the mass of magnesium oxide formed.',
+      ],
+      answer: 'Oxygen from the air combined with the magnesium, adding 3.3 g; the law of conservation of mass holds once that oxygen is counted.',
+    },
+    moreExamples: [
+      {
+        problem: 'A learner mixes two solutions in a beaker and the beaker becomes noticeably cold. Classify the reaction and explain what is happening in terms of bonds.',
+        steps: [
+          'The beaker becoming cold means energy has been taken from the surroundings, so the reaction is endothermic.',
+          'Breaking the bonds in the reactants absorbs energy from the surroundings.',
+          'Forming the bonds in the products releases energy back.',
+          'In this reaction more energy is absorbed in breaking bonds than is released in forming them, so there is a net absorption and the surroundings cool.',
+        ],
+        answer: 'It is endothermic: more energy is absorbed breaking reactant bonds than is released forming product bonds, so energy is taken from the surroundings.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-vectors-2d',
+    summary: 'Resolving vectors into perpendicular components and finding the resultant of vectors that are not in a straight line.',
+    keyIdeas: [
+      'Any vector can be replaced by two perpendicular components that together have the same effect',
+      'The horizontal component is F cos(theta) and the vertical component is F sin(theta), with theta measured from the horizontal',
+      'Components along the same line add algebraically',
+      'The resultant magnitude comes from Pythagoras and its direction from the tangent ratio',
+      'A body in equilibrium has a zero resultant, so the components in each direction must cancel',
+    ],
+    subtopics: [
+      {
+        name: 'Resolving into components',
+        points: [
+          'Draw the vector and the angle clearly before resolving',
+          'Fx = F cos(theta), Fy = F sin(theta), when theta is measured from the horizontal',
+          'Give each component a sign according to the positive directions you chose',
+        ],
+      },
+      {
+        name: 'Finding the resultant',
+        points: [
+          'Add all horizontal components to get Rx, and all vertical components to get Ry',
+          'Magnitude R = square root of (Rx squared + Ry squared)',
+          'Direction: tan(theta) = Ry / Rx, then state the angle relative to a named direction',
+        ],
+      },
+      {
+        name: 'Equilibrium',
+        points: [
+          'In equilibrium the resultant is zero, so Rx = 0 and Ry = 0',
+          'The equilibrant is equal in magnitude and opposite in direction to the resultant',
+          'For three forces in equilibrium, any one is the equilibrant of the other two',
+        ],
+      },
+    ],
+    formulae: [
+      'Fx = F cos(theta); Fy = F sin(theta)',
+      'R = sqrt(Rx^2 + Ry^2)',
+      'tan(theta) = Ry / Rx',
+    ],
+    commonMistakes: [
+      'Which component uses cosine depends on where the angle is measured from; always mark the angle on a sketch first',
+      'Components must be given signs, or opposing forces will be added instead of subtracted',
+      'The resultant of two vectors at an angle is not the sum of their magnitudes',
+    ],
+    example: {
+      problem: 'A force of 50 N acts at 30 degrees above the horizontal. Calculate its horizontal and vertical components.',
+      steps: [
+        'The angle is measured from the horizontal, so the horizontal component uses cosine.',
+        'Fx = 50 cos(30) = 50 x 0.866 = 43.3 N.',
+        'The vertical component uses sine: Fy = 50 sin(30).',
+        'Fy = 50 x 0.5 = 25 N.',
+      ],
+      answer: 'Fx = 43.3 N horizontally; Fy = 25 N vertically upwards.',
+    },
+    moreExamples: [
+      {
+        problem: 'Two forces act on an object: 40 N due east and 30 N due north. Calculate the magnitude and direction of the resultant.',
+        steps: [
+          'The forces are already perpendicular, so Rx = 40 N east and Ry = 30 N north.',
+          'Magnitude R = sqrt(40^2 + 30^2) = sqrt(1600 + 900) = sqrt(2500) = 50 N.',
+          'Direction: tan(theta) = Ry / Rx = 30 / 40 = 0.75.',
+          'theta = 36.87 degrees, measured north of east.',
+        ],
+        answer: '50 N at 36.9 degrees north of east.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-newtons-laws',
+    summary: 'Newton\'s three laws of motion, friction, the normal force, and how to apply them to objects on horizontal surfaces, inclines and connected systems.',
+    keyIdeas: [
+      'A free-body diagram is the first step in every problem: draw only the forces acting on the one chosen object',
+      'Newton\'s First Law: an object stays at rest or in uniform motion unless a net force acts on it',
+      'Newton\'s Second Law: Fnet = m a, with the acceleration in the direction of the net force',
+      'Newton\'s Third Law: forces occur in pairs, equal in magnitude and opposite in direction, acting on different objects',
+      'Friction always opposes the motion, or the tendency to move',
+    ],
+    subtopics: [
+      {
+        name: 'Friction and the normal force',
+        points: [
+          'The normal force N is perpendicular to the surface; on a horizontal surface with no vertical applied force, N = m g',
+          'Static friction holds an object still up to a maximum value; kinetic friction acts once it is moving',
+          'Kinetic friction f = mu(k) x N, so friction depends on the surface and on the normal force, not on the contact area',
+          'On an incline the normal force is N = m g cos(theta), so friction there is less than on a flat surface',
+        ],
+      },
+      {
+        name: 'Applying Fnet = m a',
+        points: [
+          'Choose a positive direction, resolve all forces along it, then sum them to get Fnet',
+          'Fnet is the vector sum: subtract friction from the applied force when they oppose',
+          'A constant velocity means a = 0, so Fnet = 0, which does not mean no forces act',
+          'Solve connected bodies either as one system, or object by object using the shared tension',
+        ],
+      },
+      {
+        name: 'Newton\'s Third Law pairs',
+        points: [
+          'Action and reaction act on two different objects, so they never cancel each other out',
+          'The weight of a book and the normal force on it are not a Third Law pair: both act on the book',
+          'A correct pair example: the Earth pulls the book down, and the book pulls the Earth up with equal force',
+        ],
+      },
+    ],
+    formulae: [
+      'Fnet = m a',
+      'f(kinetic) = mu(k) x N',
+      'N = m g on a horizontal surface; N = m g cos(theta) on an incline',
+      'w = m g',
+    ],
+    commonMistakes: [
+      'Newton\'s Third Law pairs act on different objects, so they cannot cancel',
+      'A constant velocity means zero net force, not zero force',
+      'Friction depends on the normal force and the coefficient, not on how large the contact area is',
+    ],
+    example: {
+      problem: 'A 2 kg block is pulled across a rough horizontal surface by a constant force of 15 N. The coefficient of kinetic friction is 0.2. Calculate the frictional force, the net force and the acceleration. Use g = 9.8 m/s2.',
+      steps: [
+        'On a horizontal surface with a horizontal applied force, N = m g = 2 x 9.8 = 19.6 N.',
+        'Frictional force f = mu x N = 0.2 x 19.6 = 3.92 N, acting opposite to the motion.',
+        'Taking the direction of motion as positive, Fnet = 15 - 3.92 = 11.08 N.',
+        'From Fnet = m a, a = 11.08 / 2 = 5.54 m/s2 in the direction of the applied force.',
+      ],
+      answer: 'Friction = 3.92 N; net force = 11.08 N; acceleration = 5.54 m/s2 in the direction of the pull.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain how the coefficient of friction affects motion in real-life situations, giving one case where a high value is wanted and one where a low value is wanted.',
+        steps: [
+          'The coefficient of friction sets how much frictional force a surface pair produces for a given normal force, through f = mu x N.',
+          'A high coefficient is wanted between a tyre and the road: it gives a large friction force, which is what allows a car to accelerate, turn and brake without skidding.',
+          'On a wet or icy road mu falls sharply, the maximum available friction drops, and the braking distance increases, which is why crashes are more likely.',
+          'A low coefficient is wanted between moving machine parts, so oil is used to reduce mu, cutting wear and the energy wasted as heat.',
+        ],
+        answer: 'mu determines the friction available for a given normal force: high mu is wanted for tyre grip and braking, and low mu is wanted between lubricated machine parts to reduce wear and energy loss.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-geometric-optics',
+    summary: 'Refraction of light at a boundary, Snell\'s law, total internal reflection and its applications.',
+    keyIdeas: [
+      'Refraction is the change of direction of light when it passes between media of different optical density',
+      'Light bends towards the normal entering a denser medium and away from the normal leaving it',
+      'The refractive index n = c / v, so a larger n means light travels more slowly in that medium',
+      'Snell\'s law: n1 sin(theta1) = n2 sin(theta2)',
+      'Total internal reflection occurs only when light travels from a denser to a less dense medium at more than the critical angle',
+    ],
+    subtopics: [
+      {
+        name: 'Refraction',
+        points: [
+          'The normal is the line perpendicular to the surface at the point of incidence',
+          'Angles are always measured from the normal, never from the surface',
+          'The frequency of the light does not change on refraction; the speed and the wavelength do',
+          'Light entering along the normal is not bent, though its speed still changes',
+        ],
+      },
+      {
+        name: 'Snell\'s law',
+        points: [
+          'n1 sin(theta1) = n2 sin(theta2), where 1 is the incident medium',
+          'Refractive index of a vacuum is 1, of air about 1.0003, of water 1.33 and of glass about 1.5',
+          'n = c / v, so v = c / n gives the speed of light in the medium',
+        ],
+      },
+      {
+        name: 'Total internal reflection',
+        points: [
+          'Two conditions: light travels from a more dense to a less dense medium, and the angle of incidence exceeds the critical angle',
+          'sin(critical angle) = n2 / n1',
+          'Applications: optical fibres for communication and endoscopy, and prisms in binoculars and periscopes',
+        ],
+      },
+    ],
+    formulae: [
+      'n = c / v',
+      'n1 sin(theta1) = n2 sin(theta2)',
+      'sin(theta c) = n2 / n1',
+    ],
+    commonMistakes: [
+      'Angles in Snell\'s law are measured from the normal, not from the surface',
+      'Total internal reflection cannot happen going from less dense to more dense, whatever the angle',
+      'Frequency is unchanged by refraction; it is the speed and wavelength that change',
+    ],
+    example: {
+      problem: 'Light travels from air (n = 1) into glass (n = 1.5) with an angle of incidence of 30 degrees. Calculate the angle of refraction.',
+      steps: [
+        'Apply Snell\'s law: n1 sin(theta1) = n2 sin(theta2).',
+        'Substitute: 1 x sin(30) = 1.5 x sin(theta2), so 0.5 = 1.5 sin(theta2).',
+        'sin(theta2) = 0.5 / 1.5 = 0.3333.',
+        'theta2 = 19.47 degrees, which is smaller than 30 degrees, as expected when entering a denser medium.',
+      ],
+      answer: 'About 19.5 degrees from the normal.',
+    },
+    moreExamples: [
+      {
+        problem: 'Calculate the critical angle for a water-to-air boundary, given that water has a refractive index of 1.33, and explain why a diver looking up sees a bright circle surrounded by darkness.',
+        steps: [
+          'Use sin(theta c) = n2 / n1 = 1 / 1.33 = 0.7519.',
+          'theta c = 48.75 degrees.',
+          'Light from above the surface can only reach the diver by refracting into the water, and all of it arrives within a cone of half-angle 48.75 degrees.',
+          'Beyond that angle the water surface totally internally reflects light from below, so the diver sees the reflected dark water instead of the sky.',
+        ],
+        answer: 'About 48.8 degrees; outside that cone the surface totally internally reflects, so the diver sees darkness rather than sky.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-wavefronts',
+    summary: 'Wavefronts, Huygens\' principle, diffraction through a slit, and the conditions that make diffraction noticeable.',
+    keyIdeas: [
+      'A wavefront joins points that are in phase, and it travels perpendicular to itself',
+      'Huygens\' principle: every point on a wavefront acts as a source of secondary wavelets',
+      'Diffraction is the spreading of a wave as it passes through an opening or around an obstacle',
+      'Diffraction is most noticeable when the slit width is comparable to the wavelength',
+      'Diffraction does not change the frequency, the wavelength or the speed of the wave',
+    ],
+    subtopics: [
+      {
+        name: 'Wavefronts',
+        points: [
+          'Wavefronts are drawn as lines or curves joining points in phase, usually crests',
+          'Rays are drawn perpendicular to wavefronts and show the direction of travel',
+          'Far from a point source the wavefronts are almost straight, so they are treated as plane waves',
+        ],
+      },
+      {
+        name: 'Diffraction through a single slit',
+        points: [
+          'A narrow slit spreads the wave more; a wide slit spreads it less',
+          'The amount of spreading depends on the ratio of wavelength to slit width',
+          'A central bright band is flanked by dark bands where destructive interference occurs',
+          'Dark bands occur where sin(theta) = m x wavelength / a, with m = 1, 2, 3 and a the slit width',
+        ],
+      },
+      {
+        name: 'Everyday evidence',
+        points: [
+          'Sound diffracts around a doorway because its wavelength is of a similar size to the opening',
+          'Light diffracts very little through the same doorway because its wavelength is far smaller',
+          'This is why you can hear around a corner but cannot see around it',
+        ],
+      },
+    ],
+    formulae: [
+      'sin(theta) = m x wavelength / a, for dark bands in single-slit diffraction',
+    ],
+    commonMistakes: [
+      'Diffraction does not change the wavelength or speed; it changes the direction and shape of the wavefront',
+      'A narrower slit gives more spreading, not less',
+      'Light does diffract, but its wavelength is so small that everyday openings produce almost no visible spreading',
+    ],
+    example: {
+      problem: 'Monochromatic light of wavelength 600 nm passes through a slit 0.02 mm wide. Calculate the angle of the first dark band.',
+      steps: [
+        'Convert to metres: wavelength = 600 x 10^-9 m and a = 0.02 x 10^-3 m = 2 x 10^-5 m.',
+        'Use sin(theta) = m x wavelength / a with m = 1.',
+        'sin(theta) = (600 x 10^-9) / (2 x 10^-5) = 0.03.',
+        'theta = 1.72 degrees.',
+      ],
+      answer: 'About 1.7 degrees from the centre.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain why a person can hear someone talking around the corner of a building but cannot see them.',
+        steps: [
+          'Both sound and light are waves, and both diffract when they pass an obstacle edge.',
+          'The amount of diffraction depends on the ratio of the wavelength to the size of the opening or obstacle.',
+          'Audible sound has wavelengths of roughly a metre, comparable to the size of the corner, so it spreads a great deal around it.',
+          'Visible light has a wavelength of around 500 nanometres, vastly smaller than the corner, so it diffracts far too little to be noticed.',
+        ],
+        answer: 'Sound wavelengths are comparable to the size of the corner so sound diffracts strongly, while light wavelengths are far too small for noticeable diffraction.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-electrostatics-g11',
+    summary: 'Charge, Coulomb\'s law, and the electric field around point charges.',
+    keyIdeas: [
+      'Like charges repel and unlike charges attract',
+      'Charge is quantised: Q = n x e, where e is 1.6 x 10^-19 C',
+      'Charge is conserved: when identical spheres touch, the total charge is shared equally',
+      'Coulomb\'s law gives the force between two point charges, and it is an inverse square law',
+      'The electric field E is the force per unit positive charge at a point',
+    ],
+    subtopics: [
+      {
+        name: 'Charge',
+        points: [
+          'An object becomes negatively charged by gaining electrons and positively charged by losing them',
+          'Q = n e, so the number of electrons transferred is n = Q / e',
+          'When two identical conducting spheres touch, each ends with (Q1 + Q2) / 2',
+        ],
+      },
+      {
+        name: 'Coulomb\'s law',
+        points: [
+          'F = k Q1 Q2 / r^2, with k = 9 x 10^9 N m^2 / C^2',
+          'Use magnitudes in the calculation and decide attraction or repulsion from the signs separately',
+          'Doubling the separation divides the force by four, because it is an inverse square law',
+          'For more than two charges, find each force separately and then add them as vectors',
+        ],
+      },
+      {
+        name: 'Electric fields',
+        points: [
+          'E = F / q, measured in N/C, and E = k Q / r^2 for a point charge',
+          'Field lines point away from a positive charge and towards a negative charge',
+          'Field lines never cross, and their density shows the field strength',
+          'The field is zero at a point where the contributions of all charges cancel',
+        ],
+      },
+    ],
+    formulae: [
+      'F = k Q1 Q2 / r^2, with k = 9 x 10^9',
+      'E = F / q',
+      'E = k Q / r^2',
+      'Q = n e, with e = 1.6 x 10^-19 C',
+    ],
+    commonMistakes: [
+      'Substitute magnitudes into Coulomb\'s law and decide the direction separately, rather than letting signs run through the arithmetic',
+      'Distance is squared, so halving the separation multiplies the force by four, not by two',
+      'Electric field strength is force per unit charge, so it exists even when no test charge is present',
+    ],
+    example: {
+      problem: 'Two point charges of +3 microcoulomb and -2 microcoulomb are 0.05 m apart. Calculate the magnitude of the force between them and state whether it is attraction or repulsion.',
+      steps: [
+        'Use F = k Q1 Q2 / r^2 with magnitudes: Q1 = 3 x 10^-6 C, Q2 = 2 x 10^-6 C, r = 0.05 m.',
+        'Numerator: 9 x 10^9 x 3 x 10^-6 x 2 x 10^-6 = 5.4 x 10^-2.',
+        'Denominator: r^2 = 0.05^2 = 2.5 x 10^-3.',
+        'F = 5.4 x 10^-2 / 2.5 x 10^-3 = 21.6 N. The charges have opposite signs, so the force is attractive.',
+      ],
+      answer: '21.6 N, attractive.',
+    },
+    moreExamples: [
+      {
+        problem: 'Two identical metal spheres carry charges of +8 nC and -2 nC. They are touched together and then separated. Calculate the charge on each afterwards, and the number of electrons transferred to the sphere that gains charge.',
+        steps: [
+          'Charge is conserved and the spheres are identical, so the total is shared equally.',
+          'Total charge = (+8) + (-2) = +6 nC, so each sphere carries +3 nC.',
+          'The sphere that was -2 nC becomes +3 nC, a change of +5 nC, so it lost 5 nC of negative charge.',
+          'n = Q / e = (5 x 10^-9) / (1.6 x 10^-19) = 3.13 x 10^10 electrons left that sphere.',
+        ],
+        answer: 'Each carries +3 nC; about 3.13 x 10^10 electrons were transferred off the initially negative sphere.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-electromagnetism',
+    summary: 'The magnetic field produced by a current, and the induction of an emf by a changing magnetic flux.',
+    keyIdeas: [
+      'A current in a conductor produces a magnetic field around it',
+      'The right-hand rule gives the direction of the field around a straight conductor',
+      'A solenoid produces a field like that of a bar magnet, with a north and a south end',
+      'Faraday\'s law: an emf is induced when the magnetic flux through a coil changes',
+      'Lenz\'s law: the induced current opposes the change that produced it',
+    ],
+    subtopics: [
+      {
+        name: 'Magnetic field from a current',
+        points: [
+          'Straight conductor: grip the wire with the right hand, thumb along the current, and the fingers curl in the direction of the field',
+          'The field is circular around the wire and weakens with distance',
+          'Solenoid: curl the right-hand fingers along the current and the thumb points to the north pole',
+          'Field strength increases with more current, more turns, and an iron core',
+        ],
+      },
+      {
+        name: 'Faraday\'s law',
+        points: [
+          'Magnetic flux = B A cos(theta), measured in webers',
+          'An emf is induced only while the flux is changing',
+          'Induced emf = -N x (change in flux) / (change in time)',
+          'A faster change, more turns, or a stronger field all give a larger emf',
+        ],
+      },
+      {
+        name: 'Lenz\'s law and applications',
+        points: [
+          'The minus sign in Faraday\'s law expresses Lenz\'s law: the induced current opposes the change causing it',
+          'Pushing a north pole into a coil induces a current that makes the near face a north pole, which repels the magnet',
+          'This is a consequence of the conservation of energy: work must be done to keep the magnet moving',
+          'Applications include generators, transformers and induction cooktops',
+        ],
+      },
+    ],
+    formulae: [
+      'Magnetic flux = B A cos(theta)',
+      'Induced emf = -N x (change in flux) / (change in time)',
+    ],
+    commonMistakes: [
+      'A steady magnetic field induces no emf; only a changing flux does',
+      'A magnet held still inside a coil induces nothing, however strong it is',
+      'Lenz\'s law describes opposition to the change in flux, not to the flux itself',
+    ],
+    example: {
+      problem: 'A coil of 200 turns has the magnetic flux through it change from 0.004 Wb to 0.010 Wb in 0.03 s. Calculate the magnitude of the induced emf.',
+      steps: [
+        'Change in flux = 0.010 - 0.004 = 0.006 Wb.',
+        'Use emf = N x (change in flux) / (change in time), taking magnitude only.',
+        'emf = 200 x 0.006 / 0.03.',
+        'emf = 1.2 / 0.03 = 40 V.',
+      ],
+      answer: '40 V',
+    },
+    moreExamples: [
+      {
+        problem: 'A bar magnet is pushed north-pole-first into a coil connected to a galvanometer. Describe what happens, and explain why more force is needed than to move the magnet through empty space.',
+        steps: [
+          'As the magnet approaches, the magnetic flux through the coil increases, so by Faraday\'s law an emf is induced and the galvanometer deflects.',
+          'By Lenz\'s law the induced current flows so as to oppose the increase in flux.',
+          'The coil face nearest the magnet therefore becomes a north pole, which repels the approaching north pole of the magnet.',
+          'Work must be done against this repulsion, and that work is what becomes the electrical energy in the coil, as the conservation of energy requires.',
+        ],
+        answer: 'A current is induced that makes the near coil face a north pole, repelling the magnet; the extra work done against that repulsion is what supplies the electrical energy.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-electric-circuits-g11',
+    summary: 'Current, potential difference and resistance, how they combine in series and parallel, and the effect of the internal resistance of a battery.',
+    keyIdeas: [
+      'Current is the rate of flow of charge; potential difference is the energy transferred per coulomb',
+      'Ohm\'s law: V = I R, for an ohmic conductor at constant temperature',
+      'In series the current is the same everywhere and the potential differences add',
+      'In parallel the potential difference is the same across each branch and the currents add',
+      'Emf is the total energy per coulomb supplied by the cell, and some of it is lost across the internal resistance',
+    ],
+    subtopics: [
+      {
+        name: 'Series circuits',
+        points: [
+          'Total resistance: Rs = R1 + R2 + R3, so adding a resistor always increases the total',
+          'The same current flows through every component',
+          'The supply potential difference is shared, and the largest resistance takes the largest share',
+          'One break stops the current everywhere',
+        ],
+      },
+      {
+        name: 'Parallel circuits',
+        points: [
+          'Total resistance: 1 / Rp = 1 / R1 + 1 / R2, so the total is always less than the smallest branch',
+          'Each branch has the full potential difference across it',
+          'The current divides between branches, with more current through the smaller resistance',
+          'One branch breaking leaves the others working',
+        ],
+      },
+      {
+        name: 'Internal resistance and power',
+        points: [
+          'emf = I(R + r), so the terminal potential difference V = emf - I r',
+          'The terminal potential difference falls as the current drawn increases',
+          'Power: P = V I = I^2 R = V^2 / R',
+          'Energy: E = P t, measured in joules, or in kilowatt hours for electricity accounts',
+        ],
+      },
+    ],
+    formulae: [
+      'V = I R',
+      'Rs = R1 + R2 + R3',
+      '1 / Rp = 1 / R1 + 1 / R2',
+      'emf = I(R + r); V(terminal) = emf - I r',
+      'P = V I = I^2 R = V^2 / R',
+    ],
+    commonMistakes: [
+      'Adding a resistor in parallel decreases the total resistance, because it adds another path for the current',
+      'The terminal potential difference is less than the emf whenever current flows, because of internal resistance',
+      'In parallel the potential difference is the same across each branch; it is not divided between them',
+    ],
+    example: {
+      problem: 'A 12 V battery is connected in series with two resistors of 4 ohm and 6 ohm. Calculate the total resistance, the current in the circuit, and the potential difference across the 6 ohm resistor.',
+      steps: [
+        'In series the resistances add: Rs = 4 + 6 = 10 ohm.',
+        'Apply Ohm\'s law to the whole circuit: I = V / R = 12 / 10 = 1.2 A.',
+        'In series the same current flows through both resistors, so 1.2 A flows through the 6 ohm resistor.',
+        'Potential difference across it: V = I R = 1.2 x 6 = 7.2 V.',
+      ],
+      answer: 'Total resistance = 10 ohm; current = 1.2 A; potential difference across the 6 ohm resistor = 7.2 V.',
+    },
+    moreExamples: [
+      {
+        problem: 'A battery of emf 9 V and internal resistance 0.5 ohm is connected to a 4 ohm resistor. Calculate the current and the terminal potential difference, and explain why the terminal potential difference is less than the emf.',
+        steps: [
+          'Use emf = I(R + r): 9 = I(4 + 0.5) = I(4.5).',
+          'Therefore I = 9 / 4.5 = 2 A.',
+          'Terminal potential difference V = emf - I r = 9 - (2 x 0.5) = 9 - 1 = 8 V.',
+          'The terminal value is lower because the current also passes through the internal resistance of the cell, so 1 V of energy per coulomb is used inside the battery itself.',
+        ],
+        answer: 'I = 2 A and V = 8 V; the missing 1 V is lost across the internal resistance inside the battery.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-atomic-combinations',
+    summary: 'Covalent bonding, Lewis structures, molecular shape from VSEPR theory, electronegativity and bond polarity.',
+    keyIdeas: [
+      'A covalent bond is a shared pair of electrons between two non-metal atoms',
+      'A Lewis structure shows all valence electrons as bonding pairs and lone pairs',
+      'VSEPR: electron pairs around the central atom repel and arrange themselves as far apart as possible',
+      'Lone pairs repel more strongly than bonding pairs, so they squeeze the bond angles',
+      'Electronegativity difference decides whether a bond is non-polar, polar covalent or ionic',
+    ],
+    subtopics: [
+      {
+        name: 'Lewis structures',
+        points: [
+          'Count the total valence electrons available',
+          'Place a bonding pair between each pair of bonded atoms, then complete the octets with lone pairs',
+          'Use double or triple bonds if there are not enough electrons to complete every octet',
+          'Hydrogen needs only two electrons, not eight',
+        ],
+      },
+      {
+        name: 'Molecular shape',
+        points: [
+          '2 bonding pairs, no lone pairs: linear, 180 degrees',
+          '3 bonding pairs, no lone pairs: trigonal planar, 120 degrees',
+          '4 bonding pairs, no lone pairs: tetrahedral, 109.5 degrees',
+          '3 bonding pairs and 1 lone pair: trigonal pyramidal, about 107 degrees; 2 bonding and 2 lone pairs: angular, about 104.5 degrees',
+        ],
+      },
+      {
+        name: 'Polarity',
+        points: [
+          'Electronegativity increases across a period and decreases down a group',
+          'Difference less than 0.5 is non-polar covalent; 0.5 to 2.1 is polar covalent; above 2.1 is ionic',
+          'A molecule is polar only if it has polar bonds AND an asymmetrical shape',
+          'Symmetrical molecules such as CO2 and CCl4 are non-polar overall even though their bonds are polar',
+        ],
+      },
+    ],
+    formulae: [
+      'Electronegativity difference = larger value minus smaller value',
+      'Bond order: single = 1 shared pair, double = 2, triple = 3',
+    ],
+    commonMistakes: [
+      'Polar bonds do not guarantee a polar molecule: the shape must also be asymmetrical',
+      'Lone pairs affect the shape even though they are not drawn as bonds',
+      'Molecular shape is named from the positions of the atoms, not of the lone pairs',
+    ],
+    example: {
+      problem: 'Determine the shape of a water molecule and state the approximate bond angle.',
+      steps: [
+        'Oxygen has 6 valence electrons; two are shared with the two hydrogen atoms, leaving 2 lone pairs.',
+        'The central oxygen therefore has 4 electron pairs: 2 bonding and 2 lone.',
+        'Four pairs arrange themselves tetrahedrally, but the shape is named from the atom positions only, giving an angular (bent) molecule.',
+        'The two lone pairs repel more strongly than bonding pairs, compressing the angle from 109.5 to about 104.5 degrees.',
+      ],
+      answer: 'Angular (bent), with a bond angle of about 104.5 degrees.',
+    },
+    moreExamples: [
+      {
+        problem: 'Tetrachloromethane, CCl4, contains four polar C-Cl bonds, yet the molecule is non-polar overall. Explain.',
+        steps: [
+          'Chlorine is more electronegative than carbon, so each C-Cl bond is polar, with the chlorine end slightly negative.',
+          'The carbon atom has four bonding pairs and no lone pairs, so the molecule is tetrahedral and perfectly symmetrical.',
+          'Each bond dipole is matched by an identical dipole pointing in the opposite sense across the molecule.',
+          'The four bond dipoles therefore cancel as vectors, so the net dipole moment is zero and the molecule is non-polar.',
+        ],
+        answer: 'Its tetrahedral symmetry means the four equal bond dipoles cancel as vectors, leaving no net dipole.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-intermolecular-forces',
+    summary: 'The forces between molecules, how they differ from the bonds within molecules, and how they explain physical properties.',
+    keyIdeas: [
+      'Intermolecular forces act between molecules; intramolecular bonds act within them and are far stronger',
+      'London (dispersion) forces exist between all molecules and strengthen with molecular size',
+      'Dipole-dipole forces act between polar molecules',
+      'Hydrogen bonding is the strongest, occurring when H is bonded to N, O or F',
+      'Melting point, boiling point, viscosity and solubility all follow from the strength of these forces',
+    ],
+    subtopics: [
+      {
+        name: 'The three types',
+        points: [
+          'London forces: caused by momentary uneven electron distribution; present in every molecule, and stronger in larger molecules',
+          'Dipole-dipole: between permanent dipoles in polar molecules',
+          'Hydrogen bonding: a special, strong dipole-dipole force where H is bonded directly to N, O or F',
+        ],
+      },
+      {
+        name: 'Effects on properties',
+        points: [
+          'Stronger intermolecular forces give higher melting and boiling points, because more energy is needed to separate the molecules',
+          'Stronger forces also give higher viscosity and higher surface tension, and lower vapour pressure',
+          'Water has anomalously high boiling point, surface tension and specific heat capacity because of hydrogen bonding',
+          'Ice is less dense than water because hydrogen bonds hold the molecules in an open lattice',
+        ],
+      },
+      {
+        name: 'Solubility',
+        points: [
+          'Like dissolves like: polar solutes dissolve in polar solvents, non-polar in non-polar',
+          'A solute dissolves when solute-solvent forces are comparable to those being broken',
+          'Oil does not dissolve in water because non-polar oil molecules cannot form hydrogen bonds with water',
+        ],
+      },
+    ],
+    commonMistakes: [
+      'Boiling a molecular substance breaks intermolecular forces, not the covalent bonds inside molecules',
+      'London forces exist in polar molecules too; they are not exclusive to non-polar ones',
+      'Hydrogen bonding requires H bonded directly to N, O or F, not merely the presence of hydrogen',
+    ],
+    example: {
+      problem: 'Water boils at 100 degrees Celsius while hydrogen sulfide, a molecule of similar size, boils at -60 degrees Celsius. Explain.',
+      steps: [
+        'Both are angular molecules of comparable size, so the difference is not one of London forces.',
+        'In water, hydrogen is bonded directly to oxygen, which is highly electronegative, so the molecules form hydrogen bonds.',
+        'In hydrogen sulfide, sulfur is much less electronegative, so only weaker dipole-dipole and London forces act.',
+        'Far more energy is needed to overcome hydrogen bonds, so water boils at a much higher temperature.',
+      ],
+      answer: 'Water molecules form strong hydrogen bonds because H is bonded to O, while hydrogen sulfide has only weaker dipole-dipole and London forces.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain why ice floats on water, and state one environmental consequence.',
+        steps: [
+          'In liquid water, hydrogen bonds constantly break and reform, allowing the molecules to pack fairly closely.',
+          'When water freezes, each molecule forms hydrogen bonds to four others in a fixed tetrahedral arrangement.',
+          'This open lattice holds the molecules further apart on average than in the liquid, so ice is less dense and floats.',
+          'As a consequence, a lake freezes from the top down, and the ice layer insulates the water below so aquatic life can survive the winter.',
+        ],
+        answer: 'Hydrogen bonding holds ice in an open lattice that is less dense than liquid water, so lakes freeze from the top and insulate the life below.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-ideal-gases',
+    summary: 'The gas laws, the ideal gas equation, and how the kinetic molecular theory explains gas behaviour.',
+    keyIdeas: [
+      'Temperature in every gas law must be in kelvin: K = degrees Celsius + 273',
+      'Boyle\'s law: at constant temperature, pressure and volume are inversely proportional',
+      'Charles\'s law: at constant pressure, volume is directly proportional to absolute temperature',
+      'The general gas equation combines them: P1 V1 / T1 = P2 V2 / T2',
+      'The ideal gas equation is p V = n R T, with R = 8.31 J per K per mol',
+    ],
+    subtopics: [
+      {
+        name: 'The gas laws',
+        points: [
+          'Boyle: P1 V1 = P2 V2 at constant T, giving a curved pressure-volume graph and a straight line against 1/V',
+          'Charles: V1 / T1 = V2 / T2 at constant P',
+          'Gay-Lussac: P1 / T1 = P2 / T2 at constant V',
+          'Extrapolating a volume-temperature graph to zero volume gives absolute zero at -273 degrees Celsius',
+        ],
+      },
+      {
+        name: 'The ideal gas equation',
+        points: [
+          'p V = n R T, with p in pascal, V in cubic metres, n in moles and T in kelvin',
+          'n = m / M, so the equation can also give the mass or the molar mass of a gas',
+          'One mole of any gas occupies 22.4 dm3 at standard temperature and pressure',
+        ],
+      },
+      {
+        name: 'Kinetic explanation',
+        points: [
+          'Pressure arises from collisions of particles with the container walls',
+          'Reducing volume gives more collisions per second on a smaller area, so pressure rises',
+          'Raising temperature makes the particles move faster, so collisions are more frequent and harder',
+          'A real gas departs from ideal behaviour at high pressure and low temperature, where intermolecular forces and particle volume matter',
+        ],
+      },
+    ],
+    formulae: [
+      'P1 V1 / T1 = P2 V2 / T2',
+      'p V = n R T, with R = 8.31',
+      'K = degrees Celsius + 273',
+      'n = m / M',
+    ],
+    commonMistakes: [
+      'Temperature must be converted to kelvin before any gas law calculation',
+      'Absolute zero is -273 degrees Celsius, which is 0 K, and no temperature can be lower',
+      'Units must match R: pressure in pascal and volume in cubic metres',
+    ],
+    example: {
+      problem: 'A gas occupies 2.5 dm3 at 27 degrees Celsius and 100 kPa. Calculate its volume at 77 degrees Celsius and 150 kPa.',
+      steps: [
+        'Convert temperatures to kelvin: T1 = 27 + 273 = 300 K, T2 = 77 + 273 = 350 K.',
+        'Use P1 V1 / T1 = P2 V2 / T2, rearranged as V2 = P1 V1 T2 / (T1 P2).',
+        'Substitute: V2 = (100 x 2.5 x 350) / (300 x 150).',
+        'V2 = 87 500 / 45 000 = 1.94 dm3.',
+      ],
+      answer: 'About 1.94 dm3',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain, using the kinetic molecular theory, why the pressure of a fixed mass of gas rises when it is heated at constant volume.',
+        steps: [
+          'Pressure is caused by gas particles colliding with the walls of the container.',
+          'Heating the gas increases the average kinetic energy of the particles, so they move faster.',
+          'Faster particles strike the walls more often in a given time, and each collision delivers a greater force.',
+          'With the area of the walls unchanged, more frequent and harder collisions mean a greater force per unit area, so the pressure rises.',
+        ],
+        answer: 'Heating makes the particles move faster, so collisions with the walls are both more frequent and more forceful, raising the pressure.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-quantitative-chem-change',
+    summary: 'The mole concept, molar calculations, concentration, limiting reagents and percentage yield.',
+    keyIdeas: [
+      'One mole contains 6.02 x 10^23 particles, which is Avogadro\'s number',
+      'n = m / M links moles, mass in grams and molar mass in grams per mole',
+      'For solutions, c = n / V, with V in cubic decimetres',
+      'For gases at STP, n = V / 22.4, with V in cubic decimetres',
+      'The limiting reagent is the one that runs out first and therefore decides how much product forms',
+    ],
+    subtopics: [
+      {
+        name: 'Mole calculations',
+        points: [
+          'n = m / M for a solid or liquid of known mass',
+          'n = N / NA when working with a number of particles',
+          'n = c V for a solution; n = V / 22.4 for a gas at STP',
+          'Always work through moles: convert to moles, use the mole ratio from the balanced equation, then convert back',
+        ],
+      },
+      {
+        name: 'Limiting reagents',
+        points: [
+          'Calculate the moles of each reactant available',
+          'Divide each by its coefficient in the balanced equation; the smallest value identifies the limiting reagent',
+          'Use the limiting reagent for all product calculations, since the other reactant is in excess',
+        ],
+      },
+      {
+        name: 'Yield and composition',
+        points: [
+          'Percentage yield = (actual yield / theoretical yield) x 100',
+          'Yields fall short because of side reactions, incomplete reactions and losses in handling',
+          'Percentage composition of an element = (mass of that element in one mole / molar mass) x 100',
+          'Empirical formula is the simplest whole-number ratio of atoms; molecular formula is a whole-number multiple of it',
+        ],
+      },
+    ],
+    formulae: [
+      'n = m / M',
+      'n = N / NA, with NA = 6.02 x 10^23',
+      'c = n / V (V in dm3)',
+      'n = V / 22.4 at STP',
+      'percentage yield = (actual / theoretical) x 100',
+    ],
+    commonMistakes: [
+      'The mole ratio comes from the balanced equation, so the equation must be balanced first',
+      'Volume must be in cubic decimetres for concentration, so millilitres have to be converted',
+      'Never use mass ratios directly in place of mole ratios',
+    ],
+    example: {
+      problem: 'Calculate the mass of carbon dioxide produced when 10 g of calcium carbonate decomposes completely. CaCO3 gives CaO + CO2. Molar masses: CaCO3 = 100 g/mol, CO2 = 44 g/mol.',
+      steps: [
+        'Moles of CaCO3 = m / M = 10 / 100 = 0.1 mol.',
+        'From the balanced equation the mole ratio CaCO3 to CO2 is 1 to 1.',
+        'So moles of CO2 = 0.1 mol.',
+        'Mass of CO2 = n x M = 0.1 x 44 = 4.4 g.',
+      ],
+      answer: '4.4 g',
+    },
+    moreExamples: [
+      {
+        problem: '5.6 g of iron reacts with 4.0 g of sulfur to form iron(II) sulfide, FeS. Identify the limiting reagent and calculate the maximum mass of FeS. Molar masses: Fe = 56, S = 32, FeS = 88 g/mol.',
+        steps: [
+          'Moles of Fe = 5.6 / 56 = 0.1 mol; moles of S = 4.0 / 32 = 0.125 mol.',
+          'The balanced equation Fe + S gives FeS has a 1 to 1 ratio, so 0.1 mol of Fe needs only 0.1 mol of S.',
+          'Iron runs out first, so iron is the limiting reagent and 0.025 mol of sulfur is in excess.',
+          'Moles of FeS = 0.1 mol, so mass = 0.1 x 88 = 8.8 g.',
+        ],
+        answer: 'Iron is limiting; the maximum mass of FeS is 8.8 g.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-energy-chem-change',
+    summary: 'Exothermic and endothermic reactions, activation energy, energy profile diagrams, and bond energy calculations.',
+    keyIdeas: [
+      'Breaking bonds absorbs energy; forming bonds releases energy',
+      'Exothermic reactions release energy overall, so delta H is negative',
+      'Endothermic reactions absorb energy overall, so delta H is positive',
+      'Activation energy is the minimum energy needed for a successful collision',
+      'A catalyst provides an alternative route with a lower activation energy, and is not used up',
+    ],
+    subtopics: [
+      {
+        name: 'Energy changes',
+        points: [
+          'Exothermic: products have less energy than reactants, and the surroundings warm up; examples are combustion and neutralisation',
+          'Endothermic: products have more energy than reactants, and the surroundings cool; examples are photosynthesis and thermal decomposition',
+          'delta H is the heat of reaction in kJ per mol',
+        ],
+      },
+      {
+        name: 'Energy profile diagrams',
+        points: [
+          'Show reactants on the left, products on the right, with the activation energy hump between',
+          'For an exothermic reaction the products are drawn lower than the reactants; for endothermic, higher',
+          'delta H is the vertical difference between reactants and products',
+          'A catalyst lowers the hump, but does not change the position of reactants or products, so delta H is unchanged',
+        ],
+      },
+      {
+        name: 'Bond energy calculations',
+        points: [
+          'delta H = (total energy to break all reactant bonds) - (total energy released forming all product bonds)',
+          'A negative result means exothermic and a positive result means endothermic',
+          'Count every bond, including all the bonds in a polyatomic molecule',
+        ],
+      },
+    ],
+    formulae: [
+      'delta H = energy of bonds broken - energy of bonds formed',
+      'Exothermic: delta H is negative; endothermic: delta H is positive',
+    ],
+    commonMistakes: [
+      'A catalyst changes the activation energy but never changes delta H',
+      'delta H negative means energy is released, so the surroundings get hotter',
+      'Bond breaking is endothermic and bond forming is exothermic, which is the reverse of many learners\' first instinct',
+    ],
+    example: {
+      problem: 'For a reaction, breaking the reactant bonds requires 1 850 kJ and forming the product bonds releases 2 100 kJ. Calculate delta H and classify the reaction.',
+      steps: [
+        'Use delta H = energy of bonds broken - energy of bonds formed.',
+        'Substitute: delta H = 1 850 - 2 100.',
+        'delta H = -250 kJ.',
+        'The value is negative, so more energy is released than absorbed and the reaction is exothermic.',
+      ],
+      answer: 'delta H = -250 kJ, an exothermic reaction.',
+    },
+    moreExamples: [
+      {
+        problem: 'A catalyst is added to a reaction. Describe the effect on the activation energy, on delta H, and on the energy profile diagram.',
+        steps: [
+          'The catalyst provides an alternative reaction pathway requiring less energy for a successful collision.',
+          'The activation energy is therefore lowered, so a greater fraction of collisions are successful and the rate increases.',
+          'The energies of the reactants and of the products are unchanged, because the catalyst is not consumed and does not appear in the overall equation.',
+          'On the diagram the hump is lower, but the reactant and product levels, and hence the vertical gap that is delta H, stay exactly where they were.',
+        ],
+        answer: 'Activation energy falls and the rate rises, but delta H is unchanged: only the height of the hump changes on the profile.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-types-of-reactions',
+    summary: 'Acid-base and redox reactions, oxidation numbers, and how to recognise each reaction type.',
+    keyIdeas: [
+      'An acid donates a proton; a base accepts one, which is the Bronsted-Lowry definition',
+      'Neutralisation produces a salt and water and is exothermic',
+      'Oxidation is the loss of electrons and reduction is the gain of electrons',
+      'In a redox reaction the oxidation number of at least one element changes',
+      'The oxidising agent is itself reduced, and the reducing agent is itself oxidised',
+    ],
+    subtopics: [
+      {
+        name: 'Acids and bases',
+        points: [
+          'Strong acids ionise completely: HCl, HNO3, H2SO4; weak acids ionise partially, for example ethanoic acid',
+          'Conjugate pairs differ by one proton, for example HCl and Cl-',
+          'Acid plus metal hydroxide gives salt plus water; acid plus metal carbonate gives salt plus water plus carbon dioxide',
+          'Amphoteric substances such as water can act as either acid or base',
+        ],
+      },
+      {
+        name: 'Oxidation numbers',
+        points: [
+          'An uncombined element has an oxidation number of 0',
+          'Hydrogen is usually +1, oxygen usually -2, and the sum for a neutral compound is 0',
+          'For an ion the sum equals the charge on the ion',
+          'Compare the oxidation number before and after to identify what was oxidised and what was reduced',
+        ],
+      },
+      {
+        name: 'Recognising reaction types',
+        points: [
+          'Synthesis, decomposition, and displacement reactions are usually redox',
+          'Precipitation and simple acid-base neutralisation are not redox, because no oxidation number changes',
+          'A more reactive metal displaces a less reactive one from solution, which is a redox process',
+        ],
+      },
+    ],
+    formulae: [
+      'Sum of oxidation numbers = 0 for a neutral compound, or the charge for an ion',
+      'Oxidation is loss of electrons, reduction is gain: OIL RIG',
+    ],
+    commonMistakes: [
+      'Neutralisation is not a redox reaction: no oxidation number changes',
+      'The oxidising agent is reduced, not oxidised; it causes oxidation in something else',
+      'Oxidation numbers are per atom, so they are not multiplied by the subscript when written',
+    ],
+    example: {
+      problem: 'Determine the oxidation number of sulfur in H2SO4.',
+      steps: [
+        'Hydrogen is +1 and there are two of them, giving +2 in total.',
+        'Oxygen is -2 and there are four of them, giving -8 in total.',
+        'The compound is neutral, so the sum of all oxidation numbers is 0: (+2) + S + (-8) = 0.',
+        'Therefore S - 6 = 0, so S = +6.',
+      ],
+      answer: '+6',
+    },
+    moreExamples: [
+      {
+        problem: 'Zinc metal is placed in copper(II) sulfate solution and a reddish-brown deposit forms. Identify what is oxidised, what is reduced, and name the oxidising agent.',
+        steps: [
+          'Zinc metal starts at oxidation number 0 and ends as Zn2+ in solution, so it loses two electrons and is oxidised.',
+          'Copper starts as Cu2+ in solution and ends as copper metal at 0, so it gains two electrons and is reduced.',
+          'The reddish-brown deposit is the copper metal formed.',
+          'The species that is reduced is the oxidising agent, so Cu2+ is the oxidising agent and zinc is the reducing agent.',
+        ],
+        answer: 'Zinc is oxidised, Cu2+ is reduced, and Cu2+ is therefore the oxidising agent.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-momentum-impulse',
+    summary: 'Momentum, impulse and the conservation of momentum in collisions and explosions.',
+    keyIdeas: [
+      'Momentum p = m v is a vector, so direction matters and a positive direction must be chosen',
+      'Impulse is the change in momentum, and equals the net force multiplied by the contact time',
+      'Newton\'s Second Law in momentum form: Fnet = change in momentum / change in time',
+      'Momentum is conserved in an isolated system, that is when no external net force acts',
+      'Kinetic energy is conserved only in an elastic collision, never in an inelastic one',
+    ],
+    subtopics: [
+      {
+        name: 'Momentum and impulse',
+        points: [
+          'p = m v, measured in kg m/s',
+          'Impulse = Fnet x change in time = change in momentum = m vf - m vi',
+          'Units of impulse, N s, are equivalent to kg m/s',
+          'Impulse is a vector in the direction of the net force',
+        ],
+      },
+      {
+        name: 'Conservation of momentum',
+        points: [
+          'Total momentum before = total momentum after, for an isolated system',
+          'Elastic collision: both momentum and kinetic energy are conserved',
+          'Inelastic collision: momentum is conserved but kinetic energy is not, as some becomes heat and sound',
+          'In a perfectly inelastic collision the objects move off together with a common velocity',
+        ],
+      },
+      {
+        name: 'Safety applications',
+        points: [
+          'For a given change in momentum, extending the contact time reduces the force, since Fnet = change in momentum / change in time',
+          'Airbags, crumple zones, helmet padding and bending the knees on landing all work this way',
+          'They do not reduce the change in momentum; they spread it over a longer time',
+        ],
+      },
+    ],
+    formulae: [
+      'p = m v',
+      'Impulse = Fnet x change in time = change in p = m vf - m vi',
+      'Fnet = change in p / change in t',
+      'Total p before = total p after',
+    ],
+    commonMistakes: [
+      'Momentum is a vector: opposite directions must be given opposite signs before adding',
+      'An airbag does not reduce the change in momentum; it lengthens the time, which reduces the force',
+      'Kinetic energy is not conserved in an inelastic collision, though momentum still is',
+    ],
+    example: {
+      problem: 'A 1 200 kg car travelling east at 20 m/s collides with a stationary 800 kg car and they move off together. Calculate their common velocity.',
+      steps: [
+        'Take east as positive. Total momentum before = (1 200 x 20) + (800 x 0) = 24 000 kg m/s.',
+        'The system is isolated, so total momentum after equals total momentum before.',
+        'After the collision the combined mass is 1 200 + 800 = 2 000 kg moving at a common velocity v.',
+        'So 2 000 v = 24 000, giving v = 12 m/s east.',
+      ],
+      answer: '12 m/s east',
+    },
+    moreExamples: [
+      {
+        problem: 'A 0.15 kg ball strikes a wall at 12 m/s and rebounds at 8 m/s. The contact lasts 0.05 s. Calculate the impulse and the average force on the ball.',
+        steps: [
+          'Take the direction towards the wall as positive, so vi = +12 m/s and vf = -8 m/s.',
+          'Change in momentum = m vf - m vi = 0.15(-8) - 0.15(12) = -1.2 - 1.8 = -3 kg m/s.',
+          'Impulse equals the change in momentum, so it is 3 N s directed away from the wall.',
+          'Fnet = change in p / change in t = -3 / 0.05 = -60 N, that is 60 N directed away from the wall.',
+        ],
+        answer: 'Impulse = 3 N s and average force = 60 N, both directed away from the wall.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-vertical-projectile',
+    summary: 'Objects moving vertically under gravity alone, and how to read their position, velocity and acceleration graphs.',
+    keyIdeas: [
+      'A projectile in free fall has only gravity acting on it, so a = 9.8 m/s2 downwards at every moment',
+      'Acceleration is constant throughout, including at the highest point where the velocity is zero',
+      'Choose one positive direction and keep it for the whole problem, including for g',
+      'Time up equals time down, and the speed on return to the launch height equals the launch speed',
+      'The equations of motion apply because the acceleration is uniform',
+    ],
+    subtopics: [
+      {
+        name: 'Applying the equations',
+        points: [
+          'Taking upwards as positive makes g = -9.8 m/s2',
+          'At the maximum height the velocity is zero, but the acceleration is still -9.8 m/s2',
+          'Displacement is the change in position, so an object returning to its start has zero displacement',
+          'For an object dropped from rest, vi = 0',
+        ],
+      },
+      {
+        name: 'Graphs',
+        points: [
+          'Position-time: a parabola, with the turning point at the maximum height',
+          'Velocity-time: a straight line of gradient -9.8, crossing zero at the top of the flight',
+          'Acceleration-time: a horizontal line at -9.8 throughout',
+          'The area under the velocity-time graph gives the displacement, with area below the axis counted as negative',
+        ],
+      },
+      {
+        name: 'Bouncing objects',
+        points: [
+          'On each bounce the velocity reverses direction, shown as a sudden jump on the velocity-time graph',
+          'If the collision is not elastic the rebound speed is lower, so each successive peak is lower',
+          'During contact with the ground the acceleration is not -9.8, because the ground exerts a force too',
+        ],
+      },
+    ],
+    formulae: [
+      'vf = vi + a t',
+      'dy = vi t + 1/2 a t^2',
+      'vf^2 = vi^2 + 2 a dy',
+      'dy = ((vi + vf) / 2) t',
+    ],
+    commonMistakes: [
+      'Acceleration is 9.8 m/s2 downwards at the top of the flight, even though the velocity is momentarily zero',
+      'Distance and displacement differ for an object that goes up and comes back down',
+      'Once a positive direction is chosen, g must carry the matching sign for the whole calculation',
+    ],
+    example: {
+      problem: 'A ball is thrown vertically upwards at 20 m/s. Calculate the maximum height and the total time in the air before it returns to the throwing point.',
+      steps: [
+        'Take upwards as positive: vi = +20 m/s, a = -9.8 m/s2, and vf = 0 at the top.',
+        'Use vf^2 = vi^2 + 2 a dy: 0 = 400 + 2(-9.8)dy, so dy = 400 / 19.6 = 20.41 m.',
+        'Time to the top: vf = vi + a t gives 0 = 20 - 9.8 t, so t = 2.04 s.',
+        'Time up equals time down, so the total time in the air is 2 x 2.04 = 4.08 s.',
+      ],
+      answer: 'Maximum height about 20.4 m; total time in the air about 4.08 s.',
+    },
+    moreExamples: [
+      {
+        problem: 'Sketch and describe the velocity-time graph for a ball thrown upwards that returns to the thrower\'s hand, taking upwards as positive.',
+        steps: [
+          'The graph starts at the positive launch velocity on the vertical axis.',
+          'It is a straight line with a constant negative gradient of -9.8 m/s2, because the acceleration is constant.',
+          'It crosses the time axis at the moment of maximum height, where the velocity is zero.',
+          'It continues below the axis to a negative value equal in magnitude to the launch velocity, since the ball returns at the same speed but in the opposite direction.',
+        ],
+        answer: 'A straight line of gradient -9.8, starting positive, crossing zero at maximum height, and ending at the negative of the launch velocity.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-work-energy-power',
+    summary: 'Work done by a force, the work-energy theorem, conservation of mechanical energy, and power.',
+    keyIdeas: [
+      'Work is done only when a force has a component along the displacement',
+      'W = F d cos(theta), where theta is the angle between the force and the displacement',
+      'The work-energy theorem: the net work done equals the change in kinetic energy',
+      'A force perpendicular to the motion does no work, which is why the normal force does none',
+      'Power is the rate of doing work, measured in watts',
+    ],
+    subtopics: [
+      {
+        name: 'Work',
+        points: [
+          'W = F d cos(theta), in joules',
+          'Work is positive when the force has a component along the motion and negative when it opposes it',
+          'Friction always does negative work, removing kinetic energy',
+          'Gravity does positive work on a falling object and negative work on a rising one',
+        ],
+      },
+      {
+        name: 'The work-energy theorem',
+        points: [
+          'Wnet = change in Ek = 1/2 m vf^2 - 1/2 m vi^2',
+          'Wnet is the sum of the work done by every force, including friction',
+          'This is often quicker than using the equations of motion, especially when the force varies',
+        ],
+      },
+      {
+        name: 'Conservative forces and power',
+        points: [
+          'Gravity is conservative: the work it does depends only on the height change, not on the path',
+          'Friction is non-conservative: the work it does depends on the path taken',
+          'Mechanical energy is conserved only when no non-conservative force does work',
+          'P = W / t, and for a constant velocity against a resistive force, P = F v',
+        ],
+      },
+    ],
+    formulae: [
+      'W = F d cos(theta)',
+      'Wnet = change in Ek = 1/2 m vf^2 - 1/2 m vi^2',
+      'P = W / t',
+      'P = F v',
+    ],
+    commonMistakes: [
+      'Carrying a box horizontally at constant speed does no work against gravity, because the force is perpendicular to the motion',
+      'Friction does negative work, so it must be subtracted, not added, when finding net work',
+      'Power and energy are different quantities: a more powerful machine does the same work in less time',
+    ],
+    example: {
+      problem: 'A 5 kg box is pulled 8 m along a horizontal floor by a 30 N force parallel to the floor, against 10 N of friction. Calculate the net work done and the final speed if it started from rest.',
+      steps: [
+        'Work by the applied force = 30 x 8 x cos(0) = 240 J.',
+        'Work by friction = 10 x 8 x cos(180) = -80 J. The normal force and weight do no work, since they are perpendicular to the motion.',
+        'Net work = 240 - 80 = 160 J.',
+        'By the work-energy theorem, 160 = 1/2 x 5 x vf^2 - 0, so vf^2 = 64 and vf = 8 m/s.',
+      ],
+      answer: 'Net work = 160 J; final speed = 8 m/s.',
+    },
+    moreExamples: [
+      {
+        problem: 'A 900 kg lift is raised 24 m in 16 s at constant speed. Calculate the power output of the motor. Use g = 9.8 m/s2.',
+        steps: [
+          'At constant speed there is no change in kinetic energy, so the motor works only against gravity.',
+          'Force needed = weight = m g = 900 x 9.8 = 8 820 N.',
+          'Work done = F d = 8 820 x 24 = 211 680 J.',
+          'Power = W / t = 211 680 / 16 = 13 230 W, or about 13.2 kW.',
+        ],
+        answer: 'About 13.2 kW',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-doppler-effect',
+    summary: 'The change in observed frequency when a source or observer moves, and its applications in medicine and astronomy.',
+    keyIdeas: [
+      'The Doppler effect is the apparent change in frequency caused by relative motion between source and observer',
+      'Approaching means the observed frequency is higher than the emitted frequency',
+      'Receding means the observed frequency is lower',
+      'The source itself does not change what it emits; only the observed frequency changes',
+      'For light, a receding source is red-shifted and an approaching source is blue-shifted',
+    ],
+    subtopics: [
+      {
+        name: 'The equation',
+        points: [
+          'fL = fs x (v plus or minus vL) / (v plus or minus vs)',
+          'Use the sign that makes the observed frequency rise when they approach and fall when they separate',
+          'v is the speed of sound in the medium, about 340 m/s in air',
+          'Check the answer against physical sense before writing it down',
+        ],
+      },
+      {
+        name: 'Explanation',
+        points: [
+          'An approaching source catches up slightly with its own wavefronts, so they bunch and the wavelength shortens',
+          'A receding source leaves its wavefronts behind, so they spread and the wavelength lengthens',
+          'Since v = f x wavelength and v is fixed by the medium, a shorter wavelength means a higher frequency',
+        ],
+      },
+      {
+        name: 'Applications',
+        points: [
+          'An ambulance siren drops in pitch as it passes, because it changes from approaching to receding',
+          'Doppler ultrasound measures the speed of blood flow and monitors a foetal heartbeat',
+          'Red shift in the light from distant galaxies shows that they are receding, which is evidence for an expanding universe',
+          'Doppler radar measures vehicle speed and tracks weather systems',
+        ],
+      },
+    ],
+    formulae: [
+      'fL = fs (v plus or minus vL) / (v plus or minus vs)',
+      'v = f x wavelength',
+    ],
+    commonMistakes: [
+      'The pitch does not fall gradually as the siren approaches: it stays higher than normal, then drops as it passes',
+      'The emitted frequency is unchanged; it is the observed frequency that differs',
+      'The speed of the wave in the medium is unchanged by the motion of the source',
+    ],
+    example: {
+      problem: 'An ambulance siren emits 800 Hz and moves towards a stationary observer at 30 m/s. The speed of sound is 340 m/s. Calculate the observed frequency.',
+      steps: [
+        'The observer is stationary, so vL = 0, and the source approaches, so the observed frequency must be higher.',
+        'Use fL = fs x v / (v - vs) to make the result larger.',
+        'fL = 800 x 340 / (340 - 30) = 800 x 340 / 310.',
+        'fL = 272 000 / 310 = 877.4 Hz, which is indeed higher than 800 Hz.',
+      ],
+      answer: 'About 877 Hz',
+    },
+    moreExamples: [
+      {
+        problem: 'Light from a distant galaxy is found to be shifted towards the red end of the spectrum. State what this shows and explain the reasoning.',
+        steps: [
+          'Red light has a longer wavelength than the rest of the visible spectrum, so a red shift means the observed wavelength is longer than the wavelength emitted.',
+          'By the Doppler effect, a longer observed wavelength, and so a lower observed frequency, means the source is moving away from the observer.',
+          'The galaxy is therefore receding from Earth.',
+          'Since almost all distant galaxies show a red shift, and the shift is larger for more distant ones, this is evidence that the universe is expanding.',
+        ],
+        answer: 'The galaxy is receding; the red shift means a longer observed wavelength, and the pattern across all galaxies is evidence for an expanding universe.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-electrostatics',
+    summary: 'Coulomb\'s law and electric fields for point charges, including the vector addition of forces and fields.',
+    keyIdeas: [
+      'Coulomb\'s law: F = k Q1 Q2 / r^2, an inverse square law',
+      'Electric field strength E = F / q is the force per unit positive charge',
+      'For a point charge, E = k Q / r^2',
+      'Forces and fields from several charges are added as vectors, not as numbers',
+      'Charge is conserved and quantised',
+    ],
+    subtopics: [
+      {
+        name: 'Coulomb\'s law',
+        points: [
+          'Substitute magnitudes and decide direction from the signs separately',
+          'The force on each charge is equal in magnitude and opposite in direction, by Newton\'s Third Law',
+          'Doubling one charge doubles the force; doubling the separation quarters it',
+        ],
+      },
+      {
+        name: 'Electric field',
+        points: [
+          'E is a vector, measured in N/C, pointing away from a positive source charge',
+          'The field at a point due to several charges is the vector sum of the individual fields',
+          'Between two equal and opposite charges the fields add along the line joining them',
+          'Between two equal like charges the field is zero at the midpoint',
+        ],
+      },
+      {
+        name: 'Working in one dimension',
+        points: [
+          'Set a positive direction along the line of the charges',
+          'Work out each contribution separately, with its sign, then add',
+          'A zero-field point between two like charges lies nearer the smaller charge',
+        ],
+      },
+    ],
+    formulae: [
+      'F = k Q1 Q2 / r^2, with k = 9 x 10^9',
+      'E = F / q',
+      'E = k Q / r^2',
+    ],
+    commonMistakes: [
+      'Fields and forces from several charges must be added as vectors, so directions matter',
+      'Distance is squared, so errors in r are magnified',
+      'The field due to a point charge depends on the source charge only, not on the test charge placed there',
+    ],
+    example: {
+      problem: 'Calculate the electric field strength 0.02 m from a point charge of +4 microcoulomb.',
+      steps: [
+        'Use E = k Q / r^2 for a point charge.',
+        'Substitute: E = (9 x 10^9 x 4 x 10^-6) / (0.02)^2.',
+        'Numerator = 3.6 x 10^4; denominator = 4 x 10^-4.',
+        'E = 3.6 x 10^4 / 4 x 10^-4 = 9 x 10^7 N/C, directed away from the positive charge.',
+      ],
+      answer: '9 x 10^7 N/C directed away from the charge.',
+    },
+    moreExamples: [
+      {
+        problem: 'Charges Q1 = +5 nC and Q2 = -3 nC lie 0.04 m apart. Calculate the magnitude and direction of the net electric field at the midpoint between them.',
+        steps: [
+          'The midpoint is 0.02 m from each charge.',
+          'Field from Q1: E1 = (9 x 10^9 x 5 x 10^-9) / (0.02)^2 = 45 / 4 x 10^-4 = 1.125 x 10^5 N/C, directed away from Q1, that is towards Q2.',
+          'Field from Q2: E2 = (9 x 10^9 x 3 x 10^-9) / (0.02)^2 = 27 / 4 x 10^-4 = 6.75 x 10^4 N/C, directed towards Q2 since Q2 is negative.',
+          'Both fields point the same way, so they add: E = 1.125 x 10^5 + 0.675 x 10^5 = 1.8 x 10^5 N/C, directed from Q1 towards Q2.',
+        ],
+        answer: '1.8 x 10^5 N/C, directed from the positive charge towards the negative charge.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-electric-circuits',
+    summary: 'Ohm\'s law, series and parallel combinations, internal resistance, and electrical power and cost.',
+    keyIdeas: [
+      'Ohm\'s law V = I R holds for an ohmic conductor at constant temperature',
+      'Series: the current is the same throughout and the potential differences add',
+      'Parallel: the potential difference is the same across each branch and the currents add',
+      'emf = I(R + r), so the terminal potential difference falls as more current is drawn',
+      'Power P = V I = I^2 R = V^2 / R',
+    ],
+    subtopics: [
+      {
+        name: 'Combining resistors',
+        points: [
+          'Rs = R1 + R2 + R3 in series',
+          '1 / Rp = 1 / R1 + 1 / R2 in parallel, and the total is always smaller than the smallest branch',
+          'For two resistors in parallel, Rp = R1 R2 / (R1 + R2)',
+          'Reduce a complex network step by step, innermost combination first',
+        ],
+      },
+      {
+        name: 'Internal resistance',
+        points: [
+          'A real cell has internal resistance r, so some energy per coulomb is used inside it',
+          'Terminal potential difference V = emf - I r, so it falls as the current rises',
+          'Reading the emf requires an open circuit, when no current flows',
+          'A short circuit draws a very large current, so the terminal potential difference collapses',
+        ],
+      },
+      {
+        name: 'Power and cost',
+        points: [
+          'P = V I, with the alternative forms I^2 R and V^2 / R',
+          'Energy E = P t; for household accounts energy is billed in kilowatt hours',
+          '1 kWh is the energy used by a 1 kW appliance running for 1 hour',
+          'Cost = number of kilowatt hours multiplied by the tariff per kWh',
+        ],
+      },
+    ],
+    formulae: [
+      'V = I R',
+      'Rs = R1 + R2; 1 / Rp = 1 / R1 + 1 / R2',
+      'emf = I(R + r); V = emf - I r',
+      'P = V I = I^2 R = V^2 / R',
+      'E = P t; 1 kWh = 3.6 x 10^6 J',
+    ],
+    commonMistakes: [
+      'Adding a parallel branch lowers the total resistance and therefore raises the total current',
+      'The potential difference across parallel branches is the same, not shared',
+      'A voltmeter is connected in parallel and an ammeter in series',
+    ],
+    example: {
+      problem: 'A 12 V battery of negligible internal resistance is connected to a 4 ohm resistor in series with two 6 ohm resistors in parallel. Calculate the total resistance and the current from the battery.',
+      steps: [
+        'First combine the parallel pair: Rp = (6 x 6) / (6 + 6) = 36 / 12 = 3 ohm.',
+        'This 3 ohm is in series with the 4 ohm resistor, so Rtotal = 4 + 3 = 7 ohm.',
+        'Apply Ohm\'s law to the whole circuit: I = V / R.',
+        'I = 12 / 7 = 1.71 A.',
+      ],
+      answer: 'Total resistance = 7 ohm; current = 1.71 A.',
+    },
+    moreExamples: [
+      {
+        problem: 'A 2 000 W heater runs for 3 hours a day for 30 days. Electricity costs R2.60 per kWh. Calculate the monthly cost.',
+        steps: [
+          'Convert the power to kilowatts: 2 000 W = 2 kW.',
+          'Energy per day = P t = 2 x 3 = 6 kWh.',
+          'Energy per month = 6 x 30 = 180 kWh.',
+          'Cost = 180 x R2.60 = R468.00.',
+        ],
+        answer: 'R468.00',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-electrodynamics',
+    summary: 'Generators and motors, alternating current, and the calculation of rms values and average power.',
+    keyIdeas: [
+      'A generator converts mechanical energy into electrical energy using electromagnetic induction',
+      'A motor converts electrical energy into mechanical energy using the force on a current-carrying conductor in a magnetic field',
+      'An AC generator uses slip rings and a DC generator uses a split-ring commutator',
+      'rms values are the DC equivalents that deliver the same average power',
+      'Average power in an AC circuit uses rms values, not peak values',
+    ],
+    subtopics: [
+      {
+        name: 'Generators',
+        points: [
+          'Rotating the coil changes the flux through it, inducing an emf by Faraday\'s law',
+          'AC generator: slip rings keep each end of the coil connected to the same brush, so the current reverses each half turn',
+          'DC generator: the split-ring commutator reverses the connection each half turn, so the output stays one way',
+          'The output is greatest when the coil is parallel to the field, since the flux is changing fastest',
+        ],
+      },
+      {
+        name: 'Motors',
+        points: [
+          'A current-carrying coil in a magnetic field experiences a force on each side, producing a turning effect',
+          'A DC motor uses a commutator so the current reverses each half turn and rotation continues in one direction',
+          'Applications include power tools, fans, pumps and electric vehicles',
+        ],
+      },
+      {
+        name: 'rms values',
+        points: [
+          'Irms = Imax / sqrt(2) and Vrms = Vmax / sqrt(2)',
+          'Average power = Vrms x Irms = Imax Vmax / 2',
+          'Mains electricity quoted as 220 V is an rms value, with a peak of about 311 V',
+          'rms values are used because they give the same heating effect as the equivalent DC',
+        ],
+      },
+    ],
+    formulae: [
+      'Irms = Imax / sqrt(2)',
+      'Vrms = Vmax / sqrt(2)',
+      'Paverage = Vrms Irms = Irms^2 R = Vrms^2 / R',
+    ],
+    commonMistakes: [
+      'Mains voltage quoted as 220 V is rms, not peak; the peak is about 311 V',
+      'Average power uses rms values, so using peak values overstates it by a factor of two',
+      'A generator needs a changing flux, so a stationary coil produces nothing however strong the field',
+    ],
+    example: {
+      problem: 'An AC supply has a peak voltage of 340 V and is connected to a 100 ohm resistor. Calculate the rms voltage and the average power dissipated.',
+      steps: [
+        'Vrms = Vmax / sqrt(2) = 340 / 1.414 = 240.4 V.',
+        'Average power uses rms values: P = Vrms^2 / R.',
+        'P = (240.4)^2 / 100 = 57 792 / 100.',
+        'P = 577.9 W.',
+      ],
+      answer: 'Vrms = 240.4 V; average power = about 578 W.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain the difference between the slip rings of an AC generator and the split-ring commutator of a DC generator.',
+        steps: [
+          'In both machines the coil rotates in a magnetic field, and the emf induced in the coil itself reverses every half turn.',
+          'Slip rings keep each end of the coil permanently connected to the same brush, so that reversal reaches the external circuit and the output is alternating.',
+          'A split-ring commutator swaps which coil end touches which brush at the moment the emf reverses.',
+          'The reversal inside the coil and the swap at the commutator cancel out, so the external current always flows in the same direction, giving a direct output.',
+        ],
+        answer: 'Slip rings pass the coil\'s natural reversal to the circuit giving AC, while the commutator swaps the connections at each reversal so the external current stays one way, giving DC.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-em-radiation',
+    summary: 'The dual nature of electromagnetic radiation, photon energy, and the photoelectric effect.',
+    keyIdeas: [
+      'Electromagnetic radiation shows both wave and particle behaviour, which is its dual nature',
+      'Wave behaviour is shown by diffraction and interference; particle behaviour by the photoelectric effect',
+      'A photon carries energy E = h f',
+      'The work function is the minimum energy needed to free an electron from a metal surface',
+      'There is a threshold frequency below which no electrons are emitted, whatever the intensity',
+    ],
+    subtopics: [
+      {
+        name: 'Photons',
+        points: [
+          'E = h f = h c / wavelength, with h = 6.63 x 10^-34 J s',
+          'Higher frequency means a more energetic photon',
+          'Greater intensity means more photons per second, not more energetic photons',
+        ],
+      },
+      {
+        name: 'The photoelectric effect',
+        points: [
+          'Light shining on a metal surface can eject electrons, called photoelectrons',
+          'Emission happens only above the threshold frequency f0, and instantaneously when it does',
+          'E(photon) = W0 + Ek(max), where W0 = h f0 is the work function',
+          'Increasing the intensity above the threshold increases the number of electrons but not their maximum kinetic energy',
+        ],
+      },
+      {
+        name: 'Why it needed the photon model',
+        points: [
+          'A wave model predicts that any frequency should eventually free an electron if you wait long enough',
+          'In fact nothing at all happens below the threshold frequency, however intense or prolonged the light',
+          'This is explained if energy arrives in discrete photons and one photon is absorbed by one electron',
+          'Applications include photocells, solar panels, light meters and automatic doors',
+        ],
+      },
+    ],
+    formulae: [
+      'E = h f = h c / wavelength',
+      'E(photon) = W0 + Ek(max)',
+      'W0 = h f0',
+      'Ek(max) = 1/2 m v(max)^2',
+    ],
+    commonMistakes: [
+      'Increasing the intensity does not raise the maximum kinetic energy of the photoelectrons; only raising the frequency does',
+      'Below the threshold frequency no electrons are emitted at all, no matter how long the light shines',
+      'One photon is absorbed by one electron; an electron cannot accumulate energy from several photons',
+    ],
+    example: {
+      problem: 'A metal has a work function of 3.2 x 10^-19 J. Light of frequency 7.5 x 10^14 Hz falls on it. Calculate the maximum kinetic energy of the emitted electrons.',
+      steps: [
+        'Photon energy E = h f = (6.63 x 10^-34) x (7.5 x 10^14) = 4.97 x 10^-19 J.',
+        'Compare with the work function: 4.97 x 10^-19 is greater than 3.2 x 10^-19, so electrons are emitted.',
+        'Use E(photon) = W0 + Ek(max), so Ek(max) = E(photon) - W0.',
+        'Ek(max) = 4.97 x 10^-19 - 3.2 x 10^-19 = 1.77 x 10^-19 J.',
+      ],
+      answer: 'About 1.77 x 10^-19 J',
+    },
+    moreExamples: [
+      {
+        problem: 'A very bright red light produces no photoelectrons from a metal, while a dim violet light produces them immediately. Explain.',
+        steps: [
+          'Photon energy is given by E = h f, so it depends on frequency alone, not on brightness.',
+          'Red light has a lower frequency than violet, so each red photon carries less energy than the work function of the metal.',
+          'No single red photon can free an electron, and an electron cannot add up the energy of several photons, so no emission occurs however bright the light.',
+          'Each violet photon carries more energy than the work function, so even a few of them free electrons at once.',
+        ],
+        answer: 'Emission depends on photon energy, set by frequency: red photons are individually too weak whatever their number, while violet photons each exceed the work function.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-organic-chemistry',
+    summary: 'Functional groups, IUPAC naming, isomers, physical property trends, and the main organic reactions.',
+    keyIdeas: [
+      'Organic compounds are based on carbon chains, and each family is defined by its functional group',
+      'A homologous series shares a general formula and shows a gradual trend in physical properties',
+      'IUPAC names give the longest chain, the substituents and their positions, and the functional group suffix',
+      'Isomers have the same molecular formula but a different arrangement of atoms',
+      'Boiling point rises with chain length and with the strength of the intermolecular forces',
+    ],
+    subtopics: [
+      {
+        name: 'Functional groups',
+        points: [
+          'Alkanes: C-C single bonds, saturated, suffix -ane',
+          'Alkenes: C=C double bond, unsaturated, suffix -ene; alkynes have a triple bond, suffix -yne',
+          'Alcohols: -OH, suffix -ol; carboxylic acids: -COOH, suffix -oic acid',
+          'Aldehydes (-CHO, suffix -al), ketones (C=O within the chain, suffix -one), esters (suffix -oate), haloalkanes',
+        ],
+      },
+      {
+        name: 'Physical property trends',
+        points: [
+          'Longer chains have more surface contact, so London forces are stronger and boiling point rises',
+          'Branching reduces surface contact, so a branched isomer boils lower than its straight-chain isomer',
+          'Alcohols and carboxylic acids have much higher boiling points because they form hydrogen bonds',
+          'Shorter alcohols and carboxylic acids dissolve in water; long hydrocarbon chains do not',
+        ],
+      },
+      {
+        name: 'Reaction types',
+        points: [
+          'Addition: an alkene plus hydrogen, a halogen, water or a hydrogen halide; the double bond opens',
+          'Elimination: dehydrohalogenation of a haloalkane, or dehydration of an alcohol, both forming an alkene',
+          'Substitution: a haloalkane with a base gives an alcohol; an alkane with a halogen in light',
+          'Esterification: a carboxylic acid plus an alcohol, with concentrated sulfuric acid as catalyst, gives an ester and water',
+          'Combustion of any hydrocarbon in excess oxygen gives carbon dioxide and water',
+        ],
+      },
+    ],
+    formulae: [
+      'Alkanes CnH2n+2; alkenes CnH2n; alkynes CnH2n-2',
+      'Alcohols CnH2n+1OH',
+    ],
+    commonMistakes: [
+      'Number the longest chain from the end that gives the substituents the lowest possible numbers',
+      'A branched isomer boils lower than the straight-chain isomer, because branching reduces contact area',
+      'Addition reactions need an unsaturated starting material, so alkanes undergo substitution instead',
+    ],
+    example: {
+      problem: 'Explain why butan-1-ol (boiling point 118 degrees Celsius) boils at a much higher temperature than butane (boiling point -1 degree Celsius), even though both have four carbon atoms.',
+      steps: [
+        'Both molecules have the same carbon chain length, so their London forces are similar.',
+        'Butane is a non-polar alkane, so London forces are the only intermolecular force acting.',
+        'Butan-1-ol has a hydroxyl group, so hydrogen bonds form between its molecules.',
+        'Hydrogen bonds are much stronger than London forces, so far more energy is needed to separate the molecules and the boiling point is much higher.',
+      ],
+      answer: 'The -OH group in butan-1-ol allows hydrogen bonding between molecules, which is far stronger than the London forces alone that act between butane molecules.',
+    },
+    moreExamples: [
+      {
+        problem: 'Ethene reacts with steam in the presence of an acid catalyst. Name the type of reaction, give the product, and explain why ethane cannot undergo the same reaction.',
+        steps: [
+          'Ethene has a carbon-carbon double bond, so it is unsaturated.',
+          'Steam adds across the double bond, which opens to accommodate the new atoms; this is an addition reaction, specifically hydration.',
+          'The product is ethanol, CH3CH2OH.',
+          'Ethane is saturated: it has only single bonds and no double bond to open, so it cannot undergo addition and reacts by substitution instead.',
+        ],
+        answer: 'Addition (hydration), giving ethanol; ethane is saturated and has no double bond to open, so it can only undergo substitution.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-reaction-rate',
+    summary: 'What determines how fast a reaction goes, measured by collision theory, and how rate is measured experimentally.',
+    keyIdeas: [
+      'Rate of reaction is the change in concentration, mass or volume per unit time',
+      'Collision theory: a reaction occurs only when particles collide with enough energy and the correct orientation',
+      'Activation energy is the minimum energy a collision must have to be successful',
+      'Rate is increased by higher concentration, higher temperature, greater surface area, or a catalyst',
+      'A catalyst lowers the activation energy and is not consumed',
+    ],
+    subtopics: [
+      {
+        name: 'Factors affecting rate',
+        points: [
+          'Concentration or pressure: more particles per unit volume, so more collisions per second',
+          'Surface area: a powder reacts faster than a lump because more particles are exposed',
+          'Temperature: particles move faster, so collisions are more frequent and a much larger fraction exceed the activation energy',
+          'Catalyst: provides an alternative pathway with a lower activation energy',
+        ],
+      },
+      {
+        name: 'Measuring rate',
+        points: [
+          'Measure the volume of gas produced per unit time, the mass lost per unit time, or the time to a colour change',
+          'Plot the measured quantity against time; the gradient of the tangent gives the instantaneous rate',
+          'The graph is steepest at the start, when the concentration of the reactants is highest',
+          'It levels off when a reactant is used up, and the final level shows the total amount of product',
+        ],
+      },
+      {
+        name: 'The Maxwell-Boltzmann distribution',
+        points: [
+          'Shows the spread of kinetic energies among the particles at a given temperature',
+          'Only the particles to the right of the activation energy can react',
+          'Raising the temperature shifts the curve right and flattens it, greatly increasing the fraction above the activation energy',
+          'A catalyst moves the activation energy line to the left, so a larger fraction of the existing particles can react',
+        ],
+      },
+    ],
+    formulae: [
+      'Rate = change in concentration / change in time',
+      'Rate = change in volume of gas / change in time',
+    ],
+    commonMistakes: [
+      'Raising the temperature works mainly by increasing the fraction of collisions above the activation energy, not just by making collisions more frequent',
+      'A catalyst does not change the yield or the position of equilibrium, only the rate',
+      'The reaction has not stopped when the graph levels off; the limiting reactant has simply been used up',
+    ],
+    example: {
+      problem: 'In a reaction 48 cm3 of gas is collected in the first 20 s and a further 12 cm3 in the next 20 s. Calculate the average rate over each interval and explain the difference.',
+      steps: [
+        'First interval: rate = 48 / 20 = 2.4 cm3 per second.',
+        'Second interval: rate = 12 / 20 = 0.6 cm3 per second.',
+        'The rate has fallen because the reactants have been partly used up, so their concentration is lower.',
+        'Fewer particles per unit volume means fewer collisions per second, so fewer successful collisions.',
+      ],
+      answer: '2.4 cm3/s then 0.6 cm3/s; the rate falls because the reactant concentration decreases as it is used up.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain, using the Maxwell-Boltzmann distribution, why a small rise in temperature can double the rate of a reaction.',
+        steps: [
+          'The distribution shows how kinetic energy is spread among the particles, with only those beyond the activation energy able to react.',
+          'At the usual temperature only a very small fraction of particles lie beyond the activation energy, in the tail of the curve.',
+          'Raising the temperature shifts the whole curve to the right and lowers its peak, so the tail beyond the activation energy grows.',
+          'Because that tail is small to begin with, even a modest shift can double or more the number of particles able to react, which is why rate is so sensitive to temperature.',
+        ],
+        answer: 'Only the small tail of the distribution beyond the activation energy can react, so a modest shift of the curve multiplies that tail and hence the rate.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-chemical-equilibrium',
+    summary: 'Dynamic equilibrium, the equilibrium constant, and how Le Chatelier\'s principle predicts the effect of a change.',
+    keyIdeas: [
+      'A reversible reaction reaches dynamic equilibrium when the forward and reverse rates are equal',
+      'At equilibrium the concentrations remain constant, but both reactions continue',
+      'Kc is the equilibrium constant: products over reactants, each raised to its coefficient',
+      'A large Kc means the products are favoured; a small Kc means the reactants are',
+      'Le Chatelier: a system at equilibrium responds so as to oppose an imposed change',
+    ],
+    subtopics: [
+      {
+        name: 'Dynamic equilibrium',
+        points: [
+          'Requires a closed system, so nothing enters or leaves',
+          'Concentrations are constant but not necessarily equal',
+          'Both forward and reverse reactions are still happening at the same rate',
+        ],
+      },
+      {
+        name: 'The equilibrium constant',
+        points: [
+          'For aA + bB giving cC + dD, Kc = [C]^c [D]^d / ([A]^a [B]^b)',
+          'Kc changes only with temperature, not with concentration, pressure or a catalyst',
+          'Use an ICE table (initial, change, equilibrium) to work out equilibrium concentrations',
+          'Pure solids and pure liquids are left out of the expression',
+        ],
+      },
+      {
+        name: 'Le Chatelier\'s principle',
+        points: [
+          'Increase a reactant concentration: the equilibrium shifts right to use it up',
+          'Increase the pressure: it shifts towards the side with fewer moles of gas',
+          'Increase the temperature: it shifts in the endothermic direction, which absorbs the added heat',
+          'A catalyst speeds both directions equally, so equilibrium is reached sooner but its position is unchanged',
+        ],
+      },
+    ],
+    formulae: [
+      'Kc = [products] raised to their coefficients / [reactants] raised to their coefficients',
+      'Concentration = moles / volume',
+    ],
+    commonMistakes: [
+      'Equal rates at equilibrium do not mean equal concentrations',
+      'A catalyst does not shift the equilibrium position, only the time taken to reach it',
+      'Kc is altered only by temperature; adding more reactant changes the concentrations but not Kc',
+    ],
+    example: {
+      problem: 'For N2 + 3H2 giving 2NH3, equilibrium concentrations are [N2] = 0.20, [H2] = 0.30 and [NH3] = 0.60 mol/dm3. Calculate Kc.',
+      steps: [
+        'Write the expression: Kc = [NH3]^2 / ([N2] x [H2]^3).',
+        'Numerator: (0.60)^2 = 0.36.',
+        'Denominator: 0.20 x (0.30)^3 = 0.20 x 0.027 = 0.0054.',
+        'Kc = 0.36 / 0.0054 = 66.7.',
+      ],
+      answer: 'Kc = 66.7',
+    },
+    moreExamples: [
+      {
+        problem: 'For N2 + 3H2 giving 2NH3, the forward reaction is exothermic. Predict the effect on the ammonia yield of raising the pressure and of raising the temperature.',
+        steps: [
+          'Raising the pressure: the left side has 4 moles of gas and the right side has 2, so the system shifts towards the side with fewer moles to relieve the pressure.',
+          'The equilibrium therefore shifts right and the ammonia yield increases.',
+          'Raising the temperature: the system shifts in the endothermic direction to absorb the added heat, which here is the reverse reaction.',
+          'The equilibrium therefore shifts left and the ammonia yield decreases, which is why industrial ammonia production uses a compromise temperature with a catalyst.',
+        ],
+        answer: 'Higher pressure increases the yield by shifting towards the fewer gas moles; higher temperature decreases it by shifting in the endothermic reverse direction.',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-acids-bases',
+    summary: 'Acid-base definitions, strength against concentration, pH, hydrolysis and titration calculations.',
+    keyIdeas: [
+      'Bronsted-Lowry: an acid donates a proton and a base accepts one',
+      'Strength refers to how completely a substance ionises; concentration refers to how much is dissolved',
+      'pH = -log[H3O+], so a lower pH means a higher hydronium concentration',
+      'Conjugate acid-base pairs differ by exactly one proton',
+      'At the equivalence point the moles of acid and base have reacted in the ratio of the balanced equation',
+    ],
+    subtopics: [
+      {
+        name: 'Strength and concentration',
+        points: [
+          'Strong acids ionise completely: HCl, HBr, HNO3, H2SO4',
+          'Weak acids ionise only partially: ethanoic acid, oxalic acid, carbonic acid',
+          'A dilute solution of a strong acid can have a higher pH than a concentrated solution of a weak acid',
+          'Strong bases include NaOH and KOH; ammonia is a weak base',
+        ],
+      },
+      {
+        name: 'pH and Kw',
+        points: [
+          'pH = -log[H3O+], and [H3O+] = 10 to the power of -pH',
+          'Kw = [H3O+][OH-] = 1 x 10^-14 at 25 degrees Celsius',
+          'Neutral at 25 degrees Celsius means pH 7, where the two concentrations are equal',
+        ],
+      },
+      {
+        name: 'Titration and hydrolysis',
+        points: [
+          'Use n = c V, then apply the mole ratio from the balanced equation, then solve for the unknown',
+          'Strong acid with strong base gives a neutral salt, pH 7 at the equivalence point',
+          'Strong acid with weak base gives an acidic salt; weak acid with strong base gives a basic salt',
+          'Choose the indicator whose range matches the pH at the equivalence point',
+        ],
+      },
+    ],
+    formulae: [
+      'pH = -log[H3O+]',
+      'Kw = [H3O+][OH-] = 1 x 10^-14',
+      'n = c V',
+      'ca Va / cb Vb = na / nb',
+    ],
+    commonMistakes: [
+      'Strong and concentrated are different: strength is about the degree of ionisation, concentration about the amount dissolved',
+      'The equivalence point of a weak acid with a strong base is above pH 7, not at 7',
+      'pH is a logarithmic scale, so a change of one pH unit is a tenfold change in hydronium concentration',
+    ],
+    example: {
+      problem: 'Calculate the pH of a 0.01 mol/dm3 solution of hydrochloric acid.',
+      steps: [
+        'Hydrochloric acid is a strong acid, so it ionises completely.',
+        'Each HCl produces one H3O+, so [H3O+] = 0.01 = 1 x 10^-2 mol/dm3.',
+        'pH = -log[H3O+] = -log(1 x 10^-2).',
+        'pH = 2.',
+      ],
+      answer: 'pH = 2',
+    },
+    moreExamples: [
+      {
+        problem: '25 cm3 of sodium hydroxide solution is exactly neutralised by 20 cm3 of 0.1 mol/dm3 hydrochloric acid. Calculate the concentration of the sodium hydroxide.',
+        steps: [
+          'Convert volumes to cubic decimetres: 20 cm3 = 0.020 dm3 and 25 cm3 = 0.025 dm3.',
+          'Moles of HCl = c V = 0.1 x 0.020 = 0.002 mol.',
+          'The equation HCl + NaOH gives NaCl + H2O has a 1 to 1 ratio, so moles of NaOH = 0.002 mol.',
+          'Concentration of NaOH = n / V = 0.002 / 0.025 = 0.08 mol/dm3.',
+        ],
+        answer: '0.08 mol/dm3',
+      },
+    ],
+  },
+  {
+    topicId: 'phys-electrochemistry',
+    summary: 'Galvanic and electrolytic cells, half-reactions, standard electrode potentials, and industrial applications.',
+    keyIdeas: [
+      'Oxidation always occurs at the anode and reduction always at the cathode',
+      'In a galvanic cell a spontaneous redox reaction produces electricity; the anode is negative',
+      'In an electrolytic cell electricity drives a non-spontaneous reaction; the anode is positive',
+      'Electrons flow through the external circuit from anode to cathode in both cell types',
+      'Standard cell potential = E of the cathode minus E of the anode',
+    ],
+    subtopics: [
+      {
+        name: 'Galvanic cells',
+        points: [
+          'Chemical energy converts to electrical energy, spontaneously',
+          'The more negative electrode potential is the anode, where oxidation happens',
+          'The salt bridge maintains electrical neutrality by allowing ions to move between the half-cells',
+          'Cell notation: anode on the left, cathode on the right, with the double line marking the salt bridge',
+        ],
+      },
+      {
+        name: 'Electrolytic cells',
+        points: [
+          'Electrical energy drives a non-spontaneous chemical change',
+          'The anode is connected to the positive terminal, and oxidation still occurs there',
+          'Used for electroplating, refining copper, extracting aluminium, and the chlor-alkali process',
+        ],
+      },
+      {
+        name: 'Electrode potentials',
+        points: [
+          'Values are quoted against the standard hydrogen electrode, which is defined as 0 V',
+          'A more positive value means a greater tendency to be reduced',
+          'E(cell) = E(cathode) - E(anode), and a positive result means the reaction is spontaneous',
+          'Reversing a half-reaction reverses the sign of its potential, but multiplying it does not change the value',
+        ],
+      },
+    ],
+    formulae: [
+      'E(cell) = E(cathode) - E(anode)',
+      'Oxidation at the anode, reduction at the cathode, in both cell types',
+    ],
+    commonMistakes: [
+      'The anode is negative in a galvanic cell but positive in an electrolytic cell; oxidation happens there in both',
+      'Multiplying a half-reaction to balance electrons does not change its electrode potential',
+      'Electrons travel through the wire, not through the salt bridge; ions move through the salt bridge',
+    ],
+    example: {
+      problem: 'A galvanic cell uses Zn/Zn2+ (E = -0.76 V) and Cu/Cu2+ (E = +0.34 V). Identify the anode and cathode and calculate the cell potential.',
+      steps: [
+        'The more negative electrode potential is oxidised, so zinc is the anode and copper is the cathode.',
+        'At the anode: Zn gives Zn2+ plus 2 electrons. At the cathode: Cu2+ plus 2 electrons gives Cu.',
+        'E(cell) = E(cathode) - E(anode) = (+0.34) - (-0.76).',
+        'E(cell) = 0.34 + 0.76 = 1.10 V, and the positive value confirms the reaction is spontaneous.',
+      ],
+      answer: 'Zinc is the anode and copper the cathode; E(cell) = 1.10 V.',
+    },
+    moreExamples: [
+      {
+        problem: 'Explain the function of the salt bridge in a galvanic cell, and predict what happens if it is removed.',
+        steps: [
+          'As the cell runs, positive ions build up in the anode half-cell and are removed from the cathode half-cell.',
+          'This would leave one half-cell positively charged and the other negatively charged, which opposes further electron flow.',
+          'The salt bridge allows ions to migrate between the half-cells, keeping both electrically neutral and completing the circuit.',
+          'If it is removed, charge builds up almost immediately, the potential difference collapses and the current stops.',
+        ],
+        answer: 'It keeps both half-cells electrically neutral and completes the circuit; without it charge builds up and the current stops almost at once.',
+      },
+    ],
+  },
+  {
+    topicId: 'math-number-systems',
+    summary: 'The real number system, rational and irrational numbers, recurring decimals, rounding, and estimating surds between integers.',
+    keyIdeas: [
+      'A rational number can be written as a fraction a/b with b not zero; its decimal form terminates or recurs',
+      'An irrational number cannot be written as such a fraction; its decimal form neither terminates nor recurs',
+      'The real numbers are the rationals together with the irrationals',
+      'A surd such as the square root of 2 is irrational unless the number under the root is a perfect square',
+      'To place a surd between two integers, find the perfect squares on either side of the number under the root',
+    ],
+    subtopics: [
+      {
+        name: 'The real number system',
+        points: [
+          'Natural numbers N: 1, 2, 3 and so on; whole numbers N0 include 0',
+          'Integers Z include the negatives; rationals Q are all fractions a/b',
+          'Irrationals are numbers such as pi and the square root of 2',
+          'Every rational and every irrational is a real number',
+        ],
+      },
+      {
+        name: 'Decimals and fractions',
+        points: [
+          'A terminating decimal converts directly: 0.25 = 25/100 = 1/4',
+          'For a recurring decimal, multiply by a power of 10 to line the repeat up, then subtract',
+          'Rounding to n decimal places looks at the digit in the next place: 5 or more rounds up',
+          'Rounding too early in a calculation accumulates error, so round only at the end',
+        ],
+      },
+      {
+        name: 'Estimating surds',
+        points: [
+          'The square root of 40 lies between 6 and 7, because 36 is less than 40, which is less than 49',
+          'The same method works for cube roots, using perfect cubes',
+          'For a sum of surds, square the whole expression or estimate each part and add',
+        ],
+      },
+    ],
+    formulae: [
+      'A rational number can be written as a/b, with a and b integers and b not zero',
+      'Recurring decimal: let x be the decimal, multiply to align the repeat, then subtract',
+    ],
+    commonMistakes: [
+      'A recurring decimal is rational, not irrational, because it can always be written as a fraction',
+      'The square root of 9 is 3, which is rational; only non-perfect squares give irrational roots',
+      'Round only at the final step; rounding at each stage makes the answer drift',
+    ],
+    example: {
+      problem: 'Determine between which two consecutive integers the square root of 40 lies.',
+      steps: [
+        'Find the perfect squares on either side of 40.',
+        '6 squared is 36 and 7 squared is 49.',
+        'Since 36 is less than 40, which is less than 49, the square root of 40 lies between the square roots of 36 and 49.',
+        'Therefore the square root of 40 lies between 6 and 7.',
+      ],
+      answer: 'Between 6 and 7',
+    },
+    moreExamples: [
+      {
+        problem: 'Convert the recurring decimal 0.363636... into a fraction in simplest form.',
+        steps: [
+          'Let x = 0.363636..., where the repeating block 36 has two digits.',
+          'Multiply by 100 to shift by one full block: 100x = 36.363636...',
+          'Subtract the first equation from the second: 100x - x = 36.363636... - 0.363636..., giving 99x = 36.',
+          'So x = 36/99, which simplifies by dividing both parts by 9 to give 4/11.',
+        ],
+        answer: '4/11',
+      },
+    ],
+  },
 ]
 
 export const getTopicNote = (topicId: string) => topicNotes.find((n) => n.topicId === topicId)

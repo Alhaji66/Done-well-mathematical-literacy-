@@ -66,12 +66,28 @@ export interface Finding {
   message: string
 }
 
+/**
+ * Marks by CAPS cognitive level, counting only questions that carry an
+ * explicit level. `unlevelled` is everything else, and is reported rather
+ * than distributed — a level nobody assigned is not evidence.
+ */
+export interface CapsLevelMarks {
+  1: number
+  2: number
+  3: number
+  4: number
+  levelled: number
+  unlevelled: number
+}
+
 export interface GradeCoverage {
   grade: Grade
   topics: TopicCoverage[]
   papers: PaperCoverage[]
-  /** Aggregate mark split across every paper at this grade. */
+  /** Aggregate mark split across every paper at this grade, by difficulty tag. */
   paperMarks: LevelSplit
+  /** The same marks by explicit CAPS cognitive level, where one is recorded. */
+  capsMarks: CapsLevelMarks
   findings: Finding[]
 }
 
@@ -133,9 +149,41 @@ function buildFindings(
   topics: TopicCoverage[],
   papers: PaperCoverage[],
   paperMarks: LevelSplit,
+  capsMarks: CapsLevelMarks,
   weighting: CapsWeighting | undefined,
 ): Finding[] {
   const findings: Finding[] = []
+
+  // Explicit CAPS levels beat difficulty tags wherever they exist, so report
+  // them first and say plainly how much of the grade they actually cover.
+  const capsTotal = capsMarks.levelled + capsMarks.unlevelled
+  if (capsMarks.levelled > 0 && weighting) {
+    const higher = sharePercent(capsMarks[3] + capsMarks[4], capsMarks.levelled)
+    const gap = higher - weighting.level3and4
+    const covered = sharePercent(capsMarks.levelled, capsTotal)
+    if (Math.abs(gap) > WEIGHTING_TOLERANCE) {
+      findings.push({
+        severity: 'gap',
+        message: `Of the marks carrying an explicit CAPS level (${covered}% of this grade), Levels 3-4 hold ${higher}% against a target of ${weighting.level3and4}%.`,
+      })
+    }
+    const l1 = sharePercent(capsMarks[1], capsMarks.levelled)
+    if (Math.abs(l1 - weighting.level1) > WEIGHTING_TOLERANCE) {
+      findings.push({
+        severity: 'watch',
+        message: `Level 1 (${weighting.levelNames[0]}) holds ${l1}% of levelled marks against a target of ${weighting.level1}%.`,
+      })
+    }
+  }
+  if (capsMarks.unlevelled > 0) {
+    findings.push({
+      severity: 'watch',
+      message:
+        capsMarks.levelled === 0
+          ? 'No question at this grade carries an explicit CAPS cognitive level, so every weighting figure here rests on unaudited difficulty tags.'
+          : `${capsMarks.unlevelled} marks (${sharePercent(capsMarks.unlevelled, capsTotal)}%) carry no explicit CAPS level yet and are excluded from the level figures above.`,
+    })
+  }
 
   const empty = topics.filter((t) => t.questionCount === 0)
   if (empty.length > 0) {
@@ -213,6 +261,7 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
     const topics = topicsForSubject(subjectId, grade).map((t) => topicCoverage(pool, t.id, t.name, grade))
 
     const paperMarks = emptySplit()
+    const capsMarks: CapsLevelMarks = { 1: 0, 2: 0, 3: 0, 4: 0, levelled: 0, unlevelled: 0 }
     const papers: PaperCoverage[] = allPapers
       .filter((p) => p.grade === grade)
       .map((p) => {
@@ -221,6 +270,10 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
           for (const item of section.items) {
             addToSplit(marks, item.difficulty, item.marks)
             addToSplit(paperMarks, item.difficulty, item.marks)
+            if (item.cognitiveLevel) {
+              capsMarks[item.cognitiveLevel] += item.marks
+              capsMarks.levelled += item.marks
+            } else capsMarks.unlevelled += item.marks
           }
         const challengePercent = sharePercent(marks.challenge, marks.total)
         return {
@@ -239,7 +292,8 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
       topics,
       papers,
       paperMarks,
-      findings: buildFindings(topics, papers, paperMarks, weighting),
+      capsMarks,
+      findings: buildFindings(topics, papers, paperMarks, capsMarks, weighting),
     }
   })
 

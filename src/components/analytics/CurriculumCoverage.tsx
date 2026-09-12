@@ -85,6 +85,42 @@ function GradePanel({ grade, subject }: { grade: GradeCoverage; subject: Subject
         </ul>
       )}
 
+      {weighting && grade.capsMarks.levelled > 0 ? (
+        <div className="mt-5 rounded-lg border border-navy-200 bg-white p-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h4 className="text-sm font-semibold text-navy-900">CAPS cognitive levels, by mark</h4>
+            <span className="text-xs text-navy-500">
+              {sharePercent(grade.capsMarks.levelled, grade.capsMarks.levelled + grade.capsMarks.unlevelled)}% of this
+              grade carries an explicit level
+            </span>
+          </div>
+          <dl className="mt-3 grid gap-2 sm:grid-cols-4">
+            {([1, 2, 3, 4] as const).map((l) => {
+              const target = l === 1 ? weighting.level1 : l === 2 ? weighting.level2 : l === 3 ? weighting.level3 : weighting.level4
+              const actual = sharePercent(grade.capsMarks[l], grade.capsMarks.levelled)
+              const off = Math.abs(actual - target) > WEIGHTING_TOLERANCE
+              return (
+                <div key={l} className="rounded-md border border-navy-100 p-2.5">
+                  <dt className="text-xs font-medium text-navy-500">
+                    Level {l} · {weighting.levelNames[l - 1]}
+                  </dt>
+                  <dd className={cn('mt-0.5 text-lg font-bold tabular-nums', off ? 'text-rose-700' : 'text-emerald-700')}>
+                    {actual}%
+                  </dd>
+                  <dd className="text-xs text-navy-500">target {target}%</dd>
+                </div>
+              )
+            })}
+          </dl>
+          {grade.capsMarks.unlevelled > 0 ? (
+            <p className="mt-2.5 text-xs text-navy-500">
+              {grade.capsMarks.unlevelled} marks are not levelled yet and are excluded from these percentages. They are
+              the questions where the Level 2 / Level 3 boundary needs a subject specialist rather than a rule.
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       {weighting && grade.paperMarks.total > 0 ? (
         <div className="mt-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">

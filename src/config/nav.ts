@@ -9,6 +9,7 @@ import {
   UserIcon,
   HeartHandshakeIcon,
   BarChartIcon,
+  ClipboardCheckIcon,
   SparkleIcon,
   EyeIcon,
   SchoolIcon,
@@ -68,6 +69,7 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/question-bank', label: 'Question Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
   { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
 ]
 
@@ -89,5 +91,6 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
   { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
 ]

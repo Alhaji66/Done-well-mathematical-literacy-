@@ -48,6 +48,15 @@ export const ClipboardIcon = (p: IconProps) => (
   </svg>
 )
 
+// Clipboard with a tick -- curriculum coverage, i.e. "what is checked off".
+export const ClipboardCheckIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="6" y="4" width="12" height="17" rx="2" />
+    <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
+    <path d="m9.5 13.5 2 2 4-4" />
+  </svg>
+)
+
 export const TrendingUpIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="m3 17 6-6 4 4 8-8" />

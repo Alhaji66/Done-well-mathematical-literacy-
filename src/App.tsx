@@ -66,6 +66,9 @@ const PaperPage = lazy(() => import('@/pages/account/assessments/PaperPage').the
 const MasteryAnalytics = lazy(() =>
   import('@/components/analytics/MasteryAnalytics').then((m) => ({ default: m.MasteryAnalytics })),
 )
+const CurriculumCoverage = lazy(() =>
+  import('@/components/analytics/CurriculumCoverage').then((m) => ({ default: m.CurriculumCoverage })),
+)
 
 const LearnerDashboard = lazy(() => import('@/pages/learner/Dashboard').then((m) => ({ default: m.LearnerDashboard })))
 const LearnerLearn = lazy(() => import('@/pages/learner/Learn').then((m) => ({ default: m.LearnerLearn })))
@@ -153,6 +156,7 @@ export default function App() {
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
+                <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
@@ -176,6 +180,7 @@ export default function App() {
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
+                <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>

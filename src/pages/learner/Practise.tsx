@@ -9,7 +9,7 @@ import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
 import { subtopicNamesFor } from '@/data/topicNotes'
 import { SubtopicSection } from '@/components/practise/SubtopicSection'
-import { groupBySubtopic } from '@/data/subtopics'
+import { groupBySubtopic, UNSORTED } from '@/data/subtopics'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PencilIcon } from '@/components/ui/Icons'
 import type { Difficulty, Grade, Question } from '@/types'
@@ -182,6 +182,10 @@ export function LearnerPractise() {
                     {t.name}
                   </option>
                 )
+              // The classifier cannot place every question, and the leftovers
+              // are a real group Practise renders. Offer it here too, or a link
+              // into it from Learn would leave this box showing nothing.
+              const hasCatchAll = liveSubtopics?.has(`${t.id}::${UNSORTED}`) ?? false
               return (
                 <optgroup key={t.id} label={t.name}>
                   <option value={t.id}>All of {t.name}</option>
@@ -194,6 +198,7 @@ export function LearnerPractise() {
                       </option>
                     )
                   })}
+                  {hasCatchAll ? <option value={`${t.id}::${UNSORTED}`}>{UNSORTED}</option> : null}
                 </optgroup>
               )
             })}

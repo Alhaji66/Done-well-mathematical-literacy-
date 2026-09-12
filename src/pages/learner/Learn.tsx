@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { subjects } from '@/data/subjects'
 import { topicsForSubject } from '@/data/topics'
-import { topicQuestionCounts } from '@/data/questionBank'
+import { topicQuestionCounts, subtopicQuestionCounts } from '@/data/questionBank'
 import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { ChevronRightIcon, BookIcon } from '@/components/ui/Icons'
 import { TopicNotes } from '@/components/practise/TopicNotes'
+import { SubtopicLinks } from '@/components/practise/SubtopicLinks'
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -26,11 +27,18 @@ export function LearnerLearn() {
 
   // Question counts come from the papers, which load per subject on demand.
   const [questionCounts, setQuestionCounts] = useState<Record<string, number>>({})
+  const [subtopicCounts, setSubtopicCounts] = useState<Record<string, Record<string, number>>>({})
   useEffect(() => {
     let cancelled = false
-    topicQuestionCounts(subjectId, grade).then((counts) => {
-      if (!cancelled) setQuestionCounts(counts)
-    })
+    // Both read the same pool, which is cached per subject, so the second call
+    // costs a filter rather than a second load of the papers.
+    Promise.all([topicQuestionCounts(subjectId, grade), subtopicQuestionCounts(subjectId, grade)]).then(
+      ([topicCounts, subCounts]) => {
+        if (cancelled) return
+        setQuestionCounts(topicCounts)
+        setSubtopicCounts(subCounts)
+      },
+    )
     return () => {
       cancelled = true
     }
@@ -101,12 +109,21 @@ export function LearnerLearn() {
                   <ProgressBar percent={progress.masteryPercent} size="sm" label={`${topic.name} mastery`} />
                 </div>
               ) : null}
+              {/* Sub-topics sit on the face of the card, not inside the notes
+                  accordion, so a learner revising one part of a topic can see
+                  it named and go straight to it. */}
+              <SubtopicLinks
+                topicId={topic.id}
+                subjectId={subjectId}
+                grade={grade}
+                counts={subtopicCounts[topic.id] ?? {}}
+              />
               <TopicNotes topicId={topic.id} defaultOpen={false} />
               <Link
                 to={`/app/learner/practise?subject=${subjectId}&grade=${grade}&topic=${topic.id}`}
                 className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-navy-700 hover:text-navy-900"
               >
-                Start practising <ChevronRightIcon className="h-4 w-4" />
+                Practise the whole topic <ChevronRightIcon className="h-4 w-4" />
               </Link>
             </div>
           )

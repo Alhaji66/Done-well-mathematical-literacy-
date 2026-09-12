@@ -283,4 +283,11 @@ export const UNTRACKED = [
       'The app stores three difficulty tiers against the four CAPS cognitive levels, so Challenge covers Level 3 and Level 4 together. A paper on target for Levels 3-4 combined may still carry too little Level 4 reasoning.',
     needs: 'A fourth tier, or a separate cognitive-level field alongside difficulty.',
   },
+  {
+    title: 'Whether the difficulty tags are right',
+    detail:
+      'Every weighting figure on this page is computed from the difficulty tag each question was given when it was written. Those tags are author-assigned and have never been audited, so a paper reading "on target" means its TAGS are on target, not that its questions were checked. Spot checks have found recall questions — describe a pathway, state two conditions — carrying a Challenge tag, which inflates the higher-order share without adding any higher-order work.',
+    needs:
+      'An explicit CAPS cognitive level stored per question at authoring time. Inferring the level from the wording afterwards is not reliable enough to publish: it works passably on prose subjects and fails badly on Mathematics, where the demand sits in the mathematics rather than in the verb, so a routine-looking "Solve for x" can be a Level 3 complex procedure.',
+  },
 ] as const

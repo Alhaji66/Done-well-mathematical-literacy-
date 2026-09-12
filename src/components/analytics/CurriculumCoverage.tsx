@@ -88,7 +88,10 @@ function GradePanel({ grade, subject }: { grade: GradeCoverage; subject: Subject
       {weighting && grade.paperMarks.total > 0 ? (
         <div className="mt-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h4 className="text-sm font-semibold text-navy-900">Cognitive levels across all Grade {grade.grade} papers, by mark</h4>
+            <h4 className="text-sm font-semibold text-navy-900">
+              Cognitive levels across all Grade {grade.grade} papers, by mark
+              <span className="ml-1.5 font-normal text-navy-500">(from author-assigned tags, not audited)</span>
+            </h4>
             <span className={cn('text-sm font-semibold', onTarget ? 'text-emerald-700' : 'text-rose-700')}>
               Levels 3–4: {actualChallenge}% (target {weighting.level3and4}%)
             </span>

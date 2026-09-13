@@ -159,10 +159,115 @@ function ChargesOnALine() {
   )
 }
 
+/**
+ * Free-body diagrams.
+ *
+ * A sweep found ZERO free-body diagrams in 1 935 Physical Sciences questions,
+ * and "draw a labelled free-body diagram of the forces acting on ..." opens
+ * more NSC Paper 1 questions than any other instruction. These are attached as
+ * `answerFigure`, so they appear only after the learner has drawn their own.
+ *
+ * Drawing conventions, which are marked: every arrow starts AT the body and
+ * points outwards, arrow lengths are proportional where the question gives
+ * enough to judge it, and each force carries a label naming the body exerting
+ * it. A diagram with arrows drawn to the body rather than from it loses marks
+ * even when the physics behind it is right.
+ */
+
+/** One labelled force arrow from (x, y), in the direction (dx, dy). */
+function Force({ x, y, dx, dy, label, at }: { x: number; y: number; dx: number; dy: number; label: string; at: 'start' | 'middle' | 'end' }) {
+  const tipX = x + dx
+  const tipY = y + dy
+  const len = Math.hypot(dx, dy)
+  const ux = dx / len
+  const uy = dy / len
+  // Arrowhead as a triangle at the tip, perpendicular offsets for its base.
+  const head = `${tipX},${tipY} ${tipX - 7 * ux - 4 * uy},${tipY - 7 * uy + 4 * ux} ${tipX - 7 * ux + 4 * uy},${tipY - 7 * uy - 4 * ux}`
+  return (
+    <g>
+      <line x1={x} y1={y} x2={tipX} y2={tipY} stroke={ACCENT} strokeWidth="2" />
+      <polygon points={head} fill={ACCENT} />
+      <text x={tipX + ux * 6} y={tipY + uy * 6 + 3} textAnchor={at} fontSize="10" fontWeight="700" fill={INK}>
+        {label}
+      </text>
+    </g>
+  )
+}
+
+function FbdIncline() {
+  return (
+    <Frame
+      title="Forces on a block at rest on a rough incline"
+      desc="A block rests on a slope inclined at an angle theta to the horizontal. Three forces act on it, each drawn as an arrow starting at the block. Weight, w, acts vertically downwards. The normal force, N, acts perpendicular to the slope surface, away from it. Friction, f, acts up the slope, parallel to the surface, opposing the tendency to slide down. Because the block is at rest, the normal force and friction together balance the weight exactly."
+      viewBox="0 0 240 170"
+    >
+      <polygon points="20,140 220,140 220,60" fill={FILL} stroke={INK} strokeWidth="1.5" />
+      <text x="196" y="134" fontSize="10" fill={MUTED}>θ</text>
+      {/* Block sitting on the slope, rotated to match it. */}
+      <g transform="translate(140,104) rotate(-21.8)">
+        <rect x="-16" y="-11" width="32" height="22" fill={INK} opacity="0.85" />
+      </g>
+      <Force x={140} y={104} dx={0} dy={44} label="w" at="middle" />
+      <Force x={140} y={104} dx={-16} dy={-40} label="N" at="middle" />
+      <Force x={140} y={104} dx={-42} dy={-17} label="f" at="end" />
+      <circle cx="140" cy="104" r="2.5" fill="#fff" />
+    </Frame>
+  )
+}
+
+function FbdLift() {
+  return (
+    <Frame
+      title="Forces on a person in a lift accelerating upwards"
+      desc="A person stands in a lift that is accelerating upwards. Two forces act on the person, each drawn from the person outwards. The normal force, N, from the floor acts vertically upwards. Weight, w, acts vertically downwards. The upward arrow is drawn longer than the downward one, because an upward acceleration requires the normal force to exceed the weight; the difference between them is the net force producing the acceleration."
+      viewBox="0 0 200 180"
+    >
+      <rect x="55" y="18" width="90" height="144" fill={FILL} stroke={INK} strokeWidth="1.5" />
+      <line x1="55" y1="146" x2="145" y2="146" stroke={INK} strokeWidth="1.5" />
+      <rect x="88" y="118" width="24" height="28" fill={INK} opacity="0.85" />
+      <Force x={100} y={132} dx={0} dy={-58} label="N" at="middle" />
+      <Force x={100} y={132} dx={0} dy={26} label="w" at="middle" />
+      <circle cx="100" cy="132" r="2.5" fill="#fff" />
+      <text x="152" y="60" fontSize="9" fill={MUTED}>a ↑</text>
+    </Frame>
+  )
+}
+
+function FbdConnected() {
+  return (
+    <Frame
+      title="Forces on two blocks joined by a light string"
+      desc="Two blocks, A and B, rest on a rough horizontal surface and are joined by a light inextensible string. An applied force F pulls block B to the right. Block A has four forces on it: weight down, normal force up, tension T to the right from the string, and friction to the left. Block B has five: weight down, normal force up, the applied force F to the right, tension T to the left from the string, and friction to the left. The two tension arrows are equal in size and opposite in direction, because the string is light and pulls equally on both blocks."
+      viewBox="0 0 300 150"
+    >
+      <line x1="10" y1="104" x2="290" y2="104" stroke={INK} strokeWidth="2" />
+      <rect x="52" y="80" width="34" height="24" fill={INK} opacity="0.85" />
+      <rect x="182" y="80" width="34" height="24" fill={INK} opacity="0.85" />
+      <text x="69" y="97" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">A</text>
+      <text x="199" y="97" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">B</text>
+      <line x1="86" y1="92" x2="182" y2="92" stroke={INK} strokeWidth="1.5" strokeDasharray="3 3" />
+      <Force x={69} y={92} dx={0} dy={-42} label="N" at="middle" />
+      <Force x={69} y={92} dx={0} dy={34} label="w" at="middle" />
+      <Force x={69} y={92} dx={40} dy={0} label="T" at="start" />
+      <Force x={69} y={92} dx={-40} dy={0} label="f" at="end" />
+      <Force x={199} y={92} dx={0} dy={-42} label="N" at="middle" />
+      <Force x={199} y={92} dx={0} dy={34} label="w" at="middle" />
+      <Force x={199} y={92} dx={52} dy={0} label="F" at="start" />
+      <Force x={199} y={92} dx={-40} dy={0} label="T" at="end" />
+      <circle cx="69" cy="92" r="2.5" fill="#fff" />
+      <circle cx="199" cy="92" r="2.5" fill="#fff" />
+      <text x="150" y="134" textAnchor="middle" fontSize="9" fill={MUTED}>friction also acts on B, drawn with T</text>
+    </Frame>
+  )
+}
+
 const FIGURES: Record<FigureId, () => JSX.Element> = {
   'cast-diagram': CastDiagram,
   'surd-number-line': SurdNumberLine,
   'charges-on-a-line': ChargesOnALine,
+  'fbd-incline': FbdIncline,
+  'fbd-lift': FbdLift,
+  'fbd-connected': FbdConnected,
 }
 
 export function Figure({ id }: FigureProps) {

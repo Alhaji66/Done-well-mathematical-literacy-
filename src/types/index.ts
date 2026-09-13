@@ -96,10 +96,26 @@ export interface Question {
    * prose cannot.
    */
   figure?: FigureId
+  /**
+   * A figure shown only once the answer is revealed.
+   *
+   * Separate from `figure` because placement is the whole point for a question
+   * that asks the learner to DRAW something. "Draw a labelled free-body diagram
+   * of the forces on the block" is the commonest opening in an NSC Paper 1, and
+   * rendering the finished diagram beside the prompt would answer it for them.
+   * They draw it on paper, then check it against this.
+   */
+  answerFigure?: FigureId
 }
 
 /** Figures live in src/components/practise/Figure.tsx. */
-export type FigureId = 'cast-diagram' | 'surd-number-line' | 'charges-on-a-line'
+export type FigureId =
+  | 'cast-diagram'
+  | 'surd-number-line'
+  | 'charges-on-a-line'
+  | 'fbd-incline'
+  | 'fbd-lift'
+  | 'fbd-connected'
 
 /**
  * A mark code as used in the official NSC marking guidelines.

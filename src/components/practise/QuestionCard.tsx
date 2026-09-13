@@ -133,6 +133,10 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
           <p className="mt-1.5 text-sm leading-relaxed text-navy-600">
             <MathText>{question.explanation}</MathText>
           </p>
+          {/* Shown only now, with the answer. A question asking the learner to
+              DRAW a free-body diagram is answered for them if the finished
+              diagram sits beside the prompt. */}
+          {question.answerFigure ? <Figure id={question.answerFigure} /> : null}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
         </div>
       )}

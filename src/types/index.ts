@@ -14,6 +14,20 @@ export interface Topic {
   name: string
   description: string
   grades: Grade[]
+  /**
+   * The examination paper this topic is written in, where a subject splits its
+   * content across two papers that are examined separately.
+   *
+   * Physical Sciences is the only subject here that does: Paper 1 is Physics and
+   * Paper 2 is Chemistry, and a learner revising for one sits an exam that
+   * contains none of the other. A flat list of 13 topics hides that entirely.
+   *
+   * Derived from the papers rather than typed by hand -- every Physical Sciences
+   * topic appears in exactly one paper at every grade, with none ambiguous and
+   * none unmapped, so the split is a fact about the corpus rather than a
+   * judgement call. Subjects examined as one body of content leave this unset.
+   */
+  strand?: string
 }
 
 export type ResourceType = 'Learner Book' | 'Workbook' | 'Teacher Guide' | 'Test' | 'Memo'

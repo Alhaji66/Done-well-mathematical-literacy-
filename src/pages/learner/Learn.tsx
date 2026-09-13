@@ -97,6 +97,14 @@ export function LearnerLearn() {
                 <span className="badge-slate">{questionCount} sample questions</span>
               </div>
               <div>
+                {/* Physical Sciences is examined as two separate papers --
+                    Paper 1 Physics, Paper 2 Chemistry -- and a learner revising
+                    for one sits an exam containing none of the other. Without
+                    this label the 13 topics read as one undifferentiated list,
+                    so there is no way to tell which paper a topic belongs to. */}
+                {topic.strand ? (
+                  <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-navy-500">{topic.strand}</p>
+                ) : null}
                 <h3 className="font-bold text-navy-900">{topic.name}</h3>
                 <p className="mt-1 text-sm text-navy-600">{topic.description}</p>
               </div>

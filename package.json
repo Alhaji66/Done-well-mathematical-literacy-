@@ -14,7 +14,8 @@
     "check:latex": "tsx tools/check-latex.mts",
     "check:memos": "tsx tools/check-memos.mts",
     "check:totals": "tsx tools/check-paper-totals.mts",
-    "check:practise-links": "tsx tools/check-practise-links.mts"
+    "check:practise-links": "tsx tools/check-practise-links.mts",
+    "check:strands": "tsx tools/check-strands.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

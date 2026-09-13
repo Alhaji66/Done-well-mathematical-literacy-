@@ -82,7 +82,7 @@ const LEVEL_4: LevelRule[] = [
     //   matching three cells to three organelle counts. Prompts that mean the
     //   first say "justify your recommendation", which was already covered.
     match:
-      /\b(evaluate [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|plan)s?\b|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice))\b/i,
+      /\b(evaluate [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|plan|concern)s?\b|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice))\b/i,
   },
   {
     level: 4,

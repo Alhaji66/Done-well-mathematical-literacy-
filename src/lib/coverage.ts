@@ -62,6 +62,14 @@ export interface PaperCoverage {
   challengePercent: number
   /** Distance from the CAPS Level 3+4 target, in percentage points. */
   challengeGap: number
+  /**
+   * Where challengePercent came from. Explicit CAPS levels are used wherever a
+   * paper carries them on every mark, because an author-assigned difficulty tag
+   * is a weaker measure of the same thing -- and the two can disagree by
+   * several points, which left the page showing two contradictory figures for
+   * one grade.
+   */
+  challengeSource: 'caps-levels' | 'difficulty-tags'
 }
 
 export type FindingSeverity = 'gap' | 'watch'
@@ -243,20 +251,28 @@ function buildFindings(
   } else if (weighting) {
     const offTarget = papers.filter((p) => Math.abs(p.challengeGap) > WEIGHTING_TOLERANCE)
     if (offTarget.length > 0) {
+      const fromTags = offTarget.every((p) => p.challengeSource === 'difficulty-tags')
       findings.push({
         severity: offTarget.length > papers.length / 2 ? 'gap' : 'watch',
-        message: `${offTarget.length} of ${papers.length} papers sit more than ${WEIGHTING_TOLERANCE} points from the ${weighting.level3and4}% CAPS target for Levels 3-4 by mark.`,
+        message:
+          `${offTarget.length} of ${papers.length} papers sit more than ${WEIGHTING_TOLERANCE} points from the ${weighting.level3and4}% CAPS target for Levels 3-4 by mark` +
+          (fromTags ? ', judged from difficulty tags rather than explicit levels.' : '.'),
       })
     }
   }
 
-  if (weighting && paperMarks.total > 0) {
+  // Reported from difficulty tags ONLY where the grade has no explicit levels.
+  // Where it has them, the levelled figure is already reported at the top of
+  // this list, and printing a second, tag-derived figure for the same quantity
+  // put two contradictory numbers on one page -- Grade 11 Life Sciences read
+  // 36% by level and 42% by tag, and a reader had no way to tell which counted.
+  if (weighting && paperMarks.total > 0 && capsMarks.levelled === 0) {
     const actual = sharePercent(paperMarks.challenge, paperMarks.total)
     const gap = actual - weighting.level3and4
     if (Math.abs(gap) > WEIGHTING_TOLERANCE) {
       findings.push({
         severity: 'gap',
-        message: `Across all papers at this grade, Levels 3-4 carry ${actual}% of marks against a CAPS target of ${weighting.level3and4}%.`,
+        message: `Across all papers at this grade, Levels 3-4 carry ${actual}% of marks against a CAPS target of ${weighting.level3and4}%, judged from difficulty tags since no question here carries an explicit level.`,
       })
     }
   }
@@ -297,6 +313,10 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
       .filter((p) => p.grade === grade)
       .map((p) => {
         const marks = emptySplit()
+        // This paper's own CAPS levels, so its higher-order share can be read
+        // from them rather than from its difficulty tags where it carries them.
+        let higherLevelMarks = 0
+        let levelledMarks = 0
         for (const section of p.sections)
           for (const item of section.items) {
             addToSplit(marks, item.difficulty, item.marks)
@@ -304,9 +324,17 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
             if (item.cognitiveLevel) {
               capsMarks[item.cognitiveLevel] += item.marks
               capsMarks.levelled += item.marks
+              levelledMarks += item.marks
+              if (item.cognitiveLevel >= 3) higherLevelMarks += item.marks
             } else capsMarks.unlevelled += item.marks
           }
-        const challengePercent = sharePercent(marks.challenge, marks.total)
+        // Only where EVERY mark carries a level: a partly levelled paper would
+        // give a share of an unrepresentative subset, which is worse than the
+        // tags it would be replacing.
+        const fullyLevelled = marks.total > 0 && levelledMarks === marks.total
+        const challengePercent = fullyLevelled
+          ? sharePercent(higherLevelMarks, levelledMarks)
+          : sharePercent(marks.challenge, marks.total)
         return {
           paperId: p.id,
           title: p.title,
@@ -315,6 +343,7 @@ export async function buildCoverage(subjectId: string): Promise<SubjectCoverage>
           marks,
           challengePercent,
           challengeGap: weighting ? challengePercent - weighting.level3and4 : 0,
+          challengeSource: fullyLevelled ? ('caps-levels' as const) : ('difficulty-tags' as const),
         }
       })
 

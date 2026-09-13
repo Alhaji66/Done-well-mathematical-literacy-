@@ -261,6 +261,100 @@ function FbdConnected() {
   )
 }
 
+function CircuitMeters() {
+  // Cell and switch on the left rail; R1 in series along the top; R2 and R3 in
+  // parallel on the right. Ammeter IN SERIES in the main line, voltmeter ACROSS
+  // the parallel combination -- the placement is what the question is about.
+  return (
+    <Frame
+      title="Ammeter in series, voltmeter in parallel"
+      desc="A circuit with a cell and an open switch on the left. From the cell the current passes through an ammeter, marked A in a circle, connected in series in the main line. It then passes through resistor R1, also in series. The circuit then divides into two parallel branches containing R2 and R3, before rejoining and returning to the cell. A voltmeter, marked V in a circle, is connected across the parallel combination, in parallel with it, with its two leads joining the circuit at the points where the branches divide and rejoin. The ammeter is in the main line so the whole current passes through it; the voltmeter is across the components so it measures the potential difference between two points without the current passing through it."
+      viewBox="0 0 300 180"
+    >
+      {/* Outer loop */}
+      <polyline points="40,40 260,40 260,140 40,140 40,40" fill="none" stroke={INK} strokeWidth="1.6" />
+      {/* Cell on the left rail: long plate positive, short plate negative */}
+      <line x1="30" y1="82" x2="50" y2="82" stroke={INK} strokeWidth="2.5" />
+      <line x1="34" y1="92" x2="46" y2="92" stroke={INK} strokeWidth="1.2" />
+      <rect x="28" y="74" width="24" height="26" fill="#fff" opacity="0" />
+      <text x="16" y="92" fontSize="9" fill={MUTED}>cell</text>
+      {/* Switch on the bottom rail */}
+      <circle cx="120" cy="140" r="2.5" fill={INK} />
+      <circle cx="146" cy="140" r="2.5" fill={INK} />
+      <line x1="120" y1="140" x2="144" y2="130" stroke={INK} strokeWidth="1.6" />
+      <text x="122" y="156" fontSize="9" fill={MUTED}>switch</text>
+      {/* Ammeter in series on the top rail */}
+      <circle cx="96" cy="40" r="11" fill="#fff" stroke={ACCENT} strokeWidth="1.8" />
+      <text x="96" y="44" textAnchor="middle" fontSize="11" fontWeight="700" fill={ACCENT}>A</text>
+      {/* R1 in series */}
+      <rect x="140" y="31" width="34" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
+      <text x="157" y="44" textAnchor="middle" fontSize="10" fill={INK}>R₁</text>
+      {/* Parallel pair on the right */}
+      <line x1="214" y1="40" x2="214" y2="140" stroke={INK} strokeWidth="1.6" />
+      <line x1="214" y1="66" x2="260" y2="66" stroke={INK} strokeWidth="1.6" />
+      <line x1="214" y1="114" x2="260" y2="114" stroke={INK} strokeWidth="1.6" />
+      <rect x="226" y="57" width="30" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
+      <text x="241" y="70" textAnchor="middle" fontSize="10" fill={INK}>R₂</text>
+      <rect x="226" y="105" width="30" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
+      <text x="241" y="118" textAnchor="middle" fontSize="10" fill={INK}>R₃</text>
+      {/* Voltmeter ACROSS the parallel combination */}
+      <line x1="214" y1="90" x2="189" y2="90" stroke={ACCENT} strokeWidth="1.6" />
+      <circle cx="178" cy="90" r="11" fill="#fff" stroke={ACCENT} strokeWidth="1.8" />
+      <text x="178" y="94" textAnchor="middle" fontSize="11" fontWeight="700" fill={ACCENT}>V</text>
+      <line x1="167" y1="90" x2="150" y2="90" stroke={ACCENT} strokeWidth="1.6" />
+      <line x1="150" y1="90" x2="150" y2="40" stroke={ACCENT} strokeWidth="1.6" />
+      <circle cx="150" cy="40" r="2.5" fill={ACCENT} />
+      <circle cx="214" cy="90" r="2.5" fill={ACCENT} />
+    </Frame>
+  )
+}
+
+function TitrationCurve() {
+  // Strong acid titrated with strong base: flat, near-vertical at equivalence,
+  // flat again. Drawn from a real sigmoid so the shape is honest rather than
+  // sketched, with the equivalence point at pH 7 marked on both axes.
+  const x0 = 44
+  const y0 = 138
+  const w = 216
+  const h = 110
+  const px = (v: number) => x0 + (v / 50) * w
+  const py = (ph: number) => y0 - (ph / 14) * h
+  const pts: string[] = []
+  for (let v = 0; v <= 50; v += 0.5) {
+    const ph = 1.2 + 11.6 / (1 + Math.exp(-(v - 25) * 0.62))
+    pts.push(`${px(v).toFixed(1)},${py(ph).toFixed(1)}`)
+  }
+  return (
+    <Frame
+      title="Titration curve: strong acid with strong base"
+      desc="A graph of pH on the vertical axis against volume of sodium hydroxide added on the horizontal axis. The curve begins near pH 1, rises only slightly as base is added, then climbs almost vertically between about pH 3 and pH 11 over a very small volume near 25 millilitres, before levelling off near pH 13. The near-vertical section crosses pH 7 at 25 millilitres, which is the equivalence point, marked with a dashed line to each axis. Because both the acid and the base are strong, the equivalence point is at pH 7."
+      viewBox="0 0 290 176"
+    >
+      <line x1={x0} y1={y0} x2={x0 + w} y2={y0} stroke={INK} strokeWidth="1.5" />
+      <line x1={x0} y1={y0} x2={x0} y2={y0 - h} stroke={INK} strokeWidth="1.5" />
+      {[0, 7, 14].map((ph) => (
+        <g key={ph}>
+          <line x1={x0 - 4} y1={py(ph)} x2={x0} y2={py(ph)} stroke={INK} strokeWidth="1.2" />
+          <text x={x0 - 7} y={py(ph) + 3} textAnchor="end" fontSize="9" fill={MUTED}>{ph}</text>
+        </g>
+      ))}
+      {[0, 25, 50].map((v) => (
+        <g key={v}>
+          <line x1={px(v)} y1={y0} x2={px(v)} y2={y0 + 4} stroke={INK} strokeWidth="1.2" />
+          <text x={px(v)} y={y0 + 15} textAnchor="middle" fontSize="9" fill={MUTED}>{v}</text>
+        </g>
+      ))}
+      <polyline points={pts.join(' ')} fill="none" stroke={INK} strokeWidth="2" />
+      <line x1={x0} y1={py(7)} x2={px(25)} y2={py(7)} stroke={ACCENT} strokeWidth="1.2" strokeDasharray="4 3" />
+      <line x1={px(25)} y1={y0} x2={px(25)} y2={py(7)} stroke={ACCENT} strokeWidth="1.2" strokeDasharray="4 3" />
+      <circle cx={px(25)} cy={py(7)} r="3.5" fill={ACCENT} />
+      <text x={px(25) + 8} y={py(7) - 5} fontSize="9" fontWeight="700" fill={ACCENT}>equivalence</text>
+      <text x={x0 - 30} y={y0 - h / 2} fontSize="9" fill={MUTED} transform={`rotate(-90 ${x0 - 30} ${y0 - h / 2})`}>pH</text>
+      <text x={x0 + w / 2} y={y0 + 30} textAnchor="middle" fontSize="9" fill={MUTED}>volume of NaOH added (mℓ)</text>
+    </Frame>
+  )
+}
+
 const FIGURES: Record<FigureId, () => JSX.Element> = {
   'cast-diagram': CastDiagram,
   'surd-number-line': SurdNumberLine,
@@ -268,6 +362,8 @@ const FIGURES: Record<FigureId, () => JSX.Element> = {
   'fbd-incline': FbdIncline,
   'fbd-lift': FbdLift,
   'fbd-connected': FbdConnected,
+  'circuit-meters': CircuitMeters,
+  'titration-curve': TitrationCurve,
 }
 
 export function Figure({ id }: FigureProps) {

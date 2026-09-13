@@ -116,6 +116,8 @@ export type FigureId =
   | 'fbd-incline'
   | 'fbd-lift'
   | 'fbd-connected'
+  | 'circuit-meters'
+  | 'titration-curve'
 
 /**
  * A mark code as used in the official NSC marking guidelines.

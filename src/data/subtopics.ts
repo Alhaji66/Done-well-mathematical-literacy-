@@ -234,6 +234,20 @@ const rules: Record<string, SubtopicRule[]> = {
       match: /\b(in series|in parallel|equivalent resistance|total resistance|combination of resistors)\b/i,
     },
   ],
+  'phys-electric-circuits-g11': [
+    {
+      // Meter placement. The Grade 11 note has no sub-topic for it, and the
+      // scorer places a question that only says "the learner connects the
+      // ammeter across R2" nowhere at all. It belongs with the series work:
+      // an ammeter goes in series BECAUSE the current is the same at every
+      // point of a series path, which is the first point that sub-topic makes.
+      // Only this one rule is written -- the rest of the topic classifies
+      // well enough without help, and a fuller rule list would reshuffle
+      // questions that are already in the right place.
+      name: 'Series circuits',
+      match: /\b(ammeter|voltmeter|circuit diagram)s?\b/i,
+    },
+  ],
   'phys-electrostatics': [
     {
       // Every question here is about Coulomb's law or the electric field, so

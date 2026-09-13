@@ -10,10 +10,13 @@
     "check:reachability": "tsx tools/reachability.mts",
     "check:subtopics": "tsx tools/subtopic-coverage.mts",
     "check:subtopic-rules": "tsx tools/subtopic-rules.mts",
-    "level:papers": "tsx tools/level-papers.mts"
+    "level:papers": "tsx tools/level-papers.mts",
+    "check:latex": "tsx tools/check-latex.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",
+    "@types/katex": "^0.16.8",
+    "katex": "^0.18.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2"

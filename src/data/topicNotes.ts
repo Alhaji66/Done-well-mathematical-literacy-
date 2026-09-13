@@ -118,7 +118,7 @@ export const topicNotes: TopicNote[] = [
       {
         name: 'Exchange rates and inflation',
         points: [
-          'A rate such as R18,50 = $1 converts one way by multiplying and the other by dividing. Decide which way you are going before you touch the calculator.',
+          'A rate such as R18,50 = \\$1 converts one way by multiplying and the other by dividing. Decide which way you are going before you touch the calculator.',
           'A weaker rand means more rands per dollar: imports cost more, and exports become cheaper for overseas buyers.',
           'Inflation is the percentage rise in prices over a year. Applied over several years it is a compound calculation, not a simple one.',
           'To compare prices across two countries, convert both to the same currency first, then compare.',

@@ -4,7 +4,14 @@ _Resources. Practice. Support. Progress._
 
 A mobile-first MVP for the DONE WELL® School Support Platform — an extension of Done Well Publications (South Africa). It brings together educational publications, practice, assessment and progress support for **learners, parents, teachers and schools**, starting with Grade 10–12 Mathematical Literacy (Finance, Data Handling, Maps and Plans, Measurement, Probability, Tariffs, and Profit/Loss/Breakeven).
 
-This is a UI/UX prototype built with **demo data** — no backend, authentication or payments are wired up yet, but the code is structured so Supabase/database, real auth and payments can be added later without redesigning the UI.
+The app runs on **Supabase** — Postgres, row-level security and passwordless
+magic-link authentication are wired up and in use (`src/lib/supabaseClient.ts`,
+`src/lib/privacy.ts`). A demo mode still works without an account, and with no
+Supabase credentials configured the app falls back to it rather than breaking,
+so the public site and the question bank stay browsable offline.
+
+**Payments are the part that is not built.** There is no billing, subscription
+or paywall code anywhere in the repo.
 
 ## Subjects in scope
 

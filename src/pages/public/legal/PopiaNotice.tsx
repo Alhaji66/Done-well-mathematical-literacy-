@@ -11,6 +11,24 @@ import { POPIA_NOTICE_VERSION } from '@/lib/privacy'
  * real accounts shipped -- and a notice that misdescribes the processing is
  * worse than no notice, because people rely on it.
  */
+
+/**
+ * Where Supabase actually hosts this project, e.g. "eu-west-1".
+ *
+ * It has to be configured rather than detected: the project's API domain is
+ * served through a CDN, so nothing reachable from the browser reveals the
+ * region. Set VITE_SUPABASE_REGION to the region shown under Project Settings
+ * -> General in the Supabase dashboard.
+ *
+ * Left unset, the notice says only that Supabase hosts the data and states the
+ * section 72 basis. That is accurate but vaguer than a person is entitled to,
+ * so it is worth setting.
+ */
+const HOSTING_REGION = (import.meta.env.VITE_SUPABASE_REGION as string | undefined)?.trim() || ''
+
+/** Supabase's two South African regions. Anything else is a s72 transfer. */
+const HOSTING_REGION_IS_SA = /^af-south-1$|johannesburg|south africa/i.test(HOSTING_REGION)
+
 export function PopiaNotice() {
   return (
     <LegalLayout title="POPIA Notice" updated="September 2026">
@@ -25,11 +43,24 @@ export function PopiaNotice() {
       <section>
         <h2 className="text-lg font-bold text-navy-900">1. Who is responsible</h2>
         <p className="mt-2">
-          Done Well Publications is the responsible party. Our Information Officer can be reached at{' '}
+          Done Well Publications is the responsible party — the person who decides what is collected and why.
+        </p>
+        <p className="mt-2">
+          Under POPIA the head of a private body is automatically its Information Officer, so ours is the head of
+          Done Well Publications. That is the person accountable for everything on this page, and you can reach
+          them at{' '}
           <a href="mailto:donewellpublication@gmail.com" className="font-semibold text-navy-800 underline">
             donewellpublication@gmail.com
           </a>
           .
+        </p>
+        <p className="mt-2">
+          If you are not satisfied with how we answer you, you can complain directly to the Information Regulator
+          (South Africa) at{' '}
+          <a href="mailto:complaints.IR@justice.gov.za" className="font-semibold text-navy-800 underline">
+            complaints.IR@justice.gov.za
+          </a>
+          . You do not need our permission to do that, and you do not have to come to us first.
         </p>
       </section>
 
@@ -169,10 +200,20 @@ export function PopiaNotice() {
       <section>
         <h2 className="text-lg font-bold text-navy-900">8. Where it is stored</h2>
         <p className="mt-2">
-          Our database and sign-in system are hosted by Supabase. If the hosting region is outside South Africa,
-          POPIA section 72 treats that as a cross-border transfer, which is permitted where the receiving country
-          has comparable protection or the operator is bound by contract to it.
+          Our database and sign-in system are hosted by Supabase{HOSTING_REGION ? `, in the ${HOSTING_REGION} region` : ''}.
+          {HOSTING_REGION_IS_SA
+            ? ' That is inside South Africa, so no cross-border transfer takes place.'
+            : ' That is outside South Africa, so POPIA section 72 treats storing your information there as a cross-border transfer.'}
         </p>
+        {!HOSTING_REGION_IS_SA && (
+          <p className="mt-2">
+            Section 72 permits such a transfer where the recipient is bound by an agreement that upholds principles
+            of protection substantially similar to POPIA. Supabase is bound to us by its Data Processing Addendum,
+            which incorporates Standard Contractual Clauses and obliges it to process your information only on our
+            instructions, to keep it secure, and to delete it when we tell it to. That agreement is the basis on
+            which the transfer is lawful.
+          </p>
+        )}
       </section>
 
       <section>

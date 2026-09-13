@@ -3,6 +3,7 @@ import type { Question } from '@/types'
 import { DifficultyBadge } from '@/components/ui/Badges'
 import { CheckCircleIcon, XCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { MathText } from '@/components/practise/MathText'
 
 interface QuestionCardProps {
   question: Question
@@ -39,10 +40,14 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
       </div>
 
       {question.context ? (
-        <p className="mt-3 rounded-lg bg-navy-50 p-3 text-sm text-navy-700">{question.context}</p>
+        <p className="mt-3 rounded-lg bg-navy-50 p-3 text-sm text-navy-700">
+          <MathText>{question.context}</MathText>
+        </p>
       ) : null}
 
-      <p className="mt-3 text-[15px] font-medium leading-relaxed text-navy-900">{question.prompt}</p>
+      <p className="mt-3 text-[15px] font-medium leading-relaxed text-navy-900">
+        <MathText>{question.prompt}</MathText>
+      </p>
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -118,8 +123,12 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
           <p className="text-sm font-semibold text-navy-900">
             {isMcq ? (isCorrectMcq ? 'Correct!' : 'Not quite — here\'s the answer:') : 'Answer & explanation'}
           </p>
-          <p className="mt-1.5 text-sm font-semibold text-navy-800">{question.answer}</p>
-          <p className="mt-1.5 text-sm leading-relaxed text-navy-600">{question.explanation}</p>
+          <p className="mt-1.5 text-sm font-semibold text-navy-800">
+            <MathText>{question.answer}</MathText>
+          </p>
+          <p className="mt-1.5 text-sm leading-relaxed text-navy-600">
+            <MathText>{question.explanation}</MathText>
+          </p>
         </div>
       )}
 

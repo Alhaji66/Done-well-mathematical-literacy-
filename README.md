@@ -24,8 +24,11 @@ Four subjects carry content, across Grades 10–12:
 | Life Sciences | 54 | 1 994 |
 | Physical Sciences | 54 | 2 043 |
 
-English FAL is registered in `src/data/subjects.ts` but has no topics yet, so
-it is filtered out of every subject selector until it does.
+English FAL was registered in `src/data/subjects.ts` with no topics and has
+been removed. It was never visible — every selector filters on topic count —
+so it amounted to a placeholder six call sites had to remember to hide.
+Finishing the four subjects above comes first; it can be registered again when
+there is content to register it for.
 
 **Accounting is out of scope.** An external review asked whether it was meant
 to be a fourth subject and flagged that it should not be assumed from wording

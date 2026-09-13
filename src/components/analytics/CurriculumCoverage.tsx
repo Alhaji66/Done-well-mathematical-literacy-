@@ -28,7 +28,8 @@ import { cn } from '@/lib/utils'
  * It also names the things it cannot measure. See UNTRACKED in lib/coverage.
  */
 
-// Only subjects that carry content; English FAL has no topics yet.
+// Only subjects that carry content, so a subject registered ahead of its
+// topics cannot show up here as an empty coverage row.
 const coverageSubjects = subjects.filter((s) => topicsForSubject(s.id).length > 0)
 
 const findingTone: Record<Finding['severity'], string> = {

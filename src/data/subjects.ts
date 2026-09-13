@@ -3,10 +3,16 @@ import type { Subject } from '@/types'
 /**
  * The subjects DONE WELL covers.
  *
- * Four of these carry content: Mathematical Literacy, Mathematics, Life
- * Sciences and Physical Sciences. English FAL is registered but has no
- * topics yet, so it is filtered out of every selector (see Learn.tsx and
- * LearnerPractise.tsx, which derive their options from topicsForSubject).
+ * Four subjects, all four of which carry content: Mathematical Literacy,
+ * Mathematics, Life Sciences and Physical Sciences.
+ *
+ * ENGLISH FAL WAS REGISTERED HERE AND HAS BEEN REMOVED. It never had topics,
+ * so every selector filtered it out and no learner ever saw it -- it existed
+ * only as a promise this file made and nothing kept. Finishing the four
+ * subjects already in build comes first, and a placeholder that six call
+ * sites have to remember to hide is a liability in the meantime. The
+ * selectors still filter on topic count, because that guard is right for any
+ * subject added in future, not because anything is currently hidden by it.
  *
  * ACCOUNTING IS DEFINITIVELY OUT OF SCOPE. An external review asked whether
  * it was meant to be a fourth subject and noted it should not be assumed
@@ -31,7 +37,6 @@ import type { Subject } from '@/types'
 export const subjects: Subject[] = [
   { id: 'mat-lit', name: 'Mathematical Literacy', grades: [10, 11, 12] },
   { id: 'mathematics', name: 'Mathematics', grades: [10, 11, 12] },
-  { id: 'english-fal', name: 'English FAL', grades: [10, 11, 12] },
   { id: 'life-sciences', name: 'Life Sciences', grades: [10, 11, 12] },
   { id: 'physical-sciences', name: 'Physical Sciences', grades: [10, 11, 12] },
 ]

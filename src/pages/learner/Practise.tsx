@@ -18,8 +18,9 @@ import { cn } from '@/lib/utils'
 const difficulties: Difficulty[] = ['Easy', 'Moderate', 'Challenge']
 
 // Derived from the real subjects list rather than hardcoded, so adding a subject
-// only means adding its topics. English FAL is in subjects but has no topics yet,
-// so it would otherwise show up as an empty picker entry.
+// only means adding its topics. Every registered subject currently has topics,
+// so this filter removes nothing today -- it is kept so that a subject added
+// before its content cannot appear as an empty picker entry.
 const subjectOptions = subjects.filter((s) => topicsForSubject(s.id).length > 0)
 
 export function LearnerPractise() {

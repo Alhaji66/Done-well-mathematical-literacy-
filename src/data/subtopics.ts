@@ -46,7 +46,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Break-even, profit and business decisions',
-      match: /\b(break[- ]?even|profit|loss|selling price|cost price|mark[- ]?up|revenue|fixed cost|variable cost|income and expenditure of the business)\b/i,
+      match: /\b(break[- ]?even|profit|loss|selling price|cost price|mark[- ]?up|revenue|fixed cost\w*|variable cost|income and expenditure of the business)\b/i,
     },
     {
       name: 'Interest, loans and investments',
@@ -66,18 +66,18 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Number formats, rounding and percentages',
-      match: /\b(round(ed|ing)?|percentage|percent|decimal place|ratio|increase(d)? by|decrease(d)? by)\b/i,
+      match: /\b(round(ed|ing)?|percentage|percent\w*|decimal place|ratio|increase(d)? by|decrease(d)? by)\b/i,
     },
   ],
 
   'data-handling': [
     {
       name: 'Probability, chance and relative frequency',
-      match: /\b(probabilit|chance|likelihood|relative frequency|random(ly)?|at least one|outcome)\b/i,
+      match: /\b(probabilit\w*|chance|likelihood|relative frequency|random(ly)?|at least one|outcome)\b/i,
     },
     {
       name: 'Misleading graphs and data quality',
-      match: /\b(mislead|misleading|distort|biased|valid(ity)?|representative|does not start at zero|justify (the|this) conclusion)\b/i,
+      match: /\b(mislead\w*|distort\w*|biased|valid(ity)?|representative|does not start at zero|justify (the|this) conclusion)\b/i,
     },
     {
       name: 'Spread: range, quartiles and box-and-whisker',
@@ -97,14 +97,14 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Collecting and organising data',
-      match: /\b(sample|population|survey|questionnaire|collect|discrete|continuous|class interval|grouped data)\b/i,
+      match: /\b(sample|population|survey|questionnaire|collect\w*|discrete|continuous|class interval|grouped data)\b/i,
     },
   ],
 
   'maps-plans': [
     {
       name: 'Models, assembly diagrams and instructions',
-      match: /\b(model|assembl|instruction|kit|scale model|prototype)\b/i,
+      match: /\b(model|assembl\w*|instruction|kit|scale model|prototype)\b/i,
     },
     {
       name: 'Seating, layout and packing plans',
@@ -161,19 +161,25 @@ const rules: Record<string, SubtopicRule[]> = {
 
   // ------------------------------------------------------------ Mathematics
   'math-algebra': [
-    { name: 'Nature of the roots', match: /\b(nature of the roots|discriminant|b²\s*−\s*4ac|real and (equal|unequal)|non[- ]real)\b/i },
+    // NOT "b² − 4ac": that string is the quadratic formula, which these papers
+    // print in the `context` as a reference for any question that needs it. It
+    // was therefore matching all 18 plain "solve using the quadratic formula"
+    // questions and filing them under Nature of the roots, leaving Quadratic
+    // equations permanently empty. A question that is genuinely about the
+    // discriminant says so in the prompt.
+    { name: 'Nature of the roots', match: /\b(nature of the roots|discriminant|real and (equal|unequal)|non[- ]real)\b/i },
     { name: 'Simultaneous equations', match: /\b(simultaneous|solve for x and y|two equations)\b/i },
     { name: 'Quadratic equations', match: /\b(quadratic|x²|quadratic formula|complet(e|ing) the square|roots of the equation)\b/i },
     { name: 'Algebraic fractions', match: /\b(fraction|denominator|numerator|simplify.*\/|lowest common denominator)\b/i },
-    { name: 'Exponents and surds', match: /\b(exponent|surd|√|power of|index|indices|rationalis|\d\^|base)\b/i },
+    { name: 'Exponents and surds', match: /\b(exponent\w*|surd|√|power of|index|indices|rationalis|\d\^|base)\b/i },
     { name: 'Linear equations and inequalities', match: /\b(inequalit|interval notation|number line|solve for x\b|linear equation)\b/i },
     { name: 'Word problems and setting up equations', match: /\b(consecutive|the sum of two numbers|word problem|let x be|three times as)\b/i },
-    { name: 'Simplifying and factorising expressions', match: /\b(factoris|factor|simplify|expand|difference of two squares|trinomial|grouping)\b/i },
+    { name: 'Simplifying and factorising expressions', match: /\b(factoris\w*|factor|simplify|expand\w*|difference of two squares|trinomial|grouping)\b/i },
   ],
 
   'math-functions': [
     { name: 'Inverse functions', match: /\b(inverse|f⁻¹|reflect(ion)? in the line y = x|one[- ]to[- ]one)\b/i },
-    { name: 'Transformations of graphs', match: /\b(transform|shift|translat|reflect|stretch|moved .* units)\b/i },
+    { name: 'Transformations of graphs', match: /\b(transform\w*|shift|translat\w*|reflect|stretch|moved .* units)\b/i },
     { name: 'Exponential and logarithmic functions', match: /\b(exponential|logarith|log\b|growth|decay|b\^x)\b/i },
     { name: 'Hyperbolic functions', match: /\b(hyperbola|hyperbolic|asymptote|a ÷ \(x)\b/i },
     { name: 'Quadratic functions (parabolas)', match: /\b(parabola|turning point|axis of symmetry|x²|maximum value of the (function|graph))\b/i },
@@ -185,9 +191,12 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Sine, cosine and area rules in 2D and 3D', match: /\b(sine rule|cosine rule|area rule|triangle abc|3d|three[- ]dimensional)\b/i },
     { name: 'Trigonometric graphs', match: /\b(period|amplitude|trig(onometric)? graph|sketch .* (sin|cos|tan))\b/i },
     { name: 'Trigonometric equations and general solution', match: /\b(general solution|solve for θ|solve the equation|k ?∈ ?ℤ)\b/i },
-    { name: 'Identities', match: /\b(identit|prove that|compound angle|double angle|sin ?2|cos ?2|sin²|cos²)\b/i },
-    { name: 'Reduction formulae and the CAST diagram', match: /\b(reduction|cast|quadrant|180° ?[−+]|360° ?−|co[- ]?function)\b/i },
-    { name: 'Special angles and the calculator', match: /\b(without (using )?a calculator|special angle|exact value|30°|45°|60°)\b/i },
+    { name: 'Identities', match: /\b(identit\w*|prove that|compound angle|double angle|sin ?2|cos ?2|sin²|cos²)\b/i },
+    // "cast diagram" and "cast rule", not a bare "cast" -- a shadow cast by a
+    // flagpole is a perfectly ordinary trigonometry question about something
+    // else entirely.
+    { name: 'Reduction formulae and the CAST diagram', match: /\b(reduction|cast (diagram|rule)|quadrant|180° ?[−+]|360° ?−|co[- ]?function)\b/i },
+    { name: 'Special angles and the calculator', match: /\b(without (using )?a calculator|special angle|exact value\w*|30°|45°|60°)\b/i },
     { name: 'Trig ratios in right-angled triangles', match: /\b(sin|cos|tan|hypotenuse|opposite|adjacent|right[- ]angled)\b/i },
   ],
 
@@ -197,12 +206,12 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Angle of inclination', match: /\b(inclination|angle .* (positive )?x[- ]axis|tan ?θ ?= ?m)\b/i },
     { name: 'Equation of a straight line', match: /\b(equation of (the|a) line|perpendicular bisector|median|altitude|y ?− ?y₁)\b/i },
     { name: 'Gradient, parallel and perpendicular lines', match: /\b(gradient|parallel|perpendicular|collinear)\b/i },
-    { name: 'Midpoint', match: /\b(midpoint|mid[- ]point|bisect)\b/i },
+    { name: 'Midpoint', match: /\b(midpoint|mid[- ]point|bisect\w*)\b/i },
     { name: 'Distance between two points', match: /\b(distance|length of)\b/i },
   ],
 
   'math-statistics': [
-    { name: 'Scatter plots, correlation and regression', match: /\b(scatter|correlation|regression|least squares|ŷ|r =)\b/i },
+    { name: 'Scatter plots, correlation and regression', match: /\b(scatter\w*|correlation|regression|least squares|ŷ|r =)\b/i },
     { name: 'Ogives (cumulative frequency curves)', match: /\b(ogive|cumulative frequency)\b/i },
     { name: 'Outliers and their effect', match: /\b(outlier)\b/i },
     { name: 'Five-number summary and box-and-whisker plots', match: /\b(box[- ]and[- ]whisker|five[- ]number|skew)\b/i },
@@ -216,23 +225,23 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Present value annuities and loans', match: /\b(present value|loan|bond|mortgage|repay|instalment|monthly payment)\b/i },
     { name: 'Future value annuities', match: /\b(future value|sinking fund|save|savings|annuity|regular deposit)\b/i },
     { name: 'Nominal and effective interest rates', match: /\b(nominal|effective (annual )?(interest )?rate|compounded (monthly|quarterly|daily))\b/i },
-    { name: 'Depreciation', match: /\b(depreciat|reducing balance|diminishing|book value|straight[- ]line)\b/i },
+    { name: 'Depreciation', match: /\b(depreciat\w*|reducing balance|diminishing|book value|straight[- ]line)\b/i },
     { name: 'Timelines and changing interest rates', match: /\b(timeline|time line|rate changed|withdrew|withdrawal|deposited .* and .* later)\b/i },
-    { name: 'Simple and compound interest', match: /\b(interest|compound|invest|p\(1 ?\+ ?i\))\b/i },
+    { name: 'Simple and compound interest', match: /\b(interest|compound|invest\w*|p\(1 ?\+ ?i\))\b/i },
   ],
 
   'math-number-patterns': [
-    { name: 'Convergence and the sum to infinity', match: /\b(converge|sum to infinity|s∞|infinite (geometric )?series|recurring decimal)\b/i },
+    { name: 'Convergence and the sum to infinity', match: /\b(converge\w*|sum to infinity|s∞|infinite (geometric )?series|recurring decimal)\b/i },
     { name: 'Sigma notation', match: /\b(sigma|∑|σ notation|sum from)\b/i },
     { name: 'Geometric sequences and series', match: /\b(geometric|common ratio|\br\b ?=|ar\^)\b/i },
     { name: 'Arithmetic sequences and series', match: /\b(arithmetic (sequence|series)|sum of the first|sₙ|common difference)\b/i },
     { name: 'Quadratic patterns', match: /\b(quadratic (pattern|sequence)|second difference|an² ?\+ ?bn)\b/i },
-    { name: 'Linear (arithmetic) patterns', match: /\b(pattern|sequence|tₙ|nth term|first difference)\b/i },
+    { name: 'Linear (arithmetic) patterns', match: /\b(pattern|sequence|tₙ|nth term|first difference\w*)\b/i },
   ],
 
   'math-calculus': [
-    { name: 'Rates of change', match: /\b(rate of change|velocit|accelerat|how fast|per second|s\(t\))\b/i },
-    { name: 'Optimisation', match: /\b(optimis|maximum (volume|area|profit)|minimum (cost|surface area)|largest possible|least amount)\b/i },
+    { name: 'Rates of change', match: /\b(rate of change|velocit\w*|accelerat\w*|how fast|per second|s\(t\))\b/i },
+    { name: 'Optimisation', match: /\b(optimis\w*|minimis\w*|maximis\w*|maximum (volume|area|profit)|minimum (cost|surface area)|largest possible|least amount)\b/i },
     { name: 'Limits and differentiation from first principles', match: /\b(first principles|limit|lim|h ?→ ?0)\b/i },
     { name: 'Sketching cubic graphs', match: /\b(cubic|sketch the graph|point of inflection|x[- ]intercepts of f)\b/i },
     { name: 'Stationary points and concavity', match: /\b(stationary|turning point|concav|increasing|decreasing|f″|second derivative)\b/i },
@@ -246,9 +255,9 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Tree diagrams and two-way tables', match: /\b(tree diagram|two[- ]way table|with(out)? replacement|first .* then)\b/i },
     { name: 'Independent events and the product rule', match: /\b(independent|product rule|p\(a\) ?× ?p\(b\))\b/i },
     { name: 'The addition rule', match: /\b(addition rule|p\(a (or|∪) b\)|either .* or)\b/i },
-    { name: 'Mutually exclusive and complementary events', match: /\b(mutually exclusive|complement|exhaustive)\b/i },
+    { name: 'Mutually exclusive and complementary events', match: /\b(mutually exclusive|complement\w*|exhaustive)\b/i },
     { name: 'Venn diagrams', match: /\b(venn|∪|∩|intersection|union|neither)\b/i },
-    { name: 'Basic probability', match: /\b(probabilit|chance|likelihood)\b/i },
+    { name: 'Basic probability', match: /\b(probabilit\w*|chance|likelihood)\b/i },
   ],
 
   'math-euclidean-geometry': [
@@ -343,6 +352,16 @@ function scorersFor(topicId: string): ScoredSubtopic[] {
   scorers.set(topicId, built)
   return built
 }
+
+/**
+ * The hand-written rules for a topic, in priority order.
+ *
+ * Exported so a check can verify that no rule is completely shadowed by an
+ * earlier one -- a rule that never wins a question is invisible in the app but
+ * looks perfectly reasonable in this file, which is exactly how a sub-topic
+ * ends up permanently empty without anyone noticing.
+ */
+export const subtopicRulesFor = (topicId: string): SubtopicRule[] => rules[topicId] ?? []
 
 /** The sub-topic a single question belongs to, or null if nothing places it. */
 export function subtopicFor(q: Question): string | null {

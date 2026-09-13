@@ -168,6 +168,78 @@ const rules: Record<string, SubtopicRule[]> = {
     },
   ],
 
+  // ------------------------------------------------------ Physical Sciences
+  //
+  // The science subjects are otherwise classified by the vocabulary scorer
+  // below, which works well where sub-topics use distinct words. These three
+  // topics defeat it: their sub-topics share almost all their vocabulary, so
+  // every photon question scored highest against "the photoelectric effect"
+  // and every pH question against "strength and concentration", leaving
+  // "Photons", "pH and Kw" and "Power and cost" permanently empty despite
+  // 10, 14 and 25 questions being about exactly those things.
+  //
+  // Only the topics that need disambiguating are listed. A rule list does not
+  // replace the scorer -- where no rule matches, the scorer still gets its
+  // turn -- so these entries steer the ambiguous cases and leave the rest.
+  'phys-electric-circuits': [
+    {
+      // Cost and the power formulae, rather than any mention of the word
+      // "power", which appears throughout the internal-resistance questions.
+      name: 'Power and cost',
+      match:
+        /\b(cost of|kilowatt[- ]?hour|kwh|units of electricity|electricity (bill|account|tariff)|power rating|rated at|energy consumed|P ?= ?VI|P ?= ?I ?²? ?R|P ?= ?V ?²? ?\/ ?R)\b/i,
+    },
+    {
+      name: 'Internal resistance',
+      match: /\b(internal resistance|\bemf\b|electromotive force|lost volts|terminal (potential|voltage)|ε ?=)\b/i,
+    },
+    {
+      name: 'Combining resistors',
+      match: /\b(in series|in parallel|equivalent resistance|total resistance|combination of resistors)\b/i,
+    },
+  ],
+  'phys-electrostatics': [
+    {
+      // Every question here is about Coulomb's law or the electric field, so
+      // the scorer had nothing left to give "Working in one dimension". What
+      // actually distinguishes it is the SETUP -- charges on a line, with the
+      // contributions signed and added -- not the formula being used, so this
+      // rule matches the arrangement and leaves the two-charge questions to
+      // the scorer.
+      name: 'Working in one dimension',
+      match:
+        /\b(on a straight line|on the x[- ]axis|collinear|same straight line|positive direction|net (electrostatic )?(force|field) (on|at)|resultant (force|field)|zero net|point where the (net )?(electric )?field is zero|midway between|three charges)\b/i,
+    },
+  ],
+  'phys-em-radiation': [
+    {
+      name: 'Why it needed the photon model',
+      match: /\b(wave (theory|model) (could not|cannot|fails)|classical (theory|physics)|intensity|predicted by the wave|instantaneous(ly)?)\b/i,
+    },
+    {
+      name: 'Photons',
+      match: /\b(E ?= ?hf|E ?= ?hc|planck|energy of (a|one|each|the) photon|photon energy|how many photons|number of photons)\b/i,
+    },
+    {
+      name: 'The photoelectric effect',
+      match: /\b(photoelectric|work function|threshold frequency|cut[- ]?off frequency|electrons? (are |is )?(emitted|ejected|released)|W0|maximum kinetic energy of the (emitted|ejected))\b/i,
+    },
+  ],
+  'phys-acids-bases': [
+    {
+      name: 'Titration and hydrolysis',
+      match: /\b(titrat\w*|equivalence point|end[- ]?point|indicator|burette|pipette|standard solution|hydrolys\w*|salt of a)\b/i,
+    },
+    {
+      name: 'pH and Kw',
+      match: /\b(pH|pOH|Kw|ionisation constant of water|hydronium (ion )?concentration)\b|\[H3O|\[OH/i,
+    },
+    {
+      name: 'Strength and concentration',
+      match: /\b(strong (acid|base)|weak (acid|base)|concentrated|dilute|degree of ionisation|ampholyte|conjugate)\b/i,
+    },
+  ],
+
   // ------------------------------------------------------------ Mathematics
   'math-algebra': [
     // NOT "b² − 4ac": that string is the quadratic formula, which these papers

@@ -1509,6 +1509,154 @@ export const questions: Question[] = [
     answer: 'January: 12 000 × R19,20 = R230 400. June: 12 000 × R20,80 = R249 600. The business would pay R249 600 − R230 400 = R19 200 more in June, even though the euro price was unchanged. The rand has weakened, meaning it takes more rands to buy each euro. For an exporter the same movement is an advantage. An exporter is paid in a foreign currency, so each euro or dollar received converts into more rands than before, raising their income in rand terms without any change in the price they charge. Their goods also become cheaper for foreign buyers, which can increase demand. So a weaker rand hurts importers and helps exporters, which is why a movement in the exchange rate is good news for some businesses and bad news for others at the same time.',
     explanation: 'Calculate both costs before commenting; the R19 200 difference is the whole argument and it arises entirely from the exchange rate. The second half tests whether the movement is understood as a RELATIONSHIP rather than as simply good or bad news -- the same weaker rand appears on the income side for an exporter and on the cost side for an importer, with opposite effects.',
   },
+
+  // ---------------------------------------------------------------------------
+  // Physical Sciences sub-topics with no questions anywhere.
+  //
+  // Four sub-topics were empty in the Practise picker. Three others looked
+  // empty but were classifier failures and were fixed in subtopics.ts; these
+  // four had genuinely no content.
+  // ---------------------------------------------------------------------------
+
+  // --- Electrostatics: working in one dimension (Grade 12) -------------------
+  {
+    id: 'psci-es-1d-1',
+    topicId: 'phys-electrostatics',
+    grade: 12,
+    difficulty: 'Moderate',
+    marks: 5,
+    context: 'Three charges lie on a straight line. Q1 = +3 μC at x = 0, Q2 = −2 μC at x = 0,20 m, and Q3 = +4 μC at x = 0,50 m. k = 9 × 10⁹ N·m²/C².',
+    prompt: 'Calculate the magnitude and direction of the electrostatic force that Q1 exerts on Q2.',
+    answer: 'F = kQ1Q2/r² = (9 × 10⁹)(3 × 10⁻⁶)(2 × 10⁻⁶) ÷ (0,20)² = (9 × 10⁹)(6 × 10⁻¹²) ÷ 0,04 = 0,054 ÷ 0,04 = 1,35 N. Q1 is positive and Q2 is negative, so the force is attractive: the force on Q2 is directed towards Q1, that is in the negative x-direction (to the left).',
+    explanation: 'Use the magnitudes of the charges in Coulomb’s law and decide the direction separately from the SIGNS -- substituting a negative charge into the formula and reading a negative answer as "leftwards" works by luck rather than by method, and fails as soon as three charges are involved. Note that Q3 plays no part here: the question asks only for the force from Q1.',
+  },
+  {
+    id: 'psci-es-1d-2',
+    topicId: 'phys-electrostatics',
+    grade: 12,
+    difficulty: 'Challenge',
+    marks: 7,
+    context: 'Two charges lie on the x-axis: QA = +5 μC at x = 0 and QB = −3 μC at x = 0,40 m. A small positive test charge is placed at x = 0,20 m, midway between them. k = 9 × 10⁹ N·m²/C².',
+    prompt: 'Calculate the magnitude and direction of the net electric field at the midpoint, and explain why the two fields ADD here rather than partly cancelling.',
+    answer: 'From QA: E = kQ/r² = (9 × 10⁹)(5 × 10⁻⁶) ÷ (0,20)² = 0,045 ÷ 0,04 = 1,125 × 10⁶ N/C, directed away from QA because QA is positive, so to the right. From QB: E = (9 × 10⁹)(3 × 10⁻⁶) ÷ (0,20)² = 0,027 ÷ 0,04 = 0,675 × 10⁶ N/C, directed towards QB because QB is negative, so also to the right. Both point right, so the net field is 1,125 × 10⁶ + 0,675 × 10⁶ = 1,80 × 10⁶ N/C to the right. They add because the charges have OPPOSITE signs: the field of a positive charge points away from it and the field of a negative charge points towards it, so at a point between them both arrows point the same way -- from the positive towards the negative.',
+    explanation: 'Work in one dimension by treating right as positive and left as negative, then add. The reasoning worth keeping is the sign rule: between two LIKE charges the fields oppose and can cancel, between two UNLIKE charges they reinforce and can never cancel anywhere between them. Deciding that before calculating tells you whether a zero-field point is even possible.',
+  },
+  {
+    id: 'psci-es-1d-3',
+    topicId: 'phys-electrostatics',
+    grade: 12,
+    difficulty: 'Challenge',
+    marks: 6,
+    context: 'Two charges are fixed on a straight line: Q1 = +9 μC at x = 0 and Q2 = +4 μC at x = 0,50 m.',
+    prompt: 'Explain why a point of zero net electric field must lie BETWEEN these two charges rather than outside them, and state whether it lies closer to Q1 or to Q2. Give a reason.',
+    answer: 'Both charges are positive, so each produces a field pointing away from itself. At any point between them the two fields point in opposite directions -- away from Q1 is to the right, away from Q2 is to the left -- so they can cancel. At any point outside the pair, both fields point the same way: to the left of Q1 both point left, and to the right of Q2 both point right, so they add and can never sum to zero. The zero point therefore lies between them. It lies closer to Q2, the smaller charge. Field strength falls off with distance, so to balance the larger charge Q1 the point must be further from Q1 and nearer Q2 -- being closer compensates Q2 for being weaker.',
+    explanation: 'Answer this by reasoning about DIRECTIONS before touching any numbers: cancellation needs two arrows pointing opposite ways, and that only happens between two like charges or outside a pair of unlike ones. The "closer to the smaller charge" conclusion is worth holding as a check on any calculation -- an answer placing the null point nearer the bigger charge is wrong without needing to be re-worked.',
+  },
+
+  // --- Electromagnetism: Faraday's law (Grade 11) ----------------------------
+  {
+    id: 'psci-faraday-1',
+    topicId: 'phys-electromagnetism',
+    grade: 11,
+    difficulty: 'Moderate',
+    marks: 5,
+    context: 'A coil of 200 turns lies in a magnetic field. The magnetic flux through one turn changes from 4,0 × 10⁻³ Wb to 1,0 × 10⁻³ Wb in 0,15 s.',
+    prompt: 'State Faraday’s law and calculate the magnitude of the emf induced in the coil.',
+    answer: 'Faraday’s law: the emf induced in a conductor is directly proportional to the rate of change of magnetic flux linkage with that conductor. In symbols, ε = −N ΔΦ/Δt. Calculation: ΔΦ = 1,0 × 10⁻³ − 4,0 × 10⁻³ = −3,0 × 10⁻³ Wb. ε = −N ΔΦ/Δt = −(200)(−3,0 × 10⁻³) ÷ 0,15 = 0,6 ÷ 0,15 = 4,0 V.',
+    explanation: 'The number of turns multiplies the effect, which is why the quantity that matters is flux LINKAGE (NΦ) rather than flux alone. The minus sign is Lenz’s law expressed inside Faraday’s law and gives the direction, not the size -- for a magnitude, work with the numbers and state the answer positive.',
+  },
+  {
+    id: 'psci-faraday-2',
+    topicId: 'phys-electromagnetism',
+    grade: 11,
+    difficulty: 'Challenge',
+    marks: 6,
+    context: 'A bar magnet is dropped north-pole-first through a coil connected to a sensitive galvanometer. The needle deflects one way as the magnet enters, returns to zero, then deflects the other way as the magnet leaves. When the magnet is held stationary inside the coil the needle reads zero.',
+    prompt: 'Explain, using Faraday’s law, why the needle reads zero while the magnet is stationary inside the coil, and explain why the deflection reverses as the magnet leaves.',
+    answer: 'Faraday’s law says the induced emf depends on the RATE OF CHANGE of flux, not on the flux itself. With the magnet stationary inside the coil the flux through the coil is large but constant, so ΔΦ/Δt is zero and no emf is induced -- which is why the needle reads zero even though the magnet is right there. As the magnet enters, the flux through the coil is increasing, so an emf is induced in one direction. As it leaves, the flux is decreasing, so ΔΦ has the opposite sign and the induced emf, and therefore the current, reverses. By Lenz’s law the induced current always opposes the change causing it: on entry it opposes the increase, and on exit it opposes the decrease, which is the same thing as saying it reverses.',
+    explanation: 'The stationary magnet is the observation that pins down what Faraday’s law actually says -- a large flux produces nothing, a CHANGING flux produces everything. The reversal follows from the sign of ΔΦ, and Lenz’s law is the physical reason: the coil always fights whatever is happening to it, which means it fights entry one way and exit the other.',
+  },
+  {
+    id: 'psci-faraday-3',
+    topicId: 'phys-electromagnetism',
+    grade: 11,
+    difficulty: 'Challenge',
+    marks: 6,
+    context: 'A coil of 50 turns is connected to a lamp. A learner moves a magnet towards the coil at a steady speed and the lamp glows dimly. They then repeat the experiment moving the same magnet twice as fast, and the lamp glows more brightly.',
+    prompt: 'Explain the brighter glow using Faraday’s law, and state TWO other changes the learner could make to increase the induced emf further. Justify each.',
+    answer: 'Moving the magnet twice as fast produces the same change in flux in half the time, so ΔΦ/Δt doubles and the induced emf doubles. A larger emf drives a larger current through the lamp, so it glows more brightly. Two further changes: first, use a coil with more turns, because the emf is proportional to N -- doubling the turns doubles the flux linkage and so doubles the emf for the same magnet movement. Second, use a stronger magnet, because a stronger magnet produces a greater magnetic flux, so the same movement produces a greater CHANGE in flux and therefore a greater rate of change.',
+    explanation: 'Every route to a larger emf comes out of ε = −N ΔΦ/Δt, so read the formula and vary one factor at a time: raise N, raise ΔΦ, or lower Δt. That is also why a generator spins faster to produce more volts, and why its armature is wound with many turns rather than one.',
+  },
+
+  // --- Electromagnetic Radiation (G10): wave and particle nature -------------
+  {
+    id: 'psci-wp-1',
+    topicId: 'phys-em-radiation-g10',
+    grade: 10,
+    difficulty: 'Moderate',
+    marks: 4,
+    context: 'Light passing through two narrow slits produces a pattern of bright and dark bands on a screen. Light striking a metal surface can also knock electrons out of it, one at a time.',
+    prompt: 'State which observation shows the wave nature of light and which shows its particle nature, and explain why each observation supports that nature.',
+    answer: 'The bright and dark bands show the WAVE nature. Bands appear because waves from the two slits meet and interfere: where two crests arrive together they reinforce and give a bright band, and where a crest meets a trough they cancel and give a dark band. Only waves can cancel one another in this way; particles arriving from two slits would simply add up and give a bright patch behind each slit. Knocking electrons out one at a time shows the PARTICLE nature. Light delivers its energy in separate packets, each of which can act on a single electron, which is what a stream of particles does. A spread-out wave would deliver its energy gradually over the whole surface rather than to individual electrons.',
+    explanation: 'Each observation asks a different question of the light, and the useful habit is to ask what the ALTERNATIVE model would predict: particles cannot cancel, and a wave cannot deliver all its energy to one electron at once. Light is not sometimes a wave and sometimes a particle -- it is one thing that shows one behaviour or the other depending on what is done to it.',
+  },
+  {
+    id: 'psci-wp-2',
+    topicId: 'phys-em-radiation-g10',
+    grade: 10,
+    difficulty: 'Moderate',
+    marks: 5,
+    context: 'All electromagnetic radiation travels at c = 3 × 10⁸ m/s in a vacuum. A radio station broadcasts at a frequency of 100 MHz (1,0 × 10⁸ Hz). Green light has a wavelength of about 5,0 × 10⁻⁷ m.',
+    prompt: 'Calculate the wavelength of the radio waves and the frequency of the green light, and state what these two results show about the electromagnetic spectrum.',
+    answer: 'Radio: λ = c ÷ f = (3 × 10⁸) ÷ (1,0 × 10⁸) = 3 m. Green light: f = c ÷ λ = (3 × 10⁸) ÷ (5,0 × 10⁻⁷) = 6 × 10¹⁴ Hz. The results show that electromagnetic radiation covers an enormous range: the radio wavelength is 3 m and the light wavelength is less than a millionth of a metre, a difference of about six million times, yet both travel at the same speed. Wavelength and frequency are inversely related -- as one rises the other falls, so that their product is always c.',
+    explanation: 'One relationship, c = fλ, covers the whole spectrum, so rearrange it for whichever quantity is missing. The point of doing both calculations is the comparison: radio waves and light differ only in wavelength and frequency, not in what they are or how fast they travel, which is what makes the spectrum a single family rather than a list of separate phenomena.',
+  },
+  {
+    id: 'psci-wp-3',
+    topicId: 'phys-em-radiation-g10',
+    grade: 10,
+    difficulty: 'Challenge',
+    marks: 6,
+    context: 'Ultraviolet radiation damages skin cells and can cause skin cancer. Radio waves pass through a person continuously and cause no such damage, even when the radio signal is very strong. Both are electromagnetic radiation and both travel at the same speed.',
+    prompt: 'Explain why ultraviolet is dangerous and radio waves are not, referring to the particle nature of electromagnetic radiation, and explain why turning up the radio transmitter power does not make radio waves dangerous in the same way.',
+    answer: 'Treating the radiation as particles, each packet of energy is larger the higher the frequency. Ultraviolet has a very high frequency and short wavelength, so each of its packets carries enough energy to break bonds inside a molecule -- including in DNA -- and damage to DNA is what can lead to skin cancer. Radio waves have a very low frequency and long wavelength, so each packet carries far too little energy to break any bond, and passing through a person leaves the molecules unchanged. Raising the transmitter power does not change this, because power increases the NUMBER of packets sent, not the energy of each one. Damage requires a single packet with enough energy to break one bond, and a great many small packets cannot combine to do the work of one large one. That is why a very weak ultraviolet source is more dangerous to skin than a very strong radio transmitter.',
+    explanation: 'The decisive idea is that energy per packet depends on FREQUENCY while intensity depends on the number of packets, and the two do different things. It is the same reasoning that explains the photoelectric effect in Grade 12: below the threshold frequency no amount of brightness releases an electron, because the limit is per-packet energy and not total energy.',
+  },
+
+  // --- Physical and Chemical Change (G10): energy in reactions ---------------
+  {
+    id: 'psci-energy-1',
+    topicId: 'phys-physical-chemical-change',
+    grade: 10,
+    difficulty: 'Moderate',
+    marks: 4,
+    context: 'Two reactions are carried out in separate test tubes, each with a thermometer. In tube A the temperature rises from 21 °C to 38 °C. In tube B the temperature falls from 21 °C to 9 °C.',
+    prompt: 'Classify each reaction as exothermic or endothermic, giving a reason based on the readings, and state in which direction energy moves in each case.',
+    answer: 'Tube A is exothermic: the temperature of the mixture rose, which means energy was released by the reaction and warmed the surroundings. Energy moves from the reacting substances OUT to the surroundings. Tube B is endothermic: the temperature fell, which means the reaction absorbed energy from its surroundings, cooling them. Energy moves from the surroundings IN to the reacting substances.',
+    explanation: 'Read the thermometer as measuring the SURROUNDINGS, not the reaction -- a rise means the surroundings gained energy, so the reaction must have lost it. Getting that the right way round is the whole of this skill, and reversing it is the usual error: an exothermic reaction feels hot precisely because it is giving energy away.',
+  },
+  {
+    id: 'psci-energy-2',
+    topicId: 'phys-physical-chemical-change',
+    grade: 10,
+    difficulty: 'Moderate',
+    marks: 5,
+    context: 'Burning methane releases energy. Breaking the bonds in the methane and oxygen requires 2 650 kJ, and forming the bonds in the carbon dioxide and water releases 3 460 kJ.',
+    prompt: 'Calculate the net energy change for the reaction, state whether it is exothermic or endothermic, and explain how bond breaking and bond making account for your answer.',
+    answer: 'Net energy change = energy absorbed breaking bonds − energy released making bonds = 2 650 − 3 460 = −810 kJ. The negative value means 810 kJ more is released than absorbed, so the reaction is exothermic. Breaking a bond always requires energy to be put in, and forming a bond always releases energy. Whether a reaction is exothermic or endothermic depends on which of the two is larger. Here the bonds in the products are stronger overall than those in the reactants, so more energy comes out in forming them than went in to break the old ones, and the surplus is released to the surroundings as heat and light.',
+    explanation: 'Bond breaking IN, bond making OUT -- hold those two the right way round and the arithmetic settles the classification. A negative net change means energy left the system, which is exothermic; that sign convention is the same one used for ΔH in Grade 12, so it is worth getting used to now.',
+  },
+  {
+    id: 'psci-energy-3',
+    topicId: 'phys-physical-chemical-change',
+    grade: 10,
+    difficulty: 'Challenge',
+    marks: 6,
+    context: 'A learner dissolves ammonium nitrate in water and the beaker becomes noticeably cold. They conclude that dissolving ammonium nitrate is a chemical change because "energy was involved, so a reaction must have happened". They also note that the ammonium nitrate can be recovered unchanged by evaporating the water.',
+    prompt: 'Evaluate the learner’s conclusion, and explain what the energy change and the recovery each tell you about whether this is a physical or a chemical change.',
+    answer: 'The conclusion is wrong. An energy change accompanies physical changes as well as chemical ones -- melting ice absorbs energy and condensing steam releases it, and neither produces a new substance. So the beaker going cold shows only that energy was absorbed, which is endothermic, and says nothing about whether a new substance was formed. The recovery is the evidence that settles it. Evaporating the water returns the ammonium nitrate unchanged, which shows that no new substance was made: the same substance is present at the end as at the start, merely separated from the water again. A chemical change produces different substances and is not reversed by a simple physical process like evaporation. This is therefore a physical change that happens to be endothermic. The test for a chemical change is whether a NEW SUBSTANCE is formed, not whether energy moved.',
+    explanation: 'The learner has used the wrong criterion, and the correction matters because energy changes are the most visible thing in a reaction and so the most tempting to reason from. Ask instead what is present at the end: if the original substances can be recovered by a physical means, no chemical change occurred, however dramatic the temperature change.',
+  },
 ]
 
 export const questionsForTopic = (topicId: string) => questions.filter((q) => q.topicId === topicId)

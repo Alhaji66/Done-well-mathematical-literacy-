@@ -54,7 +54,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Tariffs and municipal accounts',
-      match: /\b(tariff|kwh|kilowatt|municipal|electricity|water usage|kilolitre|kl\b|airtime|cellphone contract|per minute|fixed charge|step(ped)? tariff|block)\b/i,
+      match: /\b(tariff|kwh|kilowatt|municipal|electricity|water usage|kilolitre\w*|kl\b|airtime|cellphone contract|per minute|fixed charge|step(ped)? tariff|block)\b/i,
     },
     {
       name: 'Financial documents: payslips, bills and statements',
@@ -84,12 +84,12 @@ const rules: Record<string, SubtopicRule[]> = {
       match: /\b(range|quartile|q1|q3|interquartile|iqr|box[- ]and[- ]whisker|five[- ]number|spread|outlier)\b/i,
     },
     {
-      name: 'Mean, median and mode',
-      match: /\b(mean|median|mode|modal|average)\b/i,
-    },
-    {
       name: 'Representing data in tables and graphs',
       match: /\b(bar graph|histogram|pie chart|line graph|frequency polygon|draw (a|the) graph|tally|frequency table|compound bar|stacked)\b/i,
+    },
+    {
+      name: 'Mean, median and mode',
+      match: /\b(mean|median|mode|modal|average)\b/i,
     },
     {
       name: 'Interpreting and comparing graphs',
@@ -104,7 +104,11 @@ const rules: Record<string, SubtopicRule[]> = {
   'maps-plans': [
     {
       name: 'Models, assembly diagrams and instructions',
-      match: /\b(model|assembl\w*|instruction|kit|scale model|prototype)\b/i,
+      // "net", "flat-pack" and "parts list" belong here too: a packaging net and
+      // a flat-pack parts list are both the CAPS "models and assembly" skill,
+      // and without them such questions were taken by the packing-plans and
+      // floor-plans rules further down.
+      match: /\b(model|assembl\w*|instruction|kit|scale model|prototype|flat[- ]?pack|parts list|net of|into a net)\b/i,
     },
     {
       name: 'Seating, layout and packing plans',
@@ -130,8 +134,13 @@ const rules: Record<string, SubtopicRule[]> = {
 
   measurement: [
     {
+      // The degree symbols sit OUTSIDE the \b(...)\b group on purpose. A leading
+      // \b before "°" demands a word character immediately before it, so "350 °F"
+      // -- with the space a unit normally takes -- never matched, and every
+      // temperature-conversion question fell through to another sub-topic.
       name: 'Time, temperature and reading instruments',
-      match: /\b(temperature|°c|°f|celsius|fahrenheit|24[- ]hour|clock|time taken|thermometer|reading on the)\b/i,
+      match:
+        /(°\s*[cf]\b)|\b(temperature|celsius|fahrenheit|thermometer|24[- ]hour|12[- ]hour|clock|time taken|time zone|what time|elapsed|reading on the|marked every|accurate to within)\b/i,
     },
     {
       name: 'Mass, rates and practical calculations',

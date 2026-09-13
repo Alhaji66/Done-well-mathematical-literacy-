@@ -186,6 +186,23 @@ function buildFindings(
         message: `Level 1 (${weighting.levelNames[0]}) holds ${l1}% of levelled marks against a target of ${weighting.level1}%.`,
       })
     }
+
+    // Levels 3 and 4 are reported together above because the difficulty tags
+    // cannot separate them. Where explicit levels exist they CAN be separated,
+    // and the split matters: a grade can hit its combined target entirely on
+    // Level 3 and still leave a learner with no practice at the level that
+    // asks them to evaluate or synthesise. Checking only the combined figure
+    // would report such a grade as correctly weighted.
+    const l4 = sharePercent(capsMarks[4], capsMarks.levelled)
+    if (Math.abs(l4 - weighting.level4) > WEIGHTING_TOLERANCE) {
+      findings.push({
+        severity: capsMarks[4] === 0 ? 'gap' : 'watch',
+        message:
+          capsMarks[4] === 0
+            ? `No marks at this grade are Level 4 (${weighting.levelNames[3]}), against a target of ${weighting.level4}%. The Levels 3-4 figure above is carried entirely by Level 3.`
+            : `Level 4 (${weighting.levelNames[3]}) holds ${l4}% of levelled marks against a target of ${weighting.level4}%.`,
+      })
+    }
   }
   if (capsMarks.unlevelled > 0) {
     findings.push({

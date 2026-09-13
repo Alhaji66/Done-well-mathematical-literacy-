@@ -31,7 +31,7 @@ const SUBJECT_FILES: Record<string, string> = {
  * serialiser would reformat all 50 000 lines and bury the one-line change this
  * tool actually makes in a diff nobody can review.
  */
-function applyToFile(path: string, dryRun: boolean) {
+function applyToFile(path: string, dryRun: boolean, force: boolean) {
   const full = join(root, path)
   const lines = readFileSync(full, 'utf8').split('\n')
   const out: string[] = []
@@ -44,10 +44,17 @@ function applyToFile(path: string, dryRun: boolean) {
     out.push(line)
     const m = line.match(/^(\s*)difficulty: '(Easy|Moderate|Challenge)',\s*$/)
     if (!m) continue
-    if (/^\s*cognitiveLevel:/.test(lines[i + 1] ?? '')) continue
+    const alreadyLevelled = /^\s*cognitiveLevel:/.test(lines[i + 1] ?? '')
+    // --force re-derives levels that this tool wrote before, so a rule fix can
+    // be applied to the whole corpus instead of only to new items. It is safe
+    // for these three subjects precisely because every level in them came from
+    // these rules; Life Sciences is hand-levelled and is never touched here.
+    if (alreadyLevelled && !force) continue
 
     // marks, prompt and context all sit within the next few lines of the
     // object literal; 16 lines covers the longest item in the corpus.
+    // Skip the old level line when re-deriving, so it is replaced not doubled.
+    if (alreadyLevelled) i++
     const window = lines.slice(i, i + 16).join('\n')
     const marks = Number(window.match(/\bmarks: (\d+)/)?.[1] ?? '0')
     const prompt = window.match(/\bprompt:\s*\n?\s*'((?:[^'\\]|\\.)*)'/)?.[1] ?? ''
@@ -64,9 +71,10 @@ function applyToFile(path: string, dryRun: boolean) {
 }
 
 const dryRun = process.argv.includes('--dry-run')
+const force = process.argv.includes('--force')
 let total = 0
 for (const [subject, path] of Object.entries(SUBJECT_FILES)) {
-  const { changed, markCounts } = applyToFile(path, dryRun)
+  const { changed, markCounts } = applyToFile(path, dryRun, force)
   total += changed
   const all = markCounts[1] + markCounts[2] + markCounts[3] + markCounts[4]
   const pct = (n: number) => (all ? Math.round((n / all) * 100) : 0)

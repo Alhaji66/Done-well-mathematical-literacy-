@@ -58,7 +58,7 @@ const LEVEL_4: LevelRule[] = [
     level: 4,
     why: 'evaluate a claim, or choose between options and defend the choice',
     match:
-      /\b(evaluate (the|this|his|her|their) (claim|statement|argument|conclusion|method|design|investigation|decision|reasoning)|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice))\b/i,
+      /\b(evaluate (the|this|his|her|their|[A-Za-z]+['’]s) (claim|statement|argument|conclusion|method|design|investigation|decision|reasoning)|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice))\b/i,
   },
   {
     level: 4,
@@ -99,7 +99,7 @@ const LEVEL_3: LevelRule[] = [
   {
     level: 3,
     why: 'chains two procedures -- the second depends on the first',
-    match: /\b(hence|and hence|use (your|this) answer .{0,30}to (determine|calculate|find|show))\b/i,
+    match: /\b(hence|and hence|us(e|ing) (your|this|the) answers? .{0,40}?(to |, )(determine|calculate|find|show))\b/i,
   },
   {
     level: 3,

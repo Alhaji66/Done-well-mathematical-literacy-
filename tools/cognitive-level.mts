@@ -132,7 +132,7 @@ const LEVEL_3: LevelRule[] = [
     level: 3,
     why: 'apply a known idea to a fresh scenario',
     match:
-      /\b(account for|explain the (adaptive )?(significance|advantage|importance)|what would happen if|for which values? of|values? of [a-z] for which)\b/i,
+      /\b(account for|explain the (adaptive )?(significance|advantage|importance)|what would (happen|go wrong) if|for which values? of|values? of [a-z] for which)\b/i,
   },
 ]
 

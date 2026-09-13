@@ -125,18 +125,32 @@ export function LearnerPractise() {
 
   const changeSubject = (id: string) => {
     setSubjectId(id)
-    const nextTopics = topicsForSubject(id, demoLearner.grade)
+    // The topic to land on must come from the grade the learner is CURRENTLY
+    // browsing, not from the demo profile. Reading it from the profile meant
+    // switching subject while on Grade 10 selected a Grade 12 topic, and then
+    // asked for Grade 10 questions on it -- which is how a topic Learn had just
+    // advertised a count for answered "no sample questions at this difficulty".
+    const nextTopics = topicsForSubject(id, grade)
     const nextTopicId = nextTopics[0]?.id ?? ''
     setTopicId(nextTopicId)
-    setParams(nextTopicId ? { topic: nextTopicId } : {})
+    setSubtopic('All')
+    // routeFor, not a bare { topic }. Writing only the topic dropped subject and
+    // grade out of the URL, so a refresh or a Back came back as Grade 12 and the
+    // link was no longer shareable.
+    setParams(routeFor({ subject: id, topic: nextTopicId, subtopic: 'All' }))
   }
 
   return (
     <div className="space-y-6">
+      {/* The heading states the grade being BROWSED, not the demo profile's
+          grade. The two differ whenever a Learn card links here for another
+          grade, and a heading reading "Grade 12" over Grade 10 content is
+          worse than no heading at all -- a learner takes it as the answer to
+          "am I in the right place?". */}
       <SectionHeading
         eyebrow="Practise"
         title="Practise a topic"
-        description={`Grade ${demoLearner.grade} — choose a subject, topic and difficulty to begin.`}
+        description={`Grade ${grade} — choose a subject, topic and difficulty to begin.`}
       />
 
       <div className="card flex flex-col gap-4 p-4">

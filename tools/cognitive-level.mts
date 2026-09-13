@@ -57,8 +57,32 @@ const LEVEL_4: LevelRule[] = [
   {
     level: 4,
     why: 'evaluate a claim, or choose between options and defend the choice',
+    // The "evaluate" branch matches across whatever sits between the verb and
+    // the noun, rather than a fixed determiner. Written the tight way it read
+    // "evaluate the claim" but not "evaluate the coach's advice" or "evaluate
+    // the son's two claims" -- a possessive or a number in the middle made a
+    // plainly Level 4 prompt fall through to "explain", which is Level 2. The
+    // [^.]{0,40} keeps it inside the one sentence, so a later unrelated noun
+    // cannot reach back and match a bare "evaluate".
+    //
+    // Two things were tried here and taken out again, because measuring them
+    // against the corpus showed they cost more than they bought:
+    //
+    //   "decide whether|which" -- fires on descriptions far more often than on
+    //   instructions. "Name the type of selection in which people DECIDE WHICH
+    //   individuals may breed" is a one-mark recall item; "a student must
+    //   DECIDE WHETHER it is a plant cell" is the scenario, not the task.
+    //
+    //   "rank ... justify your ranking" -- ranking with reasons is usually a
+    //   taught rule applied in order. Ten Physical Sciences items ask learners
+    //   to rank three substances by boiling point and justify it, which is
+    //   intermolecular forces applied as drilled: Level 2, not a judgement.
+    //   "justify each choice" went the same way: it reads as Level 4 when the
+    //   choice is a recommendation for a person, and as Level 3 when it is
+    //   matching three cells to three organelle counts. Prompts that mean the
+    //   first say "justify your recommendation", which was already covered.
     match:
-      /\b(evaluate (the|this|his|her|their|[A-Za-z]+['’]s) (claim|statement|argument|conclusion|method|design|investigation|decision|reasoning)|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice))\b/i,
+      /\b(evaluate [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|plan)s?\b|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice))\b/i,
   },
   {
     level: 4,

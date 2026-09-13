@@ -219,3 +219,131 @@ end;
 $$;
 
 grant execute on function public.link_child(text) to authenticated;
+
+-- ============================================================================
+-- POPIA: consent, the right to withdraw a link, and the right to be deleted
+-- ============================================================================
+--
+-- Grades 10 to 12 means learners are typically 15 to 18, so most are children
+-- in POPIA's sense. Section 35 prohibits processing a child's personal
+-- information without the consent of a competent person -- a parent or legal
+-- guardian. Onboarding therefore has to capture that consent and this table
+-- has to record it, because an unrecorded consent is not one you can show the
+-- Information Regulator.
+--
+-- notice_version pins which POPIA notice the person actually agreed to, so a
+-- later rewrite of that notice does not silently reinterpret an old consent.
+
+create table if not exists public.consents (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid not null references public.profiles (id) on delete cascade,
+  -- 'guardian' when a parent or guardian consented for a learner under 18,
+  -- 'self' when the data subject is 18 or older and consented directly.
+  kind text not null check (kind in ('guardian', 'self')),
+  notice_version text not null,
+  guardian_name text,
+  guardian_email text,
+  granted_at timestamptz not null default now(),
+  withdrawn_at timestamptz
+);
+
+create index if not exists consents_profile_id_idx on public.consents (profile_id);
+
+alter table public.consents enable row level security;
+
+drop policy if exists "Users can view their own consent records" on public.consents;
+create policy "Users can view their own consent records"
+  on public.consents for select
+  using (profile_id = auth.uid());
+
+drop policy if exists "Users can record their own consent" on public.consents;
+create policy "Users can record their own consent"
+  on public.consents for insert
+  with check (profile_id = auth.uid());
+
+-- A linked parent must be able to see, and withdraw, the consent they gave.
+drop policy if exists "Linked parents can view their child's consent records" on public.consents;
+create policy "Linked parents can view their child's consent records"
+  on public.consents for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = consents.profile_id
+      and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+-- Withdrawing consent is a POPIA right, so the row must be updatable by the
+-- data subject and by a linked parent. The row is never deleted: when the
+-- consent was withdrawn is itself part of the record.
+drop policy if exists "Users can withdraw their own consent" on public.consents;
+create policy "Users can withdraw their own consent"
+  on public.consents for update
+  using (profile_id = auth.uid());
+
+drop policy if exists "Linked parents can withdraw consent for their child" on public.consents;
+create policy "Linked parents can withdraw consent for their child"
+  on public.consents for update
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = consents.profile_id
+      and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+-- parent_learner_links: the missing DELETE ---------------------------------
+--
+-- The original policies allowed a parent to create a link and both sides to
+-- see it, but nobody to remove one, so a link between a parent and a child was
+-- permanent. A learner has to be able to cut a link to their own records, and
+-- a parent has to be able to give one up.
+
+drop policy if exists "Parents can remove their own links" on public.parent_learner_links;
+create policy "Parents can remove their own links"
+  on public.parent_learner_links for delete
+  using (parent_id = auth.uid());
+
+drop policy if exists "Learners can remove a link to themselves" on public.parent_learner_links;
+create policy "Learners can remove a link to themselves"
+  on public.parent_learner_links for delete
+  using (learner_id = auth.uid());
+
+-- profiles: the right to deletion -------------------------------------------
+--
+-- Section 24 gives a data subject the right to have their personal information
+-- deleted. Deleting the profile row cascades to learner_progress, to
+-- parent_learner_links on both sides, and to consents, because each of those
+-- references profiles with on delete cascade.
+--
+-- Note what this does NOT remove: the row in auth.users, which holds the email
+-- address. Deleting that requires the service role, so a full erasure request
+-- has to be completed by the Information Officer. delete_my_account() below
+-- removes everything reachable from the browser and is honest about the rest.
+
+drop policy if exists "Users can delete their own profile" on public.profiles;
+create policy "Users can delete their own profile"
+  on public.profiles for delete
+  using (id = auth.uid());
+
+-- One call so a deletion cannot half-succeed: either every table the person
+-- appears in is cleared, or none is.
+create or replace function public.delete_my_account()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    raise exception 'Not signed in.';
+  end if;
+
+  delete from public.learner_progress where learner_id = auth.uid();
+  delete from public.parent_learner_links where parent_id = auth.uid() or learner_id = auth.uid();
+  delete from public.consents where profile_id = auth.uid();
+  delete from public.profiles where id = auth.uid();
+end;
+$$;
+
+grant execute on function public.delete_my_account() to authenticated;

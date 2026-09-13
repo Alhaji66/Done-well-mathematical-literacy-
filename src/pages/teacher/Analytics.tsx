@@ -33,7 +33,7 @@ export function TeacherAnalytics() {
                   <span className="font-medium text-navy-900">{topic?.name}</span>
                   <span className="text-navy-600">{tp.averagePercent}%</span>
                 </div>
-                <ProgressBar percent={tp.averagePercent} className="mt-1.5" />
+                <ProgressBar percent={tp.averagePercent} className="mt-1.5" label={`${topic?.name} class average`} />
               </div>
             )
           })}
@@ -52,7 +52,7 @@ export function TeacherAnalytics() {
                   <span className="min-w-0 flex-1 truncate font-medium text-navy-900">{q?.prompt}</span>
                   <span className="shrink-0 text-navy-600">{qp.correctPercent}%</span>
                 </div>
-                <ProgressBar percent={qp.correctPercent} size="sm" className="mt-1.5" />
+                <ProgressBar percent={qp.correctPercent} size="sm" className="mt-1.5" label="Answered correctly" />
               </div>
             )
           })}

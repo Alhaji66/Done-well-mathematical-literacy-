@@ -109,7 +109,7 @@ export function SchoolDashboard() {
             <div className="card p-5">
               <p className="text-xs font-medium text-navy-500">School average mastery</p>
               <p className="mt-1 text-2xl font-extrabold text-navy-900">{schoolAverage}%</p>
-              <ProgressBar percent={schoolAverage} className="mt-2" size="sm" />
+              <ProgressBar percent={schoolAverage} className="mt-2" size="sm" label="School average mastery" />
             </div>
           </div>
 
@@ -125,7 +125,7 @@ export function SchoolDashboard() {
                       </span>
                       <span className="text-navy-600">{g.hasData ? `${g.average}% average` : 'No practice yet'}</span>
                     </div>
-                    <ProgressBar percent={g.average} size="sm" className="mt-1.5" />
+                    <ProgressBar percent={g.average} size="sm" className="mt-1.5" label={`Grade ${g.grade} average mastery`} />
                   </div>
                 ))}
               </div>

@@ -21,7 +21,7 @@ export function SchoolAssessments() {
                 <span className="font-medium text-navy-900">Grade {g.grade}</span>
                 <span className="text-navy-600">{g.testCompletionPercent}% completed</span>
               </div>
-              <ProgressBar percent={g.testCompletionPercent} className="mt-1.5" />
+              <ProgressBar percent={g.testCompletionPercent} className="mt-1.5" label={`Grade ${g.grade} test completion`} />
             </div>
           ))}
         </div>

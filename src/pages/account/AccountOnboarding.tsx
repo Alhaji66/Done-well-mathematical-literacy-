@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabaseClient'
 import { useAccountAuth, type AccountRole } from '@/context/AccountAuthContext'
 import { UserIcon, HeartHandshakeIcon, BookIcon, SchoolIcon, CheckCircleIcon } from '@/components/ui/Icons'
+import { recordConsent } from '@/lib/privacy'
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -34,7 +35,17 @@ export function AccountOnboarding() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
+  // POPIA section 35: a child's personal information may not be processed
+  // without the consent of a parent or guardian. Grades 10 to 12 means most
+  // learners here are under 18, so a learner account cannot be created until
+  // that consent is given and recorded.
+  const [isAdult, setIsAdult] = useState(false)
+  const [guardianName, setGuardianName] = useState('')
+  const [guardianEmail, setGuardianEmail] = useState('')
+  const [consentGiven, setConsentGiven] = useState(false)
+
   const needsSchool = role === 'learner' || role === 'teacher' || role === 'school'
+  const needsGuardianConsent = role === 'learner' && !isAdult
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -42,6 +53,18 @@ export function AccountOnboarding() {
     const trimmedName = fullName.trim()
     if (!trimmedName) {
       setError('Please enter your full name.')
+      return
+    }
+    if (!consentGiven) {
+      setError(
+        needsGuardianConsent
+          ? 'A parent or guardian must agree before a learner account can be created.'
+          : 'Please agree to the POPIA notice before continuing.',
+      )
+      return
+    }
+    if (needsGuardianConsent && !guardianName.trim()) {
+      setError('Please enter the full name of the parent or guardian giving consent.')
       return
     }
 
@@ -84,6 +107,16 @@ export function AccountOnboarding() {
       })
       if (profileError) throw profileError
 
+      // Record the consent in the same submit as the profile it covers. A
+      // consent that is not written down is one you cannot show the Regulator.
+      const { error: consentError } = await recordConsent({
+        profileId: session.user.id,
+        kind: needsGuardianConsent ? 'guardian' : 'self',
+        guardianName: guardianName.trim(),
+        guardianEmail: guardianEmail.trim(),
+      })
+      if (consentError) throw new Error(consentError)
+
       await refreshProfile()
       navigate('/account', { replace: true })
     } catch (err) {
@@ -120,6 +153,7 @@ export function AccountOnboarding() {
                     <button
                       key={opt.role}
                       type="button"
+                      aria-pressed={active}
                       onClick={() => setRole(opt.role)}
                       className={cn(
                         'flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-colors',
@@ -138,7 +172,7 @@ export function AccountOnboarding() {
                         <span className="block text-sm font-semibold text-navy-900">{opt.label}</span>
                         <span className="block truncate text-xs text-navy-500">{opt.desc}</span>
                       </span>
-                      {active ? <CheckCircleIcon className="h-5 w-5 shrink-0 text-gold-600" /> : null}
+                      {active ? <CheckCircleIcon className="h-5 w-5 shrink-0 text-gold-700" /> : null}
                     </button>
                   )
                 })}
@@ -204,6 +238,86 @@ export function AccountOnboarding() {
                 </div>
               </div>
             ) : null}
+
+            <div className="rounded-lg border border-navy-200 bg-navy-50 p-4">
+              <h2 className="text-sm font-bold text-navy-900">Permission to keep this information</h2>
+              <p className="mt-1.5 text-xs leading-relaxed text-navy-600">
+                We keep your name, grade, subject, school and the topics you practise, so that your progress is
+                there when you come back. The{' '}
+                <Link to="/popia" target="_blank" className="font-semibold underline">
+                  POPIA notice
+                </Link>{' '}
+                sets out exactly what we hold and what you can ask us to do with it.
+              </p>
+
+              {role === 'learner' ? (
+                <label className="mt-3 flex gap-2.5 text-xs text-navy-700">
+                  <input
+                    type="checkbox"
+                    checked={isAdult}
+                    onChange={(e) => {
+                      setIsAdult(e.target.checked)
+                      setConsentGiven(false)
+                    }}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-navy-300"
+                  />
+                  <span>I am 18 or older, so I can give this permission myself.</span>
+                </label>
+              ) : null}
+
+              {needsGuardianConsent ? (
+                <div className="mt-3 space-y-3 border-t border-navy-200 pt-3">
+                  <p className="text-xs font-semibold text-navy-800">
+                    Because you are under 18, a parent or guardian has to agree. Please ask them to complete this part.
+                  </p>
+                  <div>
+                    <label className="text-xs font-medium text-navy-500" htmlFor="guardianName">
+                      Parent or guardian full name
+                    </label>
+                    <input
+                      id="guardianName"
+                      type="text"
+                      value={guardianName}
+                      onChange={(e) => setGuardianName(e.target.value)}
+                      placeholder="e.g. Nomsa Dlamini"
+                      className="input mt-1"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-navy-500" htmlFor="guardianEmail">
+                      Parent or guardian email <span className="font-normal text-navy-400">(optional)</span>
+                    </label>
+                    <input
+                      id="guardianEmail"
+                      type="email"
+                      value={guardianEmail}
+                      onChange={(e) => setGuardianEmail(e.target.value)}
+                      placeholder="So we can reach them about this account"
+                      className="input mt-1"
+                    />
+                  </div>
+                </div>
+              ) : null}
+
+              <label className="mt-3 flex gap-2.5 text-xs text-navy-700">
+                <input
+                  type="checkbox"
+                  checked={consentGiven}
+                  onChange={(e) => setConsentGiven(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-navy-300"
+                />
+                <span>
+                  {needsGuardianConsent
+                    ? 'I am the parent or guardian named above, and I agree to DONE WELL keeping this information about my child as the POPIA notice describes.'
+                    : 'I agree to DONE WELL keeping this information about me as the POPIA notice describes.'}
+                </span>
+              </label>
+
+              <p className="mt-2.5 text-xs text-navy-500">
+                You can withdraw this later, download everything we hold, or delete the account, from Privacy &amp;
+                data in your account.
+              </p>
+            </div>
 
             {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 

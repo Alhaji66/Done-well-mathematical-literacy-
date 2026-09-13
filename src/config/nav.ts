@@ -9,7 +9,9 @@ import {
   UserIcon,
   HeartHandshakeIcon,
   BarChartIcon,
+  ClipboardCheckIcon,
   SparkleIcon,
+  EyeIcon,
   SchoolIcon,
 } from '@/components/ui/Icons'
 
@@ -54,6 +56,7 @@ export const accountLearnerNav: RoleNavItem[] = [
   { to: '/practise', label: 'Practise', icon: PencilIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
+  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
 ]
 
 // Real (non-demo) Teacher account nav -- Assessments/Analytics are now built:
@@ -66,6 +69,8 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/question-bank', label: 'Question Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
 ]
 
 // Real (non-demo) Parent account nav -- My Child is folded into Dashboard
@@ -75,6 +80,7 @@ export const accountParentNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/support', label: 'Support', icon: HeartHandshakeIcon },
+  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
 ]
 
 // Real (non-demo) School account nav -- Assessments/Analytics now built,
@@ -85,4 +91,6 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
 ]

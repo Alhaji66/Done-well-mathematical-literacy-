@@ -115,6 +115,7 @@ export const topics: Topic[] = [
     name: 'Momentum and Impulse',
     description: 'Linear momentum, conservation of momentum in collisions, and the impulse-momentum theorem.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-vertical-projectile',
@@ -122,6 +123,7 @@ export const topics: Topic[] = [
     name: 'Vertical Projectile Motion',
     description: 'Motion under gravity for objects thrown or dropped vertically, using the equations of motion.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-work-energy-power',
@@ -129,6 +131,7 @@ export const topics: Topic[] = [
     name: 'Work, Energy and Power',
     description: 'Work done by a force, the work-energy theorem, conservation of mechanical energy, and power.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-doppler-effect',
@@ -136,6 +139,7 @@ export const topics: Topic[] = [
     name: 'Doppler Effect',
     description: 'The apparent change in frequency of sound and light waves due to relative motion between a source and an observer.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-electrostatics',
@@ -143,6 +147,7 @@ export const topics: Topic[] = [
     name: 'Electrostatics',
     description: 'Coulomb’s law, electric fields and the forces between point charges.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-electric-circuits',
@@ -150,6 +155,7 @@ export const topics: Topic[] = [
     name: 'Electric Circuits',
     description: 'Ohm’s law, series and parallel resistor networks, emf and internal resistance.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-electrodynamics',
@@ -157,6 +163,7 @@ export const topics: Topic[] = [
     name: 'Electrodynamics',
     description: 'Electromagnetic induction, motors, generators, alternating current and transformers.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-em-radiation',
@@ -164,6 +171,7 @@ export const topics: Topic[] = [
     name: 'Electromagnetic Radiation',
     description: 'The photoelectric effect, photon energy, and the particle nature of light.',
     grades: [12],
+    strand: 'Physics',
   },
   {
     id: 'phys-organic-chemistry',
@@ -171,6 +179,7 @@ export const topics: Topic[] = [
     name: 'Organic Chemistry',
     description: 'Naming and structure of organic compounds, isomers, physical properties, and organic reactions.',
     grades: [12],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-reaction-rate',
@@ -178,6 +187,7 @@ export const topics: Topic[] = [
     name: 'Rate and Extent of Reaction',
     description: 'Factors affecting reaction rate, collision theory, and interpreting rate graphs.',
     grades: [12],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-chemical-equilibrium',
@@ -185,6 +195,7 @@ export const topics: Topic[] = [
     name: 'Chemical Equilibrium',
     description: 'Dynamic equilibrium, the equilibrium constant Kc, and Le Chatelier’s principle.',
     grades: [12],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-acids-bases',
@@ -192,6 +203,7 @@ export const topics: Topic[] = [
     name: 'Acids and Bases',
     description: 'Acid-base theory, pH calculations, and titration calculations.',
     grades: [12],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-electrochemistry',
@@ -199,6 +211,7 @@ export const topics: Topic[] = [
     name: 'Electrochemical Reactions',
     description: 'Galvanic and electrolytic cells, standard electrode potentials, and redox half-reactions.',
     grades: [12],
+    strand: 'Chemistry',
   },
   {
     id: 'life-sci-reproduction-vertebrates',
@@ -269,6 +282,7 @@ export const topics: Topic[] = [
     name: 'Vectors in Two Dimensions',
     description: 'Resolving vectors into components, and adding vectors algebraically and graphically in two dimensions.',
     grades: [11],
+    strand: 'Physics',
   },
   {
     id: 'phys-newtons-laws',
@@ -276,6 +290,7 @@ export const topics: Topic[] = [
     name: "Newton's Laws",
     description: "Newton's first, second and third laws of motion, and their application to forces, friction and objects on inclined planes.",
     grades: [11],
+    strand: 'Physics',
   },
   {
     id: 'phys-geometric-optics',
@@ -283,6 +298,7 @@ export const topics: Topic[] = [
     name: 'Geometric Optics',
     description: 'Refraction of light, Snell’s law, refractive index, critical angle and total internal reflection.',
     grades: [11],
+    strand: 'Physics',
   },
   {
     id: 'phys-wavefronts',
@@ -290,6 +306,7 @@ export const topics: Topic[] = [
     name: '2D and 3D Wavefronts',
     description: 'Huygens’ principle, wavefronts, and diffraction of waves through a slit or around an obstacle.',
     grades: [11],
+    strand: 'Physics',
   },
   {
     id: 'phys-electrostatics-g11',
@@ -297,6 +314,7 @@ export const topics: Topic[] = [
     name: 'Electrostatics',
     description: 'Charge, conservation and quantisation of charge, Coulomb’s law and electric fields around point charges.',
     grades: [11],
+    strand: 'Physics',
   },
   {
     id: 'phys-electromagnetism',
@@ -304,6 +322,7 @@ export const topics: Topic[] = [
     name: 'Electromagnetism',
     description: 'The magnetic field around a current-carrying conductor, and the magnetic field of a solenoid.',
     grades: [11],
+    strand: 'Physics',
   },
   {
     id: 'phys-electric-circuits-g11',
@@ -311,6 +330,7 @@ export const topics: Topic[] = [
     name: 'Electric Circuits',
     description: 'Ohm’s law, and current, voltage and resistance in series and parallel circuits.',
     grades: [11],
+    strand: 'Physics',
   },
   {
     id: 'phys-atomic-combinations',
@@ -318,6 +338,7 @@ export const topics: Topic[] = [
     name: 'Atomic Combinations',
     description: 'Covalent bonding, Lewis diagrams, molecular shape (VSEPR theory), electronegativity and bond polarity.',
     grades: [11],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-intermolecular-forces',
@@ -325,6 +346,7 @@ export const topics: Topic[] = [
     name: 'Intermolecular Forces',
     description: 'Types of intermolecular forces and their effect on the physical properties of substances, including the properties of water.',
     grades: [11],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-ideal-gases',
@@ -332,6 +354,7 @@ export const topics: Topic[] = [
     name: 'Ideal Gases and Thermal Properties',
     description: 'The kinetic molecular theory of matter, the gas laws, and the ideal gas equation.',
     grades: [11],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-quantitative-chem-change',
@@ -339,6 +362,7 @@ export const topics: Topic[] = [
     name: 'Quantitative Aspects of Chemical Change',
     description: 'Stoichiometric calculations, molar volume of gases, and concentration of solutions.',
     grades: [11],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-energy-chem-change',
@@ -346,6 +370,7 @@ export const topics: Topic[] = [
     name: 'Energy and Chemical Change',
     description: 'Exothermic and endothermic reactions, activation energy, and energy (bond-energy) diagrams.',
     grades: [11],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-types-of-reactions',
@@ -353,6 +378,7 @@ export const topics: Topic[] = [
     name: 'Types of Reactions',
     description: 'Acid-base reactions and redox reactions, including the identification of oxidising and reducing agents.',
     grades: [11],
+    strand: 'Chemistry',
   },
   {
     id: 'life-sci-photosynthesis',
@@ -430,6 +456,7 @@ export const topics: Topic[] = [
     name: 'Vectors and Scalars',
     description: 'The difference between vector and scalar quantities, and finding the resultant of vectors graphically and algebraically.',
     grades: [10],
+    strand: 'Physics',
   },
   {
     id: 'phys-motion-1d',
@@ -437,6 +464,7 @@ export const topics: Topic[] = [
     name: 'Motion in One Dimension',
     description: 'Reference frames, instantaneous speed, velocity and acceleration, and describing motion using position-time, velocity-time and acceleration-time graphs.',
     grades: [10],
+    strand: 'Physics',
   },
   {
     id: 'phys-mechanical-energy-g10',
@@ -444,6 +472,7 @@ export const topics: Topic[] = [
     name: 'Mechanical Energy',
     description: 'Gravitational potential energy, kinetic energy, and the conservation of mechanical energy in the absence of friction.',
     grades: [10],
+    strand: 'Physics',
   },
   {
     id: 'phys-transverse-waves-g10',
@@ -451,6 +480,7 @@ export const topics: Topic[] = [
     name: 'Transverse Pulses and Waves',
     description: 'Pulses and waves on a string or spring, and the properties of transverse waves: amplitude, wavelength, period, frequency and wave speed.',
     grades: [10],
+    strand: 'Physics',
   },
   {
     id: 'phys-longitudinal-waves-g10',
@@ -458,6 +488,7 @@ export const topics: Topic[] = [
     name: 'Longitudinal Waves',
     description: 'Compression and rarefaction in longitudinal waves, and the relationship between wave speed, frequency and wavelength.',
     grades: [10],
+    strand: 'Physics',
   },
   {
     id: 'phys-sound-g10',
@@ -465,6 +496,7 @@ export const topics: Topic[] = [
     name: 'Sound',
     description: 'The properties of sound waves, pitch, loudness and quality, and the speed of sound in different media.',
     grades: [10],
+    strand: 'Physics',
   },
   {
     id: 'phys-em-radiation-g10',
@@ -472,6 +504,7 @@ export const topics: Topic[] = [
     name: 'Electromagnetic Radiation',
     description: 'The electromagnetic spectrum, and the wave nature and properties of electromagnetic radiation.',
     grades: [10],
+    strand: 'Physics',
   },
   {
     id: 'phys-classification-matter',
@@ -479,6 +512,7 @@ export const topics: Topic[] = [
     name: 'Classification of Matter',
     description: 'Classifying matter as pure substances or mixtures, and separating mixtures using physical methods.',
     grades: [10],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-states-matter-kmt',
@@ -486,6 +520,7 @@ export const topics: Topic[] = [
     name: 'States of Matter and Kinetic Molecular Theory',
     description: 'The properties of solids, liquids and gases, changes of phase, and explaining these properties using the kinetic molecular theory.',
     grades: [10],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-the-atom',
@@ -493,6 +528,7 @@ export const topics: Topic[] = [
     name: 'The Atom',
     description: 'Atomic structure, the proton number, isotopes, electron configuration, and the development of atomic models.',
     grades: [10],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-periodic-table',
@@ -500,6 +536,7 @@ export const topics: Topic[] = [
     name: 'The Periodic Table',
     description: 'The arrangement of the periodic table, groups and periods, and periodic trends such as atomic radius, ionisation energy and electronegativity.',
     grades: [10],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-chemical-bonding-g10',
@@ -507,6 +544,7 @@ export const topics: Topic[] = [
     name: 'Chemical Bonding',
     description: 'Ionic, covalent and metallic bonding, and how the type of bonding explains the physical properties of a substance.',
     grades: [10],
+    strand: 'Chemistry',
   },
   {
     id: 'phys-physical-chemical-change',
@@ -514,6 +552,7 @@ export const topics: Topic[] = [
     name: 'Physical and Chemical Change',
     description: 'Distinguishing physical from chemical change, representing chemical change with balanced equations, and the law of conservation of matter.',
     grades: [10],
+    strand: 'Chemistry',
   },
   {
     id: 'life-sci-chemistry-of-life',

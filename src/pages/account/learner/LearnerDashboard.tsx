@@ -96,7 +96,7 @@ export function LearnerDashboard() {
           <h3 className="font-bold text-navy-900">Overall mastery</h3>
           <span className="text-xl font-extrabold text-navy-900">{overallMastery}%</span>
         </div>
-        <ProgressBar percent={overallMastery} className="mt-3" />
+        <ProgressBar percent={overallMastery} className="mt-3" label="Overall mastery" />
         <p className="mt-2 text-xs text-navy-500">
           {loading ? 'Loading…' : `Based on ${totalAttempts} practice ${totalAttempts === 1 ? 'attempt' : 'attempts'} across ${progress.length} ${progress.length === 1 ? 'topic' : 'topics'}.`}
         </p>
@@ -129,7 +129,7 @@ export function LearnerDashboard() {
                     </div>
                     <span className="text-lg font-bold text-navy-900">{p.mastery_percent}%</span>
                   </div>
-                  <ProgressBar percent={p.mastery_percent} className="mt-3" />
+                  <ProgressBar percent={p.mastery_percent} className="mt-3" label={`${topic?.name ?? p.topic_id} mastery`} />
                 </div>
               )
             })}

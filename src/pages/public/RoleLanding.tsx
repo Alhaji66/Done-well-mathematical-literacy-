@@ -88,7 +88,7 @@ export function RoleLanding({ role }: { role: DemoRole }) {
             <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-navy-900 text-gold-400">
               <data.icon className="h-6 w-6" />
             </span>
-            <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-gold-600">{data.eyebrow}</p>
+            <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-gold-700">{data.eyebrow}</p>
             <h1 className="mt-1 text-2xl font-extrabold text-navy-900 sm:text-4xl">{data.title}</h1>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-navy-600 sm:text-base">{data.description}</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">

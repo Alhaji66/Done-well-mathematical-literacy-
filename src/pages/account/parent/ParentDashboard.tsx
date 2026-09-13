@@ -54,7 +54,7 @@ function ChildCard({ child }: { child: LinkedChild }) {
         </div>
         <span className="text-lg font-bold text-navy-900">{loading ? '—' : `${overallMastery}%`}</span>
       </div>
-      <ProgressBar percent={overallMastery} className="mt-3" />
+      <ProgressBar percent={overallMastery} className="mt-3" label={`${child.full_name} overall mastery`} />
 
       {!loading && progress.length === 0 ? (
         <p className="mt-3 text-xs text-navy-400">No practice recorded yet.</p>

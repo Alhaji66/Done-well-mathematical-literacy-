@@ -88,7 +88,7 @@ export function TeacherDashboard() {
             <div className="card p-5">
               <p className="text-xs font-medium text-navy-500">Class average mastery</p>
               <p className="mt-1 text-2xl font-extrabold text-navy-900">{classAverage}%</p>
-              <ProgressBar percent={classAverage} className="mt-2" size="sm" />
+              <ProgressBar percent={classAverage} className="mt-2" size="sm" label="Class average mastery" />
             </div>
           </div>
 
@@ -106,7 +106,7 @@ export function TeacherDashboard() {
                   </div>
                   <span className="text-lg font-bold text-navy-900">{mastery !== null ? `${mastery}%` : '—'}</span>
                 </div>
-                {mastery !== null ? <ProgressBar percent={mastery} className="mt-3" /> : (
+                {mastery !== null ? <ProgressBar percent={mastery} className="mt-3" label={`${learner.full_name} overall mastery`} /> : (
                   <p className="mt-2 text-xs text-navy-400">No practice recorded yet</p>
                 )}
               </div>

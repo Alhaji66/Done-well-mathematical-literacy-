@@ -28,7 +28,7 @@ export function SchoolAnalytics() {
                 <span className="font-medium text-navy-900">Grade {g.grade} · {g.learnerCount} learners</span>
                 <span className="text-navy-600">{g.averageScore}%</span>
               </div>
-              <ProgressBar percent={g.averageScore} className="mt-1.5" />
+              <ProgressBar percent={g.averageScore} className="mt-1.5" label={`Grade ${g.grade} average score`} />
             </div>
           ))}
         </div>
@@ -45,7 +45,7 @@ export function SchoolAnalytics() {
                 </span>
                 <span className="text-navy-600">{t.classAverage}%</span>
               </div>
-              <ProgressBar percent={t.classAverage} className="mt-1.5" />
+              <ProgressBar percent={t.classAverage} className="mt-1.5" label={`${t.name} class average`} />
             </div>
           ))}
         </div>

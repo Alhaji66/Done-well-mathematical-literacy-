@@ -97,7 +97,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Collecting and organising data',
-      match: /\b(sample|population|survey|questionnaire|collect\w*|discrete|continuous|class interval|grouped data)\b/i,
+      match: /\b(sample|population|survey|questionnaire|collect\w*|discrete|continuous|class interval\w*|grouped data)\b/i,
     },
   ],
 
@@ -241,6 +241,19 @@ const rules: Record<string, SubtopicRule[]> = {
   ],
 
   // ------------------------------------------------------------ Mathematics
+  'math-number-systems': [
+    // Estimating a surd and classifying a number both talk about "irrational"
+    // and "√", so the scorer could not separate them. What is distinctive is
+    // the ESTIMATING -- bracketing a surd between consecutive integers.
+    {
+      name: 'Estimating surds',
+      match:
+        /\b(estimat\w*|between which two|consecutive integers|closer to|without (using )?a calculator|perfect square|ascending order)\b/i,
+    },
+    { name: 'Decimals and fractions', match: /\b(recurring|terminating|decimal|fraction|numerator|denominator)\b/i },
+    { name: 'The real number system', match: /\b(rational|irrational|integer|natural number|whole number|real number|undefined|non[- ]real)\b/i },
+  ],
+
   'math-algebra': [
     // NOT "b² − 4ac": that string is the quadratic formula, which these papers
     // print in the `context` as a reference for any question that needs it. It
@@ -259,9 +272,16 @@ const rules: Record<string, SubtopicRule[]> = {
   ],
 
   'math-functions': [
-    { name: 'Inverse functions', match: /\b(inverse|f⁻¹|reflect(ion)? in the line y = x|one[- ]to[- ]one)\b/i },
-    { name: 'Transformations of graphs', match: /\b(transform\w*|shift|translat\w*|reflect|stretch|moved .* units)\b/i },
-    { name: 'Exponential and logarithmic functions', match: /\b(exponential|logarith|log\b|growth|decay|b\^x)\b/i },
+    // ⁻¹ against any function letter, not f alone: a question about g⁻¹ is no
+    // less an inverse question, and "inverse" itself often appears only in the
+    // answer, which the classifier does not read.
+    // The ⁻¹ alternative sits OUTSIDE the \b(...)\b wrapper. A superscript is
+    // not a word character, so a trailing \b after "g⁻¹" can never hold and the
+    // alternative would silently never fire -- which is what the original
+    // `f⁻¹` inside the group was doing.
+    { name: 'Inverse functions', match: /\b(inverse|reflect\w* in the line y = x|one[- ]to[- ]one)\b|[a-z]⁻¹/i },
+    { name: 'Transformations of graphs', match: /\b(transform\w*|shift\w*|translat\w*|reflect\w*|stretch\w*|shrink\w*|moved .* units)\b/i },
+    { name: 'Exponential and logarithmic functions', match: /\b(exponential|logarith\w*|log\b|grow\w*|decay\w*|doubling time|half[- ]life|b\^x)\b/i },
     { name: 'Hyperbolic functions', match: /\b(hyperbola|hyperbolic|asymptote|a ÷ \(x)\b/i },
     { name: 'Quadratic functions (parabolas)', match: /\b(parabola|turning point|axis of symmetry|x²|maximum value of the (function|graph))\b/i },
     { name: 'Linear functions', match: /\b(straight line|linear function|y = mx|gradient of the line|y[- ]intercept)\b/i },
@@ -270,13 +290,16 @@ const rules: Record<string, SubtopicRule[]> = {
 
   'math-trigonometry': [
     { name: 'Sine, cosine and area rules in 2D and 3D', match: /\b(sine rule|cosine rule|area rule|triangle abc|3d|three[- ]dimensional)\b/i },
-    { name: 'Trigonometric graphs', match: /\b(period|amplitude|trig(onometric)? graph|sketch .* (sin|cos|tan))\b/i },
+    { name: 'Trigonometric graphs', match: /\b(period|amplitude|trig(onometric)? graph|(sketch|graphs? of|drawn) .{0,40}(sin|cos|tan))\b/i },
     { name: 'Trigonometric equations and general solution', match: /\b(general solution|solve for θ|solve the equation|k ?∈ ?ℤ)\b/i },
     { name: 'Identities', match: /\b(identit\w*|prove that|compound angle|double angle|sin ?2|cos ?2|sin²|cos²)\b/i },
     // "cast diagram" and "cast rule", not a bare "cast" -- a shadow cast by a
     // flagpole is a perfectly ordinary trigonometry question about something
     // else entirely.
-    { name: 'Reduction formulae and the CAST diagram', match: /\b(reduction|cast (diagram|rule)|quadrant|180° ?[−+]|360° ?−|co[- ]?function)\b/i },
+    // The 180°/360° alternatives sit OUTSIDE the \b(...)\b wrapper. They end
+    // in an operator, and an operator is not a word character, so a trailing
+    // \b after "180° +" can never hold -- both were silently dead.
+    { name: 'Reduction formulae and the CAST diagram', match: /\b(reduction|cast (diagram|rule)|quadrant|co[- ]?function)\b|(180|360)° ?[−+]/i },
     { name: 'Special angles and the calculator', match: /\b(without (using )?a calculator|special angle|exact value\w*|30°|45°|60°)\b/i },
     { name: 'Trig ratios in right-angled triangles', match: /\b(sin|cos|tan|hypotenuse|opposite|adjacent|right[- ]angled)\b/i },
   ],
@@ -297,7 +320,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Outliers and their effect', match: /\b(outlier)\b/i },
     { name: 'Five-number summary and box-and-whisker plots', match: /\b(box[- ]and[- ]whisker|five[- ]number|skew)\b/i },
     { name: 'Measures of dispersion', match: /\b(standard deviation|variance|dispersion|interquartile|iqr|quartile|spread|range)\b/i },
-    { name: 'Grouped data, histograms and frequency polygons', match: /\b(histogram|grouped data|class interval|frequency polygon|modal class)\b/i },
+    { name: 'Grouped data, histograms and frequency polygons', match: /\b(histogram|grouped data|class interval\w*|frequency polygon|modal class)\b/i },
     { name: 'Measures of central tendency', match: /\b(mean|median|mode|modal|average)\b/i },
   ],
 
@@ -331,7 +354,7 @@ const rules: Record<string, SubtopicRule[]> = {
   ],
 
   'math-counting-probability': [
-    { name: 'Arrangements with restrictions', match: /\b(restriction|must (be|sit|stand) (together|next to)|cannot be (next|adjacent)|begins with|ends with|code|password|number plate)\b/i },
+    { name: 'Arrangements with restrictions', match: /\b(restriction|must( not)? (be|sit|stand) (together|next to)|(next to|beside) each other|cannot be (next|adjacent)|begins with|ends with|code|password|number plate)\b/i },
     { name: 'The fundamental counting principle', match: /\b(counting principle|how many (different )?(ways|arrangements)|arrange|factorial|n!)\b/i },
     { name: 'Tree diagrams and two-way tables', match: /\b(tree diagram|two[- ]way table|with(out)? replacement|first .* then)\b/i },
     { name: 'Independent events and the product rule', match: /\b(independent|product rule|p\(a\) ?× ?p\(b\))\b/i },

@@ -168,6 +168,42 @@ const rules: Record<string, SubtopicRule[]> = {
     },
   ],
 
+  // ---------------------------------------------------------- Life Sciences
+  //
+  // Two topics where the scorer could not separate a sub-topic from its
+  // neighbours, because the neighbours use all of its vocabulary. Everything
+  // else in Life Sciences is left to the scorer.
+  'life-sci-response-plants': [
+    {
+      // Every tropism question mentions the tropism and most mention auxin, so
+      // what marks this sub-topic out is the WHY -- the survival benefit --
+      // rather than any term unique to it.
+      name: 'Why tropisms matter',
+      match:
+        /\b(adaptive (significance|advantage)|survival (value|advantage)|why (this|the) (response|adaptation)|benefit to the plant|maximis\w* the light|advantage(ous)? (to|for) the (plant|seedling|root|shoot))\b/i,
+    },
+    { name: 'Auxin action', match: /\b(auxin|shaded side|elongat\w*|shoot tip|growing tip|hormone)\b/i },
+    { name: 'Types of tropism', match: /\b(\w*tropism|\w*tropic|nastic|tendril)\b/i },
+  ],
+  'life-sci-animal-nutrition': [
+    {
+      // Named enzymes and their substrate-to-product conversions. The
+      // alimentary canal rule below also talks about pepsin and amylase, so
+      // this one has to come first or it is shadowed completely.
+      name: 'Enzymes and their products',
+      match:
+        /\b(amylase|pepsin|trypsin|lipase|maltase|lactase|peptidase|name the enzyme|which enzyme|enzyme (found|secreted|produced|in)|(starch|protein|lipid|fat|maltose|peptide)s? (to|into) (maltose|amino acid|fatty acid|glucose|peptide))/i,
+    },
+    {
+      name: 'Absorption and assimilation',
+      match: /\b(absorb\w*|assimilat\w*|villus|villi|microvilli|lacteal|hepatic portal|glycogen)\b/i,
+    },
+    {
+      name: 'The alimentary canal',
+      match: /\b(alimentary|oesophagus|stomach|duodenum|small intestine|large intestine|peristalsis|bile|gall bladder|egest\w*|pH of)\b/i,
+    },
+  ],
+
   // ------------------------------------------------------ Physical Sciences
   //
   // The science subjects are otherwise classified by the vocabulary scorer

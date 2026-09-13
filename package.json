@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "check:reachability": "tsx tools/reachability.mts",
     "check:subtopics": "tsx tools/subtopic-coverage.mts",
-    "check:subtopic-rules": "tsx tools/subtopic-rules.mts"
+    "check:subtopic-rules": "tsx tools/subtopic-rules.mts",
+    "level:papers": "tsx tools/level-papers.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

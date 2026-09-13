@@ -628,7 +628,7 @@ const mathP2SetA: Paper = {
           topicId: 'math-statistics',
           grade: 12,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "The box-and-whisker summary above (Q1 = 18, Median = 25, Q3 = 34) is compared with a second group whose Q1 = 20, Median = 25, Q3 = 28. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -1482,7 +1482,7 @@ const mathG11P2SetA: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group 1 has Q1 = 12 and Q3 = 28. Group 2 has Q1 = 15 and Q3 = 25. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -2310,7 +2310,7 @@ const mathG11P2SetB: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 10 and Q3 = 26. Group B has Q1 = 18 and Q3 = 24. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -3139,7 +3139,7 @@ const mathG11P2SetC: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 14 and Q3 = 34. Group B has Q1 = 20 and Q3 = 30. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -3969,7 +3969,7 @@ const mathG11P2Y2025: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 8 and Q3 = 30. Group B has Q1 = 14 and Q3 = 22. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -4799,7 +4799,7 @@ const mathG11P2Y2024: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 9 and Q3 = 25. Group B has Q1 = 17 and Q3 = 21. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -5629,7 +5629,7 @@ const mathG11P2Y2023: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 7 and Q3 = 29. Group B has Q1 = 15 and Q3 = 23. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -6459,7 +6459,7 @@ const mathG11P2Y2022: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 10 and Q3 = 32. Group B has Q1 = 16 and Q3 = 24. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -7289,7 +7289,7 @@ const mathG11P2Y2021: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 9 and Q3 = 31. Group B has Q1 = 17 and Q3 = 25. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",
@@ -8120,7 +8120,7 @@ const mathG11P2Y2020: Paper = {
           topicId: 'math-statistics',
           grade: 11,
           difficulty: 'Moderate',
-          cognitiveLevel: 3,
+          cognitiveLevel: 4,
           marks: 6,
           prompt:
             "Group A has Q1 = 11 and Q3 = 33. Group B has Q1 = 18 and Q3 = 26. Which group's middle 50% of data is more spread out? Justify your answer by calculating each group's IQR.",

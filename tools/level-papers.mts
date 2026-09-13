@@ -37,6 +37,7 @@ function applyToFile(path: string, dryRun: boolean, force: boolean) {
   const out: string[] = []
   const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0 }
   const markCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0 }
+  const unreadable: string[] = []
   let changed = 0
 
   for (let i = 0; i < lines.length; i++) {
@@ -51,19 +52,48 @@ function applyToFile(path: string, dryRun: boolean, force: boolean) {
     // these rules; Life Sciences is hand-levelled and is never touched here.
     if (alreadyLevelled && !force) continue
 
-    // marks, prompt and context all sit within the next few lines of the
-    // object literal; 16 lines covers the longest item in the corpus.
     // Skip the old level line when re-deriving, so it is replaced not doubled.
     if (alreadyLevelled) i++
-    const window = lines.slice(i, i + 16).join('\n')
+
+    // The window must stop at the END OF THIS ITEM, at the `},` sitting two
+    // spaces shallower than the `difficulty:` line. A fixed 16-line window was
+    // the first attempt and it was wrong in a way that produced confidently
+    // incorrect levels rather than obvious breakage: it ran on into the NEXT
+    // item, so whenever an item's own field could not be read, the regex
+    // happily matched the neighbour's instead.
+    const closer = `${m[1].slice(0, -2)}},`
+    let end = i
+    while (end < lines.length && lines[end] !== closer) end++
+    const window = lines.slice(i, end).join('\n')
+
     const marks = Number(window.match(/\bmarks: (\d+)/)?.[1] ?? '0')
-    const prompt = window.match(/\bprompt:\s*\n?\s*'((?:[^'\\]|\\.)*)'/)?.[1] ?? ''
-    const context = window.match(/\bcontext:\s*\n?\s*'((?:[^'\\]|\\.)*)'/)?.[1] ?? ''
+    // Both quote styles. 364 fields in the corpus are double-quoted, because
+    // they contain an apostrophe -- "Calculate Sipho's profit for June". A
+    // single-quote-only regex read every one of them as empty, and with the
+    // unbounded window above that meant they were levelled against whatever
+    // the next item happened to ask.
+    const field = (name: string) =>
+      window.match(new RegExp(`\\b${name}:\\s*\\n?\\s*'((?:[^'\\\\]|\\\\.)*)'`))?.[1] ??
+      window.match(new RegExp(`\\b${name}:\\s*\\n?\\s*"((?:[^"\\\\]|\\\\.)*)"`))?.[1] ??
+      ''
+    const prompt = field('prompt')
+    const context = field('context')
+    // An item with no readable prompt means the extractor is broken, not that
+    // the item has no prompt -- every item in the corpus has one. Levelling it
+    // anyway is how the neighbour-bleeding bug produced confident nonsense, so
+    // refuse rather than guess.
+    if (!prompt.trim()) unreadable.push(`${path}:${i + 1}`)
     const { level } = classify({ prompt, context, marks, difficulty: m[2] })
     counts[level]++
     markCounts[level] += marks
     changed++
     out.push(`${m[1]}cognitiveLevel: ${level},`)
+  }
+
+  if (unreadable.length) {
+    console.error(`\n${unreadable.length} item(s) with an unreadable prompt -- the extractor is broken:`)
+    for (const u of unreadable.slice(0, 10)) console.error(`  ${u}`)
+    process.exit(1)
   }
 
   if (!dryRun && changed) writeFileSync(full, out.join('\n'))

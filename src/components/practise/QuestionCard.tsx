@@ -4,6 +4,8 @@ import { DifficultyBadge } from '@/components/ui/Badges'
 import { CheckCircleIcon, XCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { MathText } from '@/components/practise/MathText'
+import { MarkingMemo } from '@/components/practise/MarkingMemo'
+import { Figure } from '@/components/practise/Figure'
 
 interface QuestionCardProps {
   question: Question
@@ -48,6 +50,8 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
       <p className="mt-3 text-[15px] font-medium leading-relaxed text-navy-900">
         <MathText>{question.prompt}</MathText>
       </p>
+
+      {question.figure ? <Figure id={question.figure} /> : null}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -129,6 +133,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
           <p className="mt-1.5 text-sm leading-relaxed text-navy-600">
             <MathText>{question.explanation}</MathText>
           </p>
+          {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
         </div>
       )}
 

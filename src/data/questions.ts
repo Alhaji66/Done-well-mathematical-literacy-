@@ -1521,6 +1521,7 @@ export const questions: Question[] = [
   // --- Electrostatics: working in one dimension (Grade 12) -------------------
   {
     id: 'psci-es-1d-1',
+    figure: 'charges-on-a-line',
     topicId: 'phys-electrostatics',
     grade: 12,
     difficulty: 'Moderate',
@@ -1529,6 +1530,13 @@ export const questions: Question[] = [
     prompt: 'Calculate the magnitude and direction of the electrostatic force that Q1 exerts on Q2.',
     answer: 'F = kQ1Q2/r² = (9 × 10⁹)(3 × 10⁻⁶)(2 × 10⁻⁶) ÷ (0,20)² = (9 × 10⁹)(6 × 10⁻¹²) ÷ 0,04 = 0,054 ÷ 0,04 = 1,35 N. Q1 is positive and Q2 is negative, so the force is attractive: the force on Q2 is directed towards Q1, that is in the negative x-direction (to the left).',
     explanation: 'Use the magnitudes of the charges in Coulomb’s law and decide the direction separately from the SIGNS -- substituting a negative charge into the formula and reading a negative answer as "leftwards" works by luck rather than by method, and fails as soon as three charges are involved. Note that Q3 plays no part here: the question asks only for the force from Q1.',
+    memo: [
+      { code: 'SF', marks: 1, text: 'Quoting F = kQ₁Q₂/r² and substituting the MAGNITUDES of the charges' },
+      { code: 'S', marks: 1, text: 'Substituting r = 0,20 m' },
+      { code: 'M', marks: 1, text: 'Evaluating the numerator (9 × 10⁹)(6 × 10⁻¹²)' },
+      { code: 'A', marks: 1, text: 'F = 1,35 N' },
+      { code: 'A', marks: 1, text: 'Direction: attractive, towards Q1 (negative x-direction)' },
+    ],
   },
   {
     id: 'psci-es-1d-2',
@@ -1540,6 +1548,14 @@ export const questions: Question[] = [
     prompt: 'Calculate the magnitude and direction of the net electric field at the midpoint, and explain why the two fields ADD here rather than partly cancelling.',
     answer: 'From QA: E = kQ/r² = (9 × 10⁹)(5 × 10⁻⁶) ÷ (0,20)² = 0,045 ÷ 0,04 = 1,125 × 10⁶ N/C, directed away from QA because QA is positive, so to the right. From QB: E = (9 × 10⁹)(3 × 10⁻⁶) ÷ (0,20)² = 0,027 ÷ 0,04 = 0,675 × 10⁶ N/C, directed towards QB because QB is negative, so also to the right. Both point right, so the net field is 1,125 × 10⁶ + 0,675 × 10⁶ = 1,80 × 10⁶ N/C to the right. They add because the charges have OPPOSITE signs: the field of a positive charge points away from it and the field of a negative charge points towards it, so at a point between them both arrows point the same way -- from the positive towards the negative.',
     explanation: 'Work in one dimension by treating right as positive and left as negative, then add. The reasoning worth keeping is the sign rule: between two LIKE charges the fields oppose and can cancel, between two UNLIKE charges they reinforce and can never cancel anywhere between them. Deciding that before calculating tells you whether a zero-field point is even possible.',
+    memo: [
+      { code: 'SF', marks: 1, text: 'Using E = kQ/r² for each charge separately' },
+      { code: 'A', marks: 1, text: 'E from QA = 1,125 × 10⁶ N/C to the right' },
+      { code: 'A', marks: 1, text: 'E from QB = 0,675 × 10⁶ N/C to the right' },
+      { code: 'M', marks: 1, text: 'Recognising both point the same way, so the magnitudes add' },
+      { code: 'CA', marks: 1, text: 'Net field 1,80 × 10⁶ N/C to the right' },
+      { code: 'R', marks: 2, text: 'Explaining that unlike charges give fields pointing the same way between them' },
+    ],
   },
   {
     id: 'psci-es-1d-3',
@@ -1661,6 +1677,7 @@ export const questions: Question[] = [
   // --- Mathematics gap fill: number systems -----------------------------------
   {
     id: 'mth-surdest-1',
+    figure: 'surd-number-line',
     topicId: 'math-number-systems',
     grade: 10,
     difficulty: 'Easy',
@@ -1701,6 +1718,12 @@ export const questions: Question[] = [
     prompt: 'Simplify the algebraic fraction $\\frac{x^{2}-9}{x^{2}+7x+12}$, and state the value of $x$ for which the expression is undefined.',
     answer: 'Factorise the numerator as a difference of two squares: x² − 9 = (x − 3)(x + 3). Factorise the denominator: x² + 7x + 12 = (x + 3)(x + 4). The fraction becomes (x − 3)(x + 3) ÷ [(x + 3)(x + 4)]. Cancel the common factor (x + 3), giving (x − 3) ÷ (x + 4). The expression is undefined where the ORIGINAL denominator is zero: x = −3 and x = −4.',
     explanation: 'Factorise first, always -- nothing can be cancelled out of a sum, only out of a product, which is why the factorising is not optional. The restriction is read off the original denominator, not the simplified one: x = −3 still breaks the expression you were given, even though the (x + 3) has been cancelled away.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Factorising the numerator as a difference of two squares: (x − 3)(x + 3)' },
+      { code: 'M', marks: 1, text: 'Factorising the denominator: (x + 3)(x + 4)' },
+      { code: 'A', marks: 1, text: 'Cancelling (x + 3) to give (x − 3) ÷ (x + 4)' },
+      { code: 'A', marks: 1, text: 'Both restrictions, x ≠ −3 and x ≠ −4, read off the ORIGINAL denominator' },
+    ],
   },
   {
     id: 'mth-algfrac-2',
@@ -1711,6 +1734,13 @@ export const questions: Question[] = [
     prompt: 'Simplify $\\frac{3}{x-2} + \\frac{5}{x+2}$ as a single fraction in its simplest form.',
     answer: 'The lowest common denominator is (x − 2)(x + 2). Rewrite each term over it: 3(x + 2) ÷ [(x − 2)(x + 2)] + 5(x − 2) ÷ [(x − 2)(x + 2)]. Add the numerators: 3(x + 2) + 5(x − 2) = 3x + 6 + 5x − 10 = 8x − 4. So the answer is (8x − 4) ÷ [(x − 2)(x + 2)], which can be written 4(2x − 1) ÷ (x² − 4). It does not simplify further, since 4(2x − 1) shares no factor with (x − 2)(x + 2).',
     explanation: 'Adding algebraic fractions is the same procedure as adding numerical ones: a common denominator, then add the numerators only. The step that goes wrong most often is the sign -- 5(x − 2) is 5x − 10, and the minus must reach the 10. Check at the end whether anything cancels, but do not force it: most answers do not simplify further, and cancelling a term rather than a factor is the classic way to lose the marks you have just earned.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Identifying the LCD as (x − 2)(x + 2)' },
+      { code: 'M', marks: 1, text: 'Rewriting both fractions over that denominator' },
+      { code: 'M', marks: 1, text: 'Expanding the numerators: 3x + 6 and 5x − 10' },
+      { code: 'A', marks: 1, text: 'Collecting to 8x − 4' },
+      { code: 'CA', marks: 1, text: 'Final answer over the common denominator, following from your own numerator' },
+    ],
   },
   {
     id: 'mth-algfrac-3',
@@ -1722,6 +1752,12 @@ export const questions: Question[] = [
     prompt: 'Explain why this is wrong, test the learner’s answer with a substitution, and state what the correct simplified form is.',
     answer: 'Cancelling is only valid between FACTORS -- things that are multiplied -- and here x² and 4 are TERMS being added, not factors. So nothing may be cancelled. Test with x = 0: the original expression is (0 + 4) ÷ (0 + 2) = 2, while the learner’s answer gives 0 + 2 = 2, which agrees by coincidence. Test with x = 1: the original is (1 + 4) ÷ (1 + 2) = 5 ÷ 3, while the learner’s answer gives 3. These disagree, so the simplification is wrong. The correct answer is that (x² + 4) ÷ (x + 2) does not simplify: x² + 4 is a SUM of two squares, which does not factorise over the real numbers, so the numerator and denominator share no factor.',
     explanation: 'Two things worth taking from this. First, the cancelling rule in the form that is actually usable: you may cancel a bracket that appears in both the numerator and the denominator, and nothing else. Second, substitution as a check -- pick a value, work out both expressions, and if they differ, the simplification is wrong. One value can agree by accident, as x = 0 did here, so test two.',
+    memo: [
+      { code: 'R', marks: 2, text: 'Stating that only FACTORS may be cancelled, and that x² and 4 are terms being added' },
+      { code: 'M', marks: 1, text: 'Substituting a test value into both expressions' },
+      { code: 'A', marks: 1, text: 'Showing the two disagree (x = 1 gives 5/3 against 3)' },
+      { code: 'R', marks: 2, text: 'Concluding it does not simplify, because a sum of two squares does not factorise over the reals' },
+    ],
   },
 
   // --- Mathematics gap fill: nature of the roots ------------------------------
@@ -1734,6 +1770,12 @@ export const questions: Question[] = [
     prompt: 'Determine the nature of the roots of 2x² − 5x + 4 = 0 without solving the equation.',
     answer: 'Here a = 2, b = −5 and c = 4. The discriminant is Δ = b² − 4ac = (−5)² − 4(2)(4) = 25 − 32 = −7. Since Δ < 0, the roots are non-real. The equation has no real solutions, which means the parabola y = 2x² − 5x + 4 does not cut the x-axis at all.',
     explanation: 'The discriminant answers the question "what kind of roots?" without any of the work of finding them. The three cases are worth knowing as one sentence each: Δ > 0 gives two real unequal roots, Δ = 0 gives two real equal roots, and Δ < 0 gives non-real roots. Keep the graphical meaning alongside it -- the discriminant is counting how many times the parabola meets the x-axis -- because that is how the idea is usually tested.',
+    memo: [
+      { code: 'SF', marks: 1, text: 'Quoting Δ = b² − 4ac and identifying a = 2, b = −5, c = 4' },
+      { code: 'S', marks: 1, text: 'Substituting: (−5)² − 4(2)(4)' },
+      { code: 'A', marks: 1, text: 'Δ = −7' },
+      { code: 'R', marks: 1, text: 'Concluding the roots are non-real because Δ < 0' },
+    ],
   },
   {
     id: 'mth-roots-2',
@@ -1744,6 +1786,13 @@ export const questions: Question[] = [
     prompt: 'For which value(s) of k will the equation x² + kx + 9 = 0 have real and equal roots?',
     answer: 'Real and equal roots means Δ = 0. With a = 1, b = k and c = 9: Δ = k² − 4(1)(9) = k² − 36. Set this to zero: k² − 36 = 0, so k² = 36 and k = 6 or k = −6. Both values work, since both give a perfect square: k = 6 gives x² + 6x + 9 = (x + 3)², and k = −6 gives x² − 6x + 9 = (x − 3)².',
     explanation: 'Translate the words into a condition on Δ before doing anything else -- "real and equal" is Δ = 0, "real" alone is Δ ≥ 0, "non-real" is Δ < 0. The negative value of k is the one most often dropped: k² = 36 has two solutions, and there is nothing in the question ruling either out. The factorised check at the end is quick and confirms both.',
+    memo: [
+      { code: 'R', marks: 1, text: 'Recognising that real and equal roots means Δ = 0' },
+      { code: 'S', marks: 1, text: 'Substituting to get k² − 36' },
+      { code: 'M', marks: 1, text: 'Setting k² − 36 = 0' },
+      { code: 'A', marks: 1, text: 'k = 6' },
+      { code: 'A', marks: 1, text: 'k = −6 (both values required)' },
+    ],
   },
   {
     id: 'mth-roots-3',
@@ -1754,6 +1803,14 @@ export const questions: Question[] = [
     prompt: 'Show that the roots of x² − (p + 2)x + 2p = 0 are real for every real value of p, and determine for which value of p the roots are equal.',
     answer: 'Δ = b² − 4ac with a = 1, b = −(p + 2) and c = 2p. So Δ = (p + 2)² − 4(1)(2p) = p² + 4p + 4 − 8p = p² − 4p + 4 = (p − 2)². A square of a real number is never negative, so Δ ≥ 0 for every real p, which means the roots are real for every real value of p. The roots are equal when Δ = 0, that is (p − 2)² = 0, giving p = 2.',
     explanation: 'The whole question turns on recognising that the discriminant has simplified to a perfect square, so the argument is not "I tried some values of p" but "this expression is a square and squares are never negative" -- a proof rather than evidence. Expanding carefully matters here: the −4ac term is −8p, and combining it with the +4p from the square is what produces the perfect square in the first place. A sign slip there leaves you with p² + 12p + 4, which is not a square, and the argument collapses.',
+    memo: [
+      { code: 'S', marks: 1, text: 'Substituting b = −(p + 2) and c = 2p into b² − 4ac' },
+      { code: 'M', marks: 1, text: 'Expanding (p + 2)² − 8p' },
+      { code: 'A', marks: 1, text: 'Simplifying to p² − 4p + 4' },
+      { code: 'A', marks: 1, text: 'Recognising this as the perfect square (p − 2)²' },
+      { code: 'R', marks: 1, text: 'Arguing that a square is never negative, so Δ ≥ 0 for every real p' },
+      { code: 'A', marks: 1, text: 'p = 2 for equal roots' },
+    ],
   },
 
   // --- Mathematics gap fill: word problems ------------------------------------
@@ -1766,6 +1823,12 @@ export const questions: Question[] = [
     prompt: 'The sum of two numbers is 37 and their difference is 9. Let x be the larger number and set up equations to determine both numbers.',
     answer: 'Let x be the larger number and y the smaller. The sum gives x + y = 37 and the difference gives x − y = 9. Adding the two equations eliminates y: 2x = 46, so x = 23. Substituting back into x + y = 37 gives 23 + y = 37, so y = 14. The numbers are 23 and 14. Check: 23 + 14 = 37 and 23 − 14 = 9, both correct.',
     explanation: 'The real work in a word problem is the translation, not the algebra that follows. Name the unknowns explicitly in words first -- "let x be the larger number" -- then turn each sentence of the question into one equation. Two unknowns need two equations, and the question will always give exactly that many facts. Finish by checking your answer against the original WORDS rather than your own equations, since an error in the translation survives a check against the equations.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Defining the variables in words and writing x + y = 37' },
+      { code: 'M', marks: 1, text: 'Writing x − y = 9' },
+      { code: 'A', marks: 1, text: 'x = 23' },
+      { code: 'CA', marks: 1, text: 'y = 14, following from your own value of x' },
+    ],
   },
   {
     id: 'mth-word-2',
@@ -1776,6 +1839,13 @@ export const questions: Question[] = [
     prompt: 'The product of three consecutive positive integers is 8 times the middle one. Set up an equation and determine the three integers.',
     answer: 'Let the middle integer be x, so the three consecutive integers are x − 1, x and x + 1. The product is 8 times the middle one: (x − 1)(x)(x + 1) = 8x. Divide both sides by x, which is allowed because the integers are positive so x is not zero: (x − 1)(x + 1) = 8, so x² − 1 = 8 and x² = 9, giving x = 3 or x = −3. The integers are positive, so x = 3 and the three numbers are 2, 3 and 4. Check: 2 × 3 × 4 = 24, and 8 × 3 = 24, correct.',
     explanation: 'Choosing the MIDDLE number as x is what makes this problem short -- consecutive integers written as x − 1, x, x + 1 give a difference of two squares, while x, x + 1, x + 2 give a cubic to expand. Two conditions in the question then have to be used: "consecutive" shapes the expressions, and "positive" is what lets you divide by x and what rules out x = −3 at the end. A word problem that gives you a condition expects you to use it.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Choosing the middle integer as x, giving x − 1, x, x + 1' },
+      { code: 'M', marks: 1, text: 'Writing (x − 1)(x)(x + 1) = 8x' },
+      { code: 'M', marks: 1, text: 'Dividing by x, with the reason that the integers are positive' },
+      { code: 'A', marks: 1, text: 'x = 3, rejecting x = −3 because the integers are positive' },
+      { code: 'CA', marks: 1, text: 'The three integers 2, 3 and 4' },
+    ],
   },
   {
     id: 'mth-word-3',
@@ -1787,6 +1857,14 @@ export const questions: Question[] = [
     prompt: 'Let x be the width of the garden, set up an equation in x, and determine the dimensions of the garden.',
     answer: 'Let the width of the garden be x metres, so its length is x + 3 metres and its area is x(x + 3). The path is 1 m wide all the way round, so the outer rectangle is 2 m wider and 2 m longer than the garden: its dimensions are (x + 2) by (x + 5), and its area is (x + 2)(x + 5). The path alone is the outer area minus the garden area, and that is 30: (x + 2)(x + 5) − x(x + 3) = 30. Expand: (x² + 7x + 10) − (x² + 3x) = 30, so 4x + 10 = 30, giving 4x = 20 and x = 5. The garden is 5 m wide and 8 m long.',
     explanation: 'The step that decides this question is realising the path adds 1 m on BOTH sides, so each dimension grows by 2, not by 1 -- a sketch with the measurements marked on it is worth more here than any amount of algebra. After that, the phrase "the path alone" tells you exactly which subtraction to write. Notice that the x² terms cancel, leaving a linear equation: if yours does not cancel, one of the two areas has been set up wrongly.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Writing the garden as x by (x + 3)' },
+      { code: 'M', marks: 1, text: 'Recognising the outer rectangle as (x + 2) by (x + 5) — 1 m on BOTH sides' },
+      { code: 'M', marks: 1, text: 'Setting outer area − garden area = 30' },
+      { code: 'M', marks: 1, text: 'Expanding both products' },
+      { code: 'A', marks: 1, text: 'Simplifying to 4x + 10 = 30 and solving x = 5' },
+      { code: 'CA', marks: 1, text: 'Dimensions 5 m by 8 m' },
+    ],
   },
 
   // --- Mathematics gap fill: exponential and logarithmic functions ------------
@@ -1810,6 +1888,13 @@ export const questions: Question[] = [
     prompt: 'Given g(x) = log₃ x, determine g(81), solve g(x) = −2, and state the domain of g.',
     answer: 'For g(81): log₃ 81 asks "3 to what power gives 81?" Since 3⁴ = 81, g(81) = 4. For g(x) = −2: log₃ x = −2 means x = 3⁻² = 1/9. The domain is x > 0, that is x ∈ (0; ∞), because a positive base raised to any real power gives a positive result, so there is no power of 3 that produces zero or a negative number.',
     explanation: 'Read every logarithm as the question "the base to WHAT power gives this?" -- that sentence converts log₃ 81 = 4 into 3⁴ = 81 and back, and it is the only thing needed for most log work at this level. The restricted domain is not an arbitrary rule: it follows from the exponential form, since 3 to any power is positive, so log₃ of a negative number or of zero simply does not exist.',
+    memo: [
+      { code: 'A', marks: 1, text: 'g(81) = 4' },
+      { code: 'M', marks: 1, text: 'Rewriting log₃ x = −2 in exponential form x = 3⁻²' },
+      { code: 'A', marks: 1, text: 'x = 1/9' },
+      { code: 'A', marks: 1, text: 'Domain x > 0' },
+      { code: 'R', marks: 1, text: 'Reason: a positive base to any real power is positive' },
+    ],
   },
   {
     id: 'mth-explog-3',
@@ -1821,6 +1906,14 @@ export const questions: Question[] = [
     prompt: 'Explain what the 3 in the exponent represents, calculate the population after 12 hours, and determine how long it takes for the population to reach 40 000. Give the answer using logarithms.',
     answer: 'The 3 is the DOUBLING TIME in hours: when t = 3 the exponent is 1 and the population is multiplied by 2, when t = 6 the exponent is 2 and it is multiplied by 4, and so on. After 12 hours: N(12) = 5 000 × 2^(12/3) = 5 000 × 2⁴ = 5 000 × 16 = 80 000 bacteria. For 40 000: 5 000 × 2^(t/3) = 40 000, so 2^(t/3) = 8. Since 8 = 2³, the exponent t/3 = 3 and t = 9 hours. Using logarithms in general: t/3 = log₂ 8 = 3, so t = 3 log₂ 8 = 9 hours.',
     explanation: 'An exponential model repays being read before it is calculated with: the coefficient is the starting amount, the base is the growth factor, and the number dividing t in the exponent is how long one whole multiplication by that factor takes. Once that is clear, the 12-hour answer needs no calculator. The logarithm is what handles the cases where the target is not a neat power -- here 40 000 happened to work out exactly, but the same log₂ step handles 45 000 just as well.',
+    memo: [
+      { code: 'R', marks: 1, text: 'Identifying the 3 as the doubling time in hours' },
+      { code: 'S', marks: 1, text: 'Substituting t = 12 to get 5 000 × 2⁴' },
+      { code: 'A', marks: 1, text: 'N(12) = 80 000 bacteria' },
+      { code: 'M', marks: 1, text: 'Setting 5 000 × 2^(t/3) = 40 000 and reducing to 2^(t/3) = 8' },
+      { code: 'M', marks: 1, text: 'Recognising 8 = 2³, so t/3 = 3' },
+      { code: 'A', marks: 1, text: 't = 9 hours' },
+    ],
   },
 
   // --- Mathematics gap fill: transformations of graphs ------------------------
@@ -1868,6 +1961,12 @@ export const questions: Question[] = [
     prompt: 'Determine the equation of the inverse of f(x) = 3x − 6 in the form f⁻¹(x) = …, and state the coordinates of the point where f and f⁻¹ intersect on the line y = x.',
     answer: 'Write y = 3x − 6, then swap x and y: x = 3y − 6. Solve for y: x + 6 = 3y, so y = (x + 6) ÷ 3. Therefore f⁻¹(x) = (x + 6) ÷ 3, which can also be written f⁻¹(x) = x/3 + 2. The graphs of f and f⁻¹ are reflections of each other in the line y = x, so they meet where f(x) = x: 3x − 6 = x gives 2x = 6 and x = 3. The point of intersection is (3; 3).',
     explanation: 'The procedure is always the same three steps -- write y =, swap x and y, solve for y -- and the swap is the part that does the mathematical work, because an inverse undoes the function by reversing the roles of input and output. The reflection in y = x is the geometric version of that same swap: a point (a; b) on f becomes (b; a) on f⁻¹.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Swapping x and y: x = 3y − 6' },
+      { code: 'M', marks: 1, text: 'Making y the subject' },
+      { code: 'A', marks: 1, text: 'f⁻¹(x) = (x + 6) ÷ 3' },
+      { code: 'A', marks: 1, text: 'Point of intersection (3; 3), from solving f(x) = x' },
+    ],
   },
   {
     id: 'mth-inv-2',
@@ -1905,6 +2004,7 @@ export const questions: Question[] = [
   },
   {
     id: 'mth-cast-2',
+    figure: 'cast-diagram',
     topicId: 'math-trigonometry',
     grade: 11,
     difficulty: 'Moderate',
@@ -1913,6 +2013,13 @@ export const questions: Question[] = [
     prompt: 'Using the CAST diagram, express each of the following in terms of p: (a) cos 140°, (b) cos 320°, (c) sin 50°.',
     answer: '(a) 140° = 180° − 40°, which lies in the second quadrant. In the second quadrant only sine is positive, so cosine is negative: cos 140° = −cos 40° = −p. (b) 320° = 360° − 40°, which lies in the fourth quadrant. In the fourth quadrant cosine is positive, so cos 320° = cos 40° = p. (c) 50° = 90° − 40°, and sin(90° − θ) = cos θ because sine and cosine are co-functions. So sin 50° = cos 40° = p.',
     explanation: 'Write each angle in the form 180° − θ, 360° − θ or 90° − θ first -- that single step decides everything that follows. CAST then reads round the quadrants from the fourth: All in the first, Sine in the second, Tangent in the third, Cosine in the fourth, naming which ratio stays POSITIVE there. Part (c) is the case worth watching: a 90° angle swaps the ratio to its co-function, which is the one thing the other two reductions never do.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Writing 140° as 180° − 40° and using the second quadrant' },
+      { code: 'A', marks: 1, text: 'cos 140° = −p' },
+      { code: 'A', marks: 1, text: 'cos 320° = p, with 320° = 360° − 40° in the fourth quadrant' },
+      { code: 'M', marks: 1, text: 'Recognising sin 50° = sin(90° − 40°) as a co-function' },
+      { code: 'A', marks: 1, text: 'sin 50° = p' },
+    ],
   },
   {
     id: 'mth-cast-3',
@@ -1945,6 +2052,13 @@ export const questions: Question[] = [
     prompt: 'Sketch the graph of g(x) = cos 2x for x ∈ [0°; 360°], and state the period, the number of complete cycles shown, and the x-values of the maximum points in this interval.',
     answer: 'The period of cos kx is 360° ÷ k, so here the period is 360° ÷ 2 = 180°. Over the interval from 0° to 360° there are therefore 2 complete cycles. The graph starts at its maximum, since cos 0 = 1, then falls to a minimum of −1 at x = 90°, returns to a maximum at x = 180°, falls again to a minimum at x = 270°, and finishes at a maximum at x = 360°. The maximum points in the interval are at x = 0°, x = 180° and x = 360°, each with a y-value of 1. The amplitude is 1, so the graph runs between −1 and 1, and it cuts the x-axis at 45°, 135°, 225° and 315°.',
     explanation: 'Work out the period first, then everything else follows from it: the maxima are one period apart, the minima sit halfway between them, and the x-intercepts sit a quarter-period either side of each minimum. Sketching a trig graph by plotting points is slow and error-prone; sketching it from the period, the amplitude and the starting value takes a fraction of the time and is what the marks are actually for.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Using period = 360° ÷ k' },
+      { code: 'A', marks: 1, text: 'Period = 180°' },
+      { code: 'A', marks: 1, text: '2 complete cycles in the interval' },
+      { code: 'A', marks: 1, text: 'Maxima at x = 0°, 180° and 360°' },
+      { code: 'A', marks: 1, text: 'Correct shape, starting at a maximum and running between −1 and 1' },
+    ],
   },
   {
     id: 'mth-triggraph-3',
@@ -1968,6 +2082,12 @@ export const questions: Question[] = [
     prompt: 'Determine the angle of inclination of the line passing through A(1; 2) and B(4; 8), correct to one decimal place.',
     answer: 'The gradient is m = (8 − 2) ÷ (4 − 1) = 6 ÷ 3 = 2. The angle of inclination θ satisfies tan θ = m, so tan θ = 2 and θ = 63,4°. Since the gradient is positive, the angle is acute, which agrees with the answer.',
     explanation: 'The angle of inclination is the angle the line makes with the POSITIVE x-axis, measured anticlockwise, and the whole topic rests on one relationship: tan θ = m. Check the answer against the sign of the gradient every time -- a positive gradient gives an acute angle between 0° and 90°, a negative gradient an obtuse angle between 90° and 180°.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Using m = (y₂ − y₁) ÷ (x₂ − x₁)' },
+      { code: 'A', marks: 1, text: 'm = 2' },
+      { code: 'M', marks: 1, text: 'Using tan θ = m' },
+      { code: 'A', marks: 1, text: 'θ = 63,4°' },
+    ],
   },
   {
     id: 'mth-incl-2',
@@ -1978,6 +2098,13 @@ export const questions: Question[] = [
     prompt: 'Determine the angle of inclination of the line 3x + 4y = 12, correct to one decimal place.',
     answer: 'Rewrite in the form y = mx + c: 4y = −3x + 12, so y = −3x/4 + 3 and the gradient is m = −0,75. Then tan θ = −0,75. A calculator returns −36,9°, which is not an angle of inclination, since inclination is measured from 0° to 180°. Because the gradient is negative the line slopes downwards and the angle must be obtuse, so add 180°: θ = 180° − 36,9° = 143,1°.',
     explanation: 'This is the question that separates the topic from ordinary gradient work. A calculator only ever returns an angle between −90° and 90° for the inverse tangent, so a negative gradient always needs the extra step of adding 180° to land in the correct range. Deciding first, from the sign of the gradient, whether the answer should be acute or obtuse means the calculator output is checked rather than copied.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Rewriting the equation in the form y = mx + c' },
+      { code: 'A', marks: 1, text: 'm = −0,75' },
+      { code: 'M', marks: 1, text: 'Using tan θ = m' },
+      { code: 'M', marks: 1, text: 'Recognising the calculator value of −36,9° is not an inclination and adding 180°' },
+      { code: 'A', marks: 1, text: 'θ = 143,1°' },
+    ],
   },
   {
     id: 'mth-incl-3',
@@ -2002,6 +2129,13 @@ export const questions: Question[] = [
     prompt: 'Determine the equation of the tangent to the circle at P.',
     answer: 'The centre of the circle is the origin O(0; 0). The radius OP has gradient (4 − 0) ÷ (3 − 0) = 4/3. A tangent is perpendicular to the radius at the point of contact, so the gradient of the tangent is the negative reciprocal: −3/4. Using y − y₁ = m(x − x₁) at P(3; 4): y − 4 = −3/4 (x − 3), so y = −3x/4 + 9/4 + 4, giving y = −3x/4 + 25/4, or 3x + 4y = 25.',
     explanation: 'One fact does the work here: the tangent is perpendicular to the radius drawn to the point of contact. So the method is always the same three steps -- gradient of the radius, negative reciprocal for the tangent, then the point-gradient form. Check that P really is on the circle before starting, since 3² + 4² = 25 confirms it and the method fails silently if the point is not actually on the circumference.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Gradient of the radius OP' },
+      { code: 'A', marks: 1, text: 'm_OP = 4/3' },
+      { code: 'M', marks: 1, text: 'Using the negative reciprocal because the tangent is perpendicular to the radius' },
+      { code: 'A', marks: 1, text: 'm_tangent = −3/4' },
+      { code: 'CA', marks: 1, text: 'Equation 3x + 4y = 25, following from your own gradient' },
+    ],
   },
   {
     id: 'mth-circtan-2',
@@ -2024,6 +2158,13 @@ export const questions: Question[] = [
     prompt: 'Determine whether the learner is correct by comparing the perpendicular distance from the centre to the line with the radius.',
     answer: 'A line is a tangent exactly when its perpendicular distance from the centre equals the radius. Write the line as 2x − y + 12 = 0. The perpendicular distance from (0; 0) is d = |2(0) − (0) + 12| ÷ √(2² + (−1)²) = 12 ÷ √5 ≈ 12 ÷ 2,236 ≈ 5,37. The radius is 5. Since 5,37 > 5, the distance is greater than the radius, so the line misses the circle entirely and is NOT a tangent. The learner is wrong. (Equivalently, substituting y = 2x + 12 into x² + y² = 25 gives 5x² + 48x + 119 = 0, whose discriminant is 48² − 4(5)(119) = 2 304 − 2 380 = −76 < 0, confirming no points of intersection.)',
     explanation: 'The comparison of distance to radius settles all three cases at once, which is why it is worth learning as a single test: distance less than the radius means the line cuts the circle twice, distance equal to the radius means it touches once and is a tangent, and distance greater means it misses. The discriminant route in the bracket reaches the same conclusion and is a good cross-check, since a negative discriminant is exactly "no points in common".',
+    memo: [
+      { code: 'M', marks: 1, text: 'Writing the line as 2x − y + 12 = 0' },
+      { code: 'SF', marks: 1, text: 'Quoting and substituting into the perpendicular distance formula' },
+      { code: 'A', marks: 1, text: 'd = 12 ÷ √5 ≈ 5,37' },
+      { code: 'M', marks: 1, text: 'Comparing d with the radius 5' },
+      { code: 'J', marks: 2, text: 'Concluding it is NOT a tangent, because d > r means the line misses the circle' },
+    ],
   },
 
   // --- Mathematics gap fill: grouped data and histograms ----------------------
@@ -2037,6 +2178,13 @@ export const questions: Question[] = [
     prompt: 'State the modal class, and estimate the mean travelling time using the midpoints of the class intervals.',
     answer: 'The modal class is 10 ≤ t < 20, since it has the highest frequency of 14. For the estimated mean, use the midpoint of each interval: 5, 15, 25, 35 and 45. Multiply each by its frequency: 5 × 6 = 30, 15 × 14 = 210, 25 × 12 = 300, 35 × 5 = 175, 45 × 3 = 135. The total is 30 + 210 + 300 + 175 + 135 = 850. Divide by the number of learners: 850 ÷ 40 = 21,25 minutes.',
     explanation: 'Grouped data has lost the individual values, so the mean can only be ESTIMATED, and the midpoint stands in for every value in its interval. That is why the answer is an estimate rather than the mean, and it is worth saying so in an answer. Note also that the modal CLASS is asked for, not the mode -- with grouped data there is no single most common value to give, only the interval containing the most readings.',
+    memo: [
+      { code: 'A', marks: 1, text: 'Modal class 10 ≤ t < 20' },
+      { code: 'M', marks: 1, text: 'Using the midpoints 5, 15, 25, 35, 45' },
+      { code: 'M', marks: 1, text: 'Multiplying each midpoint by its frequency' },
+      { code: 'A', marks: 1, text: 'Total 850' },
+      { code: 'CA', marks: 1, text: 'Mean ≈ 21,25 minutes, following from your own total' },
+    ],
   },
   {
     id: 'mth-grouped-2',
@@ -2072,6 +2220,13 @@ export const questions: Question[] = [
     prompt: 'Draw up the cumulative frequency table needed to plot an ogive, and state the coordinates of the points that would be plotted.',
     answer: 'Add the frequencies as you go: up to 20 there are 5; up to 40 there are 5 + 13 = 18; up to 60 there are 18 + 22 = 40; up to 80 there are 40 + 15 = 55; up to 100 there are 55 + 5 = 60. An ogive is plotted against the UPPER boundary of each interval, and it starts at the lower boundary of the first interval with a cumulative frequency of zero. The points are (0; 0), (20; 5), (40; 18), (60; 40), (80; 55) and (100; 60).',
     explanation: 'Two details decide whether an ogive is drawn correctly. The points go at the UPPER end of each interval, because the cumulative frequency of 18 means "18 learners scored below 40", which is only true at 40 itself. And the curve starts at (0; 0), the lower boundary of the first interval, since nobody scored below 0 -- leaving that point out is the most common error, and it distorts every reading taken off the left of the curve.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Accumulating the frequencies' },
+      { code: 'A', marks: 1, text: 'Cumulative frequencies 5, 18, 40, 55, 60' },
+      { code: 'A', marks: 1, text: 'Plotting against the UPPER boundary of each interval' },
+      { code: 'A', marks: 1, text: 'Including the starting point (0; 0)' },
+      { code: 'CA', marks: 1, text: 'All six coordinates listed correctly' },
+    ],
   },
   {
     id: 'mth-ogive-2',
@@ -2083,6 +2238,13 @@ export const questions: Question[] = [
     prompt: 'Estimate the median, the lower quartile, the upper quartile and the interquartile range from these readings.',
     answer: 'With 80 learners, the quartile positions are found at cumulative frequencies of one quarter, one half and three quarters of 80: that is 20, 40 and 60. The lower quartile Q1 is the mark at a cumulative frequency of 20, which is 45. The median Q2 is the mark at a cumulative frequency of 40, which is 58. The upper quartile Q3 is the mark at a cumulative frequency of 60, which is 70. The interquartile range is Q3 − Q1 = 70 − 45 = 25 marks.',
     explanation: 'An ogive is a machine for reading off percentiles: go UP the cumulative frequency axis to the position you want, across to the curve, and down to the mark. The positions for grouped data of size n are n/4, n/2 and 3n/4 on the cumulative frequency axis -- note these are positions on the VERTICAL axis, not on the mark axis, which is the confusion that produces nonsense answers. The interquartile range then describes the spread of the middle half of the class.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Using the positions n/4, n/2 and 3n/4 on the CUMULATIVE FREQUENCY axis' },
+      { code: 'A', marks: 1, text: 'Q1 = 45' },
+      { code: 'A', marks: 1, text: 'Median = 58' },
+      { code: 'A', marks: 1, text: 'Q3 = 70' },
+      { code: 'CA', marks: 1, text: 'IQR = 25, following from your own quartiles' },
+    ],
   },
   {
     id: 'mth-ogive-3',
@@ -2106,6 +2268,12 @@ export const questions: Question[] = [
     prompt: 'Convert a nominal rate of 9% per annum compounded monthly to an effective annual rate, correct to two decimal places.',
     answer: 'The monthly rate is 9% ÷ 12 = 0,75% = 0,0075. Over one year there are 12 compounding periods, so the annual growth factor is (1 + 0,0075)¹² = 1,093807. The effective annual rate is therefore 1,093807 − 1 = 0,093807, that is 9,38% per annum.',
     explanation: 'A nominal rate is a label, not a rate you can use directly -- "9% compounded monthly" means 0,75% is actually applied twelve times, and twelve applications of 0,75% come to more than 9% because of the compounding. The effective rate is what 9% compounded monthly is really worth over a year, and it is always slightly higher than the nominal rate whenever compounding happens more than once a year.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Dividing the nominal rate by 12 to get the monthly rate 0,0075' },
+      { code: 'SF', marks: 1, text: 'Using (1 + i)¹² for one year of monthly compounding' },
+      { code: 'A', marks: 1, text: 'Growth factor 1,093807' },
+      { code: 'A', marks: 1, text: 'Effective annual rate 9,38%' },
+    ],
   },
   {
     id: 'mth-nomeff-2',
@@ -2140,6 +2308,13 @@ export const questions: Question[] = [
     prompt: 'Draw a timeline for this investment and calculate the value at the end of 6 years.',
     answer: 'The timeline runs from 0 to 6 years with a deposit of R15 000 at time 0 and a single change of rate at year 2: 7% applies from 0 to 2, and 9% applies from 2 to 6. Grow the money through each period in turn. After 2 years: 15 000 × (1,07)² = 15 000 × 1,1449 = R17 173,50. That amount then grows for 4 more years at 9%: 17 173,50 × (1,09)⁴ = 17 173,50 × 1,411582 = R24 239,84. The value after 6 years is R24 239,84. Written as one calculation: A = 15 000(1,07)²(1,09)⁴.',
     explanation: 'When the rate changes, the money does not restart -- the balance at the change-over becomes the new principal, which is why the two factors MULTIPLY rather than the two amounts being added. Drawing the timeline first is what prevents the common error of applying each rate for the full 6 years, and it makes the number of years in each period visible: 2 and 4, not 2 and 6.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Timeline showing 7% for years 0–2 and 9% for years 2–6' },
+      { code: 'SF', marks: 1, text: 'Writing A = 15 000(1,07)²(1,09)⁴ — factors multiplied, not added' },
+      { code: 'A', marks: 1, text: 'Value after 2 years R17 173,50' },
+      { code: 'M', marks: 1, text: 'Using that amount as the principal for the next 4 years' },
+      { code: 'CA', marks: 1, text: 'R24 239,84, following from your own intermediate value' },
+    ],
   },
   {
     id: 'mth-timeline-2',
@@ -2151,6 +2326,14 @@ export const questions: Question[] = [
     prompt: 'Draw a timeline and calculate the balance in the account 7 years after the original deposit.',
     answer: 'The timeline runs 0 to 7 years: R8 000 in at time 0, R3 000 out at year 3, and the balance is read at year 7. Grow the deposit for 3 years: 8 000 × (1,1)³ = 8 000 × 1,331 = R10 648,00. Subtract the withdrawal: 10 648,00 − 3 000 = R7 648,00. Grow what is left for the remaining 4 years: 7 648,00 × (1,1)⁴ = 7 648,00 × 1,4641 = R11 197,43. The balance after 7 years is R11 197,43.',
     explanation: 'A withdrawal has to be subtracted at the MOMENT it happens, not at the end, because the money removed stops earning interest from that point onwards. The alternative single-line method gives the same answer and is worth knowing as a check: grow everything to year 7 separately, 8 000(1,1)⁷ − 3 000(1,1)⁴ = 15 589,45 − 4 392,30 = R11 197,15, the small difference being rounding. Either way the timeline is what tells you that the withdrawal has 4 years left to run, not 7.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Timeline showing the deposit at 0, the withdrawal at year 3 and the balance at year 7' },
+      { code: 'SF', marks: 1, text: 'Growing the deposit: 8 000(1,1)³' },
+      { code: 'A', marks: 1, text: 'R10 648,00' },
+      { code: 'M', marks: 1, text: 'Subtracting the R3 000 at the moment it is withdrawn' },
+      { code: 'M', marks: 1, text: 'Growing the remaining R7 648,00 for the remaining 4 years' },
+      { code: 'CA', marks: 1, text: 'R11 197,43' },
+    ],
   },
   {
     id: 'mth-timeline-3',
@@ -2174,6 +2357,13 @@ export const questions: Question[] = [
     prompt: 'A loan is repaid by monthly payments of R4 500 at the end of each month for 5 years. Interest is 12% per annum compounded monthly. Calculate the present value of the loan.',
     answer: 'The monthly interest rate is i = 0,12 ÷ 12 = 0,01, and the number of payments is n = 5 × 12 = 60. The present value formula is $P_v = x\\,\\frac{1-(1+i)^{-n}}{i}$. Substituting: Pv = 4 500[1 − (1,01)⁻⁶⁰] ÷ 0,01. Now (1,01)⁻⁶⁰ = 0,550450, so 1 − 0,550450 = 0,449550. Then Pv = 4 500 × 0,449550 ÷ 0,01 = 4 500 × 44,955038 = R202 297,67. The loan amount is R202 297,67.',
     explanation: 'Present value answers "how much can I borrow today, given what I can afford to repay?" -- which is the reverse of the future value question and is why the exponent carries a MINUS sign. The two things to get right before substituting are always the same: convert the annual rate to the rate per payment period, and count the total number of payments rather than the number of years.',
+    memo: [
+      { code: 'M', marks: 1, text: 'i = 0,01 and n = 60' },
+      { code: 'SF', marks: 1, text: 'Quoting and substituting into Pv = x[1 − (1 + i)⁻ⁿ] ÷ i' },
+      { code: 'M', marks: 1, text: 'Evaluating (1,01)⁻⁶⁰ = 0,550450' },
+      { code: 'A', marks: 1, text: 'Bracket value 0,449550' },
+      { code: 'CA', marks: 1, text: 'Pv = R202 297,67' },
+    ],
   },
   {
     id: 'mth-pv-2',
@@ -2185,6 +2375,14 @@ export const questions: Question[] = [
     prompt: 'Calculate her monthly instalment, and calculate the total amount she will have repaid over the 20 years.',
     answer: 'The monthly rate is i = 0,105 ÷ 12 = 0,00875 and the number of payments is n = 20 × 12 = 240. Using Pv = x[1 − (1 + i)⁻ⁿ] ÷ i and solving for x: 850 000 = x[1 − (1,00875)⁻²⁴⁰] ÷ 0,00875. Now (1,00875)⁻²⁴⁰ = 0,123435, so the bracket is 0,876565 and dividing by 0,00875 gives 100,178857. Therefore x = 850 000 ÷ 100,178857 = R8 484,86 per month. Over 20 years she pays 240 × 8 484,86 = R2 036 366,40 in total.',
     explanation: 'The total repaid is worth calculating whenever a loan question allows it, because it is the figure that makes the cost of borrowing visible: R850 000 borrowed, roughly R2,04 million repaid, so about R1,19 million is interest. On the method, note that the first payment comes one month after the loan is granted, which is what makes the standard formula apply directly -- a payment delayed beyond that changes the setup and needs the timeline redrawn.',
+    memo: [
+      { code: 'M', marks: 1, text: 'i = 0,00875 and n = 240' },
+      { code: 'SF', marks: 1, text: 'Substituting into the present value formula with Pv = 850 000' },
+      { code: 'M', marks: 1, text: 'Making x the subject' },
+      { code: 'A', marks: 1, text: 'x = R8 484,86 per month' },
+      { code: 'M', marks: 1, text: 'Multiplying the instalment by 240' },
+      { code: 'CA', marks: 1, text: 'Total repaid R2 036 366,40' },
+    ],
   },
   {
     id: 'mth-pv-3',
@@ -2208,6 +2406,12 @@ export const questions: Question[] = [
     prompt: 'Expand and evaluate $\\sum_{k=1}^{5}(3k-2)$.',
     answer: 'Substitute k = 1, 2, 3, 4, 5 into 3k − 2 in turn: 3(1) − 2 = 1, 3(2) − 2 = 4, 3(3) − 2 = 7, 3(4) − 2 = 10, 3(5) − 2 = 13. The sum is 1 + 4 + 7 + 10 + 13 = 35.',
     explanation: 'Sigma notation is an instruction rather than a new kind of mathematics: the letter below the ∑ is the counter, the numbers below and above are where it starts and stops, and the expression after it is what to substitute into each time. Reading it aloud as "add up 3k − 2 for k running from 1 to 5" turns it into an ordinary series. Notice the terms here go up by 3 each time, so the series is arithmetic and the formula Sₙ = n/2(a + l) gives 5/2(1 + 13) = 35 as a check.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Substituting k = 1 to 5 in turn' },
+      { code: 'A', marks: 1, text: 'Terms 1, 4, 7, 10, 13' },
+      { code: 'M', marks: 1, text: 'Adding the terms' },
+      { code: 'A', marks: 1, text: 'Sum = 35' },
+    ],
   },
   {
     id: 'mth-sigma-2',
@@ -2228,6 +2432,14 @@ export const questions: Question[] = [
     prompt: 'Determine the value of $n$ for which $\\sum_{k=1}^{n}(2k+1) = 195$.',
     answer: 'The terms are 3, 5, 7, 9, …, an arithmetic series with first term a = 3 and common difference d = 2. Use Sₙ = n/2[2a + (n − 1)d]: Sₙ = n/2[6 + 2(n − 1)] = n/2[2n + 4] = n(n + 2) = n² + 2n. Set this equal to 195: n² + 2n − 195 = 0. Factorise: (n + 15)(n − 13) = 0, so n = −15 or n = 13. The number of terms cannot be negative, so n = 13. Check: 13² + 2(13) = 169 + 26 = 195, correct.',
     explanation: 'The sigma notation here is only the packaging -- underneath it is an ordinary arithmetic series, and the first job is to read off a and d from the first few terms. The quadratic that results always has one negative root, which is discarded on the grounds that n counts terms: saying so explicitly is part of the answer, not an afterthought. Substituting the answer back is quick here and confirms both the formula and the factorising.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Identifying a = 3 and d = 2' },
+      { code: 'SF', marks: 1, text: 'Substituting into Sₙ = n/2[2a + (n − 1)d]' },
+      { code: 'A', marks: 1, text: 'Simplifying to n² + 2n' },
+      { code: 'M', marks: 1, text: 'Setting n² + 2n − 195 = 0' },
+      { code: 'M', marks: 1, text: 'Factorising to (n + 15)(n − 13) = 0' },
+      { code: 'A', marks: 1, text: 'n = 13, rejecting n = −15 because n counts terms' },
+    ],
   },
 
   // --- Mathematics gap fill: sketching cubic graphs ---------------------------
@@ -2240,6 +2452,14 @@ export const questions: Question[] = [
     prompt: 'Sketch the cubic graph f(x) = x³ − 3x² − 9x + 27 by determining its x-intercepts, its y-intercept and its turning points.',
     answer: 'The y-intercept is f(0) = 27, giving (0; 27). For the x-intercepts, factorise by grouping: x³ − 3x² − 9x + 27 = x²(x − 3) − 9(x − 3) = (x − 3)(x² − 9) = (x − 3)(x − 3)(x + 3) = (x − 3)²(x + 3). So f(x) = 0 at x = 3 (a repeated root) and x = −3, giving intercepts (3; 0) and (−3; 0). For the turning points, f′(x) = 3x² − 6x − 9 = 3(x² − 2x − 3) = 3(x − 3)(x + 1), which is zero at x = 3 and x = −1. Then f(3) = 27 − 27 − 27 + 27 = 0 and f(−1) = −1 − 3 + 9 + 27 = 32. The turning points are (3; 0), a local minimum, and (−1; 32), a local maximum. Since the coefficient of x³ is positive, the graph rises to the right, so it comes up from bottom left, cuts the x-axis at −3, peaks at (−1; 32), falls to touch the x-axis at (3; 0) and rises again.',
     explanation: 'A repeated root is the detail that decides the shape here: (x − 3)² means the graph TOUCHES the x-axis at 3 and turns there rather than cutting through, which is why one of the turning points and one of the intercepts are the same point. Checking the sign of the leading coefficient before sketching fixes which way the ends of the curve go, and that single check prevents an otherwise correct sketch from being drawn upside down.',
+    memo: [
+      { code: 'A', marks: 1, text: 'y-intercept (0; 27)' },
+      { code: 'M', marks: 1, text: 'Factorising by grouping to (x − 3)²(x + 3)' },
+      { code: 'A', marks: 1, text: 'x-intercepts (3; 0) and (−3; 0)' },
+      { code: 'M', marks: 1, text: 'Differentiating and setting f′(x) = 0' },
+      { code: 'A', marks: 1, text: 'Turning points (3; 0) and (−1; 32)' },
+      { code: 'A', marks: 1, text: 'Correct shape, rising to the right and touching the axis at x = 3' },
+    ],
   },
   {
     id: 'mth-cubic-2',
@@ -2251,6 +2471,14 @@ export const questions: Question[] = [
     prompt: 'Determine the point of inflection of g, and explain what the point of inflection tells you about the shape of the graph.',
     answer: 'The point of inflection is where the second derivative is zero. First g′(x) = −3x² + 12x − 9, then g″(x) = −6x + 12. Setting g″(x) = 0 gives −6x + 12 = 0, so x = 2. Then g(2) = −8 + 24 − 18 = −2, so the point of inflection is (2; −2). It tells you where the graph changes CONCAVITY: to the left of x = 2 the second derivative is positive, so the curve is concave up and holds water; to the right it is negative, so the curve is concave down. The point of inflection is where the bend reverses, and for a cubic it always sits exactly halfway between the two turning points, which is confirmed here since 2 is the midpoint of 1 and 3.',
     explanation: 'The second derivative is about the BEND of a curve rather than its slope, so a point of inflection is not a turning point and the graph is usually still rising or falling as it passes through. The halfway property is worth carrying as a check: for any cubic, the point of inflection is the midpoint of the two turning points, so an answer that fails that test has an arithmetic error in it somewhere.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Differentiating once to g′(x) = −3x² + 12x − 9' },
+      { code: 'M', marks: 1, text: 'Differentiating again to g″(x) = −6x + 12' },
+      { code: 'M', marks: 1, text: 'Setting g″(x) = 0' },
+      { code: 'A', marks: 1, text: 'x = 2' },
+      { code: 'CA', marks: 1, text: 'Point of inflection (2; −2)' },
+      { code: 'R', marks: 1, text: 'Explaining it as the point where concavity changes' },
+    ],
   },
   {
     id: 'mth-cubic-3',
@@ -2275,6 +2503,12 @@ export const questions: Question[] = [
     prompt: 'Use the addition rule to determine the probability that a learner chosen at random plays either soccer or netball.',
     answer: 'The addition rule is P(A or B) = P(A) + P(B) − P(A and B). Here P(soccer) = 18/30, P(netball) = 12/30 and P(both) = 5/30. So P(soccer or netball) = 18/30 + 12/30 − 5/30 = 25/30 = 5/6 ≈ 0,833.',
     explanation: 'The subtraction is the whole point of the rule. The 5 learners who play both sports were counted once among the 18 and again among the 12, so adding the two totals counts them twice; subtracting the overlap once puts that right. When the two events cannot both happen -- mutually exclusive events -- the overlap is zero and the rule collapses to simple addition, which is why that case looks like a different rule but is not.',
+    memo: [
+      { code: 'SF', marks: 1, text: 'Quoting P(A or B) = P(A) + P(B) − P(A and B)' },
+      { code: 'S', marks: 1, text: 'Substituting 18/30, 12/30 and 5/30' },
+      { code: 'M', marks: 1, text: 'Subtracting the overlap once' },
+      { code: 'A', marks: 1, text: '25/30 = 5/6 ≈ 0,833' },
+    ],
   },
   {
     id: 'mth-addrule-2',
@@ -2297,6 +2531,14 @@ export const questions: Question[] = [
     prompt: 'Determine P(A and B), and hence determine whether A and B are mutually exclusive, independent, or neither. Justify your answer.',
     answer: 'Use the addition rule and solve for the overlap: 0,7 = 0,4 + 0,5 − P(A and B), so P(A and B) = 0,9 − 0,7 = 0,2. They are NOT mutually exclusive, because mutually exclusive events cannot both occur and would need P(A and B) = 0, whereas here it is 0,2. To test independence, compare P(A and B) with P(A) × P(B): P(A) × P(B) = 0,4 × 0,5 = 0,2, which equals P(A and B). The events are therefore independent.',
     explanation: 'Mutually exclusive and independent are different ideas that are often confused, and this question separates them. Mutually exclusive means the events never occur together, so the overlap is zero; independent means one event occurring does not change the probability of the other, so the overlap is exactly the product of the two probabilities. Two events with non-zero probabilities can never be both -- if they are mutually exclusive, one happening rules the other out entirely, which is the strongest possible dependence.',
+    memo: [
+      { code: 'SF', marks: 1, text: 'Using the addition rule to solve for the overlap' },
+      { code: 'A', marks: 1, text: 'P(A and B) = 0,2' },
+      { code: 'R', marks: 1, text: 'Not mutually exclusive, because that would require an overlap of 0' },
+      { code: 'M', marks: 1, text: 'Comparing P(A and B) with P(A) × P(B)' },
+      { code: 'A', marks: 1, text: 'P(A) × P(B) = 0,2' },
+      { code: 'J', marks: 1, text: 'Concluding the events are independent because the two are equal' },
+    ],
   },
 
   // --- Mathematics gap fill: independent events and the product rule ----------
@@ -2345,6 +2587,13 @@ export const questions: Question[] = [
     prompt: 'In how many different ways can they be seated if two particular learners, Ayanda and Blessing, must sit next to each other?',
     answer: 'Treat Ayanda and Blessing as a single unit, because they must stay together. That leaves 5 items to arrange -- the pair plus the other 4 learners -- which can be done in 5! = 120 ways. Within the pair, Ayanda and Blessing can swap places, giving 2! = 2 arrangements. By the counting principle the total is 5! × 2! = 120 × 2 = 240 ways.',
     explanation: 'The "glue them together" technique handles every must-sit-together restriction: treat the group as one item, arrange what remains, then multiply by the arrangements INSIDE the group. Forgetting that internal 2! is the usual slip, and it halves the answer. A useful comparison: without the restriction there would be 6! = 720 seatings, so exactly a third of all arrangements have the pair adjacent.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Treating the pair as a single unit' },
+      { code: 'M', marks: 1, text: 'Arranging the remaining 5 items: 5!' },
+      { code: 'A', marks: 1, text: '120' },
+      { code: 'M', marks: 1, text: 'Multiplying by 2! for the order WITHIN the pair' },
+      { code: 'CA', marks: 1, text: '240 arrangements' },
+    ],
   },
   {
     id: 'mth-arrest-2',
@@ -2356,6 +2605,14 @@ export const questions: Question[] = [
     prompt: 'Determine how many such codes are possible if the code must begin with an odd digit and end with an even digit.',
     answer: 'Fill the restricted positions first. The odd digits available are 1, 3, 5 and 7, so there are 4 choices for the first digit. The even digits are 2, 4 and 6, so there are 3 choices for the last digit; none of these has been used, since the first digit was odd. That leaves 7 − 2 = 5 digits for the two middle positions: 5 choices for the second position and 4 for the third. By the counting principle the total is 4 × 5 × 4 × 3 = 240 codes.',
     explanation: 'Deal with the restricted positions BEFORE the free ones -- filling left to right in the usual order leaves you unable to say how many even digits are still available at the end. Watch too for restrictions that interact: here they do not, because an odd first digit can never use up an even digit, but had the question asked for a code beginning and ending with an odd digit, the second restriction would have had only 3 choices left rather than 4.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Filling the restricted first position first: 4 odd digits' },
+      { code: 'M', marks: 1, text: 'Filling the restricted last position: 3 even digits' },
+      { code: 'M', marks: 1, text: '5 choices for the second position' },
+      { code: 'M', marks: 1, text: '4 choices for the third position' },
+      { code: 'M', marks: 1, text: 'Applying the counting principle' },
+      { code: 'A', marks: 1, text: '240 codes' },
+    ],
   },
   {
     id: 'mth-arrest-3',
@@ -2367,6 +2624,14 @@ export const questions: Question[] = [
     prompt: 'Determine in how many ways they can be arranged if Thandi and Sizwe must NOT stand next to each other, and explain the method you used.',
     answer: 'Count the arrangements where they ARE together and subtract from the total. The total number of arrangements with no restriction is 5! = 120. For the arrangements with Thandi and Sizwe together, glue them into one unit: that gives 4 items to arrange in 4! = 24 ways, times 2! = 2 for the internal order, so 24 × 2 = 48 arrangements have them adjacent. The arrangements where they are not adjacent are therefore 120 − 48 = 72. The method is complementary counting: a "must not" condition is usually far easier to count as everything minus the "must", because "not next to each other" covers many separate cases while "next to each other" is a single case.',
     explanation: 'Reach for the complement whenever a restriction is phrased negatively -- "not adjacent", "at least one", "no two the same" -- because the negative version almost always splits into more cases than the positive one. The check is that the two counts must add back to the unrestricted total: 48 + 72 = 120, which is 5!, so nothing has been counted twice or missed.',
+    memo: [
+      { code: 'M', marks: 1, text: 'Total arrangements 5! = 120' },
+      { code: 'M', marks: 1, text: 'Gluing the pair together: 4! arrangements' },
+      { code: 'M', marks: 1, text: 'Multiplying by 2! for the internal order' },
+      { code: 'A', marks: 1, text: '48 arrangements with them adjacent' },
+      { code: 'CA', marks: 1, text: '120 − 48 = 72' },
+      { code: 'R', marks: 1, text: 'Naming the method as complementary counting' },
+    ],
   },
 ]
 

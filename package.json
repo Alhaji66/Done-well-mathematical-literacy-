@@ -11,7 +11,8 @@
     "check:subtopics": "tsx tools/subtopic-coverage.mts",
     "check:subtopic-rules": "tsx tools/subtopic-rules.mts",
     "level:papers": "tsx tools/level-papers.mts",
-    "check:latex": "tsx tools/check-latex.mts"
+    "check:latex": "tsx tools/check-latex.mts",
+    "check:memos": "tsx tools/check-memos.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

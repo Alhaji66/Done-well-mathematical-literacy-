@@ -67,6 +67,54 @@ export interface Question {
   correctOptionId?: string
   answer: string
   explanation: string
+  /**
+   * The NSC-style marking memo: where each mark in this question is actually
+   * earned. Optional, because writing one by hand for all 5 502 paper items is
+   * not something that could be finished or kept current, and a GUESSED memo
+   * is worse than none -- a learner will trust it and mis-mark their own work.
+   * Where it is absent the card simply does not show a memo.
+   */
+  memo?: MemoStep[]
+  /**
+   * An inline SVG figure to show with the question, by id. Optional and rare:
+   * a sweep found that no question in the corpus depends on a diagram, so a
+   * figure is attached only where the picture genuinely teaches something the
+   * prose cannot.
+   */
+  figure?: FigureId
+}
+
+/** Figures live in src/components/practise/Figure.tsx. */
+export type FigureId = 'cast-diagram' | 'surd-number-line' | 'charges-on-a-line'
+
+/**
+ * A mark code as used in the official NSC marking guidelines.
+ *
+ * These are the codes a marker writes in the margin, and knowing them changes
+ * how a learner writes an answer -- most obviously CA, which is why showing
+ * your working is worth real marks: an early arithmetic slip costs one A mark
+ * rather than the whole question, but only if the method after it is visible.
+ */
+export type MemoCode = 'M' | 'A' | 'CA' | 'S' | 'SF' | 'R' | 'RT' | 'C' | 'J'
+
+export const MEMO_CODE_MEANINGS: Record<MemoCode, string> = {
+  M: 'Method — for choosing and setting out a correct method, even if the number that comes out is wrong',
+  A: 'Accuracy — for the correct value or statement',
+  CA: 'Continued accuracy — for correctly carrying forward an earlier answer, even one that was wrong',
+  S: 'Substitution — for putting the right values into the right places',
+  SF: 'Substitution into a formula — for both quoting the formula and substituting correctly',
+  R: 'Reason — for the justification, not the answer it supports',
+  RT: 'Reading from a table, graph or diagram',
+  C: 'Conversion — for converting to the correct unit',
+  J: 'Justification — for the argument that settles the question',
+}
+
+export interface MemoStep {
+  code: MemoCode
+  /** Marks this step earns. The steps must add up to the question's marks. */
+  marks: number
+  /** What has to be on the page to earn them. */
+  text: string
 }
 
 export type AssessmentStatus = 'upcoming' | 'completed' | 'missed' | 'in_progress'

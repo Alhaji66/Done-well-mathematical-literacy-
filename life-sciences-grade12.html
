@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade 12 Life Sciences: Nucleic Acids & Genetics | Donewell</title>
+  <style>
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    header h1 { margin: 0; font-size: 1.8rem; }
+    header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.95rem; }
+    
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    .back-nav {
+      margin-bottom: 20px;
+    }
+    .back-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #334155;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+    h2 {
+      color: var(--primary-dark);
+      border-bottom: 2px solid #ccfbf1;
+      padding-bottom: 8px;
+      margin-top: 0;
+    }
+    h3 { color: #334155; margin-top: 20px; }
+    ul, ol { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      background: #ccfbf1;
+      color: #0f766e;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    th { background: #f1f5f9; color: #334155; }
+
+    .analogy-box {
+      background: #f0fdf4;
+      border-left: 4px solid #16a34a;
+      padding: 12px 16px;
+      border-radius: 4px;
+      margin: 15px 0;
+      font-size: 0.9rem;
+    }
+
+    .pedigree-symbol-key {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    .key-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+    .box-sq { width: 16px; height: 16px; border: 2px solid #334155; }
+    .box-sq.filled { background: #334155; }
+    .circle-rd { width: 16px; height: 16px; border: 2px solid #334155; border-radius: 50%; }
+    .circle-rd.filled { background: #334155; border-radius: 50%; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Grade 12 Life Sciences</h1>
+    <p>Nucleic Acids, Protein Synthesis & Pedigree Charts</p>
+  </header>
+
+  <div class="container">
+    <div class="back-nav">
+      <a href="index.html" class="back-btn">← Back to Main Menu</a>
+    </div>
+
+    <!-- MODULE 1: DNA REPLICATION -->
+    <div class="card">
+      <span class="badge">Paper 1 Core Topic</span>
+      <h2>1. DNA Replication</h2>
+      <p><strong>DNA Replication</strong> is the process where a cell makes an exact copy of its DNA prior to cell division.</p>
+      <ul>
+        <li><strong>Location:</strong> Inside the <strong>nucleus</strong> during interphase.</li>
+        <li><strong>Significance:</strong> Ensures genetic continuity so that every new daughter cell receives an identical set of DNA.</li>
+      </ul>
+
+      <h3>Step-by-Step Process:</h3>
+      <ol>
+        <li><strong>Unwinding & Unzipping:</strong> The DNA double helix unwinds. Weak hydrogen bonds between complementary base pairs break, separating the two strands.</li>
+        <li><strong>Template Exposure:</strong> Each original strand acts as a <em>template</em> to build a new strand.</li>
+        <li><strong>Complementary Pairing:</strong> Free DNA nucleotides in the nucleoplasm attach according to base pairing rules:
+          <ul>
+            <li><strong>Adenine (A)</strong> pairs with <strong>Thymine (T)</strong></li>
+            <li><strong>Cytosine (C)</strong> pairs with <strong>Guanine (G)</strong></li>
+          </ul>
+        </li>
+        <li><strong>Backbone Joining:</strong> DNA polymerase bonds the new sugar-phosphate backbone.</li>
+        <li><strong>Semi-Conservative Result:</strong> Two identical DNA double helices are formed, each consisting of <em>one original strand</em> and <em>one new strand</em>.</li>
+      </ol>
+    </div>
+
+    <!-- MODULE 2: PROTEIN SYNTHESIS -->
+    <div class="card">
+      <span class="badge">Paper 1 Core Topic</span>
+      <h2>2. Protein Synthesis</h2>
+      <p>Protein synthesis consists of two main stages: <strong>Transcription</strong> and <strong>Translation</strong>.</p>
+
+      <div class="analogy-box">
+        <strong>Analogy:</strong> Think of DNA as a master recipe book locked inside a reference library (the nucleus). <strong>Transcription</strong> copies one recipe onto a card (mRNA) to take into the kitchen (ribosome). <strong>Translation</strong> brings ingredients (amino acids via tRNA) together to bake the cake (protein)!
+      </div>
+
+      <h3>Stage 1: Transcription (Nucleus)</h3>
+      <ol>
+        <li>A specific section of DNA (a gene) unwinds and unzips.</li>
+        <li>One strand acts as a template for making mRNA.</li>
+        <li>Free RNA nucleotides pair with complementary DNA bases (Note: <strong>Uracil</strong> replaces Thymine in RNA).</li>
+        <li>Single-stranded <strong>mRNA</strong> detaches, exits through a nuclear pore, and moves to a <strong>ribosome</strong>.</li>
+      </ol>
+
+      <h3>Stage 2: Translation (Ribosome)</h3>
+      <ol>
+        <li>The mRNA attaches to a ribosome. Each 3-base sequence on mRNA is a <strong>codon</strong>.</li>
+        <li><strong>tRNA</strong> molecules in the cytoplasm carry specific amino acids and possess a 3-base <strong>anticodon</strong>.</li>
+        <li>The tRNA anticodon binds to its matching mRNA codon.</li>
+        <li>Adjacent amino acids are joined by <strong>peptide bonds</strong> to form a protein chain.</li>
+      </ol>
+
+      <h3>Key Comparisons:</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>DNA</th>
+            <th>mRNA</th>
+            <th>tRNA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Strands</strong></td>
+            <td>Double helix</td>
+            <td>Single linear strand</td>
+            <td>Single cloverleaf strand</td>
+          </tr>
+          <tr>
+            <td><strong>Sugar</strong></td>
+            <td>Deoxyribose</td>
+            <td>Ribose</td>
+            <td>Ribose</td>
+          </tr>
+          <tr>
+            <td><strong>Bases</strong></td>
+            <td>A, T, C, G</td>
+            <td>A, U, C, G</td>
+            <td>A, U, C, G</td>
+          </tr>
+          <tr>
+            <td><strong>Code Unit</strong></td>
+            <td>Triplet</td>
+            <td>Codon</td>
+            <td>Anticodon</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MODULE 3: PEDIGREE CHARTS -->
+    <div class="card">
+      <span class="badge">Genetics & Inheritance</span>
+      <h2>3. Pedigree Diagrams & Genetic Analysis</h2>
+      <p>A pedigree chart tracks how a specific trait or genetic disorder is passed down through generations.</p>
+
+      <h3>Standard Pedigree Symbols:</h3>
+      <div class="pedigree-symbol-key">
+        <div class="key-item"><div class="box-sq"></div> Unaffected Male</div>
+        <div class="key-item"><div class="box-sq filled"></div> Affected Male</div>
+        <div class="key-item"><div class="circle-rd"></div> Unaffected Female</div>
+        <div class="key-item"><div class="circle-rd filled"></div> Affected Female</div>
+      </div>
+
+      <h3>How to Identify Inheritance Patterns:</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>Key Visual Clue</th>
+            <th>Genotype Rule</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Autosomal Recessive</strong> (e.g. Albinism)</td>
+            <td>Skips generations. Unaffected parents have an affected child.</td>
+            <td>Affected individuals are homozygous recessive (<code>aa</code>). Parents are carriers (<code>Aa</code>).</td>
+          </tr>
+          <tr>
+            <td><strong>Autosomal Dominant</strong> (e.g. Huntington's)</td>
+            <td>Does NOT skip generations. Every affected child has an affected parent.</td>
+            <td>Affected individuals have at least one dominant allele (<code>AA</code> or <code>Aa</code>).</td>
+          </tr>
+          <tr>
+            <td><strong>Sex-Linked Recessive</strong> (e.g. Haemophilia)</td>
+            <td>Appears mostly in males.</td>
+            <td>Affected male is <code>X<sup>h</sup>Y</code>. Carrier female is <code>X<sup>H</sup>X<sup>h</sup></code>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

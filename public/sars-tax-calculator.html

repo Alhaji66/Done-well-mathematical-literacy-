@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SARS Income Tax Practice Tool | Donewell Mathematical Literacy</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      margin: 0;
+      padding: 20px 10px;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 15px;
+      padding: 8px 16px;
+      background: #334155;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .donewell-tax-card {
+      max-width: 550px;
+      margin: 0 auto;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+    }
+    .donewell-tax-card h2 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 1.4rem;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; }
+    .input-row { display: flex; gap: 10px; }
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .result-summary {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border-left: 4px solid #2563eb;
+    }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .summary-box { background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
+    .summary-box label { font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; display: block; }
+    .summary-box .val { font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-top: 4px; }
+    .breakdown-toggle {
+      background: none; border: none; color: #2563eb; font-weight: 600; font-size: 0.9rem; cursor: pointer; padding: 0; margin-top: 10px; text-decoration: underline;
+    }
+    .breakdown-details {
+      margin-top: 12px; padding: 12px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 6px; font-size: 0.85rem; line-height: 1.6; color: #475569;
+    }
+  </style>
+</head>
+<body>
+
+  <div style="max-width: 550px; margin: 0 auto;">
+    <a href="index.html" class="back-btn">← Back to Main App</a>
+  </div>
+
+  <div class="donewell-tax-card">
+    <h2>SARS Income Tax Calculator</h2>
+    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px;">FET Mathematical Literacy Interactive Calculation Tool</p>
+
+    <div class="form-group">
+      <label for="taxIncome">Taxable Income Amount (R)</label>
+      <div class="input-row">
+        <input type="number" id="taxIncome" class="form-control" placeholder="e.g. 25000" value="25000" oninput="calculateTax()">
+        <select id="incomePeriod" class="form-control" style="max-width: 130px;" onchange="calculateTax()">
+          <option value="monthly">Per Month</option>
+          <option value="annual">Per Year</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <div class="form-group" style="flex: 1;">
+        <label for="taxAge">Taxpayer Age</label>
+        <select id="taxAge" class="form-control" onchange="calculateTax()">
+          <option value="under65">Under 65 years</option>
+          <option value="65to74">65 to 74 years</option>
+          <option value="75plus">75 years and older</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="flex: 1;">
+        <label for="medMembers">Medical Scheme Members</label>
+        <select id="medMembers" class="form-control" onchange="calculateTax()">
+          <option value="0">None</option>
+          <option value="1">Main Member Only</option>
+          <option value="2">Main + 1 Dependant</option>
+          <option value="3">Main + 2 Dependants</option>
+          <option value="4">Main + 3 Dependants</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="result-summary">
+      <div class="summary-grid">
+        <div class="summary-box">
+          <label>Monthly PAYE Tax</label>
+          <div class="val" id="monthlyTaxVal">R0.00</div>
+        </div>
+        <div class="summary-box">
+          <label>Annual Net Tax</label>
+          <div class="val" id="annualTaxVal">R0.00</div>
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #475569;">
+        <span>Effective Rate: <strong id="effectiveRateVal">0.0%</strong></span>
+        <span id="bracketBadge" style="background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:4px; font-weight:bold;">Bracket 1</span>
+      </div>
+
+      <button type="button" class="breakdown-toggle" onclick="toggleBreakdown()">Show Step-by-Step Calculation Formula</button>
+      <div id="breakdownSection" class="breakdown-details" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script>
+    function calculateTax() {
+      const rawIncome = parseFloat(document.getElementById('taxIncome').value) || 0;
+      const period = document.getElementById('incomePeriod').value;
+      const age = document.getElementById('taxAge').value;
+      const medMembers = parseInt(document.getElementById('medMembers').value) || 0;
+
+      const annualIncome = (period === 'monthly') ? rawIncome * 12 : rawIncome;
+
+      let grossTax = 0;
+      let bracketName = "";
+      let formulaText = "";
+
+      if (annualIncome <= 0) {
+        grossTax = 0; bracketName = "No Income"; formulaText = "R0.00";
+      } else if (annualIncome <= 237100) {
+        grossTax = annualIncome * 0.18; bracketName = "Bracket 1 (18%)";
+        formulaText = `18% of R${formatMoney(annualIncome)}`;
+      } else if (annualIncome <= 370500) {
+        grossTax = 42678 + 0.26 * (annualIncome - 237100); bracketName = "Bracket 2 (26%)";
+        formulaText = `R42 678 + 26% of (R${formatMoney(annualIncome)} - R237 100)`;
+      } else if (annualIncome <= 512800) {
+        grossTax = 77362 + 0.31 * (annualIncome - 370500); bracketName = "Bracket 3 (31%)";
+        formulaText = `R77 362 + 31% of (R${formatMoney(annualIncome)} - R370 500)`;
+      } else if (annualIncome <= 673000) {
+        grossTax = 121475 + 0.36 * (annualIncome - 512800); bracketName = "Bracket 4 (36%)";
+        formulaText = `R121 475 + 36% of (R${formatMoney(annualIncome)} - R512 800)`;
+      } else if (annualIncome <= 857900) {
+        grossTax = 179147 + 0.39 * (annualIncome - 673000); bracketName = "Bracket 5 (39%)";
+        formulaText = `R179 147 + 39% of (R${formatMoney(annualIncome)} - R673 000)`;
+      } else if (annualIncome <= 1817000) {
+        grossTax = 251258 + 0.41 * (annualIncome - 857900); bracketName = "Bracket 6 (41%)";
+        formulaText = `R251 258 + 41% of (R${formatMoney(annualIncome)} - R857 900)`;
+      } else {
+        grossTax = 644489 + 0.45 * (annualIncome - 1817000); bracketName = "Bracket 7 (45%)";
+        formulaText = `R644 489 + 45% of (R${formatMoney(annualIncome)} - R1 817 000)`;
+      }
+
+      const primaryRebate = 17235;
+      let secondaryRebate = (age === '65to74' || age === '75plus') ? 9444 : 0;
+      let tertiaryRebate = (age === '75plus') ? 3145 : 0;
+      const totalRebate = primaryRebate + secondaryRebate + tertiaryRebate;
+
+      let monthlyMedCredit = 0;
+      if (medMembers === 1) monthlyMedCredit = 364;
+      else if (medMembers === 2) monthlyMedCredit = 728;
+      else if (medMembers > 2) monthlyMedCredit = 728 + (medMembers - 2) * 246;
+      const annualMedCredit = monthlyMedCredit * 12;
+
+      const netTaxAnnual = Math.max(0, grossTax - totalRebate - annualMedCredit);
+      const netTaxMonthly = netTaxAnnual / 12;
+      const effectiveRate = (annualIncome > 0) ? (netTaxAnnual / annualIncome) * 100 : 0;
+
+      document.getElementById('monthlyTaxVal').innerText = `R${formatMoney(netTaxMonthly)}`;
+      document.getElementById('annualTaxVal').innerText = `R${formatMoney(netTaxAnnual)}`;
+      document.getElementById('effectiveRateVal').innerText = `${effectiveRate.toFixed(1)}%`;
+      document.getElementById('bracketBadge').innerText = bracketName;
+
+      document.getElementById('breakdownSection').innerHTML = `
+        <strong>Step 1: Gross Annual Income</strong><br>R${formatMoney(annualIncome)}<br><br>
+        <strong>Step 2: Gross Tax Calculation (${bracketName})</strong><br>${formulaText} = <strong>R${formatMoney(grossTax)}</strong><br><br>
+        <strong>Step 3: Deduct Primary/Secondary Rebates</strong><br>R${formatMoney(grossTax)} - R${formatMoney(totalRebate)} = <strong>R${formatMoney(Math.max(0, grossTax - totalRebate))}</strong><br><br>
+        <strong>Step 4: Deduct Medical Aid Tax Credits</strong><br>Annual Credit (R${monthlyMedCredit}/mo × 12) = R${formatMoney(annualMedCredit)}<br>
+        <strong>Final Annual Tax: R${formatMoney(netTaxAnnual)}</strong>
+      `;
+    }
+
+    function formatMoney(amount) {
+      return amount.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function toggleBreakdown() {
+      const section = document.getElementById('breakdownSection');
+      section.style.display = (section.style.display === 'none') ? 'block' : 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', calculateTax);
+  </script>
+</body>
+</html>

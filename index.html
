@@ -3,11 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0B1F3A" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Donewell Mathematical Literacy</title>
   </head>
   <body>
@@ -15,19 +11,20 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- DONEWELL NEW SUPPLEMENTARY TOOLS -->
+    <!-- DONEWELL SUPPLEMENTARY TOOLS -->
     <div style="text-align: center; margin: 30px 15px; padding: 20px; background-color: #ffffff; border-radius: 12px; border: 2px solid #2563eb; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
       <h3 style="color: #0f172a; margin-top: 0; margin-bottom: 15px; font-family: sans-serif; font-size: 18px;">
         📚 New Supplementary Tools
       </h3>
       
-      <button onclick="window.location.href='https://alhaji66.github.io/Done-well-mathematical-literacy-/sars-tax-calculator.html'" style="display: block; width: 90%; max-width: 320px; margin: 10px auto; padding: 14px 18px; background-color: #2563eb; color: #ffffff; border: none; border-radius: 8px; font-weight: bold; font-family: sans-serif; font-size: 15px; cursor: pointer; text-align: center;">
+      <a href="./sars-tax-calculator.html" style="display: block; width: 90%; max-width: 320px; margin: 10px auto; padding: 14px 18px; background-color: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-family: sans-serif; font-size: 15px; text-align: center;">
         🧮 Open SARS Income Tax Calculator
-      </button>
+      </a>
 
-      <button onclick="window.location.href='https://alhaji66.github.io/Done-well-mathematical-literacy-/life-sciences-grade12.html'" style="display: block; width: 90%; max-width: 320px; margin: 10px auto; padding: 14px 18px; background-color: #0d9488; color: #ffffff; border: none; border-radius: 8px; font-weight: bold; font-family: sans-serif; font-size: 15px; cursor: pointer; text-align: center;">
+      <a href="./life-sciences-grade12.html" style="display: block; width: 90%; max-width: 320px; margin: 10px auto; padding: 14px 18px; background-color: #0d9488; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-family: sans-serif; font-size: 15px; text-align: center;">
         🧬 Open Grade 12 Life Sciences
-      </button>
+      </a>
     </div>
   </body>
 </html>
+

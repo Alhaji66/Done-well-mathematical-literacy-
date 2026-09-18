@@ -43,7 +43,7 @@ export function SchoolTeachers() {
         <EmptyState
           icon={<SchoolIcon className="h-6 w-6" />}
           title="No teachers have joined yet"
-          description="Once a teacher signs up and enters this same school name, they'll show up here automatically."
+          description="Give them the join code from your dashboard. Once a teacher signs up and enters it, they'll show up here automatically."
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

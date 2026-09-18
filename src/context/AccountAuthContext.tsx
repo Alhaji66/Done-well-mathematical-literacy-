@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient'
 import type { Grade } from '@/types'
 
-export type AccountRole = 'learner' | 'parent' | 'teacher' | 'school'
+export type AccountRole = 'learner' | 'parent' | 'teacher' | 'school' | 'hod'
 
 export interface AccountProfile {
   id: string

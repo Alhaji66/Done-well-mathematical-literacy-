@@ -58,7 +58,7 @@ export function SchoolLearners() {
         <EmptyState
           icon={<UsersIcon className="h-6 w-6" />}
           title="No learners have joined yet"
-          description="Once learners sign up and enter this same school name, they'll show up here automatically."
+          description="Give them the join code from your dashboard. Once learners sign up and enter it, they'll show up here automatically."
         />
       ) : (
         <>

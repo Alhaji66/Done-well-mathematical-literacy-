@@ -87,6 +87,20 @@ export const accountParentNav: RoleNavItem[] = [
 
 // Real (non-demo) School account nav -- Assessments/Analytics now built,
 // same reasoning as Teacher's.
+// Real (non-demo) Head of Department nav. Same shape as the teacher nav, minus
+// the authoring tools an HOD does not need and plus the two department rolls.
+export const accountHodNav: RoleNavItem[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
+  { to: '/learners', label: 'Learners', icon: UsersIcon },
+  { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
+  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
+  { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
+]
+
 export const accountSchoolNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learners', label: 'Learners', icon: UsersIcon },

@@ -18,6 +18,7 @@ import {
   accountTeacherNav,
   accountParentNav,
   accountSchoolNav,
+  accountHodNav,
 } from '@/config/nav'
 
 const Home = lazy(() => import('@/pages/public/Home').then((m) => ({ default: m.Home })))
@@ -49,6 +50,15 @@ const AccountParentDashboard = lazy(() =>
 )
 const AccountParentResources = lazy(() =>
   import('@/pages/account/parent/ParentResources').then((m) => ({ default: m.ParentResources })),
+)
+const AccountHodDashboard = lazy(() =>
+  import('@/pages/account/hod/HodDashboard').then((m) => ({ default: m.HodDashboard })),
+)
+const AccountHodTeachers = lazy(() =>
+  import('@/pages/account/hod/HodTeachers').then((m) => ({ default: m.HodTeachers })),
+)
+const AccountHodLearners = lazy(() =>
+  import('@/pages/account/hod/HodLearners').then((m) => ({ default: m.HodLearners })),
 )
 const AccountSchoolDashboard = lazy(() =>
   import('@/pages/account/school/SchoolDashboard').then((m) => ({ default: m.SchoolDashboard })),
@@ -175,6 +185,30 @@ export default function App() {
                 <Route path="dashboard" element={<AccountParentDashboard />} />
                 <Route path="resources" element={<AccountParentResources />} />
                 <Route path="support" element={<ParentSupport />} />
+                <Route path="privacy" element={<AccountPrivacy />} />
+              </Route>
+            </Route>
+
+            {/*
+              A Head of Department sits between teacher and school: subject-wide
+              rather than class-wide, school-narrow rather than school-wide. The
+              shared pages (assessments, tests, analytics, coverage) are the same
+              components the other roles use -- they read their scope from
+              scopeSubjectFor, which now returns the subject for an HOD too, so
+              they narrow themselves without a separate copy.
+            */}
+            <Route element={<AccountRoleGate role="hod" />}>
+              <Route path="hod" element={<AccountShell basePath="/account/hod" navItems={accountHodNav} />}>
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<AccountHodDashboard />} />
+                <Route path="teachers" element={<AccountHodTeachers />} />
+                <Route path="learners" element={<AccountHodLearners />} />
+                <Route path="question-bank" element={<TeacherQuestionBank />} />
+                <Route path="assessments" element={<AssessmentsBrowse />} />
+                <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="tests" element={<TeacherWeeklyTests />} />
+                <Route path="analytics" element={<MasteryAnalytics />} />
+                <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>

@@ -785,3 +785,56 @@ create policy "Staff can correct profiles at their school"
     and public.is_school_staff(public.current_school_id())
   )
   with check (school_id = public.current_school_id());
+
+-- ---------------------------------------------------------------------------
+-- STEP 11: the Head of Department role.
+--
+-- A school has a principal and it has subject teachers, and until now the app
+-- had a role for each: "school" sees everything, "teacher" sees their own
+-- learners in their own subject and grades. An HOD sits between the two and was
+-- served by neither -- they need every teacher and every learner in ONE
+-- subject, which the school view cannot narrow to and the teacher view cannot
+-- widen to.
+--
+-- An HOD row is a teacher row with a wider reach: it carries a subject_id, and
+-- that subject is the department.
+--
+-- RUN THE NEXT STATEMENT ON ITS OWN, before the rest of this section. Postgres
+-- will not let a new enum label be USED in the same transaction that adds it,
+-- and the Supabase SQL editor runs a whole script as one transaction.
+alter type public.user_role add value if not exists 'hod';
+
+-- Now run the rest.
+--
+-- is_school_staff decides who may read other people's learner_progress rows,
+-- which is what every class average is built from. An HOD is staff.
+--
+-- The role test is written against role::text rather than against the enum
+-- labels on purpose: comparing text means this function can be created in the
+-- same transaction as the ALTER TYPE above if anyone runs the whole file at
+-- once, instead of failing on a label Postgres has not committed yet. It is the
+-- same comparison either way.
+create or replace function public.is_school_staff(p_school_id uuid)
+returns boolean
+language sql
+security definer
+stable
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and school_id = p_school_id
+      and role::text in ('teacher', 'school', 'hod')
+  );
+$$;
+
+-- No new policy is needed for the rosters themselves. "Users can view profiles
+-- at their own school" already lets anyone at a school read the profiles there,
+-- so an HOD can list the teachers and learners in their subject with no further
+-- grant -- the narrowing to one subject is the app's job, not the database's.
+--
+-- WHAT AN HOD DELIBERATELY CANNOT DO: nothing here gives them reach outside
+-- their own school, and nothing gives them a learner's answers. They see the
+-- same progress rows a teacher at that school already sees. The only thing
+-- that widens is WHICH learners in their subject, from "the ones I teach" to
+-- "all of them".

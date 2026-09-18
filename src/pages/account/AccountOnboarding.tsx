@@ -12,6 +12,7 @@ const roleOptions: { role: AccountRole; label: string; desc: string; icon: (p: {
   { role: 'learner', label: 'Learner', desc: 'Practise, track progress, sit tests', icon: UserIcon },
   { role: 'parent', label: 'Parent', desc: "Follow your child's progress", icon: HeartHandshakeIcon },
   { role: 'teacher', label: 'Teacher', desc: 'Resources, question bank, worksheets', icon: BookIcon },
+  { role: 'hod', label: 'Head of Department', desc: 'Your whole subject, every teacher and grade', icon: SchoolIcon },
   { role: 'school', label: 'School', desc: 'Whole-school view', icon: SchoolIcon },
 ]
 
@@ -51,11 +52,13 @@ export function AccountOnboarding() {
   const [guardianEmail, setGuardianEmail] = useState('')
   const [consentGiven, setConsentGiven] = useState(false)
 
-  const needsSchool = role === 'learner' || role === 'teacher' || role === 'school'
+  const needsSchool = role === 'learner' || role === 'teacher' || role === 'school' || role === 'hod'
   const needsGuardianConsent = role === 'learner' && !isAdult
   // Only a school account registers a school outright. A teacher may be the
   // first person from their school to arrive, so they get the choice; a learner
   // never does.
+  // An HOD joins an existing school like a teacher does. They are never the
+  // first person from a school to arrive -- a department implies colleagues.
   const canCreateSchool = role === 'school' || role === 'teacher'
   const effectiveSchoolMode = role === 'school' ? 'create' : canCreateSchool ? schoolMode : 'join'
 
@@ -115,7 +118,10 @@ export function AccountOnboarding() {
         // teach. Leaving it null put Life Sciences topics in a Mathematical
         // Literacy teacher's dashboard. A school account stays null, because a
         // whole-school view is the point of that role.
-        subject_id: role === 'learner' || role === 'teacher' ? subjectId : null,
+        // An HOD without a subject_id has no department, so the whole role
+        // would load to an empty screen. It is as required here as it is for
+        // a teacher.
+        subject_id: role === 'learner' || role === 'teacher' || role === 'hod' ? subjectId : null,
       })
       if (profileError) throw profileError
 
@@ -317,7 +323,7 @@ export function AccountOnboarding() {
               </div>
             ) : null}
 
-            {role === 'learner' || role === 'teacher' ? (
+            {role === 'learner' || role === 'teacher' || role === 'hod' ? (
               <div className={cn('grid gap-3', role === 'learner' ? 'grid-cols-2' : 'grid-cols-1')}>
                 {role === 'learner' ? (
                   <div>
@@ -333,7 +339,7 @@ export function AccountOnboarding() {
                 ) : null}
                 <div>
                   <label className="text-xs font-medium text-navy-500">
-                    {role === 'teacher' ? 'Subject you teach' : 'Subject'}
+                    {role === 'teacher' ? 'Subject you teach' : role === 'hod' ? 'Department you head' : 'Subject'}
                   </label>
                   <select className="select mt-1" value={subjectId} onChange={(e) => setSubjectId(e.target.value)}>
                     {subjectOptions.map((s) => (
@@ -345,6 +351,10 @@ export function AccountOnboarding() {
                   {role === 'teacher' ? (
                     <p className="mt-1 text-xs text-navy-400">
                       Your roster and analytics show this subject only. You can change it later.
+                    </p>
+                  ) : role === 'hod' ? (
+                    <p className="mt-1 text-xs text-navy-400">
+                      You will see every teacher and every learner in this subject, across all three grades.
                     </p>
                   ) : null}
                 </div>

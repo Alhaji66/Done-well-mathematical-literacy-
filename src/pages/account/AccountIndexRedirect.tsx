@@ -3,11 +3,11 @@ import { useAccountAuth } from '@/context/AccountAuthContext'
 import { AccountDashboard } from '@/pages/account/AccountDashboard'
 
 /**
- * All four roles now have their own real, multi-page experience:
+ * All five roles now have their own real, multi-page experience:
  * /account/learner/*, /account/teacher/*, /account/parent/* and
- * /account/school/*. AccountDashboard is kept around as a fallback for a
- * profile row with an unrecognized role, which shouldn't happen in
- * practice since the enum only allows these four.
+ * /account/school/* and /account/hod/*. AccountDashboard is kept around as a
+ * fallback for a profile row with an unrecognized role, which shouldn't happen
+ * in practice since the enum only allows these five.
  */
 export function AccountIndexRedirect() {
   const { profile } = useAccountAuth()
@@ -15,5 +15,6 @@ export function AccountIndexRedirect() {
   if (profile?.role === 'teacher') return <Navigate to="/account/teacher/dashboard" replace />
   if (profile?.role === 'parent') return <Navigate to="/account/parent/dashboard" replace />
   if (profile?.role === 'school') return <Navigate to="/account/school/dashboard" replace />
+  if (profile?.role === 'hod') return <Navigate to="/account/hod/dashboard" replace />
   return <AccountDashboard />
 }

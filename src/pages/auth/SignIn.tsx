@@ -8,6 +8,7 @@ const roleOptions: { role: DemoRole; label: string; desc: string; icon: (p: { cl
   { role: 'learner', label: 'Learner', desc: 'Karabo Mokoena · Grade 12', icon: UserIcon },
   { role: 'parent', label: 'Parent', desc: "Karabo's guardian", icon: HeartHandshakeIcon },
   { role: 'teacher', label: 'Teacher', desc: 'Alhaji T · Mathematical Literacy', icon: BookIcon },
+  { role: 'hod', label: 'Head of Department', desc: 'Mangyani T.S · Mathematical Literacy', icon: SchoolIcon },
   { role: 'school', label: 'School', desc: 'Gojela High School', icon: SchoolIcon },
 ]
 

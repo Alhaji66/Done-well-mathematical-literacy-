@@ -62,6 +62,19 @@ const content: Record<DemoRole, RoleContent> = {
       { icon: BarChartIcon, title: 'Class analytics', desc: 'Performance by topic and by question, with clear intervention recommendations.' },
     ],
   },
+  hod: {
+    icon: SchoolIcon,
+    eyebrow: 'For Heads of Department',
+    title: 'I run one subject, not one class.',
+    description:
+      'Your department is every teacher and every learner taking your subject, across all three grades — a view a class roster is too narrow for and a whole-school report is too wide for.',
+    points: [
+      { icon: SchoolIcon, title: 'Your teachers, not the whole staff', desc: 'Everyone at the school teaching your subject, in one list.' },
+      { icon: UsersIcon, title: 'Every learner in the subject', desc: 'All three grades, whoever teaches them, with mastery for each.' },
+      { icon: BarChartIcon, title: 'Analytics scoped to your subject', desc: 'Topic mastery and CAPS coverage for your department alone — no other subject in the way.' },
+      { icon: ClipboardIcon, title: 'The same papers your teachers use', desc: 'Question bank, assessments and weekly tests, filtered to your subject.' },
+    ],
+  },
   school: {
     icon: SchoolIcon,
     eyebrow: 'For Schools',

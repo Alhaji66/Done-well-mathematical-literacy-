@@ -39,6 +39,15 @@ export const teacherNav: RoleNavItem[] = [
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
 ]
 
+// Demo Head of Department nav. Smaller than the real one: the demo's job is
+// to show what the role is for, not to be a working department console.
+export const hodNav: RoleNavItem[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
+  { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+]
+
 export const schoolNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learners', label: 'Learners', icon: UsersIcon },

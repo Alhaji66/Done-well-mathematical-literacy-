@@ -18,6 +18,7 @@ export interface RoleNavItem {
 }
 
 const roleLabels: Record<DemoRole, string> = {
+  hod: 'Head of Department',
   learner: 'Learner Demo',
   parent: 'Parent Demo',
   teacher: 'Teacher Demo',

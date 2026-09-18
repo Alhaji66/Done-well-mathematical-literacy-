@@ -4,13 +4,15 @@ export interface SchoolTeacher {
   id: string
   full_name: string
   created_at: string
+  /** 'teacher' or 'hod' -- needed so a principal can tell them apart and correct a mistap. */
+  role?: string
 }
 
 export async function fetchSchoolTeachers(schoolId: string): Promise<SchoolTeacher[]> {
   if (!supabase) return []
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, full_name, created_at')
+    .select('id, full_name, created_at, role')
     .eq('school_id', schoolId)
     // An HOD is teaching staff too. Filtering on role = 'teacher' alone left
     // every head of department missing from their own principal's staff list.

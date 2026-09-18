@@ -14,6 +14,7 @@ import {
   parentNav,
   teacherNav,
   schoolNav,
+  hodNav,
   accountLearnerNav,
   accountTeacherNav,
   accountParentNav,
@@ -100,6 +101,7 @@ const ParentMyChild = lazy(() => import('@/pages/parent/MyChild').then((m) => ({
 const ParentSupport = lazy(() => import('@/pages/parent/Support').then((m) => ({ default: m.ParentSupport })))
 const ParentResources = lazy(() => import('@/pages/parent/Resources').then((m) => ({ default: m.ParentResources })))
 
+const DemoHodDashboard = lazy(() => import('@/pages/hod/Dashboard').then((m) => ({ default: m.HodDashboard })))
 const TeacherDashboard = lazy(() => import('@/pages/teacher/Dashboard').then((m) => ({ default: m.TeacherDashboard })))
 const TeacherResources = lazy(() => import('@/pages/teacher/Resources').then((m) => ({ default: m.TeacherResources })))
 const TeacherQuestionBank = lazy(() =>
@@ -127,6 +129,7 @@ export default function App() {
           <Route path="/learners" element={<RoleLanding role="learner" />} />
           <Route path="/parents" element={<RoleLanding role="parent" />} />
           <Route path="/teachers" element={<RoleLanding role="teacher" />} />
+          <Route path="/heads-of-department" element={<RoleLanding role="hod" />} />
           <Route path="/schools" element={<RoleLanding role="school" />} />
           <Route path="/publications" element={<Publications />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -262,6 +265,22 @@ export default function App() {
           <Route path="my-child" element={<ParentMyChild />} />
           <Route path="support" element={<ParentSupport />} />
           <Route path="resources" element={<ParentResources />} />
+        </Route>
+
+        <Route
+          path="/app/hod"
+          element={
+            <>
+              <RoleAutoSet role="hod" />
+              <RoleShell role="hod" basePath="/app/hod" navItems={hodNav} />
+            </>
+          }
+        >
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<DemoHodDashboard />} />
+          <Route path="question-bank" element={<TeacherQuestionBank />} />
+          <Route path="assessments" element={<TeacherAssessments />} />
+          <Route path="analytics" element={<TeacherAnalytics />} />
         </Route>
 
         <Route

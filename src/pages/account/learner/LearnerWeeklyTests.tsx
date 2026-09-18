@@ -206,6 +206,19 @@ export function LearnerWeeklyTests() {
                 <p className="mt-1.5 text-sm leading-relaxed text-navy-800">
                   <MathText>{q.answer}</MathText>
                 </p>
+                {/*
+                  The working, and it is not optional. `answer` holds only the
+                  final result -- for a calculation that is a single line like
+                  "F ≈ 360 N", and a learner cannot award themselves 5 marks
+                  against it because there is nothing to mark. The formula and
+                  the substitution live in `explanation`, which practice mode
+                  has always shown and this screen did not.
+                */}
+                {q.explanation ? (
+                  <p className="mt-2 text-sm leading-relaxed text-navy-600">
+                    <MathText>{q.explanation}</MathText>
+                  </p>
+                ) : null}
                 {q.answerFigure ? (
                   <div className="mt-3">
                     <Figure id={q.answerFigure} />

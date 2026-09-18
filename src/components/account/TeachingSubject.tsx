@@ -15,8 +15,19 @@ import { cn } from '@/lib/utils'
  * It states loudly when nothing is set, because an unset subject silently means
  * "show me the whole school", which is the confusing behaviour this exists to
  * end rather than a reasonable default.
+ *
+ * A Head of Department needs the identical control and different words: their
+ * subject is not what they teach, it is the department they are responsible
+ * for, and an unset one leaves them with no department at all rather than with
+ * too wide a view. Hence `variant` -- same behaviour, honest labels.
  */
-export function TeachingSubject({ profile }: { profile: AccountProfile }) {
+export function TeachingSubject({
+  profile,
+  variant = 'teacher',
+}: {
+  profile: AccountProfile
+  variant?: 'teacher' | 'hod'
+}) {
   const { refreshProfile } = useAccountAuth()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -58,12 +69,16 @@ export function TeachingSubject({ profile }: { profile: AccountProfile }) {
   return (
     <div className={cn('card p-4', !profile.subject_id && 'border-amber-300 bg-amber-50')}>
       <p className="text-sm font-semibold text-navy-900">
-        {profile.subject_id ? 'Which subject do you teach?' : 'Which subject do you teach?'}
+        {variant === 'hod' ? 'Which department do you head?' : 'Which subject do you teach?'}
       </p>
       <p className="mt-1 text-xs leading-relaxed text-navy-600">
-        {profile.subject_id
-          ? 'Your roster and analytics will show this subject only.'
-          : 'Until you choose, your roster and analytics show every learner at the school, in every subject — which is why you may be seeing subjects you do not teach.'}
+        {variant === 'hod'
+          ? profile.subject_id
+            ? 'Your department pages show this subject only, across all three grades.'
+            : 'Until you choose, you have no department, and your pages will be empty.'
+          : profile.subject_id
+            ? 'Your roster and analytics will show this subject only.'
+            : 'Until you choose, your roster and analytics show every learner at the school, in every subject — which is why you may be seeing subjects you do not teach.'}
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         {subjects.map((s) => (

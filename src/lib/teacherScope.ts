@@ -20,7 +20,11 @@ import type { RosterLearner, RosterProgressRow } from '@/lib/teacherRoster'
 /** The subject a view should be limited to, or null to show everything. */
 export function scopeSubjectFor(profile: AccountProfile | null): string | null {
   if (!profile) return null
-  return profile.role === 'teacher' ? profile.subject_id : null
+  // An HOD is scoped to their subject exactly as a teacher is -- the
+  // department IS a subject. What differs is the breadth WITHIN it: a
+  // teacher also filters by the grades they teach, and an HOD does not,
+  // because every grade in the subject is theirs to look at.
+  return profile.role === 'teacher' || profile.role === 'hod' ? profile.subject_id : null
 }
 
 export function learnersInScope(learners: RosterLearner[], subjectId: string | null): RosterLearner[] {
@@ -105,7 +109,7 @@ export async function setMySubject(profileId: string, subjectId: string): Promis
  */
 export async function setAccountRole(
   profileId: string,
-  role: 'learner' | 'teacher' | 'school' | 'parent',
+  role: 'learner' | 'teacher' | 'school' | 'parent' | 'hod',
 ): Promise<string | undefined> {
   if (!supabase) return 'Real accounts are not set up on this deployment.'
   const { error } = await supabase

@@ -140,7 +140,7 @@ export function TeacherDashboard() {
           description={
             learners.length > 0
               ? `You have ${learners.length} learner${learners.length === 1 ? '' : 's'}, but none in the grades above. Turn a grade back on to see them.`
-              : `Share the sign-in link with your students at ${schoolName ?? 'your school'} -- once they sign up and enter this same school name, they'll show up here automatically.`
+              : `Give the join code above to your students at ${schoolName ?? 'your school'} -- once they sign up and enter it, they'll show up here automatically.`
           }
         />
       ) : (

@@ -96,7 +96,7 @@ export function SchoolDashboard() {
         <EmptyState
           icon={<UsersIcon className="h-6 w-6" />}
           title="No one has joined yet"
-          description={`Share the sign-in link with learners and teachers at ${schoolName ?? 'your school'} -- once they sign up and enter this same school name, they'll show up here automatically.`}
+          description={`Give the join code above to learners and teachers at ${schoolName ?? 'your school'} -- once they sign up and enter it, they'll show up here automatically.`}
         />
       ) : (
         <>

@@ -9,6 +9,7 @@ const roleLabels: Record<AccountRole, string> = {
   parent: 'Parent',
   teacher: 'Teacher',
   school: 'School',
+  hod: 'Head of Department',
 }
 
 interface AccountShellProps {

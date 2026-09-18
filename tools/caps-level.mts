@@ -43,9 +43,18 @@ import type { CognitiveLevel } from '../src/types'
  * rather than a decision. "assess" is given the same noun list "evaluate"
  * already had, and deliberately NOT matched bare: "assess the rate of
  * reaction" is a calculation.
+ *
+ * "approach" was added to the two noun lists after a fourth item missed on
+ * "whose approach is better supported". It is a synonym of "method", which
+ * was already accepted, so this closes an inconsistency rather than lowering
+ * the bar -- and it is worth saying plainly that three separate widenings in
+ * one batch of work is the point at which a rule stops being evidence. Each
+ * was checked by scanning the whole corpus for prompts it newly matched, and
+ * each moved only the items it was written for; if a future widening moves
+ * items nobody wrote, that is the rule being bent to fit the author.
  */
 const L4 =
-  /\b(do you agree|to what extent|evaluate|argue|criticis|assess whether|assess [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|proposal|plan|concern)s?\b|whose (reasoning|argument|claim|explanation|interpretation|conclusion|method|position|advice)\b|which (position|view|claim|argument|interpretation|explanation|account|conclusion)[^.]{0,40}\b(better|best)\b|is (this|the) .{0,30}(valid|fair|reliable|justified|ethical)|suggest (an improvement|a way to improve|how .{0,40} could be improved)|design an? (investigation|experiment)|which .{0,40}would you (choose|recommend|support)|discuss the ethical|advantages and disadvantages|arguments? (for and against|in favour)|should .{0,40}be (allowed|banned|permitted)|(discuss|suggest|propose|recommend) (two|three|TWO|THREE|\d+|some|possible)? ?(strategies|ways|measures|steps|actions|solutions)\b)/i
+  /\b(do you agree|to what extent|evaluate|argue|criticis|assess whether|assess [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|proposal|plan|concern)s?\b|whose (reasoning|argument|claim|explanation|interpretation|conclusion|method|approach|position|advice)\b|which (position|view|claim|argument|interpretation|explanation|account|conclusion|approach)[^.]{0,40}\b(better|best)\b|is (this|the) .{0,30}(valid|fair|reliable|justified|ethical)|suggest (an improvement|a way to improve|how .{0,40} could be improved)|design an? (investigation|experiment)|which .{0,40}would you (choose|recommend|support)|discuss the ethical|advantages and disadvantages|arguments? (for and against|in favour)|should .{0,40}be (allowed|banned|permitted)|(discuss|suggest|propose|recommend) (two|three|TWO|THREE|\d+|some|possible)? ?(strategies|ways|measures|steps|actions|solutions)\b)/i
 
 /**
  * Level 3: applying to something presented or unfamiliar, or working with

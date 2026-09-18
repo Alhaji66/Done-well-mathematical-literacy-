@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { filterQuestions } from '@/data/questions'
+import { useEffect, useState } from 'react'
+import { filterSubjectQuestions } from '@/data/questionBank'
 import { topics, getTopic } from '@/data/topics'
 import { subjects } from '@/data/subjects'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -7,7 +7,7 @@ import { DifficultyBadge } from '@/components/ui/Badges'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SparkleIcon, DownloadIcon, ClipboardIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
-import type { Difficulty, Grade } from '@/types'
+import type { Difficulty, Grade, Question } from '@/types'
 
 // Every subject that actually has topics -- previously hardcoded to the two
 // maths subjects, which hid Physical and Life Sciences from teachers.
@@ -16,17 +16,55 @@ const teachableSubjects = subjects.filter((s) => topics.some((t) => t.subjectId 
 export function TeacherQuestionBank() {
   const [subjectId, setSubjectId] = useState<string>('mat-lit')
   const [grade, setGrade] = useState<Grade>(12)
-  const [topicId, setTopicId] = useState<string>(topics.find((t) => t.subjectId === 'mat-lit')!.id)
+  const [topicId, setTopicId] = useState<string>(
+    topics.find((t) => t.subjectId === 'mat-lit' && t.grades.includes(12))!.id,
+  )
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
-  const [worksheet, setWorksheet] = useState<ReturnType<typeof filterQuestions> | null>(null)
+  const [worksheet, setWorksheet] = useState<Question[] | null>(null)
   const [view, setView] = useState<'worksheet' | 'memo'>('worksheet')
 
-  const topicOptions = topics.filter((t) => t.subjectId === subjectId)
+  /*
+   * Topics are grade-scoped -- Human Reproduction is Grade 12, Cells is
+   * Grade 10 -- so listing every topic in the subject let a teacher pick a
+   * Grade 10 / Grade 12-topic pair that can never have questions, and the
+   * page answered "0 questions" as though the bank were empty. Every one of
+   * the 58 empty Life Sciences combinations was this, not missing content.
+   */
+  const topicOptions = topics.filter((t) => t.subjectId === subjectId && t.grades.includes(grade))
 
-  const matches = useMemo(
-    () => filterQuestions({ topicId, grade, difficulty: difficulty === 'All' ? undefined : difficulty }),
-    [topicId, grade, difficulty],
-  )
+  /*
+   * The pool is `@/data/questionBank`, NOT `@/data/questions`.
+   *
+   * This page read the second one, which holds only the small standalone set
+   * -- 11 questions across the 29 Life Sciences topics, so 78 of that
+   * subject's 87 topic/grade combinations came back empty and the Generate
+   * button was permanently disabled. Mat Lit and Mathematics have 67 and 122
+   * standalone questions, enough to look like the page worked.
+   *
+   * questionBank merges the standalone set with every paper item, which is
+   * what Practise, Learn and the weekly tests have always used, and it is
+   * where the 1 994 Life Sciences items actually live. It loads per subject,
+   * so this is async.
+   */
+  const [matches, setMatches] = useState<Question[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let live = true
+    setLoading(true)
+    filterSubjectQuestions(subjectId, {
+      topicId,
+      grade,
+      difficulty: difficulty === 'All' ? undefined : difficulty,
+    }).then((qs) => {
+      if (!live) return
+      setMatches(qs)
+      setLoading(false)
+    })
+    return () => {
+      live = false
+    }
+  }, [subjectId, topicId, grade, difficulty])
 
   const totalMarks = matches.reduce((s, q) => s + q.marks, 0)
   const topic = getTopic(topicId)
@@ -34,8 +72,16 @@ export function TeacherQuestionBank() {
 
   const changeSubject = (id: string) => {
     setSubjectId(id)
-    setTopicId(topics.find((t) => t.subjectId === id)?.id ?? '')
+    setTopicId(topics.find((t) => t.subjectId === id && t.grades.includes(grade))?.id ?? '')
   }
+
+  // Changing the grade can strand the selected topic in a grade that does not
+  // teach it, which would leave the select showing a topic that is no longer
+  // one of its options.
+  useEffect(() => {
+    if (topicOptions.some((t) => t.id === topicId)) return
+    setTopicId(topicOptions[0]?.id ?? '')
+  }, [topicOptions, topicId])
 
   const generate = () => {
     setWorksheet(matches)
@@ -88,12 +134,12 @@ export function TeacherQuestionBank() {
           <div>
             <label className="text-xs font-medium text-navy-500">Marks in selection</label>
             <div className="input mt-1 flex items-center justify-between text-navy-500">
-              <span>{matches.length} questions</span>
+              <span>{loading ? 'Loading…' : `${matches.length} questions`}</span>
               <span className="font-semibold text-navy-800">{totalMarks} marks</span>
             </div>
           </div>
         </div>
-        <button type="button" onClick={generate} disabled={matches.length === 0} className="btn-primary mt-4 inline-flex items-center gap-2">
+        <button type="button" onClick={generate} disabled={loading || matches.length === 0} className="btn-primary mt-4 inline-flex items-center gap-2">
           <SparkleIcon className="h-4 w-4" /> Generate worksheet
         </button>
       </div>

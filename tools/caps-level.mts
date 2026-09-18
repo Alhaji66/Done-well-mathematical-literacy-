@@ -27,8 +27,18 @@ import type { CognitiveLevel } from '../src/types'
  * just made", which is Level 3 analysis. Level 4 needs a judgement that
  * could have gone the other way.
  */
+/*
+ * Two forms were missing, found by cross-checking hand-written Level 4 items
+ * against these rules rather than by reading them: "whose reasoning is better
+ * supported" and "which position does the evidence better support". Both are
+ * squarely evaluative -- the learner is asked to judge between two positions
+ * that a competent person could hold -- and both were being rated Level 3.
+ *
+ * The comparative is required ("better", "best"). Without it, "which position
+ * does the passage describe" would match, and that is comprehension.
+ */
 const L4 =
-  /\b(do you agree|to what extent|evaluate|argue|criticis|assess whether|is (this|the) .{0,30}(valid|fair|reliable|justified|ethical)|suggest (an improvement|a way to improve|how .{0,40} could be improved)|design an? (investigation|experiment)|which .{0,40}would you (choose|recommend|support)|discuss the ethical|advantages and disadvantages|arguments? (for and against|in favour)|should .{0,40}be (allowed|banned|permitted)|(discuss|suggest|propose|recommend) (two|three|TWO|THREE|\d+|some|possible)? ?(strategies|ways|measures|steps|actions|solutions)\b)/i
+  /\b(do you agree|to what extent|evaluate|argue|criticis|assess whether|whose (reasoning|argument|claim|explanation|interpretation|conclusion|method|position|advice)\b|which (position|view|claim|argument|interpretation|explanation|account|conclusion)[^.]{0,40}\b(better|best)\b|is (this|the) .{0,30}(valid|fair|reliable|justified|ethical)|suggest (an improvement|a way to improve|how .{0,40} could be improved)|design an? (investigation|experiment)|which .{0,40}would you (choose|recommend|support)|discuss the ethical|advantages and disadvantages|arguments? (for and against|in favour)|should .{0,40}be (allowed|banned|permitted)|(discuss|suggest|propose|recommend) (two|three|TWO|THREE|\d+|some|possible)? ?(strategies|ways|measures|steps|actions|solutions)\b)/i
 
 /**
  * Level 3: applying to something presented or unfamiliar, or working with

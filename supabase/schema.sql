@@ -154,8 +154,33 @@ create policy "Linked parents can view their learner's progress"
     )
   );
 
+-- Is the current user staff -- teacher or school -- at this school?
+-- Defined here because the progress policy below needs it. security definer so
+-- it can read profiles without tripping the RLS on profiles itself.
+create or replace function public.is_school_staff(p_school_id uuid)
+returns boolean
+language sql
+security definer
+stable
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and school_id = p_school_id
+      and role in ('teacher', 'school')
+  );
+$$;
+
+-- STAFF, not "school members". The original policy asked only whether the
+-- progress row belonged to someone at the viewer's school, and never whether
+-- the VIEWER was a teacher. Postgres ORs permissive policies together, so every
+-- learner passed it and could read every classmate's mastery record. Caught by
+-- running the policies against a real database with two learners in one school.
+-- That is other people's personal information under POPIA, so the role test is
+-- not a refinement.
 drop policy if exists "School members can view progress within their school" on public.learner_progress;
-create policy "School members can view progress within their school"
+drop policy if exists "Staff can view progress within their school" on public.learner_progress;
+create policy "Staff can view progress within their school"
   on public.learner_progress for select
   using (
     exists (
@@ -163,6 +188,7 @@ create policy "School members can view progress within their school"
       where profiles.id = learner_progress.learner_id
       and profiles.school_id = public.current_school_id()
     )
+    and public.is_school_staff(public.current_school_id())
   );
 
 -- A linked parent also needs to see their child's name/grade/subject, not
@@ -645,20 +671,7 @@ create index if not exists weekly_test_attempts_test_idx on public.weekly_test_a
 alter table public.weekly_tests enable row level security;
 alter table public.weekly_test_attempts enable row level security;
 
--- Is the current user staff (teacher or school) at this school?
-create or replace function public.is_school_staff(p_school_id uuid)
-returns boolean
-language sql
-security definer
-stable
-as $$
-  select exists (
-    select 1 from public.profiles
-    where id = auth.uid()
-      and school_id = p_school_id
-      and role in ('teacher', 'school')
-  );
-$$;
+-- is_school_staff() is defined earlier, with the learner_progress policy.
 
 -- weekly_tests ------------------------------------------------------------
 
@@ -701,6 +714,9 @@ create policy "Learners can submit their own attempt"
 
 -- The whole point of the feature: a teacher sees the results for a test their
 -- school set, without being able to reach into another school's.
+-- is_school_staff is what makes this staff-only. Without it the policy asks
+-- only whether the TEST is at the viewer's school, which every learner at that
+-- school also satisfies -- so each of them could read the whole class's marks.
 drop policy if exists "Staff can view attempts at their school" on public.weekly_test_attempts;
 create policy "Staff can view attempts at their school"
   on public.weekly_test_attempts for select
@@ -709,6 +725,7 @@ create policy "Staff can view attempts at their school"
       select 1 from public.weekly_tests t
       where t.id = weekly_test_attempts.test_id
         and t.school_id = public.current_school_id()
+        and public.is_school_staff(t.school_id)
     )
   );
 

@@ -24,6 +24,31 @@ export default defineConfig({
       workbox: {
         navigateFallback: 'index.html',
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        // The per-subject paper chunks are big and a learner studies one or two
+        // of them, so precaching all four would make every install download
+        // roughly 1.4 MB gzipped of papers nobody in that browser will open.
+        // They are cached on first use instead, by the runtime rule below, and
+        // are then available offline exactly as before -- for the subjects that
+        // learner actually uses.
+        //
+        // This also removes a hard build failure: Life Sciences crossed
+        // workbox's 2 MiB precache ceiling when its Level 4 content landed, and
+        // an asset over the ceiling fails the build rather than being skipped.
+        globIgnores: ['**/{life-sciences,physical-sciences,mathematics,mat-lit}-*.js'],
+        runtimeCaching: [
+          {
+            urlPattern: /\/assets\/(life-sciences|physical-sciences|mathematics|mat-lit)-[\w-]+\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'subject-papers',
+              // Content-hashed filenames, so a cached entry is never stale --
+              // a new build simply requests a new name. The cap is a housekeeping
+              // limit, not a freshness one.
+              expiration: { maxEntries: 8 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
       includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png'],
       manifest: {

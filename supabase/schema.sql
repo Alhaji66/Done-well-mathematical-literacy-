@@ -347,3 +347,194 @@ end;
 $$;
 
 grant execute on function public.delete_my_account() to authenticated;
+
+-- ============================================================================
+-- SCHOOL JOIN CODES
+-- ============================================================================
+--
+-- WHAT WENT WRONG. Onboarding matched a school by the name the person typed:
+--
+--     select id from schools where name ilike '<what they typed>'
+--
+-- and created a new school when nothing matched. In a live test that failed in
+-- both directions at once.
+--
+--   A teacher typing "Gojela High School" and a learner typing "Gojela High"
+--   get two different rows, so two different school_id values. Every roster
+--   query joins on school_id, and so does the "same school" RLS policy, so the
+--   learner is invisible to their own teacher. That is exactly the reported
+--   symptom: the learners who did sign in did not appear on the teacher's roll.
+--
+--   Worse, once two near-identical names exist, ilike matches BOTH and the
+--   .maybeSingle() that follows errors out rather than returning a row. From
+--   then on nobody at that school can finish onboarding at all -- they are
+--   stuck on the profile screen, which a learner reports as "it won't let me
+--   sign in", because from where they sit that is what it looks like.
+--
+-- THE FIX. A school is identified by a short code, not by spelling. The school
+-- or the first teacher creates the school once and is shown its code; everyone
+-- else joins with that code. Typing cannot fork a school any more, because
+-- joining never creates one.
+--
+-- The alphabet omits O, 0, I and 1, which are the characters people mistype
+-- when a code is read off a board or dictated across a classroom.
+
+alter table public.schools add column if not exists join_code text;
+
+create or replace function public.generate_join_code()
+returns text
+language plpgsql
+as $$
+declare
+  alphabet constant text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  result text;
+  i integer;
+begin
+  loop
+    result := '';
+    for i in 1..6 loop
+      result := result || substr(alphabet, 1 + floor(random() * length(alphabet))::int, 1);
+    end loop;
+    exit when not exists (select 1 from public.schools where join_code = result);
+  end loop;
+  return result;
+end;
+$$;
+
+-- Backfill: every school that predates this migration needs a code before the
+-- column can be made NOT NULL.
+update public.schools set join_code = public.generate_join_code() where join_code is null;
+
+alter table public.schools alter column join_code set not null;
+
+do $$ begin
+  alter table public.schools add constraint schools_join_code_key unique (join_code);
+exception
+  when duplicate_table then null;
+  when duplicate_object then null;
+end $$;
+
+create index if not exists schools_join_code_idx on public.schools (join_code);
+
+-- Creating a school. security definer so the code is generated server-side and
+-- the caller cannot choose their own; returns the code so the UI can show it.
+create or replace function public.create_school(p_name text)
+returns table (school_id uuid, school_name text, join_code text)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_name text := btrim(p_name);
+  v_id uuid;
+  v_code text;
+begin
+  if auth.uid() is null then
+    raise exception 'Not signed in.';
+  end if;
+  if v_name = '' then
+    raise exception 'Please enter the school name.';
+  end if;
+
+  v_code := public.generate_join_code();
+
+  insert into public.schools (name, join_code)
+  values (v_name, v_code)
+  returning id into v_id;
+
+  return query select v_id, v_name, v_code;
+end;
+$$;
+
+grant execute on function public.create_school(text) to authenticated;
+
+-- Joining a school by code. Case- and space-insensitive, because the code gets
+-- written on a board and read off a phone.
+create or replace function public.join_school(p_code text)
+returns table (school_id uuid, school_name text)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_code text := upper(regexp_replace(coalesce(p_code, ''), '[^A-Za-z0-9]', '', 'g'));
+  v_id uuid;
+  v_name text;
+begin
+  if auth.uid() is null then
+    raise exception 'Not signed in.';
+  end if;
+
+  select id, name into v_id, v_name from public.schools where join_code = v_code;
+
+  if v_id is null then
+    raise exception 'No school found with the code %. Check it with your teacher.', v_code;
+  end if;
+
+  return query select v_id, v_name;
+end;
+$$;
+
+grant execute on function public.join_school(text) to authenticated;
+
+-- A school's own members need to read the code in order to hand it out. Nobody
+-- else does: the original policy let ANY signed-in user select ANY school row,
+-- which was harmless when the row held only a name and is not once it holds a
+-- join code -- one account would have been enough to enumerate every school's
+-- code and walk into its roster. Onboarding does not need this policy, because
+-- looking a school up by code goes through join_school(), which is security
+-- definer and returns nothing but the one school whose code was supplied.
+drop policy if exists "Signed-in users can view schools" on public.schools;
+drop policy if exists "Members can view their own school" on public.schools;
+create policy "Members can view their own school"
+  on public.schools for select
+  using (id = public.current_school_id());
+
+-- Direct inserts into schools are no longer how a school is made: create_school
+-- is, so that a code is always generated. Dropping the old insert policy is
+-- what stops a mistyped name silently forking a school again.
+drop policy if exists "A signed-in user can create a school" on public.schools;
+
+-- ---------------------------------------------------------------------------
+-- MERGING SCHOOLS THAT WERE ALREADY FORKED BY THE OLD CODE
+-- ---------------------------------------------------------------------------
+--
+-- Join codes stop new duplicates; they do not repair the rows a live test has
+-- already created. Run this to find them:
+--
+--   select id, name, join_code,
+--          (select count(*) from public.profiles p where p.school_id = s.id) as people
+--   from public.schools s order by name;
+--
+-- Then, for each duplicate, move its people to the row you are keeping and
+-- delete the empty one. Both ids come from the query above:
+--
+--   select public.merge_school('<duplicate id>', '<id to keep>');
+
+create or replace function public.merge_school(p_from uuid, p_into uuid)
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_moved integer;
+begin
+  if p_from = p_into then
+    raise exception 'Those are the same school.';
+  end if;
+  if not exists (select 1 from public.schools where id = p_into) then
+    raise exception 'The school to merge into does not exist.';
+  end if;
+
+  update public.profiles set school_id = p_into where school_id = p_from;
+  get diagnostics v_moved = row_count;
+
+  delete from public.schools where id = p_from;
+  return v_moved;
+end;
+$$;
+
+-- Deliberately NOT granted to authenticated: this is an operator repair, run
+-- from the SQL editor as the service role. A signed-in user must never be able
+-- to move another school's people.

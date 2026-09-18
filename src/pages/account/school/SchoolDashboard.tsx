@@ -10,6 +10,7 @@ import {
 } from '@/lib/teacherRoster'
 import { fetchSchoolTeachers, type SchoolTeacher } from '@/lib/schoolStaff'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
@@ -86,6 +87,8 @@ export function SchoolDashboard() {
   return (
     <div className="space-y-6">
       <SectionHeading eyebrow="Dashboard" title={schoolName ?? 'Your school'} description="A whole-school snapshot of participation and performance." />
+
+      <SchoolJoinCode schoolId={profile?.school_id ?? null} />
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading school overview…</p>

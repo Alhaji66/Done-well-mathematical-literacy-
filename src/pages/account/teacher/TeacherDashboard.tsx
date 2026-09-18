@@ -6,10 +6,15 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
+import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
 
+// All four subjects. This listed only two, so a Life Sciences or Physical
+// Sciences learner appeared on the roster with an empty subject column.
 const subjectNames: Record<string, string> = {
   'mat-lit': 'Mathematical Literacy',
   mathematics: 'Mathematics',
+  'life-sciences': 'Life Sciences',
+  'physical-sciences': 'Physical Sciences',
 }
 
 export function TeacherDashboard() {
@@ -69,6 +74,8 @@ export function TeacherDashboard() {
         title={`Welcome, ${profile.full_name}`}
         description={schoolName ?? 'Your school'}
       />
+
+      <SchoolJoinCode schoolId={profile.school_id} />
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading your roster…</p>

@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient'
 import { useAccountAuth, type AccountRole } from '@/context/AccountAuthContext'
 import { UserIcon, HeartHandshakeIcon, BookIcon, SchoolIcon, CheckCircleIcon } from '@/components/ui/Icons'
 import { recordConsent } from '@/lib/privacy'
+import { createSchool, joinSchool, normaliseJoinCode } from '@/lib/schools'
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -30,6 +31,12 @@ export function AccountOnboarding() {
   const [role, setRole] = useState<AccountRole>('learner')
   const [fullName, setFullName] = useState('')
   const [schoolName, setSchoolName] = useState('')
+  const [joinCode, setJoinCode] = useState('')
+  // A learner can only ever JOIN. Registering a school is how the school_id
+  // everyone else joins against comes into existence, so letting thirty
+  // learners each do it is what produced thirty schools of one learner.
+  const [schoolMode, setSchoolMode] = useState<'join' | 'create'>('join')
+  const [newCode, setNewCode] = useState('')
   const [grade, setGrade] = useState<Grade>(12)
   const [subjectId, setSubjectId] = useState('mat-lit')
   const [submitting, setSubmitting] = useState(false)
@@ -46,6 +53,11 @@ export function AccountOnboarding() {
 
   const needsSchool = role === 'learner' || role === 'teacher' || role === 'school'
   const needsGuardianConsent = role === 'learner' && !isAdult
+  // Only a school account registers a school outright. A teacher may be the
+  // first person from their school to arrive, so they get the choice; a learner
+  // never does.
+  const canCreateSchool = role === 'school' || role === 'teacher'
+  const effectiveSchoolMode = role === 'school' ? 'create' : canCreateSchool ? schoolMode : 'join'
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -72,28 +84,23 @@ export function AccountOnboarding() {
     setError('')
     try {
       let schoolId: string | null = null
+      let createdCode = ''
 
       if (needsSchool) {
-        const trimmedSchool = schoolName.trim()
-        if (!trimmedSchool) throw new Error('Please enter your school name.')
-
-        const { data: existing, error: findError } = await supabase
-          .from('schools')
-          .select('id')
-          .ilike('name', trimmedSchool)
-          .maybeSingle()
-        if (findError) throw findError
-
-        if (existing) {
-          schoolId = existing.id
+        // Never a name lookup. Joining resolves an existing school by its code
+        // and cannot create one; creating always mints a fresh code. There is
+        // no path left where a spelling decides which school you land in.
+        if (effectiveSchoolMode === 'create') {
+          const trimmedSchool = schoolName.trim()
+          if (!trimmedSchool) throw new Error('Please enter the school name.')
+          const { school, error: createError } = await createSchool(trimmedSchool)
+          if (createError || !school) throw new Error(createError ?? 'Could not register the school.')
+          schoolId = school.id
+          createdCode = school.joinCode
         } else {
-          const { data: created, error: createError } = await supabase
-            .from('schools')
-            .insert({ name: trimmedSchool })
-            .select('id')
-            .single()
-          if (createError) throw createError
-          schoolId = created.id
+          const { school, error: joinError } = await joinSchool(joinCode)
+          if (joinError || !school) throw new Error(joinError ?? 'Could not find that school code.')
+          schoolId = school.id
         }
       }
 
@@ -117,6 +124,16 @@ export function AccountOnboarding() {
       })
       if (consentError) throw new Error(consentError)
 
+      // A school that has just been registered must not be dropped straight
+      // into a dashboard: the code it was given is the only way anyone else
+      // gets into the same school, and nobody writes down a code they were
+      // never shown. The profile is saved either way.
+      if (createdCode) {
+        setNewCode(createdCode)
+        await refreshProfile()
+        return
+      }
+
       await refreshProfile()
       navigate('/account', { replace: true })
     } catch (err) {
@@ -134,6 +151,39 @@ export function AccountOnboarding() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (newCode) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-navy-50 px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="card p-6 text-center sm:p-8">
+            <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+              <SchoolIcon className="h-5 w-5" />
+            </span>
+            <h1 className="mt-4 text-xl font-bold text-navy-900">{schoolName.trim()} is registered</h1>
+            <p className="mt-1.5 text-sm text-navy-600">
+              This is your school code. Everyone else at the school -- teachers and learners -- joins by entering it,
+              which is what puts them on your roster.
+            </p>
+
+            <p className="mt-5 select-all rounded-xl border-2 border-dashed border-gold-500 bg-gold-50 px-4 py-5 font-mono text-3xl font-bold tracking-[0.3em] text-navy-900">
+              {newCode}
+            </p>
+
+            <p className="mt-4 text-left text-xs leading-relaxed text-navy-500">
+              Write it on the board, or send it to your class. Anyone who signs up WITHOUT it will not appear in your
+              learner list, because the code is what links their account to this school. You can find it again any time
+              on your dashboard.
+            </p>
+
+            <button type="button" onClick={() => navigate('/account', { replace: true })} className="btn-primary mt-6 w-full">
+              I've saved the code -- continue
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -196,21 +246,69 @@ export function AccountOnboarding() {
 
             {needsSchool ? (
               <div>
-                <label className="text-xs font-medium text-navy-500" htmlFor="schoolName">
-                  School name
-                </label>
-                <input
-                  id="schoolName"
-                  type="text"
-                  required
-                  value={schoolName}
-                  onChange={(e) => setSchoolName(e.target.value)}
-                  placeholder="e.g. Gojela High School"
-                  className="input mt-1"
-                />
-                <p className="mt-1 text-xs text-navy-400">
-                  If your school is already registered, this links you to it -- otherwise it's created.
-                </p>
+                {canCreateSchool && role !== 'school' ? (
+                  <div className="mb-3 flex rounded-lg border border-navy-200 p-0.5">
+                    {(['join', 'create'] as const).map((mode) => (
+                      <button
+                        key={mode}
+                        type="button"
+                        aria-pressed={effectiveSchoolMode === mode}
+                        onClick={() => setSchoolMode(mode)}
+                        className={cn(
+                          'flex-1 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors',
+                          effectiveSchoolMode === mode ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+                        )}
+                      >
+                        {mode === 'join' ? 'I have a school code' : 'Register my school'}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+
+                {effectiveSchoolMode === 'create' ? (
+                  <>
+                    <label className="text-xs font-medium text-navy-500" htmlFor="schoolName">
+                      School name
+                    </label>
+                    <input
+                      id="schoolName"
+                      type="text"
+                      required
+                      value={schoolName}
+                      onChange={(e) => setSchoolName(e.target.value)}
+                      placeholder="e.g. Gojela High School"
+                      className="input mt-1"
+                    />
+                    <p className="mt-1 text-xs text-navy-400">
+                      We'll give you a 6-character school code to share with your teachers and learners. Register the
+                      school ONCE -- everyone else joins with the code.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <label className="text-xs font-medium text-navy-500" htmlFor="joinCode">
+                      School code
+                    </label>
+                    <input
+                      id="joinCode"
+                      type="text"
+                      required
+                      inputMode="text"
+                      autoCapitalize="characters"
+                      autoComplete="off"
+                      maxLength={7}
+                      value={joinCode}
+                      onChange={(e) => setJoinCode(normaliseJoinCode(e.target.value))}
+                      placeholder="e.g. K7RB2M"
+                      className="input mt-1 font-mono text-lg tracking-[0.3em] uppercase"
+                    />
+                    <p className="mt-1 text-xs text-navy-400">
+                      {role === 'learner'
+                        ? 'Ask your teacher for your school code. It is 6 letters and numbers.'
+                        : 'The code your school was given when it registered.'}
+                    </p>
+                  </>
+                )}
               </div>
             ) : null}
 

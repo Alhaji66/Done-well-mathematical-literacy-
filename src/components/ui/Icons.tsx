@@ -10,6 +10,12 @@ const base = (props: IconProps) => ({
   strokeWidth: 1.8,
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
+  // Every icon in this app sits next to its own visible label, so an icon is
+  // decoration and a screen reader should skip it rather than announce a
+  // second, redundant name. A caller that needs an icon to carry meaning on
+  // its own can pass aria-hidden={false} and its own aria-label.
+  'aria-hidden': true,
+  focusable: false,
   ...props,
 })
 
@@ -39,6 +45,15 @@ export const ClipboardIcon = (p: IconProps) => (
     <rect x="6" y="4" width="12" height="17" rx="2" />
     <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
     <path d="M9 11h6M9 15h6M9 19h3" />
+  </svg>
+)
+
+// Clipboard with a tick -- curriculum coverage, i.e. "what is checked off".
+export const ClipboardCheckIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="6" y="4" width="12" height="17" rx="2" />
+    <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
+    <path d="m9.5 13.5 2 2 4-4" />
   </svg>
 )
 

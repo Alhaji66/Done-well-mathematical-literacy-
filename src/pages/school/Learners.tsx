@@ -26,6 +26,7 @@ export function SchoolLearners() {
           <button
             key={g}
             type="button"
+            aria-pressed={grade === g}
             onClick={() => setGrade(g)}
             className={cn('rounded-md px-3.5 py-1.5 text-sm font-semibold', grade === g ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50')}
           >
@@ -46,14 +47,14 @@ export function SchoolLearners() {
                   <span>Average score</span>
                   <span>{g.averageScore}%</span>
                 </div>
-                <ProgressBar percent={g.averageScore} size="sm" />
+                <ProgressBar percent={g.averageScore} size="sm" label={`Grade ${g.grade} average score`} />
               </div>
               <div className="mt-3">
                 <div className="mb-1 flex justify-between text-xs text-navy-500">
                   <span>Test completion</span>
                   <span>{g.testCompletionPercent}%</span>
                 </div>
-                <ProgressBar percent={g.testCompletionPercent} size="sm" />
+                <ProgressBar percent={g.testCompletionPercent} size="sm" label={`Grade ${g.grade} test completion`} />
               </div>
             </div>
           ))}

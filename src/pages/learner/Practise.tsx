@@ -1,22 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { subjects } from '@/data/subjects'
 import { topicsForSubject, getTopic } from '@/data/topics'
-import { filterSubjectQuestions } from '@/data/questionBank'
+import { filterSubjectQuestions, questionsForSubject } from '@/data/questionBank'
 import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
+import { subtopicNamesFor } from '@/data/topicNotes'
+import { SubtopicSection } from '@/components/practise/SubtopicSection'
+import { groupBySubtopic, UNSORTED } from '@/data/subtopics'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PencilIcon } from '@/components/ui/Icons'
-import type { Difficulty, Question } from '@/types'
+import type { Difficulty, Grade, Question } from '@/types'
 import { cn } from '@/lib/utils'
 
 const difficulties: Difficulty[] = ['Easy', 'Moderate', 'Challenge']
 
 // Derived from the real subjects list rather than hardcoded, so adding a subject
-// only means adding its topics. English FAL is in subjects but has no topics yet,
-// so it would otherwise show up as an empty picker entry.
+// only means adding its topics. Every registered subject currently has topics,
+// so this filter removes nothing today -- it is kept so that a subject added
+// before its content cannot appear as an empty picker entry.
 const subjectOptions = subjects.filter((s) => topicsForSubject(s.id).length > 0)
 
 export function LearnerPractise() {
@@ -24,9 +28,57 @@ export function LearnerPractise() {
   const initialTopicId = params.get('topic') ?? ''
   const initialSubjectId = getTopic(initialTopicId)?.subjectId ?? demoLearner.subjectId
   const [subjectId, setSubjectId] = useState(initialSubjectId)
-  const topics = topicsForSubject(subjectId, demoLearner.grade)
+
+  // Learn lets you browse any grade, so a card there can link here for Grade 10
+  // while the demo learner is in Grade 12. Taking the grade from the link rather
+  // than from the demo profile is what stops that combination returning "no
+  // sample questions at this difficulty yet" for a topic Learn has just
+  // advertised a question count for.
+  const linkedGrade = Number(params.get('grade')) as Grade
+  const [grade, setGrade] = useState<Grade>(
+    ([10, 11, 12] as Grade[]).includes(linkedGrade) ? linkedGrade : demoLearner.grade,
+  )
+  const topics = topicsForSubject(subjectId, grade)
   const [topicId, setTopicId] = useState(initialTopicId || topics[0]?.id || '')
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
+  const [subtopic, setSubtopic] = useState(params.get('subtopic') ?? 'All')
+
+  // The demo carries the same subject/grade/topic identity in its URL as the
+  // real app, so a link into it opens what it says it opens.
+  const routeFor = (next: { topic?: string; subtopic?: string; subject?: string; grade?: Grade }) => {
+    const query: Record<string, string> = {
+      subject: next.subject ?? subjectId,
+      topic: next.topic ?? topicId,
+      grade: String(next.grade ?? grade),
+    }
+    const sub = next.subtopic ?? subtopic
+    if (sub && sub !== 'All') query.subtopic = sub
+    if (!query.topic) delete query.topic
+    return query
+  }
+
+  // Which sub-topics actually have a question somewhere in this subject.
+  // The picker lists the full curriculum, but an entry the classifier has
+  // placed nothing under is shown greyed out rather than quietly dropped --
+  // dropping it would hide a gap, and offering it would be a dead end.
+  const [liveSubtopics, setLiveSubtopics] = useState<Set<string> | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setLiveSubtopics(null)
+    questionsForSubject(subjectId).then((pool) => {
+      if (cancelled) return
+      const live = new Set<string>()
+      for (const t of topicsForSubject(subjectId)) {
+        const rows = pool.filter((q) => q.topicId === t.id)
+        for (const g of groupBySubtopic(t.id, rows)) live.add(`${t.id}::${g.name}`)
+      }
+      setLiveSubtopics(live)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [subjectId])
 
   // Paper-backed questions are lazy-loaded per subject, so this resolves after render.
   const [questions, setQuestions] = useState<Question[]>([])
@@ -42,7 +94,7 @@ export function LearnerPractise() {
     filterSubjectQuestions(subjectId, {
       topicId,
       difficulty: difficulty === 'All' ? undefined : difficulty,
-      grade: demoLearner.grade,
+      grade,
     }).then((rows) => {
       if (cancelled) return
       setQuestions(rows)
@@ -51,27 +103,55 @@ export function LearnerPractise() {
     return () => {
       cancelled = true
     }
-  }, [subjectId, topicId, difficulty])
+  }, [subjectId, topicId, difficulty, grade])
 
-  const changeTopic = (id: string) => {
-    setTopicId(id)
-    setParams({ topic: id })
+  /**
+   * The topic picker offers topics AND their sub-topics in one list, so its
+   * value is either a topic id or `topicId::Sub-topic name`.
+   */
+  const changeTopicOrSubtopic = (value: string) => {
+    const [nextTopic, nextSubtopic] = value.split('::')
+    setTopicId(nextTopic)
+    setSubtopic(nextSubtopic ?? 'All')
+    setParams(routeFor({ topic: nextTopic, subtopic: nextSubtopic ?? 'All' }))
   }
+
+  const changeSubtopic = (name: string) => {
+    setSubtopic(name)
+    setParams(routeFor({ subtopic: name }))
+  }
+
+  const groups = useMemo(() => groupBySubtopic(topicId, questions), [topicId, questions])
+  const shown = subtopic === 'All' ? groups : groups.filter((g) => g.name === subtopic)
 
   const changeSubject = (id: string) => {
     setSubjectId(id)
-    const nextTopics = topicsForSubject(id, demoLearner.grade)
+    // The topic to land on must come from the grade the learner is CURRENTLY
+    // browsing, not from the demo profile. Reading it from the profile meant
+    // switching subject while on Grade 10 selected a Grade 12 topic, and then
+    // asked for Grade 10 questions on it -- which is how a topic Learn had just
+    // advertised a count for answered "no sample questions at this difficulty".
+    const nextTopics = topicsForSubject(id, grade)
     const nextTopicId = nextTopics[0]?.id ?? ''
     setTopicId(nextTopicId)
-    setParams(nextTopicId ? { topic: nextTopicId } : {})
+    setSubtopic('All')
+    // routeFor, not a bare { topic }. Writing only the topic dropped subject and
+    // grade out of the URL, so a refresh or a Back came back as Grade 12 and the
+    // link was no longer shareable.
+    setParams(routeFor({ subject: id, topic: nextTopicId, subtopic: 'All' }))
   }
 
   return (
     <div className="space-y-6">
+      {/* The heading states the grade being BROWSED, not the demo profile's
+          grade. The two differ whenever a Learn card links here for another
+          grade, and a heading reading "Grade 12" over Grade 10 content is
+          worse than no heading at all -- a learner takes it as the answer to
+          "am I in the right place?". */}
       <SectionHeading
         eyebrow="Practise"
         title="Practise a topic"
-        description={`Grade ${demoLearner.grade} — choose a subject, topic and difficulty to begin.`}
+        description={`Grade ${grade} — choose a subject, topic and difficulty to begin.`}
       />
 
       <div className="card flex flex-col gap-4 p-4">
@@ -82,6 +162,7 @@ export function LearnerPractise() {
               <button
                 key={s.id}
                 type="button"
+                aria-pressed={subjectId === s.id}
                 onClick={() => changeSubject(s.id)}
                 className={cn(
                   'rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
@@ -97,20 +178,73 @@ export function LearnerPractise() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1">
           <label className="text-xs font-medium text-navy-500" htmlFor="topic-select">
-            Topic
+            Topic and sub-topic
           </label>
+          {/* Sub-topics sit under their topic as an optgroup, so a learner
+              stuck on taxation can pick it straight from this box instead of
+              choosing Finance and hunting through the whole topic. */}
           <select
             id="topic-select"
             className="select mt-1"
-            value={topicId}
-            onChange={(e) => changeTopic(e.target.value)}
+            value={subtopic === 'All' ? topicId : `${topicId}::${subtopic}`}
+            onChange={(e) => changeTopicOrSubtopic(e.target.value)}
           >
-            {topics.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
+            {topics.map((t) => {
+              const names = subtopicNamesFor(t.id)
+              if (names.length === 0)
+                return (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                )
+              // The classifier cannot place every question, and the leftovers
+              // are a real group Practise renders. Offer it here too, or a link
+              // into it from Learn would leave this box showing nothing.
+              const hasCatchAll = liveSubtopics?.has(`${t.id}::${UNSORTED}`) ?? false
+              return (
+                <optgroup key={t.id} label={t.name}>
+                  <option value={t.id}>All of {t.name}</option>
+                  {names.map((name) => {
+                    const dead = liveSubtopics !== null && !liveSubtopics.has(`${t.id}::${name}`)
+                    return (
+                      <option key={name} value={`${t.id}::${name}`} disabled={dead}>
+                        {name}
+                        {dead ? ' — none yet' : ''}
+                      </option>
+                    )
+                  })}
+                  {hasCatchAll ? <option value={`${t.id}::${UNSORTED}`}>{UNSORTED}</option> : null}
+                </optgroup>
+              )
+            })}
           </select>
+        </div>
+
+        <div>
+          <p className="text-xs font-medium text-navy-500">Grade</p>
+          <div className="mt-1 inline-flex rounded-lg border border-navy-200 bg-white p-1">
+            {([10, 11, 12] as const).map((g) => (
+              <button
+                key={g}
+                type="button"
+                aria-pressed={grade === g}
+                onClick={() => {
+                  setGrade(g)
+                  const next = topicsForSubject(subjectId, g)
+                  const nextTopicId = next.some((t) => t.id === topicId) ? topicId : (next[0]?.id ?? '')
+                  setTopicId(nextTopicId)
+                  setSubtopic('All')
+                  setParams(routeFor({ grade: g, topic: nextTopicId, subtopic: 'All' }))
+                }}
+                className={cn(
+                  'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
+                  grade === g ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+                )}
+              >
+                Grade {g}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -120,6 +254,7 @@ export function LearnerPractise() {
               <button
                 key={d}
                 type="button"
+                aria-pressed={difficulty === d}
                 onClick={() => setDifficulty(d)}
                 className={cn(
                   'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
@@ -132,9 +267,37 @@ export function LearnerPractise() {
           </div>
         </div>
         </div>
+
+        {groups.length > 1 ? (
+          <div>
+            <p className="text-xs font-medium text-navy-500">Sub-topic</p>
+            <div className="mt-1 flex flex-wrap gap-1 rounded-lg border border-navy-200 bg-white p-1">
+              {['All', ...groups.map((g) => g.name)].map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  aria-pressed={subtopic === name}
+                  onClick={() => changeSubtopic(name)}
+                  className={cn(
+                    'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors',
+                    subtopic === name ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
+                  )}
+                >
+                  {name === 'All' ? 'All sub-topics' : name}
+                  {name !== 'All' ? (
+                    <span className={cn('ml-1.5', subtopic === name ? 'text-navy-300' : 'text-navy-400')}>
+                      {groups.find((g) => g.name === name)?.questions.length}
+                    </span>
+                  ) : null}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {topicId ? <TopicNotes topicId={topicId} /> : null}
+      {/* Each sub-topic's own explanation is rendered above its questions. */}
+      {topicId ? <TopicNotes topicId={topicId} showSubtopics={false} /> : null}
 
       {loadingQuestions ? (
         <p className="text-sm text-navy-500">Loading questions…</p>
@@ -144,10 +307,34 @@ export function LearnerPractise() {
           title="No sample questions at this difficulty yet"
           description="Try a different difficulty level, or choose another topic — more questions are added regularly."
         />
+      ) : shown.length === 0 ? (
+        /* The picker lists every sub-topic a topic is taught in, so a learner
+           can land on one with no questions at the current difficulty. Say
+           which sub-topic is empty rather than showing a blank page. */
+        <EmptyState
+          icon={<PencilIcon className="h-6 w-6" />}
+          title={`No ${subtopic} questions at this difficulty yet`}
+          description={`There are ${questions.length} other questions in ${getTopic(topicId)?.name ?? 'this topic'}. Change the difficulty, or choose "All sub-topics" to see them.`}
+          action={
+            <button type="button" className="btn-secondary" onClick={() => changeSubtopic('All')}>
+              Show all sub-topics
+            </button>
+          }
+        />
       ) : (
-        <div className="space-y-4">
-          {questions.map((q, i) => (
-            <QuestionCard key={q.id} question={q} index={i} />
+        <div className="space-y-8">
+          {shown.map((group, groupIndex) => (
+            <SubtopicSection
+              key={group.name}
+              name={group.name}
+              points={group.points}
+              count={group.questions.length}
+              index={subtopic === 'All' ? groupIndex : groups.findIndex((g) => g.name === group.name)}
+            >
+              {group.questions.map((q, i) => (
+                <QuestionCard key={q.id} question={q} index={i} />
+              ))}
+            </SubtopicSection>
           ))}
         </div>
       )}

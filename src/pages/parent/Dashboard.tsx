@@ -20,7 +20,7 @@ export function ParentDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-gold-600">Parent Dashboard</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Parent Dashboard</p>
         <h1 className="mt-1 text-2xl font-bold text-navy-900">
           {demoLearner.name}'s progress — Grade {demoLearner.grade} {subject.name}
         </h1>
@@ -51,7 +51,7 @@ export function ParentDashboard() {
                     <span className="font-medium text-navy-900">{topic?.name}</span>
                     <span className="text-navy-600">{s.masteryPercent}%</span>
                   </div>
-                  <ProgressBar percent={s.masteryPercent} size="sm" className="mt-1.5" barClassName="bg-emerald-500" />
+                  <ProgressBar percent={s.masteryPercent} size="sm" className="mt-1.5" barClassName="bg-emerald-500" label={`${topic?.name} mastery`} />
                 </div>
               )
             })}
@@ -69,7 +69,7 @@ export function ParentDashboard() {
                     <span className="font-medium text-navy-900">{topic?.name}</span>
                     <span className="text-navy-600">{s.masteryPercent}%</span>
                   </div>
-                  <ProgressBar percent={s.masteryPercent} size="sm" className="mt-1.5" barClassName="bg-rose-500" />
+                  <ProgressBar percent={s.masteryPercent} size="sm" className="mt-1.5" barClassName="bg-rose-500" label={`${topic?.name} mastery`} />
                 </div>
               )
             })}

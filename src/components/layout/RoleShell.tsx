@@ -29,6 +29,9 @@ export function RoleShell({ role, basePath, navItems }: RoleShellProps) {
 
   return (
     <div className="min-h-screen bg-neutral-50">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <div className="bg-gold-500 py-1.5 text-center text-xs font-semibold text-navy-900">
         Demo mode — exploring with sample data. No real accounts or payments.
       </div>
@@ -43,7 +46,7 @@ export function RoleShell({ role, basePath, navItems }: RoleShellProps) {
               </svg>
             </span>
             <span className="text-base font-extrabold tracking-tight text-navy-900">
-              DONE WELL<span className="align-super text-[0.55em] text-gold-600">®</span>
+              DONE WELL<span className="align-super text-[0.55em] text-gold-700">®</span>
             </span>
           </Link>
 
@@ -87,7 +90,7 @@ export function RoleShell({ role, basePath, navItems }: RoleShellProps) {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-24 md:pb-6">
+        <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 pb-24 md:pb-6">
           <Outlet />
         </main>
       </div>

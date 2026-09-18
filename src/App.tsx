@@ -23,6 +23,7 @@ import {
 const Home = lazy(() => import('@/pages/public/Home').then((m) => ({ default: m.Home })))
 const RoleLanding = lazy(() => import('@/pages/public/RoleLanding').then((m) => ({ default: m.RoleLanding })))
 const Publications = lazy(() => import('@/pages/public/Publications').then((m) => ({ default: m.Publications })))
+const AccountPrivacy = lazy(() => import('@/pages/account/AccountPrivacy').then((m) => ({ default: m.AccountPrivacy })))
 const PrivacyPolicy = lazy(() => import('@/pages/public/legal/PrivacyPolicy').then((m) => ({ default: m.PrivacyPolicy })))
 const TermsOfService = lazy(() => import('@/pages/public/legal/TermsOfService').then((m) => ({ default: m.TermsOfService })))
 const PopiaNotice = lazy(() => import('@/pages/public/legal/PopiaNotice').then((m) => ({ default: m.PopiaNotice })))
@@ -61,9 +62,18 @@ const AccountSchoolTeachers = lazy(() =>
 const AssessmentsBrowse = lazy(() =>
   import('@/components/assessments/AssessmentsBrowse').then((m) => ({ default: m.AssessmentsBrowse })),
 )
+const LearnerWeeklyTests = lazy(() =>
+  import('@/pages/account/learner/LearnerWeeklyTests').then((m) => ({ default: m.LearnerWeeklyTests })),
+)
+const TeacherWeeklyTests = lazy(() =>
+  import('@/pages/account/teacher/WeeklyTests').then((m) => ({ default: m.WeeklyTests })),
+)
 const PaperPage = lazy(() => import('@/pages/account/assessments/PaperPage').then((m) => ({ default: m.PaperPage })))
 const MasteryAnalytics = lazy(() =>
   import('@/components/analytics/MasteryAnalytics').then((m) => ({ default: m.MasteryAnalytics })),
+)
+const CurriculumCoverage = lazy(() =>
+  import('@/components/analytics/CurriculumCoverage').then((m) => ({ default: m.CurriculumCoverage })),
 )
 
 const LearnerDashboard = lazy(() => import('@/pages/learner/Dashboard').then((m) => ({ default: m.LearnerDashboard })))
@@ -138,7 +148,9 @@ export default function App() {
                 <Route path="practise" element={<AccountLearnerPractise />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="tests" element={<LearnerWeeklyTests />} />
                 <Route path="progress" element={<AccountLearnerProgress />} />
+                <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
 
@@ -150,7 +162,10 @@ export default function App() {
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
+                <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
 
@@ -160,6 +175,7 @@ export default function App() {
                 <Route path="dashboard" element={<AccountParentDashboard />} />
                 <Route path="resources" element={<AccountParentResources />} />
                 <Route path="support" element={<ParentSupport />} />
+                <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
 
@@ -171,7 +187,10 @@ export default function App() {
                 <Route path="teachers" element={<AccountSchoolTeachers />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
+                <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
           </Route>

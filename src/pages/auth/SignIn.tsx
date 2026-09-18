@@ -37,7 +37,7 @@ export function SignIn() {
               </svg>
             </span>
             <span className="text-lg font-extrabold tracking-tight text-navy-900">
-              DONE WELL<span className="align-super text-[0.6em] text-gold-600">®</span>
+              DONE WELL<span className="align-super text-[0.6em] text-gold-700">®</span>
             </span>
           </Link>
         </div>
@@ -55,6 +55,7 @@ export function SignIn() {
                 <button
                   key={opt.role}
                   type="button"
+                  aria-pressed={active}
                   onClick={() => setSelected(opt.role)}
                   className={cn(
                     'flex w-full items-center gap-3 rounded-xl border p-3.5 text-left transition-colors',
@@ -73,7 +74,7 @@ export function SignIn() {
                     <span className="block text-sm font-semibold text-navy-900">{opt.label}</span>
                     <span className="block truncate text-xs text-navy-500">{opt.desc}</span>
                   </span>
-                  {active ? <CheckCircleIcon className="h-5 w-5 shrink-0 text-gold-600" /> : null}
+                  {active ? <CheckCircleIcon className="h-5 w-5 shrink-0 text-gold-700" /> : null}
                 </button>
               )
             })}

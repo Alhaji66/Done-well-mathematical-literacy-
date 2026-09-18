@@ -10,6 +10,7 @@ import {
 } from '@/lib/teacherRoster'
 import { fetchSchoolTeachers, type SchoolTeacher } from '@/lib/schoolStaff'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
@@ -87,6 +88,8 @@ export function SchoolDashboard() {
     <div className="space-y-6">
       <SectionHeading eyebrow="Dashboard" title={schoolName ?? 'Your school'} description="A whole-school snapshot of participation and performance." />
 
+      <SchoolJoinCode schoolId={profile?.school_id ?? null} />
+
       {loading ? (
         <p className="text-sm text-navy-500">Loading school overview…</p>
       ) : learners.length === 0 ? (
@@ -109,7 +112,7 @@ export function SchoolDashboard() {
             <div className="card p-5">
               <p className="text-xs font-medium text-navy-500">School average mastery</p>
               <p className="mt-1 text-2xl font-extrabold text-navy-900">{schoolAverage}%</p>
-              <ProgressBar percent={schoolAverage} className="mt-2" size="sm" />
+              <ProgressBar percent={schoolAverage} className="mt-2" size="sm" label="School average mastery" />
             </div>
           </div>
 
@@ -125,7 +128,7 @@ export function SchoolDashboard() {
                       </span>
                       <span className="text-navy-600">{g.hasData ? `${g.average}% average` : 'No practice yet'}</span>
                     </div>
-                    <ProgressBar percent={g.average} size="sm" className="mt-1.5" />
+                    <ProgressBar percent={g.average} size="sm" className="mt-1.5" label={`Grade ${g.grade} average mastery`} />
                   </div>
                 ))}
               </div>

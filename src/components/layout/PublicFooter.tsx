@@ -63,7 +63,7 @@ export function PublicFooter() {
         </div>
       </div>
       <div className="border-t border-navy-800 py-5">
-        <p className="container-page text-xs text-navy-400">
+        <p className="container-page text-xs text-navy-300">
           © {new Date().getFullYear()} Done Well Publications. All rights reserved. DONE WELL® is a registered trademark.
         </p>
       </div>

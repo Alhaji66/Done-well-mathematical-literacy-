@@ -1,6 +1,7 @@
 import type { Paper } from '@/data/papers'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { ExamTimer } from '@/components/assessments/ExamTimer'
 
 interface PaperRunnerProps {
   paper: Paper
@@ -10,11 +11,19 @@ interface PaperRunnerProps {
   onItemAnswered?: (itemId: string) => void
 }
 
+/**
+ * The timer is shown only to whoever is actually sitting the paper. A teacher
+ * or school reviewing the same content read-only is not under exam conditions,
+ * and a countdown on their screen would only be noise.
+ */
+
 export function PaperRunner({ paper, onAttempt, onItemAnswered }: PaperRunnerProps) {
   let itemIndex = 0
 
   return (
     <div className="space-y-8">
+      {onAttempt ? <ExamTimer paperId={paper.id} durationMinutes={paper.durationMinutes} /> : null}
+
       <div className="rounded-lg border border-gold-200 bg-gold-50 p-4 text-sm text-navy-700">
         <strong>{paper.kind === 'predicted' ? 'DONE WELL Predicted Paper.' : `DONE WELL Practice Paper — ${paper.year} style.`}</strong>{' '}
         {paper.kind === 'predicted'

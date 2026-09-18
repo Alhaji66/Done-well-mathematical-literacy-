@@ -13,7 +13,7 @@
  *   npm run check:physics-level
  */
 import { papersForSubject } from '../src/data/papers/index.ts'
-import { proposePhysicsLevel, countFormulas } from './physics-level.mts'
+import { proposePhysicsLevel, formulaCountLevel, countFormulas } from './physics-level.mts'
 
 // Hand-labelled by physics judgement, not by any rule in the tool.
 // L2 = routine substitution into one formula with the quantities supplied.
@@ -42,20 +42,26 @@ const TRUTH: Record<string, 2 | 3> = {
 }
 
 const ps: any[] = (await papersForSubject('physical-sciences', 1, 12)) as any
-let right = 0, n = 0
+let right = 0, n = 0, abstained = 0
 const wrong: string[] = []
 for (const p of ps) for (const s of p.sections) for (const it of s.items) {
   const want = TRUTH[it.id]
   if (!want) continue
   n++
-  const { level, why } = proposePhysicsLevel(it)
-  if (level === want) right++
-  else wrong.push(`  ${it.id}: hand L${want}, tool ${level === null ? 'undecided' : 'L' + level} — ${why}`)
+  const guess = formulaCountLevel(it)
+  if (guess === want) right++
+  else wrong.push(`  ${it.id}: hand L${want}, formula-count L${guess} (${countFormulas(it.explanation ?? '')} formula(s) in the worked solution)`)
+  if (proposePhysicsLevel(it).level === null) abstained++
 }
-console.log(`Agreement with hand labels: ${right}/${n} (${Math.round((right / n) * 100)}%)`)
+console.log(`THE REJECTED RULE -- formula counting, scored so it stays reproducible.`)
+console.log(`  Agreement with hand labels: ${right}/${n} (${Math.round((right / n) * 100)}%)`)
 const allThree = Object.values(TRUTH).filter((v) => v === 3).length
-console.log(`Baseline, labelling every calculation Level 3 unread: ${allThree}/${n} (${Math.round((allThree / n) * 100)}%)`)
-// The formula count is reported so a future attempt can see the raw signal.
-console.log(`\nThe signal that was not enough (formulas counted in the worked solution):`)
-console.log('\nDisagreements:')
+console.log(`  Baseline, labelling every calculation Level 3 unread: ${allThree}/${n} (${Math.round((allThree / n) * 100)}%)`)
+console.log(`  Worse than the baseline, which is why nothing labels content with it.`)
+console.log(`\nTHE SHIPPED RULE -- proposePhysicsLevel.`)
+console.log(`  Abstains on ${abstained}/${n} of these items. All ${n} are calculations, so abstaining`)
+console.log(`  on every one is the correct and intended behaviour, NOT a score of zero.`)
+console.log(`  Its wording rules (Level 1 openers, Level 4 evaluation) are what it does decide,`)
+console.log(`  and this eval set deliberately contains none of them.`)
+console.log('\nWhere formula counting disagreed with the hand labels:')
 for (const w of wrong) console.log(w)

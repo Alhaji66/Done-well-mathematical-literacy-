@@ -1,0 +1,10 @@
+[
+{"id":"lifesci-g11-p1-2020-1-4","marks":2,
+ "prompt":"Name the TWO energy-carrying compounds produced by the light-dependent reactions, and state where in the chloroplast they are produced.",
+ "answer":"ATP and NADPH, produced in the thylakoid membranes (grana).",
+ "explanation":"The light-dependent reactions take place in the thylakoid membranes, where captured light energy is used to phosphorylate ADP to ATP and to reduce NADP⁺ to NADPH. Both are then passed into the stroma, where the Calvin cycle uses them."},
+{"id":"lifesci-g11-p1-2020-5-6","marks":2,
+ "prompt":"Name the nitrogenous waste product that a healthy kidney removes from the blood, and state the organ in which it is formed.",
+ "answer":"Urea, formed in the liver.",
+ "explanation":"Excess amino acids cannot be stored, so the liver deaminates them and converts the resulting ammonia, which is highly toxic, into the much less toxic urea. The urea travels in the blood to the kidneys, which excrete it in urine."}
+]

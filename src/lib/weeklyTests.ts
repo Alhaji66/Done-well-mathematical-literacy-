@@ -31,6 +31,15 @@ export interface PerQuestionMark {
   questionId: string
   awarded: number
   outOf: number
+  /**
+   * What the learner actually wrote, before they saw the memo.
+   *
+   * A mark on its own says a learner got 1 of 4 and nothing about why. The
+   * answer is what turns that into error analysis a teacher can teach from --
+   * whether the class used the wrong formula, dropped a unit, or rounded early.
+   * Optional because attempts handed in before this existed have no answers.
+   */
+  answer?: string
 }
 
 export interface TestAttempt {

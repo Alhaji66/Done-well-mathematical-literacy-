@@ -29,6 +29,51 @@ export function learnersInScope(learners: RosterLearner[], subjectId: string | n
 }
 
 /**
+ * The grades a teacher actually teaches.
+ *
+ * Subject alone is not enough scope. A school runs one Mathematical Literacy
+ * teacher for Grade 10 and another for Grade 12, and each was being shown the
+ * other's class average as if it were their own -- a number that moves when
+ * they have taught nobody.
+ *
+ * This is kept per browser rather than on the profile on purpose: it needs no
+ * migration, no SQL for the school to run, and a teacher whose allocation
+ * changes in January fixes it in one tap. The cost is that it does not follow
+ * them to another device, which for a filter is the right trade.
+ */
+export const ALL_GRADES = [10, 11, 12] as const
+
+const gradeKey = (profileId: string) => `donewell:teaching-grades:${profileId}`
+
+export function readTeachingGrades(profileId: string): number[] {
+  try {
+    const raw = localStorage.getItem(gradeKey(profileId))
+    if (!raw) return [...ALL_GRADES]
+    const parsed = JSON.parse(raw)
+    // A stored empty array would silently hide every learner, so treat any
+    // unusable value as "all grades" rather than as a filter.
+    if (!Array.isArray(parsed) || parsed.length === 0) return [...ALL_GRADES]
+    return parsed.filter((g): g is number => ALL_GRADES.includes(g as 10 | 11 | 12))
+  } catch {
+    return [...ALL_GRADES]
+  }
+}
+
+export function writeTeachingGrades(profileId: string, grades: number[]) {
+  try {
+    localStorage.setItem(gradeKey(profileId), JSON.stringify(grades))
+  } catch {
+    // Private browsing, blocked site data -- the filter just does not persist.
+  }
+}
+
+/** Narrow a roster to the grades the teacher selected. */
+export function learnersInGrades(learners: RosterLearner[], grades: number[]): RosterLearner[] {
+  if (grades.length === 0 || grades.length === ALL_GRADES.length) return learners
+  return learners.filter((l) => l.grade !== null && grades.includes(l.grade))
+}
+
+/**
  * Progress rows are filtered by the SUBJECT OF THE TOPIC, not by the learner.
  * A learner registered for Mathematical Literacy who has also practised a Life
  * Sciences topic would otherwise drag a foreign topic into the Mat Lit

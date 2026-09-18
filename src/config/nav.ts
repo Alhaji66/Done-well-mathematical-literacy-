@@ -19,8 +19,8 @@ export const learnerNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learn', label: 'Learn', icon: BookIcon },
   { to: '/practise', label: 'Practise', icon: PencilIcon },
-  { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
-  { to: '/tests', label: 'Weekly tests', icon: ClipboardIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
+  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
 ]
 
@@ -34,8 +34,8 @@ export const parentNav: RoleNavItem[] = [
 export const teacherNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
-  { to: '/question-bank', label: 'Question Bank', icon: SparkleIcon },
-  { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
+  { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
 ]
 
@@ -43,7 +43,7 @@ export const schoolNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learners', label: 'Learners', icon: UsersIcon },
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
-  { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
 ]
 
@@ -55,9 +55,9 @@ export const schoolNav: RoleNavItem[] = [
 export const accountLearnerNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/practise', label: 'Practise', icon: PencilIcon },
-  { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
-  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
+  { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
 
 // Real (non-demo) Teacher account nav -- Assessments/Analytics are now built:
@@ -67,12 +67,12 @@ export const accountLearnerNav: RoleNavItem[] = [
 export const accountTeacherNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
-  { to: '/question-bank', label: 'Question Bank', icon: SparkleIcon },
-  { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
-  { to: '/tests', label: 'Weekly tests', icon: ClipboardCheckIcon },
+  { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
+  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
-  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
+  { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
 
 // Real (non-demo) Parent account nav -- My Child is folded into Dashboard
@@ -82,7 +82,7 @@ export const accountParentNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/support', label: 'Support', icon: HeartHandshakeIcon },
-  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
+  { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
 
 // Real (non-demo) School account nav -- Assessments/Analytics now built,
@@ -91,9 +91,9 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learners', label: 'Learners', icon: UsersIcon },
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
-  { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
-  { to: '/tests', label: 'Weekly tests', icon: ClipboardCheckIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
+  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
-  { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
+  { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]

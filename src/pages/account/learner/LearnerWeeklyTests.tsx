@@ -44,6 +44,7 @@ export function LearnerWeeklyTests() {
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
   const [marks, setMarks] = useState<Record<string, number>>({})
+  const [answers, setAnswers] = useState<Record<string, string>>({})
   const [finished, setFinished] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -80,6 +81,7 @@ export function LearnerWeeklyTests() {
     setIndex(0)
     setRevealed(false)
     setMarks({})
+    setAnswers({})
     setFinished(false)
   }
 
@@ -91,6 +93,7 @@ export function LearnerWeeklyTests() {
       questionId: q.id,
       awarded: marks[q.id] ?? 0,
       outOf: q.marks,
+      answer: answers[q.id]?.trim() || undefined,
     }))
     const message = await submitAttempt({
       testId: active.id,
@@ -150,17 +153,56 @@ export function LearnerWeeklyTests() {
 
           {!revealed ? (
             <>
-              <p className="mt-4 text-xs text-navy-500">
-                Write your answer on paper first. Then reveal the memo and mark yourself against it.
+              {/*
+                The memo used to be one tap away, which meant a learner could
+                read the answer and then award themselves the marks for it.
+                Writing the answer down first is what makes the mark mean
+                something -- and it is the only record of HOW they went wrong,
+                which is what their teacher needs in order to reteach it.
+              */}
+              <label htmlFor={`answer-${q.id}`} className="mt-4 block text-sm font-semibold text-navy-900">
+                Your answer
+              </label>
+              <p className="mt-1 text-xs text-navy-500">
+                Work it out on paper, then write your answer here. You can use short form — enough that you will
+                recognise your own working later.
               </p>
-              <button type="button" onClick={() => setRevealed(true)} className="btn-primary mt-3 w-full">
+              <textarea
+                id={`answer-${q.id}`}
+                rows={4}
+                value={answers[q.id] ?? ''}
+                onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                placeholder="Type your answer…"
+                className="mt-2 w-full rounded-lg border border-navy-200 p-3 text-sm leading-relaxed text-navy-900 placeholder:text-navy-400 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-200"
+              />
+              <button
+                type="button"
+                disabled={!(answers[q.id] ?? '').trim()}
+                onClick={() => setRevealed(true)}
+                className="btn-primary mt-3 w-full"
+              >
                 I've answered — show the memo
               </button>
+              {!(answers[q.id] ?? '').trim() ? (
+                <p className="mt-2 text-xs text-navy-500">
+                  Write something before you look at the memo. Once you have seen it you cannot unsee it, and the mark
+                  stops telling you anything.
+                </p>
+              ) : null}
             </>
           ) : (
             <>
-              <div className="mt-4 rounded-lg border border-navy-200 bg-navy-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">Answer</p>
+              {/* Their own answer stays on screen beside the memo -- marking
+                  from memory is how learners talk themselves into marks. */}
+              <div className="mt-4 rounded-lg border border-navy-200 bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">What you wrote</p>
+                <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-navy-800">
+                  {answers[q.id]?.trim() || '—'}
+                </p>
+              </div>
+
+              <div className="mt-3 rounded-lg border border-navy-200 bg-navy-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">Memo answer</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-navy-800">
                   <MathText>{q.answer}</MathText>
                 </p>

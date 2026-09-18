@@ -78,7 +78,15 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-navy-100 bg-white/95 backdrop-blur md:hidden">
+      {/*
+        Eight destinations do not fit across a phone. `flex-1` gave each one
+        about 45px and the labels ran straight into each other -- "Question
+        Bank" over "Assessments" over "Weekly tests" -- so the bar read as one
+        long word. Each tab now claims the width its label actually needs and
+        the row scrolls sideways, which is the usual way a tab bar outgrows the
+        screen. `snap` keeps a part-scrolled tab from sitting half cut off.
+      */}
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex snap-x snap-mandatory overflow-x-auto border-t border-navy-100 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
@@ -86,15 +94,15 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
             end={item.end}
             className={({ isActive }) =>
               cn(
-                'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium text-navy-500',
+                'flex w-[4.75rem] shrink-0 snap-start flex-col items-center gap-0.5 px-1 py-2.5 text-[11px] font-medium leading-tight text-navy-500',
                 isActive && 'text-navy-900',
               )
             }
           >
             {({ isActive }) => (
               <>
-                <item.icon className={cn('h-5 w-5', isActive ? 'text-gold-500' : 'text-navy-400')} />
-                {item.label}
+                <item.icon className={cn('h-5 w-5 shrink-0', isActive ? 'text-gold-500' : 'text-navy-400')} />
+                <span className="w-full truncate text-center">{item.shortLabel ?? item.label}</span>
               </>
             )}
           </NavLink>

@@ -7,6 +7,12 @@ import { cn } from '@/lib/utils'
 export interface RoleNavItem {
   to: string
   label: string
+  /**
+   * A one-word label for the phone bar, where the full one will not fit.
+   * "Question Bank" and "Privacy & data" are fine in a sidebar and collide
+   * with their neighbours in a 45px-wide tab.
+   */
+  shortLabel?: string
   icon: (props: { className?: string }) => ReactNode
   end?: boolean
 }

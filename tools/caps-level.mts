@@ -26,9 +26,35 @@ import type { CognitiveLevel } from '../src/types'
  * pedigree question it means "show the reasoning behind the deduction you
  * just made", which is Level 3 analysis. Level 4 needs a judgement that
  * could have gone the other way.
+ *
+ * Three forms were missing, found by cross-checking hand-written Level 4 items
+ * against these rules rather than by reading them: "whose reasoning is better
+ * supported" and "which position does the evidence better support". Both are
+ * squarely evaluative -- the learner is asked to judge between two positions
+ * that a competent person could hold -- and both were being rated Level 3.
+ *
+ * The comparative is required ("better", "best"). Without it, "which position
+ * does the passage describe" would match, and that is comprehension.
+ *
+ * The third: bare "evaluate" was matched but "assess"
+ * only ever appeared as "assess whether", so "assess the claim that..." and
+ * "assess the company's proposal" fell to Level 3. CAPS treats assess and
+ * evaluate as the same cognitive verb, and the asymmetry here was an accident
+ * rather than a decision. "assess" is given the same noun list "evaluate"
+ * already had, and deliberately NOT matched bare: "assess the rate of
+ * reaction" is a calculation.
+ *
+ * "approach" was added to the two noun lists after a fourth item missed on
+ * "whose approach is better supported". It is a synonym of "method", which
+ * was already accepted, so this closes an inconsistency rather than lowering
+ * the bar -- and it is worth saying plainly that three separate widenings in
+ * one batch of work is the point at which a rule stops being evidence. Each
+ * was checked by scanning the whole corpus for prompts it newly matched, and
+ * each moved only the items it was written for; if a future widening moves
+ * items nobody wrote, that is the rule being bent to fit the author.
  */
 const L4 =
-  /\b(do you agree|to what extent|evaluate|argue|criticis|assess whether|is (this|the) .{0,30}(valid|fair|reliable|justified|ethical)|suggest (an improvement|a way to improve|how .{0,40} could be improved)|design an? (investigation|experiment)|which .{0,40}would you (choose|recommend|support)|discuss the ethical|advantages and disadvantages|arguments? (for and against|in favour)|should .{0,40}be (allowed|banned|permitted)|(discuss|suggest|propose|recommend) (two|three|TWO|THREE|\d+|some|possible)? ?(strategies|ways|measures|steps|actions|solutions)\b)/i
+  /\b(do you agree|to what extent|evaluate|argue|criticis|assess whether|assess [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|proposal|plan|concern)s?\b|whose (reasoning|argument|claim|explanation|interpretation|conclusion|method|approach|position|advice)\b|which (position|view|claim|argument|interpretation|explanation|account|conclusion|approach)[^.]{0,40}\b(better|best)\b|is (this|the) .{0,30}(valid|fair|reliable|justified|ethical)|suggest (an improvement|a way to improve|how .{0,40} could be improved)|design an? (investigation|experiment)|which .{0,40}would you (choose|recommend|support)|discuss the ethical|advantages and disadvantages|arguments? (for and against|in favour)|should .{0,40}be (allowed|banned|permitted)|(discuss|suggest|propose|recommend) (two|three|TWO|THREE|\d+|some|possible)? ?(strategies|ways|measures|steps|actions|solutions)\b)/i
 
 /**
  * Level 3: applying to something presented or unfamiliar, or working with

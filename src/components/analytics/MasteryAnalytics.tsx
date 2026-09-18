@@ -6,7 +6,15 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { BarChartIcon } from '@/components/ui/Icons'
-import { scopeSubjectFor, learnersInScope, progressInScope } from '@/lib/teacherScope'
+import {
+  ALL_GRADES,
+  scopeSubjectFor,
+  learnersInScope,
+  learnersInGrades,
+  progressInScope,
+  readTeachingGrades,
+} from '@/lib/teacherScope'
+import { TeachingGrades } from '@/components/account/TeachingGrades'
 import { getSubject } from '@/data/subjects'
 
 const bandDefs = [
@@ -31,6 +39,13 @@ export function MasteryAnalytics() {
   const [learnerIds, setLearnerIds] = useState<string[]>([])
   const [progress, setProgress] = useState<RosterProgressRow[]>([])
   const [loading, setLoading] = useState(true)
+  const [grades, setGrades] = useState<number[]>([...ALL_GRADES])
+
+  // Same saved filter the dashboard uses, so the two screens agree about which
+  // class a teacher is looking at.
+  useEffect(() => {
+    if (profile?.id) setGrades(readTeachingGrades(profile.id))
+  }, [profile?.id])
 
   useEffect(() => {
     if (!profile?.school_id) {
@@ -43,7 +58,7 @@ export function MasteryAnalytics() {
 
     fetchSchoolLearners(profile.school_id).then(async (learners) => {
       if (!active) return
-      const mine = learnersInScope(learners, scope)
+      const mine = learnersInGrades(learnersInScope(learners, scope), grades)
       const ids = mine.map((l) => l.id)
       setLearnerIds(ids)
       const rows = await fetchProgressForLearners(ids)
@@ -60,7 +75,9 @@ export function MasteryAnalytics() {
       active = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.school_id, profile?.role, profile?.subject_id])
+    // grades is a dependency: toggling a grade has to re-scope the averages,
+    // not just the roster on the dashboard.
+  }, [profile?.school_id, profile?.role, profile?.subject_id, grades])
 
   if (!profile) return null
 
@@ -94,6 +111,8 @@ export function MasteryAnalytics() {
             : 'How practice mastery is distributed across every topic and learner at the school.'
         }
       />
+
+      {scope ? <TeachingGrades profileId={profile.id} grades={grades} onChange={setGrades} /> : null}
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading…</p>

@@ -70,9 +70,31 @@ const L1_OPENER =
  * Evaluation and design. Deliberately narrow: in a calculating subject a bare
  * "evaluate" means compute, so it is not here -- only wordings that ask for a
  * judgement that could have gone the other way.
+ *
+ * THE POSSESSIVE. "evaluate" originally required its noun to sit directly
+ * after the determiner, so "evaluate this claim" matched and "evaluate the
+ * driver's claim" did not -- same verb, same noun, same demand. That is a
+ * parsing gap rather than a judgement, and two measurements say so rather
+ * than one opinion: caps-level.mts, the prose-subject rule this one was
+ * transcribed from, already allows up to 40 characters between the verb and
+ * the noun and accepts every one of these wordings; and 88 of the 228
+ * hand-written Level 4 items in Life Sciences are built on exactly this
+ * construction ("Assess the cook's conclusion", "Assess the farmer's
+ * argument"), all written before either rule existed.
+ *
+ * The usual collateral check -- scan the corpus for prompts a widening newly
+ * matches -- is reported here as having NO power, which is worth saying
+ * plainly because the number looks reassuring. It moved 4 items, all of them
+ * ones I had just written, and that is the shape of a rule bent to fit its
+ * author. But Physical Sciences contains almost no Level 4 prose at all
+ * (that is the gap this rule is being used to close), so there was nothing
+ * else it COULD have moved. The Life Sciences count above is the evidence;
+ * the collateral scan is not.
+ *
+ * The noun list is unchanged. Only the shape of the phrase is.
  */
 const L4 =
-  /\b(do you agree|to what extent|design an? (investigation|experiment)|suggest (an improvement|a way to improve)|which .{0,40}would you (choose|recommend|support)|evaluate (the|this|their|his|her) (claim|statement|argument|conclusion|method|design|proposal|reasoning|explanation)|assess (the|this|their|whether)|whose (reasoning|argument|claim|method|approach|explanation)|criticis|advantages and disadvantages|discuss the ethical)\b/i
+  /\b(do you agree|to what extent|design an? (investigation|experiment)|suggest (an improvement|a way to improve)|which .{0,40}would you (choose|recommend|support)|evaluate (the|this|that|their|his|her)( [\w-]+['’]s)? (claim|statement|argument|conclusion|method|design|proposal|reasoning|explanation)|assess (the|this|that|their|whether)|whose (reasoning|argument|claim|method|approach|explanation)|criticis|advantages and disadvantages|discuss the ethical)\b/i
 
 /** A question whose answer is a number obtained by calculating. */
 const CALC =
@@ -104,6 +126,19 @@ export function countFormulas(explanation: string): number {
     if (/^\s*[A-ZΔa-zρλνθ][A-Za-z₀-₉0-9^'′_(){}\s,·⋅-]{0,18}=/.test(c)) n++
   }
   return n
+}
+
+/**
+ * THE REJECTED RULE, kept so its score stays reproducible.
+ *
+ * One formula applied = routine substitution = Level 2; two or more = a chain
+ * = Level 3. This is the approach measured at 7/19 against hand labels, and
+ * it is exported ONLY so tools/physics-level-eval.mts can keep scoring it.
+ * Nothing that labels content may call it: proposePhysicsLevel abstains on
+ * calculations precisely so this signal cannot reach the corpus.
+ */
+export function formulaCountLevel(item: PhysicsItem): CognitiveLevel {
+  return countFormulas(item.explanation ?? '') >= 2 ? 3 : 2
 }
 
 export function proposePhysicsLevel(item: PhysicsItem): { level: CognitiveLevel | null; why: string } {

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
-export type DemoRole = 'learner' | 'parent' | 'teacher' | 'school'
+export type DemoRole = 'learner' | 'parent' | 'teacher' | 'school' | 'hod'
 
 interface DemoAuthValue {
   role: DemoRole | null
@@ -14,6 +14,7 @@ const roleNames: Record<DemoRole, string> = {
   parent: 'Mrs. P. Mokoena',
   teacher: 'Alhaji T',
   school: 'Gojela High School',
+  hod: 'Mangyani T.S',
 }
 
 const STORAGE_KEY = 'donewell-demo-role'
@@ -26,7 +27,13 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored === 'learner' || stored === 'parent' || stored === 'teacher' || stored === 'school') {
+      if (
+        stored === 'learner' ||
+        stored === 'parent' ||
+        stored === 'teacher' ||
+        stored === 'school' ||
+        stored === 'hod'
+      ) {
         setRole(stored)
       }
     } catch {

@@ -21,6 +21,7 @@ export function PublicFooter() {
             <li><Link to="/learners" className="hover:text-white">For Learners</Link></li>
             <li><Link to="/parents" className="hover:text-white">For Parents</Link></li>
             <li><Link to="/teachers" className="hover:text-white">For Teachers</Link></li>
+            <li><Link to="/heads-of-department" className="hover:text-white">For Heads of Department</Link></li>
             <li><Link to="/schools" className="hover:text-white">For Schools</Link></li>
             <li><Link to="/publications" className="hover:text-white">Publications</Link></li>
           </ul>

@@ -538,3 +538,165 @@ $$;
 -- Deliberately NOT granted to authenticated: this is an operator repair, run
 -- from the SQL editor as the service role. A signed-in user must never be able
 -- to move another school's people.
+
+-- ============================================================================
+-- WEEKLY TESTS
+-- ============================================================================
+--
+-- Reported as "the weekly test is not activated". It was never built for real
+-- accounts: the weekly tests visible in the app are static demo rows in
+-- src/data/assessments.ts, shown only on the /app demo routes. On a real
+-- account, Assessments is the practice-paper library -- a teacher could not set
+-- a test and a learner could not sit one.
+--
+-- A related gap made this worse. The paper runner records what a learner has
+-- attempted in the BROWSER's localStorage and nowhere else, so even the work
+-- learners did do never reached their teacher. Attempts here are written to the
+-- database, which is what makes a result something a teacher can act on.
+--
+-- WHAT IS DELIBERATELY NOT HERE: automatic marking. Almost every question in
+-- this corpus is answered in prose against an NSC-style memo, not by picking an
+-- option, so a machine cannot mark it. The learner marks their own work against
+-- the memo, question by question, and the marks they award are recorded. That
+-- is a real limitation and the teacher's view says so plainly rather than
+-- presenting a self-awarded mark as though it were marked.
+--
+-- The questions themselves are NOT stored. They are drawn from the bundled
+-- curriculum by topic, grade and subject, in an order seeded by the test's own
+-- id -- so every learner in the class gets the same paper, the same paper comes
+-- back on a reload, and no question text is duplicated into the database.
+
+create table if not exists public.weekly_tests (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  created_by uuid not null references public.profiles (id) on delete cascade,
+  title text not null,
+  subject_id text not null,
+  grade smallint not null check (grade in (10, 11, 12)),
+  -- Topic ids from the bundled curriculum, e.g. {'life-sci-evolution'}.
+  topic_ids text[] not null check (array_length(topic_ids, 1) >= 1),
+  question_count smallint not null check (question_count between 1 and 30),
+  due_at timestamptz not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists weekly_tests_school_idx on public.weekly_tests (school_id, due_at desc);
+
+create table if not exists public.weekly_test_attempts (
+  id uuid primary key default gen_random_uuid(),
+  test_id uuid not null references public.weekly_tests (id) on delete cascade,
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  started_at timestamptz not null default now(),
+  submitted_at timestamptz,
+  marks_awarded smallint,
+  marks_total smallint,
+  -- [{ "questionId": "...", "awarded": 3, "outOf": 5 }, ...] so a teacher can
+  -- see WHICH questions the class lost marks on, not just a total.
+  per_question jsonb,
+  unique (test_id, learner_id)
+);
+
+create index if not exists weekly_test_attempts_test_idx on public.weekly_test_attempts (test_id);
+
+alter table public.weekly_tests enable row level security;
+alter table public.weekly_test_attempts enable row level security;
+
+-- Is the current user staff (teacher or school) at this school?
+create or replace function public.is_school_staff(p_school_id uuid)
+returns boolean
+language sql
+security definer
+stable
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and school_id = p_school_id
+      and role in ('teacher', 'school')
+  );
+$$;
+
+-- weekly_tests ------------------------------------------------------------
+
+drop policy if exists "School members can view their school's tests" on public.weekly_tests;
+create policy "School members can view their school's tests"
+  on public.weekly_tests for select
+  using (school_id = public.current_school_id());
+
+drop policy if exists "Staff can set a test for their school" on public.weekly_tests;
+create policy "Staff can set a test for their school"
+  on public.weekly_tests for insert
+  with check (created_by = auth.uid() and public.is_school_staff(school_id));
+
+drop policy if exists "Staff can change a test at their school" on public.weekly_tests;
+create policy "Staff can change a test at their school"
+  on public.weekly_tests for update
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Staff can remove a test at their school" on public.weekly_tests;
+create policy "Staff can remove a test at their school"
+  on public.weekly_tests for delete
+  using (public.is_school_staff(school_id));
+
+-- weekly_test_attempts ----------------------------------------------------
+
+drop policy if exists "Learners can view their own attempts" on public.weekly_test_attempts;
+create policy "Learners can view their own attempts"
+  on public.weekly_test_attempts for select
+  using (learner_id = auth.uid());
+
+drop policy if exists "Learners can start their own attempt" on public.weekly_test_attempts;
+create policy "Learners can start their own attempt"
+  on public.weekly_test_attempts for insert
+  with check (learner_id = auth.uid());
+
+drop policy if exists "Learners can submit their own attempt" on public.weekly_test_attempts;
+create policy "Learners can submit their own attempt"
+  on public.weekly_test_attempts for update
+  using (learner_id = auth.uid());
+
+-- The whole point of the feature: a teacher sees the results for a test their
+-- school set, without being able to reach into another school's.
+drop policy if exists "Staff can view attempts at their school" on public.weekly_test_attempts;
+create policy "Staff can view attempts at their school"
+  on public.weekly_test_attempts for select
+  using (
+    exists (
+      select 1 from public.weekly_tests t
+      where t.id = weekly_test_attempts.test_id
+        and t.school_id = public.current_school_id()
+    )
+  );
+
+-- A linked parent should see their own child's test results, the same way they
+-- already see that child's topic progress.
+drop policy if exists "Linked parents can view their child's attempts" on public.weekly_test_attempts;
+create policy "Linked parents can view their child's attempts"
+  on public.weekly_test_attempts for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = weekly_test_attempts.learner_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+-- POPIA section 24 again: a deletion request must take the test attempts too.
+create or replace function public.delete_my_account()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    raise exception 'Not signed in.';
+  end if;
+
+  delete from public.weekly_test_attempts where learner_id = auth.uid();
+  delete from public.learner_progress where learner_id = auth.uid();
+  delete from public.parent_learner_links where parent_id = auth.uid() or learner_id = auth.uid();
+  delete from public.consents where profile_id = auth.uid();
+  delete from public.profiles where id = auth.uid();
+end;
+$$;

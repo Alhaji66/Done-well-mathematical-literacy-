@@ -62,6 +62,12 @@ const AccountSchoolTeachers = lazy(() =>
 const AssessmentsBrowse = lazy(() =>
   import('@/components/assessments/AssessmentsBrowse').then((m) => ({ default: m.AssessmentsBrowse })),
 )
+const LearnerWeeklyTests = lazy(() =>
+  import('@/pages/account/learner/LearnerWeeklyTests').then((m) => ({ default: m.LearnerWeeklyTests })),
+)
+const TeacherWeeklyTests = lazy(() =>
+  import('@/pages/account/teacher/WeeklyTests').then((m) => ({ default: m.WeeklyTests })),
+)
 const PaperPage = lazy(() => import('@/pages/account/assessments/PaperPage').then((m) => ({ default: m.PaperPage })))
 const MasteryAnalytics = lazy(() =>
   import('@/components/analytics/MasteryAnalytics').then((m) => ({ default: m.MasteryAnalytics })),
@@ -142,6 +148,7 @@ export default function App() {
                 <Route path="practise" element={<AccountLearnerPractise />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="tests" element={<LearnerWeeklyTests />} />
                 <Route path="progress" element={<AccountLearnerProgress />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -155,6 +162,7 @@ export default function App() {
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
@@ -179,6 +187,7 @@ export default function App() {
                 <Route path="teachers" element={<AccountSchoolTeachers />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="privacy" element={<AccountPrivacy />} />

@@ -20,6 +20,7 @@ export const learnerNav: RoleNavItem[] = [
   { to: '/learn', label: 'Learn', icon: BookIcon },
   { to: '/practise', label: 'Practise', icon: PencilIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
+  { to: '/tests', label: 'Weekly tests', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
 ]
 
@@ -68,6 +69,7 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/question-bank', label: 'Question Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
+  { to: '/tests', label: 'Weekly tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
   { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },
@@ -90,6 +92,7 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/learners', label: 'Learners', icon: UsersIcon },
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
   { to: '/assessments', label: 'Assessments', icon: ClipboardIcon },
+  { to: '/tests', label: 'Weekly tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
   { to: '/privacy', label: 'Privacy & data', icon: EyeIcon },

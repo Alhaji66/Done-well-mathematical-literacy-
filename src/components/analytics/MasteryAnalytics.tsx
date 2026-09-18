@@ -6,6 +6,8 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { BarChartIcon } from '@/components/ui/Icons'
+import { scopeSubjectFor, learnersInScope, progressInScope } from '@/lib/teacherScope'
+import { getSubject } from '@/data/subjects'
 
 const bandDefs = [
   { key: 'support', label: 'Needs support', min: 0, max: 39, tone: 'border-rose-200 bg-rose-50 text-rose-700' },
@@ -14,11 +16,15 @@ const bandDefs = [
 ] as const
 
 /**
- * Shared per-topic mastery breakdown, reused by both Teacher and School
- * Analytics -- under the current schema both roles see "every learner at
- * this school" (there's no teacher-to-class assignment yet), same as the
- * Dashboard roster, so the underlying data and this whole component are
- * identical between the two roles.
+ * Shared per-topic mastery breakdown, used by both Teacher and School
+ * Analytics -- but no longer showing them the same thing.
+ *
+ * It used to. Both roles saw every learner at the school and every topic
+ * anyone had touched, which is right for a school head and wrong for a
+ * teacher: a Mathematical Literacy teacher opened their analytics and found
+ * Reproduction in Vertebrates in the list, averaged over learners they do not
+ * teach. A teacher is now scoped to the subject on their own profile; a school
+ * account still sees the whole school, which is the point of that role.
  */
 export function MasteryAnalytics() {
   const { profile } = useAccountAuth()
@@ -33,13 +39,19 @@ export function MasteryAnalytics() {
     }
     let active = true
 
+    const scope = scopeSubjectFor(profile)
+
     fetchSchoolLearners(profile.school_id).then(async (learners) => {
       if (!active) return
-      const ids = learners.map((l) => l.id)
+      const mine = learnersInScope(learners, scope)
+      const ids = mine.map((l) => l.id)
       setLearnerIds(ids)
       const rows = await fetchProgressForLearners(ids)
       if (active) {
-        setProgress(rows)
+        // Filter by the TOPIC's subject as well as by the learner: a learner
+        // registered for one subject who has practised another would otherwise
+        // bring a foreign topic into these averages.
+        setProgress(progressInScope(rows, scope))
         setLoading(false)
       }
     })
@@ -47,10 +59,13 @@ export function MasteryAnalytics() {
     return () => {
       active = false
     }
-  }, [profile?.school_id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.school_id, profile?.role, profile?.subject_id])
 
   if (!profile) return null
 
+  const scope = scopeSubjectFor(profile)
+  const scopeName = scope ? (getSubject(scope)?.name ?? null) : null
   const topicIds = Array.from(new Set(progress.map((p) => p.topic_id)))
   const topicAverages = topicIds
     .map((topicId) => {
@@ -70,7 +85,15 @@ export function MasteryAnalytics() {
 
   return (
     <div className="space-y-6">
-      <SectionHeading eyebrow="Analytics" title="Mastery breakdown" description="How practice mastery is distributed across every topic and learner." />
+      <SectionHeading
+        eyebrow="Analytics"
+        title={scopeName ? `${scopeName} — mastery breakdown` : 'Mastery breakdown'}
+        description={
+          scopeName
+            ? `How practice mastery is distributed across your ${scopeName} learners. Other subjects at the school are not included.`
+            : 'How practice mastery is distributed across every topic and learner at the school.'
+        }
+      />
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading…</p>

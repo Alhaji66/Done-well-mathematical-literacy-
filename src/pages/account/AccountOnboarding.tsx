@@ -110,7 +110,12 @@ export function AccountOnboarding() {
         full_name: trimmedName,
         school_id: schoolId,
         grade: role === 'learner' ? grade : null,
-        subject_id: role === 'learner' ? subjectId : null,
+        // A teacher's subject matters as much as a learner's: it is what
+        // scopes their roster and their analytics to the class they actually
+        // teach. Leaving it null put Life Sciences topics in a Mathematical
+        // Literacy teacher's dashboard. A school account stays null, because a
+        // whole-school view is the point of that role.
+        subject_id: role === 'learner' || role === 'teacher' ? subjectId : null,
       })
       if (profileError) throw profileError
 
@@ -312,20 +317,24 @@ export function AccountOnboarding() {
               </div>
             ) : null}
 
-            {role === 'learner' ? (
-              <div className="grid grid-cols-2 gap-3">
+            {role === 'learner' || role === 'teacher' ? (
+              <div className={cn('grid gap-3', role === 'learner' ? 'grid-cols-2' : 'grid-cols-1')}>
+                {role === 'learner' ? (
+                  <div>
+                    <label className="text-xs font-medium text-navy-500">Grade</label>
+                    <select className="select mt-1" value={grade} onChange={(e) => setGrade(Number(e.target.value) as Grade)}>
+                      {grades.map((g) => (
+                        <option key={g} value={g}>
+                          Grade {g}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
                 <div>
-                  <label className="text-xs font-medium text-navy-500">Grade</label>
-                  <select className="select mt-1" value={grade} onChange={(e) => setGrade(Number(e.target.value) as Grade)}>
-                    {grades.map((g) => (
-                      <option key={g} value={g}>
-                        Grade {g}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-navy-500">Subject</label>
+                  <label className="text-xs font-medium text-navy-500">
+                    {role === 'teacher' ? 'Subject you teach' : 'Subject'}
+                  </label>
                   <select className="select mt-1" value={subjectId} onChange={(e) => setSubjectId(e.target.value)}>
                     {subjectOptions.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -333,6 +342,11 @@ export function AccountOnboarding() {
                       </option>
                     ))}
                   </select>
+                  {role === 'teacher' ? (
+                    <p className="mt-1 text-xs text-navy-400">
+                      Your roster and analytics show this subject only. You can change it later.
+                    </p>
+                  ) : null}
                 </div>
               </div>
             ) : null}

@@ -761,3 +761,27 @@ begin
   delete from public.profiles where id = auth.uid();
 end;
 $$;
+
+-- ============================================================================
+-- LETTING A SCHOOL CORRECT ITS OWN ROLL
+-- ============================================================================
+--
+-- A teacher signed up, tapped "Learner" on the role picker, and appeared on
+-- their colleague's class list. The roster query is right -- it filters to
+-- role = 'learner' -- so this is a wrong ROW, not wrong code, and there was no
+-- way to put it right from inside the app.
+--
+-- Anyone can mistap a role on the first screen they ever see, so a school needs
+-- to be able to fix it without an administrator opening the database. Staff may
+-- correct a profile at their OWN school; the with check keeps them from moving
+-- somebody to a different one.
+
+drop policy if exists "Staff can correct profiles at their school" on public.profiles;
+create policy "Staff can correct profiles at their school"
+  on public.profiles for update
+  using (
+    school_id is not null
+    and school_id = public.current_school_id()
+    and public.is_school_staff(public.current_school_id())
+  )
+  with check (school_id = public.current_school_id());

@@ -7,6 +7,8 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
 import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
+import { TeachingSubject } from '@/components/account/TeachingSubject'
+import { scopeSubjectFor, learnersInScope, setAccountRole } from '@/lib/teacherScope'
 
 // All four subjects. This listed only two, so a Life Sciences or Physical
 // Sciences learner appeared on the roster with an empty subject column.
@@ -23,6 +25,8 @@ export function TeacherDashboard() {
   const [learners, setLearners] = useState<RosterLearner[]>([])
   const [progress, setProgress] = useState<RosterProgressRow[]>([])
   const [loading, setLoading] = useState(true)
+  const [correcting, setCorrecting] = useState<string | null>(null)
+  const [correctionError, setCorrectionError] = useState('')
 
   useEffect(() => {
     if (!profile?.school_id) {
@@ -44,8 +48,12 @@ export function TeacherDashboard() {
 
     fetchSchoolLearners(profile.school_id).then(async (rosterLearners) => {
       if (!active) return
-      setLearners(rosterLearners)
-      const rows = await fetchProgressForLearners(rosterLearners.map((l) => l.id))
+      // A teacher's roster is their own subject, not the whole school. Without
+      // this a Mathematical Literacy teacher was listing Life Sciences learners
+      // they have never taught.
+      const mine = learnersInScope(rosterLearners, scopeSubjectFor(profile))
+      setLearners(mine)
+      const rows = await fetchProgressForLearners(mine.map((l) => l.id))
       if (active) {
         setProgress(rows)
         setLoading(false)
@@ -56,6 +64,18 @@ export function TeacherDashboard() {
       active = false
     }
   }, [profile?.school_id])
+
+  const correctRole = async (id: string, role: 'teacher' | 'parent') => {
+    const message = await setAccountRole(id, role)
+    setCorrecting(null)
+    if (message) {
+      setCorrectionError(message)
+      return
+    }
+    setCorrectionError('')
+    // Drop them from the roster in place rather than refetching the world.
+    setLearners((rows) => rows.filter((l) => l.id !== id))
+  }
 
   if (!profile) return null
 
@@ -76,6 +96,10 @@ export function TeacherDashboard() {
       />
 
       <SchoolJoinCode schoolId={profile.school_id} />
+
+      <TeachingSubject profile={profile} />
+
+      {correctionError ? <p className="text-sm text-rose-600">{correctionError}</p> : null}
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading your roster…</p>
@@ -115,6 +139,38 @@ export function TeacherDashboard() {
                 </div>
                 {mastery !== null ? <ProgressBar percent={mastery} className="mt-3" label={`${learner.full_name} overall mastery`} /> : (
                   <p className="mt-2 text-xs text-navy-400">No practice recorded yet</p>
+                )}
+
+                {/* Anybody can mistap the role picker on the first screen they
+                    ever see, and a colleague who did lands here with a mastery
+                    bar. Correcting it needed a database administrator until now. */}
+                {correcting === learner.id ? (
+                  <div className="mt-3 border-t border-navy-100 pt-3">
+                    <p className="text-xs text-navy-600">Move {learner.full_name} off the class list as a…</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {(['teacher', 'parent'] as const).map((r) => (
+                        <button
+                          key={r}
+                          type="button"
+                          onClick={() => correctRole(learner.id, r)}
+                          className="btn-outline text-xs capitalize"
+                        >
+                          {r}
+                        </button>
+                      ))}
+                      <button type="button" onClick={() => setCorrecting(null)} className="text-xs text-navy-500 underline">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setCorrecting(learner.id)}
+                    className="mt-3 text-xs text-navy-400 underline hover:text-navy-700"
+                  >
+                    Not a learner?
+                  </button>
                 )}
               </div>
             ))}

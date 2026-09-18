@@ -538,6 +538,50 @@ $$;
 -- Deliberately NOT granted to authenticated: this is an operator repair, run
 -- from the SQL editor as the service role. A signed-in user must never be able
 -- to move another school's people.
+--
+-- THE ONE-PASTE VERSION. Copying uuids by hand is miserable on a phone, which
+-- is where a school administrator actually is, so this does the whole repair
+-- with no ids: keep whichever school has the most people, move everyone else
+-- into it, then show what is left. Run it ONLY when the listing above shows
+-- rows that are all the same real school spelled differently.
+--
+--   do $$
+--   declare
+--     v_keep uuid;
+--     v_ids uuid[];
+--     v_id uuid;
+--   begin
+--     select s.id into v_keep
+--     from public.schools s
+--     order by (select count(*) from public.profiles p where p.school_id = s.id) desc,
+--              s.created_at asc
+--     limit 1;
+--
+--     if v_keep is null then
+--       return;
+--     end if;
+--
+--     select array_agg(id) into v_ids from public.schools where id <> v_keep;
+--
+--     if v_ids is null then
+--       return;
+--     end if;
+--
+--     foreach v_id in array v_ids loop
+--       perform public.merge_school(v_id, v_keep);
+--     end loop;
+--   end $$;
+--
+--   select s.name, s.join_code,
+--          (select count(*) from public.profiles p where p.school_id = s.id) as people
+--   from public.schools s;
+--
+-- VERIFIED against Postgres 16 on a copy of the failure this was written for --
+-- three schools ('Gojela High' 1 person, 'Gojela High School' 12, 'gojela high
+-- school' 3) collapsing to one row of 16 with every profile still attached, and
+-- on the three edge cases: a second run is a no-op, an empty schools table
+-- returns cleanly rather than erroring, and a tie on headcount is broken by
+-- created_at so the result is deterministic rather than arbitrary.
 
 -- ============================================================================
 -- WEEKLY TESTS

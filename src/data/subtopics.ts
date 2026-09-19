@@ -143,6 +143,19 @@ const rules: Record<string, SubtopicRule[]> = {
         /(°\s*[cf]\b)|\b(temperature|celsius|fahrenheit|thermometer|24[- ]hour|12[- ]hour|clock|time taken|time zone|what time|elapsed|reading on the|marked every|accurate to within)\b/i,
     },
     {
+      // A question that SAYS convert is a conversion question, whatever unit it
+      // happens to convert. This rule has to sit above the quantity rules
+      // below, because they match on the unit: "Convert 6 000 litres to
+      // kilolitres" was landing in Volume and capacity, and so were "Convert
+      // 2,7 m³ to litres" and "Which unit is most appropriate for the height?"
+      // -- 19 of the 76 questions in that bucket. The cost was paid by the one
+      // week that most needs them: Conversions is an ATP heading of its own,
+      // and its bucket was missing every conversion that named a volume.
+      name: 'Units and conversions',
+      match:
+        /\b(convert|conversion table|conversion factor)\b|\b(which|what) unit\b|\bunit (used to measure|of measurement)\b|most appropriate (unit|instrument)\b/i,
+    },
+    {
       name: 'Mass, rates and practical calculations',
       match: /\b(rate|per (litre|kg|hour|minute)|consumption|flow|recipe|dosage|dose|ℓ\/100|fuel)\b/i,
     },
@@ -159,8 +172,14 @@ const rules: Record<string, SubtopicRule[]> = {
       match: /\b(area|m²|cm²|km²|square metre|tiles? needed|coverage)\b/i,
     },
     {
+      // "fenc(e|ing)" used to be a stem here and was filing the wrong things:
+      // "Calculate the AREA of the fence" and "the fence needs 3,6 litres of
+      // paint" are not perimeter questions. Every genuine perimeter question in
+      // the corpus says "perimeter" in so many words -- including the ones
+      // about fencing, "Fencing the 320 m perimeter is quoted at R14 400" --
+      // so the stem only ever cost accuracy.
       name: 'Perimeter and distance around a shape',
-      match: /\b(perimeter|circumference|fenc(e|ing)|around the (outside|edge)|border)\b/i,
+      match: /\b(perimeter|circumference|around the (outside|edge)|border)\b/i,
     },
     {
       name: 'Units and conversions',

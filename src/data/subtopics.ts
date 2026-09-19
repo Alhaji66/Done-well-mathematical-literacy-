@@ -840,6 +840,13 @@ const rules: Record<string, SubtopicRule[]> = {
   ],
 
   'math-finance-growth': [
+    // Hire purchase has to be asked BEFORE Outstanding balance. A hire-purchase
+    // question says "the balance owing after the deposit", which the outstanding
+    // balance rule matched -- so nine Grade 10 questions were filed under a Grade
+    // 12 heading. They are different ideas: hire purchase is simple interest on
+    // what is left after a deposit, while an outstanding balance is what is still
+    // owed on an annuity-repaid loan partway through its term.
+    { name: 'Hire purchase and instalment buying', match: /\bhire[- ]?purchase\b|\binstal?ment (plan|agreement|sale)\b/i },
     { name: 'Outstanding balance', match: /\b(outstanding|balance (owing|outstanding)|settle the loan|final payment)\b/i },
     { name: 'Present value annuities and loans', match: /\b(present value|loan|bond|mortgage|repay|instalment|monthly payment)\b/i },
     { name: 'Future value annuities', match: /\b(future value|sinking fund|save|savings|annuity|regular deposit)\b/i },
@@ -900,7 +907,13 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Writing a geometry proof', match: /\b(prove that|proof|give (a )?reasons?|state the reason)\b/i },
     { name: 'Proportionality and the mid-point theorem', match: /\b(proportion|mid[- ]?point theorem|divides .* proportionally|ratio of the areas)\b/i },
     { name: 'Tangents and the tan-chord theorem', match: /\b(tangent|tan[- ]chord|alternate segment)\b/i },
-    { name: 'Circle geometry: same segment and cyclic quadrilaterals', match: /\b(cyclic|same segment|concyclic|exterior angle of)\b/i },
+    // "exterior angle of" was a stem here, for the cyclic-quadrilateral theorem
+    // that an exterior angle equals the interior opposite angle. It was also
+    // catching "the exterior angle of the triangle" and "each exterior angle of
+    // a regular polygon", which are Grade 10 work and not circle geometry at all
+    // -- eighteen questions. Every genuine cyclic-quadrilateral question in the
+    // corpus says "cyclic", so the stem only ever cost accuracy.
+    { name: 'Circle geometry: same segment and cyclic quadrilaterals', match: /\b(cyclic|same segment|concyclic)\b/i },
     { name: 'Circle geometry: centre and chord theorems', match: /\b(chord|centre of the circle|semicircle|arc|angle at the centre)\b/i },
     { name: 'Properties of quadrilaterals', match: /\b(parallelogram|rhombus|rectangle|square|trapezium|kite|quadrilateral)\b/i },
     { name: 'Congruency and similarity', match: /\b(congruen|similar|sss|sas|aas|rhs)\b|\|\|\|/i },

@@ -12,6 +12,7 @@ import { subjects } from '../src/data/subjects'
 import { topicsForSubject } from '../src/data/topics'
 import { questionsForSubject } from '../src/data/questionBank'
 import { groupBySubtopic, UNSORTED } from '../src/data/subtopics'
+import { getTopicNote } from '../src/data/topicNotes'
 
 const BAR = (pct: number) => '█'.repeat(Math.round(pct / 5)).padEnd(20, '·')
 
@@ -76,6 +77,12 @@ if (weak.length) {
  * A sub-topic with nothing anywhere is left out -- check:subtopic-rules already
  * reports those, and this list is about content that exists for some grades and
  * not others, which is the case that looks finished and is not.
+ *
+ * A SUB-TOPIC IS ONLY MEASURED AGAINST THE GRADES IT IS TAUGHT IN. Its `grades`
+ * list in topicNotes.ts, where it has one, replaces the topic's grades here.
+ * Without that the report cried wolf: it called Grade 11 having no
+ * outstanding-balance questions a hole, when Grade 11 does not teach
+ * outstanding balance -- that is annuity work, and annuities are Grade 12.
  */
 const holes: string[] = []
 const otherUneven: string[] = []
@@ -84,26 +91,29 @@ for (const subject of subjects) {
   for (const topic of topicsForSubject(subject.id)) {
     const rows = pool.filter((q) => q.topicId === topic.id)
     if (!rows.length) continue
+    const notes = getTopicNote(topic.id)?.subtopics ?? []
     const names = groupBySubtopic(topic.id, rows)
       .filter((g) => g.name !== UNSORTED)
       .map((g) => g.name)
 
     for (const name of names) {
-      const perGrade = topic.grades.map(
+      const taught = notes.find((s) => s.name === name)?.grades ?? topic.grades
+      const grades = topic.grades.filter((g) => taught.includes(g))
+      const perGrade = grades.map(
         (g) =>
           groupBySubtopic(
             topic.id,
             rows.filter((q) => q.grade === g),
           ).find((x) => x.name === name)?.questions.length ?? 0,
       )
-      const counts = topic.grades.map((g, i) => `G${g} ${perGrade[i]}`).join(', ')
+      const counts = grades.map((g, i) => `G${g} ${perGrade[i]}`).join(', ')
       const first = perGrade.findIndex((n) => n > 0)
       const last = perGrade.length - 1 - [...perGrade].reverse().findIndex((n) => n > 0)
       for (let i = 0; i < perGrade.length; i++) {
         if (perGrade[i] > 0) continue
         // Between two grades that have it: content stops and starts again.
-        if (i > first && i < last) holes.push(`${topic.id} / ${name}: nothing in Grade ${topic.grades[i]} (${counts})`)
-        else otherUneven.push(`${topic.id} / ${name}: nothing in Grade ${topic.grades[i]} (${counts})`)
+        if (i > first && i < last) holes.push(`${topic.id} / ${name}: nothing in Grade ${grades[i]} (${counts})`)
+        else otherUneven.push(`${topic.id} / ${name}: nothing in Grade ${grades[i]} (${counts})`)
       }
     }
   }

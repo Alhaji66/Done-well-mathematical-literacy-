@@ -1,3 +1,5 @@
+import type { Grade } from '@/types'
+
 export interface WorkedExample {
   problem: string
   steps: string[]
@@ -13,6 +15,25 @@ export interface WorkedExample {
 export interface SubtopicNote {
   name: string
   points: string[]
+  /**
+   * The grades CAPS actually teaches this sub-topic in.
+   *
+   * Absent means "every grade the topic is taught in", which is the ordinary
+   * case and is why almost none of these carry the field. It is set only where
+   * CAPS puts a sub-topic in some grades and not others -- annuities are Grade
+   * 12, the angle of inclination is Grade 11 onwards, hire purchase is Grade 10.
+   *
+   * Two things read it. The per-grade gap report in check:subtopics uses it to
+   * tell a real content gap from a syllabus boundary: before it existed, the
+   * report called Grade 11 having no outstanding-balance questions a hole, when
+   * Grade 11 does not teach outstanding balance at all. And check:subtopic-grades
+   * uses it the other way round -- a question sitting under a heading its own
+   * grade does not teach is either mis-filed or out of syllabus, and both are
+   * worth knowing. That check is what caught nine Grade 10 hire-purchase
+   * questions filed under Outstanding balance, a Grade 12 heading, on the
+   * strength of the words "balance owing".
+   */
+  grades?: Grade[]
 }
 
 export interface TopicNote {
@@ -531,6 +552,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Algebraic fractions',
+        /** Simplifying algebraic fractions is Grade 10 and Grade 11 work. */
+        grades: [10, 11],
         points: [
           'Factorise every numerator and denominator before cancelling anything.',
           'You may cancel factors, never terms. Cancelling across a + or − sign is always wrong.',
@@ -560,6 +583,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Nature of the roots',
+        /** The discriminant and the nature of the roots are Grade 11. */
+        grades: [11],
         points: [
           'The discriminant is Δ = b² − 4ac.',
           'Δ > 0 gives two real unequal roots; Δ = 0 gives two real equal roots; Δ < 0 gives no real roots.',
@@ -569,6 +594,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Simultaneous equations',
+        /** Grade 10 solves two linear equations together, Grade 11 adds a quadratic. Grade 12 does not return to them as a topic. */
+        grades: [10, 11],
         points: [
           'Two linear equations can be solved by substitution or by elimination.',
           'With one linear and one quadratic equation, always make a variable the subject of the LINEAR one and substitute into the quadratic.',
@@ -669,6 +696,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Inverse functions',
+        /** Inverses are Grade 12. */
+        grades: [12],
         points: [
           'To find an inverse, swap x and y and then make y the subject.',
           'The graph of an inverse is the reflection of the original in the line y = x.',
@@ -751,6 +780,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Reduction formulae and the CAST diagram',
+        /** Grade 10 trigonometry stays in the first quadrant; reduction formulae arrive in Grade 11. */
+        grades: [11, 12],
         points: [
           'CAST: all ratios are positive in the first quadrant, only sine in the second, only tangent in the third, only cosine in the fourth.',
           'sin(180° − θ) = sin θ, cos(180° − θ) = −cos θ, tan(180° + θ) = tan θ.',
@@ -866,6 +897,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Equation of a straight line',
+      /** Grade 10 analytical geometry stops at the three two-point formulae; the equation of a line arrives in Grade 11. */
+      grades: [11, 12],
         points: [
           'Point-gradient form: y − y₁ = m(x − x₁).',
           'With two points, find the gradient first, then substitute either point.',
@@ -875,6 +908,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Angle of inclination',
+      /** tan θ = m is Grade 11 onwards. */
+      grades: [11, 12],
         points: [
           'tan θ = m, where θ is the angle the line makes with the positive x-axis.',
           'If the gradient is negative, the calculator gives a negative angle — add 180° to get the inclination between 0° and 180°.',
@@ -884,6 +919,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Circles in the Cartesian plane',
+      /** The equation of a circle is Grade 12. */
+      grades: [12],
         points: [
           'Centre at the origin: x² + y² = r².',
           'Centre at (a, b): (x − a)² + (y − b)² = r².',
@@ -893,6 +930,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Tangents to a circle',
+      /** Tangents to a circle on the Cartesian plane are Grade 12. */
+      grades: [12],
         points: [
           'The tangent at a point is perpendicular to the radius drawn to that point.',
           'Find the gradient of the radius, take the negative reciprocal, then use point-gradient form at the point of contact.',
@@ -976,6 +1015,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Ogives (cumulative frequency curves)',
+        /** Ogives are Grade 11 onwards. */
+        grades: [11, 12],
         points: [
           'Cumulative frequency is a running total. Plot it against the UPPER boundary of each interval.',
           'The curve starts on the horizontal axis at the lower boundary of the first interval.',
@@ -985,6 +1026,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Scatter plots, correlation and regression',
+        /** Grade 11 draws scatter plots and a line of best fit by eye; Grade 12 adds the regression line and r. Grade 10 does neither. */
+        grades: [11, 12],
         points: [
           'A scatter plot shows the relationship between two variables; describe it as strong or weak, positive or negative, linear or not.',
           'The least-squares regression line is ŷ = a + bx, found with the calculator\'s statistics mode.',
@@ -1048,7 +1091,21 @@ export const topicNotes: TopicNote[] = [
         ],
       },
       {
+        name: 'Hire purchase and instalment buying',
+        /** Hire purchase is Grade 10 finance. Grades 11 and 12 do not return to it. */
+        grades: [10],
+        points: [
+          'Hire purchase is buying on credit: a deposit now, then equal monthly instalments until the balance and its interest are paid off.',
+          'The deposit comes off the cash price FIRST. Interest is charged on what is left owing after the deposit, never on the full cash price.',
+          'Hire purchase uses SIMPLE interest: I = P x i x n, with P the balance owing after the deposit and n the length of the agreement in years.',
+          'Monthly instalment = (balance owing + interest) divided by the number of months. Add the deposit back to get the total actually paid.',
+          'The whole point of the comparison is the extra cost: total paid minus cash price is what the credit cost the buyer, and it is often a quarter of the price again.',
+        ],
+      },
+      {
         name: 'Nominal and effective interest rates',
+      /** Converting between nominal and effective rates is Grade 11 onwards. */
+      grades: [11, 12],
         points: [
           'A nominal rate is quoted per year but compounded more often; an effective rate is the true annual rate.',
           '1 + i_eff = (1 + i_nom ÷ m)^m, where m is the number of compounding periods in a year.',
@@ -1058,6 +1115,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Depreciation',
+      /** Grade 10 does growth only; depreciation on the reducing balance is Grade 11. */
+      grades: [11, 12],
         points: [
           'Straight-line (simple) depreciation: A = P(1 − in) — the same amount is lost each year.',
           'Reducing-balance depreciation: A = P(1 − i)ⁿ — the loss is calculated on the current value each year.',
@@ -1067,6 +1126,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Timelines and changing interest rates',
+      /** Timelines with a rate change or a withdrawal partway are Grade 11 onwards. */
+      grades: [11, 12],
         points: [
           'Draw a timeline first, marking every deposit, withdrawal and rate change.',
           'Move each amount to the required date separately, then add.',
@@ -1076,6 +1137,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Future value annuities',
+      /** Annuities are Grade 12. */
+      grades: [12],
         points: [
           'F = x[(1 + i)ⁿ − 1] ÷ i, where x is the regular payment.',
           'This applies when equal payments are made at the end of each period — a savings plan or a sinking fund.',
@@ -1085,6 +1148,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Present value annuities and loans',
+      /** Annuities and loan repayment are Grade 12. */
+      grades: [12],
         points: [
           'P = x[1 − (1 + i)⁻ⁿ] ÷ i.',
           'This is the loan amount that a series of equal repayments will settle — a bond or a vehicle finance agreement.',
@@ -1094,6 +1159,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Outstanding balance',
+      /** The balance outstanding on a loan partway through its term is Grade 12 annuity work. Grade 10 hire purchase is a different idea and has its own heading above. */
+      grades: [12],
         points: [
           'The balance outstanding equals the present value of the payments still to be made.',
           'Alternatively, grow the original loan forward and subtract the future value of the payments already made. Both methods must agree.',
@@ -1149,6 +1216,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Quadratic patterns',
+      /** Second differences are Grade 11; Grade 12 patterns are arithmetic and geometric series. */
+      grades: [11],
         points: [
           'The SECOND difference is constant. The first differences themselves form a linear pattern.',
           'General term: Tₙ = an² + bn + c, with 2a = second difference.',
@@ -1176,6 +1245,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Sigma notation',
+      /** Sigma notation is Grade 12. */
+      grades: [12],
         points: [
           'Σ from k = 1 to n of Tₖ means add the terms from k = 1 up to k = n.',
           'The number of terms is (upper limit − lower limit + 1), not just the upper limit.',
@@ -1185,6 +1256,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Convergence and the sum to infinity',
+      /** Convergence and S∞ are Grade 12. */
+      grades: [12],
         points: [
           'An infinite geometric series converges only when −1 < r < 1.',
           'S∞ = a ÷ (1 − r).',
@@ -1369,6 +1442,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Independent events and the product rule',
+        /** Grade 10 probability is relative frequency, Venn diagrams and two-way tables; the product rule for independent events is Grade 11. */
+        grades: [11, 12],
         points: [
           'Events are independent when one happening does not change the probability of the other.',
           'For independent events, P(A and B) = P(A) × P(B). This equality is also the test for independence.',
@@ -1396,6 +1471,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Arrangements with restrictions',
+        /** The counting principle and arrangements are Grade 12. */
+        grades: [12],
         points: [
           'If certain items must stay together, treat the group as a single unit, then multiply by the arrangements within it.',
           'If two items may not be adjacent, count all arrangements and subtract those where they are together.',
@@ -1450,6 +1527,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Congruency and similarity',
+      /** This heading spans two grades: congruency is Grade 10, similarity is Grade 12. Grade 11 Euclidean geometry is circle geometry, so the gap in the middle is the syllabus and not missing content. */
+      grades: [10, 12],
         points: [
           'Congruent triangles are identical in shape and size: SSS, SAS, AAS or RHS.',
           'Similar triangles have equal angles and sides in proportion (AAA, or three sides in proportion).',
@@ -1468,6 +1547,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Circle geometry: centre and chord theorems',
+        /** Circle geometry begins in Grade 11. */
+        grades: [11, 12],
         points: [
           'The line from the centre perpendicular to a chord bisects that chord, and the converse also holds.',
           'The angle at the centre is twice the angle at the circumference on the same arc.',
@@ -1477,6 +1558,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Circle geometry: same segment and cyclic quadrilaterals',
+        /** Circle geometry begins in Grade 11. */
+        grades: [11, 12],
         points: [
           'Angles in the same segment, subtended by the same chord, are equal.',
           'Opposite angles of a cyclic quadrilateral add to 180°.',
@@ -1486,6 +1569,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Tangents and the tan-chord theorem',
+        /** Circle geometry begins in Grade 11. */
+        grades: [11, 12],
         points: [
           'A tangent is perpendicular to the radius at the point of contact.',
           'Two tangents drawn from the same external point are equal in length.',
@@ -1495,6 +1580,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Proportionality and the mid-point theorem',
+      /** The same shape as Congruency and similarity: the mid-point theorem is Grade 10, the proportion theorem is Grade 12, and Grade 11 does circle geometry instead. */
+      grades: [10, 12],
         points: [
           'A line parallel to one side of a triangle divides the other two sides proportionally.',
           'The mid-point theorem: the line joining the midpoints of two sides is parallel to the third side and half its length.',
@@ -1504,6 +1591,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Writing a geometry proof',
+      /** Proving a theorem, rather than applying one, is examined in Grade 12. */
+      grades: [12],
         points: [
           'Mark everything you are given onto the diagram before writing anything.',
           'Write one statement per line with its reason beside it, in the accepted wording.',
@@ -1513,6 +1602,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Volume and surface area of solids',
+        /** Measurement of solids is Grade 10 and Grade 11; Grade 12 Euclidean geometry is proof and similarity. */
+        grades: [10, 11],
         points: [
           'Volume of a right prism = area of the cross-section × the perpendicular height. Work the cross-section area out first, whatever shape it is.',
           'Volume of a cylinder = πr²h, because its cross-section is a circle. Total surface area = 2πr² + 2πrh: the two circular ends plus the curved side unrolled into a rectangle.',

@@ -1,0 +1,1234 @@
+[
+ {
+  "id": "math-g11-p2-20-2-1",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−6; −6) and B(−2; −2).",
+  "answer": "(−4; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−6 + −2) ÷ 2 = −4 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-20-4-1",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 40°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 40° and Â = 140°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 40°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 40° = 140°."
+ },
+ {
+  "id": "math-g11-p2-20-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 12; 16; 13; 16; 15.",
+  "answer": "16",
+  "explanation": "The mode is the value that appears most often, and 16 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g11-p2-20-3-1",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 4 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 1 and tan C = 1",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 4. So the two ratios are reciprocals of each other, 1 and 1."
+ },
+ {
+  "id": "math-g11-p2-21-2-1",
+  "marks": 2,
+  "prompt": "A line has equation y = 2x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 2; perpendicular: −1/2",
+  "explanation": "Parallel lines share a gradient, so that one is 2. Perpendicular gradients have a product of −1, so the other is −1/2. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-21-4-1",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 38° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 97° and the exterior angle = 83°",
+  "explanation": "Ĉ = 180° − 38° − 45° = 97°. The exterior angle at C is 180° − 97° = 83°, which is exactly 38° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-21-1-1",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 12; 14; 16; 18; 20.",
+  "answer": "16",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 16. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g11-p2-21-3-1",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 6 cos 2x.",
+  "answer": "Amplitude = 6; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 6, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-22-2-1",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−5; −6) and B(1; −2).",
+  "answer": "(−2; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−5 + 1) ÷ 2 = −2 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-22-4-1",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 18 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "2880° and 160°",
+  "explanation": "A polygon with 18 sides splits into 16 triangles, so the interior angles total 16 × 180° = 2880°. Regular means all 18 angles are equal, so each is 2880° ÷ 18 = 160°."
+ },
+ {
+  "id": "math-g11-p2-22-1-1",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 16; 20; 13; 19; 18.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 20 − 13 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g11-p2-22-3-1",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 6 sin x − 7.",
+  "answer": "Maximum = -1; minimum = −13",
+  "explanation": "sin x runs between −1 and 1, so 6 × sin x runs between −6 and 6, and the − 7 shifts both ends: maximum 6 + (−7) = -1 and minimum −6 + (−7) = −13."
+ },
+ {
+  "id": "math-g11-p2-23-2-1",
+  "marks": 2,
+  "prompt": "A line has equation y = 3x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 3; perpendicular: −1/3",
+  "explanation": "Parallel lines share a gradient, so that one is 3. Perpendicular gradients have a product of −1, so the other is −1/3. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-23-4-1",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 41°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 41° and Â = 139°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 41°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 41° = 139°."
+ },
+ {
+  "id": "math-g11-p2-23-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 13; 17; 14; 17; 16.",
+  "answer": "17",
+  "explanation": "The mode is the value that appears most often, and 17 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g11-p2-23-3-1",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 5 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 4/5 and tan C = 5/4",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 5. So the two ratios are reciprocals of each other, 4/5 and 5/4."
+ },
+ {
+  "id": "math-g11-p2-24-2-1",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−4; −6) and B(4; −2).",
+  "answer": "(0; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−4 + 4) ÷ 2 = 0 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-24-4-1",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 41° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 94° and the exterior angle = 86°",
+  "explanation": "Ĉ = 180° − 41° − 45° = 94°. The exterior angle at C is 180° − 94° = 86°, which is exactly 41° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-24-1-1",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 2; 5; 8; 11; 14.",
+  "answer": "8",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 8. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g11-p2-24-1-3",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 5; 10; 2; 8; 8.",
+  "answer": "8",
+  "explanation": "Range = highest − lowest = 10 − 2 = 8. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g11-p2-25-2-1",
+  "marks": 2,
+  "prompt": "A line has equation y = 4x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 4; perpendicular: −1/4",
+  "explanation": "Parallel lines share a gradient, so that one is 4. Perpendicular gradients have a product of −1, so the other is −1/4. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-25-4-1",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 42°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 42° and Â = 138°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 42°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 42° = 138°."
+ },
+ {
+  "id": "math-g11-p2-25-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 2; 7; 3; 7; 5.",
+  "answer": "7",
+  "explanation": "The mode is the value that appears most often, and 7 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g11-p2-25-1-3",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 3; 6; 9; 12; 15.",
+  "answer": "9",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 9. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g11-p2-a-2-1",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−3; −6) and B(7; −2).",
+  "answer": "(2; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−3 + 7) ÷ 2 = 2 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-a-4-1",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 44° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 91° and the exterior angle = 89°",
+  "explanation": "Ĉ = 180° − 44° − 45° = 91°. The exterior angle at C is 180° − 91° = 89°, which is exactly 44° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-a-1-1",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 6; 11; 3; 9; 9.",
+  "answer": "8",
+  "explanation": "Range = highest − lowest = 11 − 3 = 8. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g11-p2-a-1-3",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 3; 8; 4; 8; 6.",
+  "answer": "8",
+  "explanation": "The mode is the value that appears most often, and 8 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g11-p2-b-2-1",
+  "marks": 2,
+  "prompt": "A line has equation y = 5x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 5; perpendicular: −1/5",
+  "explanation": "Parallel lines share a gradient, so that one is 5. Perpendicular gradients have a product of −1, so the other is −1/5. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-b-4-1",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 43°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 43° and Â = 137°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 43°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 43° = 137°."
+ },
+ {
+  "id": "math-g11-p2-b-1-1",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 4; 7; 10; 13; 16.",
+  "answer": "10",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 10. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g11-p2-b-1-3",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 7; 12; 4; 10; 10.",
+  "answer": "8",
+  "explanation": "Range = highest − lowest = 12 − 4 = 8. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g11-p2-c-2-1",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−2; −6) and B(10; −2).",
+  "answer": "(4; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−2 + 10) ÷ 2 = 4 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-c-4-1",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 47° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 88° and the exterior angle = 92°",
+  "explanation": "Ĉ = 180° − 47° − 45° = 88°. The exterior angle at C is 180° − 88° = 92°, which is exactly 47° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-c-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 4; 9; 5; 9; 7.",
+  "answer": "9",
+  "explanation": "The mode is the value that appears most often, and 9 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g11-p2-c-1-3",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 5; 8; 11; 14; 17.",
+  "answer": "11",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 11. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g11-p2-20-2-3",
+  "marks": 2,
+  "prompt": "A line has equation y = 6x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 6; perpendicular: −1/6",
+  "explanation": "Parallel lines share a gradient, so that one is 6. Perpendicular gradients have a product of −1, so the other is −1/6. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-20-4-2",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 44°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 44° and Â = 136°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 44°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 44° = 136°."
+ },
+ {
+  "id": "math-g11-p2-20-1-2",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 3; 5; 7; 9; 11.",
+  "answer": "7",
+  "explanation": "The five values add up to 35, and 35 ÷ 5 = 7. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-20-3-3",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 7 cos 2x.",
+  "answer": "Amplitude = 7; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 7, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-20-2-4",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−1; −6) and B(3; −2).",
+  "answer": "(1; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−1 + 3) ÷ 2 = 1 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-20-4-3",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 50° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 85° and the exterior angle = 95°",
+  "explanation": "Ĉ = 180° − 50° − 45° = 85°. The exterior angle at C is 180° − 85° = 95°, which is exactly 50° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-20-3-6",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 7 sin x − 7.",
+  "answer": "Maximum = 0; minimum = −14",
+  "explanation": "sin x runs between −1 and 1, so 7 × sin x runs between −7 and 7, and the − 7 shifts both ends: maximum 7 + (−7) = 0 and minimum −7 + (−7) = −14."
+ },
+ {
+  "id": "math-g11-p2-20-2-5",
+  "marks": 2,
+  "prompt": "A line has equation y = 7x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 7; perpendicular: −1/7",
+  "explanation": "Parallel lines share a gradient, so that one is 7. Perpendicular gradients have a product of −1, so the other is −1/7. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-20-4-4",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 45°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 45° and Â = 135°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 45°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 45° = 135°."
+ },
+ {
+  "id": "math-g11-p2-20-3-7",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 6 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 2/3 and tan C = 3/2",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 6. So the two ratios are reciprocals of each other, 2/3 and 3/2."
+ },
+ {
+  "id": "math-g11-p2-21-2-3",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(0; −6) and B(6; −2).",
+  "answer": "(3; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (0 + 6) ÷ 2 = 3 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-21-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 53° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 82° and the exterior angle = 98°",
+  "explanation": "Ĉ = 180° − 53° − 45° = 82°. The exterior angle at C is 180° − 82° = 98°, which is exactly 53° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-21-1-2",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 7; 11; 5; 10; 8.",
+  "answer": "Smallest = 5; range = 6",
+  "explanation": "The smallest value is 5 and the largest is 11, so the range is 11 − 5 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-21-3-3",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 8 cos 2x.",
+  "answer": "Amplitude = 8; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 8, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-21-2-4",
+  "marks": 2,
+  "prompt": "A line has equation y = 8x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 8; perpendicular: −1/8",
+  "explanation": "Parallel lines share a gradient, so that one is 8. Perpendicular gradients have a product of −1, so the other is −1/8. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-21-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 46°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 46° and Â = 134°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 46°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 46° = 134°."
+ },
+ {
+  "id": "math-g11-p2-21-3-6",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 8 sin x − 7.",
+  "answer": "Maximum = 1; minimum = −15",
+  "explanation": "sin x runs between −1 and 1, so 8 × sin x runs between −8 and 8, and the − 7 shifts both ends: maximum 8 + (−7) = 1 and minimum −8 + (−7) = −15."
+ },
+ {
+  "id": "math-g11-p2-21-2-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(1; −6) and B(9; −2).",
+  "answer": "(5; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (1 + 9) ÷ 2 = 5 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-21-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 56° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 79° and the exterior angle = 101°",
+  "explanation": "Ĉ = 180° − 56° − 45° = 79°. The exterior angle at C is 180° − 79° = 101°, which is exactly 56° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-21-3-7",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 7 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 4/7 and tan C = 7/4",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 7. So the two ratios are reciprocals of each other, 4/7 and 7/4."
+ },
+ {
+  "id": "math-g11-p2-21-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 47°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 47° and Â = 133°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 47°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 47° = 133°."
+ },
+ {
+  "id": "math-g11-p2-22-2-3",
+  "marks": 2,
+  "prompt": "A line has equation y = 9x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 9; perpendicular: −1/9",
+  "explanation": "Parallel lines share a gradient, so that one is 9. Perpendicular gradients have a product of −1, so the other is −1/9. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-22-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 26° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 105° and the exterior angle = 75°",
+  "explanation": "Ĉ = 180° − 26° − 49° = 105°. The exterior angle at C is 180° − 105° = 75°, which is exactly 26° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-22-1-2",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 4; 6; 8; 10; 12.",
+  "answer": "8",
+  "explanation": "The five values add up to 40, and 40 ÷ 5 = 8. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-22-3-3",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 9 cos 2x.",
+  "answer": "Amplitude = 9; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 9, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-22-2-4",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(2; −6) and B(12; −2).",
+  "answer": "(7; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (2 + 12) ÷ 2 = 7 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-22-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 48°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 48° and Â = 132°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 48°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 48° = 132°."
+ },
+ {
+  "id": "math-g11-p2-22-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 8; 12; 6; 11; 9.",
+  "answer": "Smallest = 6; range = 6",
+  "explanation": "The smallest value is 6 and the largest is 12, so the range is 12 − 6 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-22-3-4",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 9 sin x − 7.",
+  "answer": "Maximum = 2; minimum = −16",
+  "explanation": "sin x runs between −1 and 1, so 9 × sin x runs between −9 and 9, and the − 7 shifts both ends: maximum 9 + (−7) = 2 and minimum −9 + (−7) = −16."
+ },
+ {
+  "id": "math-g11-p2-22-2-5",
+  "marks": 2,
+  "prompt": "A line has equation y = 10x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 10; perpendicular: −1/10",
+  "explanation": "Parallel lines share a gradient, so that one is 10. Perpendicular gradients have a product of −1, so the other is −1/10. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-22-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 29° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 102° and the exterior angle = 78°",
+  "explanation": "Ĉ = 180° − 29° − 49° = 102°. The exterior angle at C is 180° − 102° = 78°, which is exactly 29° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-22-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 5; 7; 9; 11; 13.",
+  "answer": "9",
+  "explanation": "The five values add up to 45, and 45 ÷ 5 = 9. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-22-3-5",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 8 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 1/2 and tan C = 2",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 8. So the two ratios are reciprocals of each other, 1/2 and 2."
+ },
+ {
+  "id": "math-g11-p2-22-2-6",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(3; −6) and B(15; −2).",
+  "answer": "(9; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (3 + 15) ÷ 2 = 9 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-22-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 49°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 49° and Â = 131°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 49°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 49° = 131°."
+ },
+ {
+  "id": "math-g11-p2-22-3-6",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = cos 3x.",
+  "answer": "Amplitude = 1; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 1, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-22-2-7",
+  "marks": 2,
+  "prompt": "A line has equation y = 11x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 11; perpendicular: −1/11",
+  "explanation": "Parallel lines share a gradient, so that one is 11. Perpendicular gradients have a product of −1, so the other is −1/11. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-22-3-7",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = sin x − 6.",
+  "answer": "Maximum = -5; minimum = −7",
+  "explanation": "sin x runs between −1 and 1, so sin x runs between −1 and 1, and the − 6 shifts both ends: maximum 1 + (−6) = -5 and minimum −1 + (−6) = −7."
+ },
+ {
+  "id": "math-g11-p2-23-2-3",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(4; −6) and B(8; −2).",
+  "answer": "(6; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (4 + 8) ÷ 2 = 6 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-23-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 32° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 99° and the exterior angle = 81°",
+  "explanation": "Ĉ = 180° − 32° − 49° = 99°. The exterior angle at C is 180° − 99° = 81°, which is exactly 32° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-23-1-2",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 9; 13; 7; 12; 10.",
+  "answer": "Smallest = 7; range = 6",
+  "explanation": "The smallest value is 7 and the largest is 13, so the range is 13 − 7 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-23-3-3",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 9 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 4/9 and tan C = 9/4",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 9. So the two ratios are reciprocals of each other, 4/9 and 9/4."
+ },
+ {
+  "id": "math-g11-p2-23-2-4",
+  "marks": 2,
+  "prompt": "A line has equation y = 12x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 12; perpendicular: −1/12",
+  "explanation": "Parallel lines share a gradient, so that one is 12. Perpendicular gradients have a product of −1, so the other is −1/12. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-23-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 50°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 50° and Â = 130°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 50°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 50° = 130°."
+ },
+ {
+  "id": "math-g11-p2-23-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 6; 8; 10; 12; 14.",
+  "answer": "10",
+  "explanation": "The five values add up to 50, and 50 ÷ 5 = 10. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-23-3-4",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 2 cos 3x.",
+  "answer": "Amplitude = 2; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 2, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-23-2-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(5; −6) and B(11; −2).",
+  "answer": "(8; −4)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (5 + 11) ÷ 2 = 8 and (−6 + −2) ÷ 2 = −4. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-23-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 35° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 96° and the exterior angle = 84°",
+  "explanation": "Ĉ = 180° − 35° − 49° = 96°. The exterior angle at C is 180° − 96° = 84°, which is exactly 35° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-23-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 10; 14; 8; 13; 11.",
+  "answer": "Smallest = 8; range = 6",
+  "explanation": "The smallest value is 8 and the largest is 14, so the range is 14 − 8 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-23-3-5",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 2 sin x − 6.",
+  "answer": "Maximum = -4; minimum = −8",
+  "explanation": "sin x runs between −1 and 1, so 2 × sin x runs between −2 and 2, and the − 6 shifts both ends: maximum 2 + (−6) = -4 and minimum −2 + (−6) = −8."
+ },
+ {
+  "id": "math-g11-p2-23-2-6",
+  "marks": 2,
+  "prompt": "A line has equation y = 13x + 1. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 13; perpendicular: −1/13",
+  "explanation": "Parallel lines share a gradient, so that one is 13. Perpendicular gradients have a product of −1, so the other is −1/13. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-23-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 51°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 51° and Â = 129°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 51°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 51° = 129°."
+ },
+ {
+  "id": "math-g11-p2-23-3-6",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 10 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 2/5 and tan C = 5/2",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 10. So the two ratios are reciprocals of each other, 2/5 and 5/2."
+ },
+ {
+  "id": "math-g11-p2-23-2-7",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−6; −5) and B(−2; 1).",
+  "answer": "(−4; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−6 + −2) ÷ 2 = −4 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-23-3-7",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 3 cos 3x.",
+  "answer": "Amplitude = 3; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 3, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-24-2-3",
+  "marks": 2,
+  "prompt": "A line has equation y = 2x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 2; perpendicular: −1/2",
+  "explanation": "Parallel lines share a gradient, so that one is 2. Perpendicular gradients have a product of −1, so the other is −1/2. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-24-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 38° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 93° and the exterior angle = 87°",
+  "explanation": "Ĉ = 180° − 38° − 49° = 93°. The exterior angle at C is 180° − 93° = 87°, which is exactly 38° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-24-1-2",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 7; 9; 11; 13; 15.",
+  "answer": "11",
+  "explanation": "The five values add up to 55, and 55 ÷ 5 = 11. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-24-3-3",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 3 sin x − 6.",
+  "answer": "Maximum = -3; minimum = −9",
+  "explanation": "sin x runs between −1 and 1, so 3 × sin x runs between −3 and 3, and the − 6 shifts both ends: maximum 3 + (−6) = -3 and minimum −3 + (−6) = −9."
+ },
+ {
+  "id": "math-g11-p2-24-2-4",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−5; −5) and B(1; 1).",
+  "answer": "(−2; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−5 + 1) ÷ 2 = −2 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-24-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 52°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 52° and Â = 128°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 52°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 52° = 128°."
+ },
+ {
+  "id": "math-g11-p2-24-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 11; 15; 9; 14; 12.",
+  "answer": "Smallest = 9; range = 6",
+  "explanation": "The smallest value is 9 and the largest is 15, so the range is 15 − 9 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-24-3-4",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 11 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 4/11 and tan C = 11/4",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 11. So the two ratios are reciprocals of each other, 4/11 and 11/4."
+ },
+ {
+  "id": "math-g11-p2-24-2-5",
+  "marks": 2,
+  "prompt": "A line has equation y = 3x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 3; perpendicular: −1/3",
+  "explanation": "Parallel lines share a gradient, so that one is 3. Perpendicular gradients have a product of −1, so the other is −1/3. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-24-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 41° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 90° and the exterior angle = 90°",
+  "explanation": "Ĉ = 180° − 41° − 49° = 90°. The exterior angle at C is 180° − 90° = 90°, which is exactly 41° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-24-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 8; 10; 12; 14; 16.",
+  "answer": "12",
+  "explanation": "The five values add up to 60, and 60 ÷ 5 = 12. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-24-3-5",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 4 cos 3x.",
+  "answer": "Amplitude = 4; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 4, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-24-2-6",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−4; −5) and B(4; 1).",
+  "answer": "(0; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−4 + 4) ÷ 2 = 0 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-24-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 53°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 53° and Â = 127°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 53°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 53° = 127°."
+ },
+ {
+  "id": "math-g11-p2-24-3-6",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 4 sin x − 6.",
+  "answer": "Maximum = -2; minimum = −10",
+  "explanation": "sin x runs between −1 and 1, so 4 × sin x runs between −4 and 4, and the − 6 shifts both ends: maximum 4 + (−6) = -2 and minimum −4 + (−6) = −10."
+ },
+ {
+  "id": "math-g11-p2-24-2-7",
+  "marks": 2,
+  "prompt": "A line has equation y = 4x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 4; perpendicular: −1/4",
+  "explanation": "Parallel lines share a gradient, so that one is 4. Perpendicular gradients have a product of −1, so the other is −1/4. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-24-3-7",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 12 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 1/3 and tan C = 3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 12. So the two ratios are reciprocals of each other, 1/3 and 3."
+ },
+ {
+  "id": "math-g11-p2-25-2-3",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−3; −5) and B(7; 1).",
+  "answer": "(2; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−3 + 7) ÷ 2 = 2 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-25-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 44° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 87° and the exterior angle = 93°",
+  "explanation": "Ĉ = 180° − 44° − 49° = 87°. The exterior angle at C is 180° − 87° = 93°, which is exactly 44° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-25-1-2",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 12; 16; 10; 15; 13.",
+  "answer": "Smallest = 10; range = 6",
+  "explanation": "The smallest value is 10 and the largest is 16, so the range is 16 − 10 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-25-3-3",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 5 cos 3x.",
+  "answer": "Amplitude = 5; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 5, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-25-2-4",
+  "marks": 2,
+  "prompt": "A line has equation y = 5x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 5; perpendicular: −1/5",
+  "explanation": "Parallel lines share a gradient, so that one is 5. Perpendicular gradients have a product of −1, so the other is −1/5. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-25-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 54°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 54° and Â = 126°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 54°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 54° = 126°."
+ },
+ {
+  "id": "math-g11-p2-25-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 9; 11; 13; 15; 17.",
+  "answer": "13",
+  "explanation": "The five values add up to 65, and 65 ÷ 5 = 13. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-25-3-4",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 5 sin x − 6.",
+  "answer": "Maximum = -1; minimum = −11",
+  "explanation": "sin x runs between −1 and 1, so 5 × sin x runs between −5 and 5, and the − 6 shifts both ends: maximum 5 + (−6) = -1 and minimum −5 + (−6) = −11."
+ },
+ {
+  "id": "math-g11-p2-25-2-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−2; −5) and B(10; 1).",
+  "answer": "(4; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−2 + 10) ÷ 2 = 4 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-25-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 47° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 84° and the exterior angle = 96°",
+  "explanation": "Ĉ = 180° − 47° − 49° = 84°. The exterior angle at C is 180° − 84° = 96°, which is exactly 47° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-25-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 13; 17; 11; 16; 14.",
+  "answer": "Smallest = 11; range = 6",
+  "explanation": "The smallest value is 11 and the largest is 17, so the range is 17 − 11 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-25-3-5",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 2 units and BC = 5 units. Write down tan A and tan C.",
+  "answer": "tan A = 5/2 and tan C = 2/5",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 5 while opposite C is AB = 2. So the two ratios are reciprocals of each other, 5/2 and 2/5."
+ },
+ {
+  "id": "math-g11-p2-25-2-6",
+  "marks": 2,
+  "prompt": "A line has equation y = 6x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 6; perpendicular: −1/6",
+  "explanation": "Parallel lines share a gradient, so that one is 6. Perpendicular gradients have a product of −1, so the other is −1/6. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-25-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 55°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 55° and Â = 125°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 55°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 55° = 125°."
+ },
+ {
+  "id": "math-g11-p2-25-3-6",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 6 cos 3x.",
+  "answer": "Amplitude = 6; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 6, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-25-2-7",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−1; −5) and B(3; 1).",
+  "answer": "(1; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−1 + 3) ÷ 2 = 1 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-25-3-7",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 6 sin x − 6.",
+  "answer": "Maximum = 0; minimum = −12",
+  "explanation": "sin x runs between −1 and 1, so 6 × sin x runs between −6 and 6, and the − 6 shifts both ends: maximum 6 + (−6) = 0 and minimum −6 + (−6) = −12."
+ },
+ {
+  "id": "math-g11-p2-a-2-3",
+  "marks": 2,
+  "prompt": "A line has equation y = 7x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 7; perpendicular: −1/7",
+  "explanation": "Parallel lines share a gradient, so that one is 7. Perpendicular gradients have a product of −1, so the other is −1/7. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-a-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 50° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 81° and the exterior angle = 99°",
+  "explanation": "Ĉ = 180° − 50° − 49° = 81°. The exterior angle at C is 180° − 81° = 99°, which is exactly 50° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-a-1-2",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 10; 12; 14; 16; 18.",
+  "answer": "14",
+  "explanation": "The five values add up to 70, and 70 ÷ 5 = 14. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-a-3-3",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 3 units and BC = 5 units. Write down tan A and tan C.",
+  "answer": "tan A = 5/3 and tan C = 3/5",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 5 while opposite C is AB = 3. So the two ratios are reciprocals of each other, 5/3 and 3/5."
+ },
+ {
+  "id": "math-g11-p2-a-2-4",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(0; −5) and B(6; 1).",
+  "answer": "(3; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (0 + 6) ÷ 2 = 3 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-a-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 56°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 56° and Â = 124°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 56°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 56° = 124°."
+ },
+ {
+  "id": "math-g11-p2-a-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 14; 18; 12; 17; 15.",
+  "answer": "Smallest = 12; range = 6",
+  "explanation": "The smallest value is 12 and the largest is 18, so the range is 18 − 12 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-a-3-4",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 7 cos 3x.",
+  "answer": "Amplitude = 7; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 7, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-a-2-5",
+  "marks": 2,
+  "prompt": "A line has equation y = 8x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 8; perpendicular: −1/8",
+  "explanation": "Parallel lines share a gradient, so that one is 8. Perpendicular gradients have a product of −1, so the other is −1/8. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-a-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 53° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 78° and the exterior angle = 102°",
+  "explanation": "Ĉ = 180° − 53° − 49° = 78°. The exterior angle at C is 180° − 78° = 102°, which is exactly 53° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-a-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 11; 13; 15; 17; 19.",
+  "answer": "15",
+  "explanation": "The five values add up to 75, and 75 ÷ 5 = 15. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-a-3-5",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 7 sin x − 6.",
+  "answer": "Maximum = 1; minimum = −13",
+  "explanation": "sin x runs between −1 and 1, so 7 × sin x runs between −7 and 7, and the − 6 shifts both ends: maximum 7 + (−6) = 1 and minimum −7 + (−6) = −13."
+ },
+ {
+  "id": "math-g11-p2-a-2-6",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(1; −5) and B(9; 1).",
+  "answer": "(5; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (1 + 9) ÷ 2 = 5 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-a-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 57°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 57° and Â = 123°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 57°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 57° = 123°."
+ },
+ {
+  "id": "math-g11-p2-a-3-6",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 4 units and BC = 5 units. Write down tan A and tan C.",
+  "answer": "tan A = 5/4 and tan C = 4/5",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 5 while opposite C is AB = 4. So the two ratios are reciprocals of each other, 5/4 and 4/5."
+ },
+ {
+  "id": "math-g11-p2-a-2-7",
+  "marks": 2,
+  "prompt": "A line has equation y = 9x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 9; perpendicular: −1/9",
+  "explanation": "Parallel lines share a gradient, so that one is 9. Perpendicular gradients have a product of −1, so the other is −1/9. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-a-3-7",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 8 cos 3x.",
+  "answer": "Amplitude = 8; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 8, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-b-2-3",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(2; −5) and B(12; 1).",
+  "answer": "(7; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (2 + 12) ÷ 2 = 7 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-b-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 56° and B̂ = 49°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 75° and the exterior angle = 105°",
+  "explanation": "Ĉ = 180° − 56° − 49° = 75°. The exterior angle at C is 180° − 75° = 105°, which is exactly 56° + 49° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-b-1-2",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 4; 9; 2; 8; 5.",
+  "answer": "Smallest = 2; range = 7",
+  "explanation": "The smallest value is 2 and the largest is 9, so the range is 9 − 2 = 7. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-b-3-3",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 8 sin x − 6.",
+  "answer": "Maximum = 2; minimum = −14",
+  "explanation": "sin x runs between −1 and 1, so 8 × sin x runs between −8 and 8, and the − 6 shifts both ends: maximum 8 + (−6) = 2 and minimum −8 + (−6) = −14."
+ },
+ {
+  "id": "math-g11-p2-b-2-4",
+  "marks": 2,
+  "prompt": "A line has equation y = 10x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 10; perpendicular: −1/10",
+  "explanation": "Parallel lines share a gradient, so that one is 10. Perpendicular gradients have a product of −1, so the other is −1/10. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-b-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 58°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 58° and Â = 122°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 58°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 58° = 122°."
+ },
+ {
+  "id": "math-g11-p2-b-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 12; 14; 16; 18; 20.",
+  "answer": "16",
+  "explanation": "The five values add up to 80, and 80 ÷ 5 = 16. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-b-3-4",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 5 units and BC = 5 units. Write down tan A and tan C.",
+  "answer": "tan A = 1 and tan C = 1",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 5 while opposite C is AB = 5. So the two ratios are reciprocals of each other, 1 and 1."
+ },
+ {
+  "id": "math-g11-p2-b-2-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(3; −5) and B(15; 1).",
+  "answer": "(9; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (3 + 15) ÷ 2 = 9 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-b-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 26° and B̂ = 53°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 101° and the exterior angle = 79°",
+  "explanation": "Ĉ = 180° − 26° − 53° = 101°. The exterior angle at C is 180° − 101° = 79°, which is exactly 26° + 53° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-b-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 5; 10; 3; 9; 6.",
+  "answer": "Smallest = 3; range = 7",
+  "explanation": "The smallest value is 3 and the largest is 10, so the range is 10 − 3 = 7. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-b-3-5",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 9 cos 3x.",
+  "answer": "Amplitude = 9; period = 120°",
+  "explanation": "The number in FRONT sets the amplitude, 9, and the number INSIDE sets the period: 360° ÷ 3 = 120°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-b-2-6",
+  "marks": 2,
+  "prompt": "A line has equation y = 11x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 11; perpendicular: −1/11",
+  "explanation": "Parallel lines share a gradient, so that one is 11. Perpendicular gradients have a product of −1, so the other is −1/11. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-b-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 59°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 59° and Â = 121°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 59°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 59° = 121°."
+ },
+ {
+  "id": "math-g11-p2-b-3-6",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 9 sin x − 6.",
+  "answer": "Maximum = 3; minimum = −15",
+  "explanation": "sin x runs between −1 and 1, so 9 × sin x runs between −9 and 9, and the − 6 shifts both ends: maximum 9 + (−6) = 3 and minimum −9 + (−6) = −15."
+ },
+ {
+  "id": "math-g11-p2-b-2-7",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(4; −5) and B(8; 1).",
+  "answer": "(6; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (4 + 8) ÷ 2 = 6 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-b-3-7",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 6 units and BC = 5 units. Write down tan A and tan C.",
+  "answer": "tan A = 5/6 and tan C = 6/5",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 5 while opposite C is AB = 6. So the two ratios are reciprocals of each other, 5/6 and 6/5."
+ },
+ {
+  "id": "math-g11-p2-c-2-3",
+  "marks": 2,
+  "prompt": "A line has equation y = 12x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 12; perpendicular: −1/12",
+  "explanation": "Parallel lines share a gradient, so that one is 12. Perpendicular gradients have a product of −1, so the other is −1/12. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-c-4-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 29° and B̂ = 53°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 98° and the exterior angle = 82°",
+  "explanation": "Ĉ = 180° − 29° − 53° = 98°. The exterior angle at C is 180° − 98° = 82°, which is exactly 29° + 53° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-c-1-2",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 13; 15; 17; 19; 21.",
+  "answer": "17",
+  "explanation": "The five values add up to 85, and 85 ÷ 5 = 17. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-c-3-3",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = cos 4x.",
+  "answer": "Amplitude = 1; period = 90°",
+  "explanation": "The number in FRONT sets the amplitude, 1, and the number INSIDE sets the period: 360° ÷ 4 = 90°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-c-2-4",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(5; −5) and B(11; 1).",
+  "answer": "(8; −2)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (5 + 11) ÷ 2 = 8 and (−5 + 1) ÷ 2 = −2. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-c-4-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 60°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 60° and Â = 120°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 60°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 60° = 120°."
+ },
+ {
+  "id": "math-g11-p2-c-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 6; 11; 4; 10; 7.",
+  "answer": "Smallest = 4; range = 7",
+  "explanation": "The smallest value is 4 and the largest is 11, so the range is 11 − 4 = 7. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g11-p2-c-3-4",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = sin x − 5.",
+  "answer": "Maximum = -4; minimum = −6",
+  "explanation": "sin x runs between −1 and 1, so sin x runs between −1 and 1, and the − 5 shifts both ends: maximum 1 + (−5) = -4 and minimum −1 + (−5) = −6."
+ },
+ {
+  "id": "math-g11-p2-c-2-5",
+  "marks": 2,
+  "prompt": "A line has equation y = 13x + 2. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 13; perpendicular: −1/13",
+  "explanation": "Parallel lines share a gradient, so that one is 13. Perpendicular gradients have a product of −1, so the other is −1/13. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-c-4-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 32° and B̂ = 53°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 95° and the exterior angle = 85°",
+  "explanation": "Ĉ = 180° − 32° − 53° = 95°. The exterior angle at C is 180° − 95° = 85°, which is exactly 32° + 53° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g11-p2-c-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 0; 3; 6; 9; 12.",
+  "answer": "6",
+  "explanation": "The five values add up to 30, and 30 ÷ 5 = 6. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g11-p2-c-3-5",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 7 units and BC = 5 units. Write down tan A and tan C.",
+  "answer": "tan A = 5/7 and tan C = 7/5",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 5 while opposite C is AB = 7. So the two ratios are reciprocals of each other, 5/7 and 7/5."
+ },
+ {
+  "id": "math-g11-p2-c-2-6",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the midpoint of the line segment joining A(−6; −4) and B(−2; 4).",
+  "answer": "(−4; 0)",
+  "explanation": "The midpoint averages the two x-coordinates and, separately, the two y-coordinates: (−6 + −2) ÷ 2 = −4 and (−4 + 4) ÷ 2 = 0. Subtracting instead of adding would start the distance formula, which answers a different question."
+ },
+ {
+  "id": "math-g11-p2-c-4-6",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 61°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 61° and Â = 119°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 61°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 61° = 119°."
+ },
+ {
+  "id": "math-g11-p2-c-3-6",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 2 cos 4x.",
+  "answer": "Amplitude = 2; period = 90°",
+  "explanation": "The number in FRONT sets the amplitude, 2, and the number INSIDE sets the period: 360° ÷ 4 = 90°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p2-c-2-7",
+  "marks": 2,
+  "prompt": "A line has equation y = 2x + 3. Write down the gradient of a line parallel to it, and the gradient of a line perpendicular to it.",
+  "answer": "Parallel: 2; perpendicular: −1/2",
+  "explanation": "Parallel lines share a gradient, so that one is 2. Perpendicular gradients have a product of −1, so the other is −1/2. Asking for both together is a check that the negative reciprocal is not being confused with simply changing the sign."
+ },
+ {
+  "id": "math-g11-p2-c-3-7",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 2 sin x − 5.",
+  "answer": "Maximum = -3; minimum = −7",
+  "explanation": "sin x runs between −1 and 1, so 2 × sin x runs between −2 and 2, and the − 5 shifts both ends: maximum 2 + (−5) = -3 and minimum −2 + (−5) = −7."
+ }
+]

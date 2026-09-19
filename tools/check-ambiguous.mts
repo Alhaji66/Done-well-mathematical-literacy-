@@ -52,65 +52,14 @@ const disagree = (a: string, b: string): boolean => {
 /**
  * Items known to be under-specified and not yet repaired.
  *
- * This list may only ever SHRINK. It exists so that the 49 still outstanding
- * do not hide the arrival of a new one; it is not permission to leave them.
- * Each needs its data restated in the prompt, recoverable from its own worked
- * explanation. The ones repaired so far were fixed two ways: 78 by restoring a
- * context verified against the item's own working, and 29 by following a
- * cross-reference the prompt names outright ("using your answer to 3.1").
- * What is left names no part and shares no numbers with its neighbours.
+ * EMPTY, and meant to stay that way. It held 49 when this guard was written --
+ * the residue after two automated repair passes -- and those were fixed by
+ * recovering each one's data from its own worked explanation, which was the
+ * only place the missing quantity still existed. The set is kept rather than
+ * deleted so that a future batch of known-bad items has somewhere to go
+ * without the guard having to be switched off.
  */
-const KNOWN = new Set<string>([
-  'math-g10-p1-20-4-6',
-  'math-g10-p1-21-4-6',
-  'math-g10-p1-22-4-6',
-  'math-g10-p1-23-4-6',
-  'math-g10-p1-24-4-6',
-  'math-g10-p1-25-4-6',
-  'math-g10-p1-a-4-6',
-  'math-g10-p1-b-4-6',
-  'math-g10-p1-c-4-6',
-  'math-p2-21-2-4',
-  'math-p2-22-2-4',
-  'math-p2-24-2-4',
-  'math-p2-25-2-4',
-  'math-p2-c-2-4',
-  'ml-g10-p1-20-2-9',
-  'ml-g10-p1-21-2-4',
-  'ml-g10-p1-21-2-9',
-  'ml-g10-p1-22-2-9',
-  'ml-g10-p1-23-2-9',
-  'ml-g10-p1-24-2-9',
-  'ml-g10-p1-25-2-4',
-  'ml-g10-p1-25-2-9',
-  'ml-g10-p1-a-2-9',
-  'ml-g10-p1-b-2-9',
-  'ml-g10-p1-b-4-2',
-  'ml-g10-p1-c-2-9',
-  'ml-g10-p2-20-1-2',
-  'ml-g10-p2-20-3-2',
-  'ml-g10-p2-22-1-2',
-  'ml-g10-p2-22-3-2',
-  'ml-g10-p2-23-3-2',
-  'ml-g10-p2-24-1-2',
-  'ml-g10-p2-24-3-2',
-  'ml-g10-p2-a-1-2',
-  'ml-g10-p2-b-1-2',
-  'ml-g10-p2-b-3-2',
-  'ml-g10-p2-c-1-2',
-  'ml-g10-p2-c-3-2',
-  'ml-g11-p1-a-4-2',
-  'ml-g11-p2-20-1-3',
-  'ml-g11-p2-21-1-3',
-  'ml-g11-p2-23-1-3',
-  'ml-g11-p2-25-1-3',
-  'ml-g11-p2-b-1-3',
-  'ml-p1-21-1-3',
-  'ml-p1-21-1-4',
-  'ml-p1-24-1-3',
-  'ml-p1-24-1-4',
-  'ml-p2-c-1-3',
-])
+const KNOWN = new Set<string>([])
 
 let fresh = 0
 let stale = 0
@@ -144,5 +93,10 @@ if (fresh) {
   )
   process.exit(1)
 }
-console.log(`No new under-specified items. ${KNOWN.size - stale} known remaining, ${stale} since repaired.`)
+const checked = KNOWN.size - stale
+console.log(
+  checked
+    ? `No new under-specified items. ${checked} known remaining, ${stale} since repaired.`
+    : 'Every item states the data its answer depends on.',
+)
 if (stale) console.log('Trim the repaired ids out of KNOWN in tools/check-ambiguous.mts.')

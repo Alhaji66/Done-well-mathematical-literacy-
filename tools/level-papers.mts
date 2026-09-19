@@ -102,8 +102,39 @@ function applyToFile(path: string, dryRun: boolean, force: boolean) {
 
 const dryRun = process.argv.includes('--dry-run')
 const force = process.argv.includes('--force')
+
+/**
+ * --subject <id> limits the run to one file, and it exists because --force is
+ * dangerous without it.
+ *
+ * --force re-derives every level this tool previously wrote, across all three
+ * files. That is fine for a subject whose levels are entirely machine-written.
+ * It is NOT fine for Physical Sciences, where 141 Level 4 items were authored
+ * and verified by hand: many of them embed a calculation, and the classifier
+ * is documented (in cognitive-level.mts and physics-level.mts) as unreliable on
+ * exactly those, so a blanket --force could silently demote a session's worth
+ * of hand-checked content.
+ *
+ * Life Sciences is safe by omission -- it is not in SUBJECT_FILES at all,
+ * because it was hand-levelled from the start.
+ */
+const subjectArg = process.argv[process.argv.indexOf('--subject') + 1]
+const only = process.argv.includes('--subject') ? subjectArg : null
+if (only && !(only in SUBJECT_FILES)) {
+  console.error(`Unknown subject "${only}". Known: ${Object.keys(SUBJECT_FILES).join(', ')}`)
+  process.exit(1)
+}
+if (force && !only) {
+  console.error(
+    '--force without --subject would re-derive every machine-written level in all three\n' +
+      'subjects, including hand-verified Physical Sciences content. Name a subject.',
+  )
+  process.exit(1)
+}
+
 let total = 0
 for (const [subject, path] of Object.entries(SUBJECT_FILES)) {
+  if (only && subject !== only) continue
   const { changed, markCounts } = applyToFile(path, dryRun, force)
   total += changed
   const all = markCounts[1] + markCounts[2] + markCounts[3] + markCounts[4]

@@ -81,8 +81,42 @@ const LEVEL_4: LevelRule[] = [
     //   choice is a recommendation for a person, and as Level 3 when it is
     //   matching three cells to three organelle counts. Prompts that mean the
     //   first say "justify your recommendation", which was already covered.
+    // A FOURTH SHAPE, added after measuring this rule against 24 hand-labelled
+    // Mat Lit items sampled systematically (tools/matlit-level-eval.mts). It
+    // agreed on 13 of 24, and FOUR OF THE FIVE MISSES WERE LEVEL 4 ITEMS
+    // DEMOTED TO LEVEL 3 -- all of them compound questions whose final clause
+    // asks which of two results to act on, or what a result actually means:
+    //
+    //   "...and state which figure the clinic should use"
+    //   "...and state which of the two is more useful for comparing suppliers"
+    //   "...and explain which better represents a typical renovation"
+    //   "...and state whether that means the buyer OWNS that share"
+    //
+    // That is Mat Lit's "Reasoning and reflecting" in its commonest form, and
+    // the rule already caught "which would you recommend" while missing "state
+    // which one should be used", which is the same demand in the third person.
+    //
+    // The collateral was measured across all 1 711 Mat Lit items before this
+    // was added: it moves 30 items, 109 marks, EVERY ONE of them currently
+    // Level 3, and reading a spread of them they all belong at Level 4 --
+    // "state which figure should be used for planning", "state which is better
+    // value", "state which better measures the change". Unlike the Physical
+    // Sciences widening recorded in physics-level.mts, this test has real
+    // power: the items are pre-existing content nobody wrote for this rule,
+    // and the hand labels were made with the stored level hidden.
+    //
+    // It requires a comparative or a modal of obligation on purpose. "State
+    // which figure is larger" is arithmetic; "state which figure the clinic
+    // should use" is a judgement that could have gone the other way.
+    //
+    // ONE HONEST DISAGREEMENT: it also promotes "state whether this qualifies
+    // as donations having more than doubled", which the hand labels call Level
+    // 3 -- verifying a computed result against a stated criterion is mechanical.
+    // That is a genuine boundary case, and it is recorded rather than tuned
+    // away, because a rule that resolves every borderline in its author's
+    // favour has stopped being a measurement.
     match:
-      /\b(evaluate [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|plan|concern)s?\b|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice))\b/i,
+      /\b(evaluate [^.]{0,40}\b(claim|statement|argument|conclusion|method|design|investigation|decision|reasoning|advice|explanation|recommendation|plan|concern)s?\b|evaluate whether|critic\w+|do you agree|would you (agree|recommend|advise)|which .{0,40}(would you|do you) (choose|recommend|prefer)|justify (your|the|this) (answer|choice|conclusion|recommendation|decision|ordering)|is (the|this) (learner|claim|statement|conclusion|method|argument) (correct|right|valid|wrong)|comment on the validity|how valid|to what extent|argue (for|that)|make a (case|recommendation)|advise .{0,30}(whether|which)|with reasons?, (state|say|decide)|give (a|one|two) reasons? for your (answer|choice)|(state|explain|say|decide) (whether|which|why)[^.]{0,80}\b(better|best|more useful|more appropriate|more reliable|more representative|should (be )?(use|used|rely|relied|choose|chosen|take|taken)|actually means|really means|means that|is the same as|qualifies as|counts as))\b/i,
   },
   {
     level: 4,

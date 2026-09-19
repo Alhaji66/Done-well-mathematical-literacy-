@@ -16,7 +16,8 @@
     "check:totals": "tsx tools/check-paper-totals.mts",
     "check:practise-links": "tsx tools/check-practise-links.mts",
     "check:strands": "tsx tools/check-strands.mts",
-    "check:physics-level": "tsx tools/physics-level-eval.mts"
+    "check:physics-level": "tsx tools/physics-level-eval.mts",
+    "check:matlit-level": "tsx tools/matlit-level-eval.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

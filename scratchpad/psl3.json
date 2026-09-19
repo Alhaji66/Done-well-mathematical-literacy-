@@ -1,0 +1,98 @@
+[
+ {
+  "id": "psci-p1-2020-5-3",
+  "prompt": "A point charge of +12 μC is fixed at O. Calculate the magnitude of the electric field at a point P, 0.2 m from O, and hence calculate the magnitude of the force that a charge of −3 μC would experience if it were placed at P. (k = 9.0 × 10⁹ N·m²·C⁻²)",
+  "answer": "E = kQ/r² = (9.0 × 10⁹)(12 × 10⁻⁶) ÷ (0.2)² = 2.70 × 10⁶ N·C⁻¹. The force on a charge placed in that field is F = qE = (3 × 10⁻⁶)(2.70 × 10⁶) = 8.10 N, directed towards O.",
+  "explanation": "The field is a property of the FIRST charge alone — it exists at P whether or not anything is placed there, which is why r is measured from O and the second charge does not appear until the field has been found. Only then does F = qE convert the field into a force on a particular charge. Substituting both charges into Coulomb's law in one go reaches the same number but answers a different question, and leaves the field itself unstated. The two charges are opposite in sign, so the force is directed towards O.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2021-5-3",
+  "prompt": "A point charge of +8 μC is fixed at O. Calculate the magnitude of the electric field at a point P, 0.25 m from O, and hence calculate the magnitude of the force that a charge of −5 μC would experience if it were placed at P. (k = 9.0 × 10⁹ N·m²·C⁻²)",
+  "answer": "E = kQ/r² = (9.0 × 10⁹)(8 × 10⁻⁶) ÷ (0.25)² = 1.15 × 10⁶ N·C⁻¹. The force on a charge placed in that field is F = qE = (5 × 10⁻⁶)(1.15 × 10⁶) = 5.76 N, directed towards O.",
+  "explanation": "The field is a property of the FIRST charge alone — it exists at P whether or not anything is placed there, which is why r is measured from O and the second charge does not appear until the field has been found. Only then does F = qE convert the field into a force on a particular charge. Substituting both charges into Coulomb's law in one go reaches the same number but answers a different question, and leaves the field itself unstated. The two charges are opposite in sign, so the force is directed towards O.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2022-5-3",
+  "prompt": "A point charge of +10 μC is fixed at O. Calculate the magnitude of the electric field at a point P, 0.3 m from O, and hence calculate the magnitude of the force that a charge of −4 μC would experience if it were placed at P. (k = 9.0 × 10⁹ N·m²·C⁻²)",
+  "answer": "E = kQ/r² = (9.0 × 10⁹)(10 × 10⁻⁶) ÷ (0.3)² = 1.00 × 10⁶ N·C⁻¹. The force on a charge placed in that field is F = qE = (4 × 10⁻⁶)(1.00 × 10⁶) = 4.00 N, directed towards O.",
+  "explanation": "The field is a property of the FIRST charge alone — it exists at P whether or not anything is placed there, which is why r is measured from O and the second charge does not appear until the field has been found. Only then does F = qE convert the field into a force on a particular charge. Substituting both charges into Coulomb's law in one go reaches the same number but answers a different question, and leaves the field itself unstated. The two charges are opposite in sign, so the force is directed towards O.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2023-5-3",
+  "prompt": "A point charge of −8 μC is fixed at O. Calculate the magnitude of the electric field at a point P, 0.25 m from O, and hence calculate the magnitude of the force that a charge of +2 μC would experience if it were placed at P. (k = 9.0 × 10⁹ N·m²·C⁻²)",
+  "answer": "E = kQ/r² = (9.0 × 10⁹)(8 × 10⁻⁶) ÷ (0.25)² = 1.15 × 10⁶ N·C⁻¹. The force on a charge placed in that field is F = qE = (2 × 10⁻⁶)(1.15 × 10⁶) = 2.30 N, directed towards O.",
+  "explanation": "The field is a property of the FIRST charge alone — it exists at P whether or not anything is placed there, which is why r is measured from O and the second charge does not appear until the field has been found. Only then does F = qE convert the field into a force on a particular charge. Substituting both charges into Coulomb's law in one go reaches the same number but answers a different question, and leaves the field itself unstated. The two charges are opposite in sign, so the force is directed towards O.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2020-6-3",
+  "prompt": "Two resistors, 10 Ω and 15 Ω, are connected in parallel across a 12 V battery of negligible internal resistance. Calculate the equivalent resistance of the combination, and hence the total current delivered by the battery.",
+  "answer": "1/R = 1/10 + 1/15, so R = 6.0 Ω. The full 12 V is across the combination, so I = V/R = 12 ÷ 6.0 = 2.0 A.",
+  "explanation": "The reciprocals are added, and then the result must be INVERTED — stopping at 1/R is the usual slip, and it gives 0.1667 rather than 6.0. Notice the equivalent resistance is smaller than either resistor, which is the check worth making: adding a parallel path gives the current somewhere else to go, so the combination always resists less than its smallest branch. The current then follows from Ohm's law. As a second check, the 10 Ω branch alone carries 1.2 A, so the total must be larger than that.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2021-6-3",
+  "prompt": "Two resistors, 8 Ω and 8 Ω, are connected in parallel across a 24 V battery of negligible internal resistance. Calculate the equivalent resistance of the combination, and hence the total current delivered by the battery.",
+  "answer": "1/R = 1/8 + 1/8, so R = 4.0 Ω. The full 24 V is across the combination, so I = V/R = 24 ÷ 4.0 = 6.0 A.",
+  "explanation": "The reciprocals are added, and then the result must be INVERTED — stopping at 1/R is the usual slip, and it gives 0.25 rather than 4.0. Notice the equivalent resistance is smaller than either resistor, which is the check worth making: adding a parallel path gives the current somewhere else to go, so the combination always resists less than its smallest branch. The current then follows from Ohm's law. As a second check, the 8 Ω branch alone carries 3.0 A, so the total must be larger than that.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2022-6-3",
+  "prompt": "Two resistors, 6 Ω and 24 Ω, are connected in parallel across a 9.6 V battery of negligible internal resistance. Calculate the equivalent resistance of the combination, and hence the total current delivered by the battery.",
+  "answer": "1/R = 1/6 + 1/24, so R = 4.8 Ω. The full 9.6 V is across the combination, so I = V/R = 9.6 ÷ 4.8 = 2.0 A.",
+  "explanation": "The reciprocals are added, and then the result must be INVERTED — stopping at 1/R is the usual slip, and it gives 0.2083 rather than 4.8. Notice the equivalent resistance is smaller than either resistor, which is the check worth making: adding a parallel path gives the current somewhere else to go, so the combination always resists less than its smallest branch. The current then follows from Ohm's law. As a second check, the 6 Ω branch alone carries 1.6 A, so the total must be larger than that.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2023-6-3",
+  "prompt": "Two resistors, 9 Ω and 18 Ω, are connected in parallel across a 18 V battery of negligible internal resistance. Calculate the equivalent resistance of the combination, and hence the total current delivered by the battery.",
+  "answer": "1/R = 1/9 + 1/18, so R = 6.0 Ω. The full 18 V is across the combination, so I = V/R = 18 ÷ 6.0 = 3.0 A.",
+  "explanation": "The reciprocals are added, and then the result must be INVERTED — stopping at 1/R is the usual slip, and it gives 0.1667 rather than 6.0. Notice the equivalent resistance is smaller than either resistor, which is the check worth making: adding a parallel path gives the current somewhere else to go, so the combination always resists less than its smallest branch. The current then follows from Ohm's law. As a second check, the 9 Ω branch alone carries 2.0 A, so the total must be larger than that.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2020-8-2",
+  "prompt": "A laser emits light of wavelength 420 nm at a constant power of 5.0 mW. Calculate the energy of a single photon of this light, and hence the number of photons the laser emits each second. (h = 6.63 × 10⁻³⁴ J·s; c = 3.0 × 10⁸ m·s⁻¹)",
+  "answer": "E = hc/λ = (6.63 × 10⁻³⁴)(3.0 × 10⁸) ÷ (420 × 10⁻⁹) = 4.74 × 10⁻¹⁹ J per photon. A power of 5.0 mW is 5.00 × 10⁻³ J delivered every second, so the number of photons per second is n = P/E = 5.00 × 10⁻³ ÷ 4.74 × 10⁻¹⁹ = 1.06 × 10¹⁶ photons per second.",
+  "explanation": "Two separate ideas, and the second cannot start until the first is finished. The wavelength must be in metres, so 420 nm becomes 420 × 10⁻⁹ m; leaving it in nanometres inflates the photon energy by a factor of a thousand million. Power is energy per second, so dividing the energy delivered each second by the energy of one photon counts the photons. The answer is enormous, which is the point: at this scale the light appears perfectly continuous, and the graininess of the photon picture only shows up in effects like the photoelectric effect.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2021-8-2",
+  "prompt": "A laser emits light of wavelength 550 nm at a constant power of 2.0 mW. Calculate the energy of a single photon of this light, and hence the number of photons the laser emits each second. (h = 6.63 × 10⁻³⁴ J·s; c = 3.0 × 10⁸ m·s⁻¹)",
+  "answer": "E = hc/λ = (6.63 × 10⁻³⁴)(3.0 × 10⁸) ÷ (550 × 10⁻⁹) = 3.62 × 10⁻¹⁹ J per photon. A power of 2.0 mW is 2.00 × 10⁻³ J delivered every second, so the number of photons per second is n = P/E = 2.00 × 10⁻³ ÷ 3.62 × 10⁻¹⁹ = 5.53 × 10¹⁵ photons per second.",
+  "explanation": "Two separate ideas, and the second cannot start until the first is finished. The wavelength must be in metres, so 550 nm becomes 550 × 10⁻⁹ m; leaving it in nanometres inflates the photon energy by a factor of a thousand million. Power is energy per second, so dividing the energy delivered each second by the energy of one photon counts the photons. The answer is enormous, which is the point: at this scale the light appears perfectly continuous, and the graininess of the photon picture only shows up in effects like the photoelectric effect.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2022-8-2",
+  "prompt": "A laser emits light of wavelength 480 nm at a constant power of 8.0 mW. Calculate the energy of a single photon of this light, and hence the number of photons the laser emits each second. (h = 6.63 × 10⁻³⁴ J·s; c = 3.0 × 10⁸ m·s⁻¹)",
+  "answer": "E = hc/λ = (6.63 × 10⁻³⁴)(3.0 × 10⁸) ÷ (480 × 10⁻⁹) = 4.14 × 10⁻¹⁹ J per photon. A power of 8.0 mW is 8.00 × 10⁻³ J delivered every second, so the number of photons per second is n = P/E = 8.00 × 10⁻³ ÷ 4.14 × 10⁻¹⁹ = 1.93 × 10¹⁶ photons per second.",
+  "explanation": "Two separate ideas, and the second cannot start until the first is finished. The wavelength must be in metres, so 480 nm becomes 480 × 10⁻⁹ m; leaving it in nanometres inflates the photon energy by a factor of a thousand million. Power is energy per second, so dividing the energy delivered each second by the energy of one photon counts the photons. The answer is enormous, which is the point: at this scale the light appears perfectly continuous, and the graininess of the photon picture only shows up in effects like the photoelectric effect.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2023-8-2",
+  "prompt": "A laser emits light of wavelength 550 nm at a constant power of 12.0 mW. Calculate the energy of a single photon of this light, and hence the number of photons the laser emits each second. (h = 6.63 × 10⁻³⁴ J·s; c = 3.0 × 10⁸ m·s⁻¹)",
+  "answer": "E = hc/λ = (6.63 × 10⁻³⁴)(3.0 × 10⁸) ÷ (550 × 10⁻⁹) = 3.62 × 10⁻¹⁹ J per photon. A power of 12.0 mW is 1.20 × 10⁻² J delivered every second, so the number of photons per second is n = P/E = 1.20 × 10⁻² ÷ 3.62 × 10⁻¹⁹ = 3.32 × 10¹⁶ photons per second.",
+  "explanation": "Two separate ideas, and the second cannot start until the first is finished. The wavelength must be in metres, so 550 nm becomes 550 × 10⁻⁹ m; leaving it in nanometres inflates the photon energy by a factor of a thousand million. Power is energy per second, so dividing the energy delivered each second by the energy of one photon counts the photons. The answer is enormous, which is the point: at this scale the light appears perfectly continuous, and the graininess of the photon picture only shows up in effects like the photoelectric effect.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ }
+]

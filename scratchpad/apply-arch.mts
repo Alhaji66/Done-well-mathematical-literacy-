@@ -2,11 +2,13 @@
 import { papersForSubject } from '../src/data/papers/index.ts'
 import type { Archetype } from './archetypes.mts'
 import * as A from './archetypes.mts'
+import * as P from './phys-archetypes.mts'
 
 const g = Number(process.argv[2])
 const pn = Number(process.argv[3])
-const set: Archetype[] = (A as any)[process.argv[4]]
-const list: any[] = (await papersForSubject('mathematics', pn as 1 | 2, g as any)) as any
+const SUBJ = process.argv[5] ?? 'mathematics'
+const set: Archetype[] = ((A as any)[process.argv[4]] ?? (P as any)[process.argv[4]])
+const list: any[] = (await papersForSubject(SUBJ, pn as 1 | 2, g as any)) as any
 
 const batch: any[] = []
 const tally = new Map<string, { items: number; marks: number; level: number; why: string }>()

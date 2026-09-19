@@ -180,19 +180,40 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Mass, rates and practical calculations',
-      match: /\b(rate|per (litre|kg|hour|minute)|consumption|flow|recipe|dosage|dose|ℓ\/100|fuel)\b/i,
+      match: /\b(rate|per (litre|kg|hour|minute)|consumption|flow|recipe|dosage|dose|fuel)\b|ℓ\/100/i,
     },
     {
       name: 'Surface area',
       match: /\b(surface area|total area of (all|every|the) (faces?|sides?)|paint the outside|wrap)\b/i,
     },
     {
+      // THE SUPERSCRIPT UNITS USED TO BE DEAD. "m³" and "cm³" sat inside the
+      // \b(...)\b group, and a word boundary cannot follow "³" when the next
+      // character is a space -- neither side is a word character, so there is
+      // no boundary to match. The stems therefore never fired once in the
+      // whole corpus, which is why "1 ton of maize occupies approximately
+      // 1,3 m³" was landing in Units and conversions on the strength of the
+      // word "in". This is the same bug as f′ in the Calculus rule and f⁻¹
+      // before it: a superscript is not a word character, so it has to sit
+      // OUTSIDE the group. "m³" also catches "cm³" as a suffix, which is the
+      // same bucket, so one stem does both.
+      //
+      // "holds?" was a stem here too, and it was pulling in "whether the
+      // guarantee holds" and "why the claim holds" -- neither of which is
+      // about capacity -- along with "the 6 m² coop could hold", which is an
+      // area question. Of the seven questions it placed on its own, three were
+      // wrong, so it was dropped. Replacements that require a number after it
+      // ("holds 10 tins") were tried and scored no better: they keep "Boxes
+      // hold 20 tiles covering 0,8 m²" in the wrong bucket. Nothing was lost
+      // that the fixed m³ stem does not now place correctly.
       name: 'Volume and capacity',
-      match: /\b(volume|capacity|litre|litres|cubic|holds?|fill(ed)? (the|a)? ?(tank|container)|m³|cm³)\b/i,
+      match: /\b(volume|capacity|litres?|cubic|fill(ed)? (the|a)? ?(tank|container))\b|m³/i,
     },
     {
+      // Same dead-stem fix as above: "m²" outside the group, where it can
+      // actually match, and it covers "cm²" and "km²" as suffixes.
       name: 'Area',
-      match: /\b(area|m²|cm²|km²|square metre|tiles? needed|coverage)\b/i,
+      match: /\b(area|square metre|tiles? needed|coverage)\b|m²/i,
     },
     {
       // "fenc(e|ing)" used to be a stem here and was filing the wrong things:
@@ -206,7 +227,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Units and conversions',
-      match: /\b(convert|conversion|in (millimetres|centimetres|metres|kilometres|grams|kilograms)|mm|cm|km|kg|mℓ)\b/i,
+      match: /\b(convert|conversion|in (millimetres|centimetres|metres|kilometres|grams|kilograms)|mm|cm|km|kg)\b|\bmℓ/i,
     },
   ],
 
@@ -536,7 +557,7 @@ const rules: Record<string, SubtopicRule[]> = {
       name: 'Key ecological terms and abiotic factors',
       match: /\b(define|what is meant by|ecological term|habitat\w*|niche\w*|biotic|abiotic|autotroph\w*|heterotroph\w*|community|ecosystem|apex predator\w*)\b/i,
     },
-    { name: 'Energy loss', match: /\b(energy (loss|lost|flow|transfer\w*)|10 ?%|ten per cent|pyramid\w*|trophic level\w*|biomass)\b/i },
+    { name: 'Energy loss', match: /\b(energy (loss|lost|flow|transfer\w*)|ten per cent|pyramid\w*|trophic level\w*|biomass)\b|\b10 ?%/i },
     { name: 'Effects of change', match: /\b(what would happen|removed|decline\w*|increase\w* in the population|disrupt\w*|introduc\w*|effect on the)\b/i },
     { name: 'Food chains and webs', match: /\b(food (chain|web)\w*|producer\w*|consumer\w*|decomposer\w*|predator\w*|prey|feeding relationship\w*)\b/i },
   ],
@@ -630,7 +651,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Internal resistance',
-      match: /\b(internal resistance|\bemf\b|electromotive force|lost volts|terminal (potential|voltage)|ε ?=)\b/i,
+      match: /\b(internal resistance|emf|electromotive force|lost volts|terminal (potential|voltage))\b|ε ?=/i,
     },
     {
       name: 'Combining resistors',
@@ -738,9 +759,9 @@ const rules: Record<string, SubtopicRule[]> = {
     // discriminant says so in the prompt.
     { name: 'Nature of the roots', match: /\b(nature of the roots|discriminant|real and (equal|unequal)|non[- ]real)\b/i },
     { name: 'Simultaneous equations', match: /\b(simultaneous|solve for x and y|two equations)\b/i },
-    { name: 'Quadratic equations', match: /\b(quadratic|x²|quadratic formula|complet(e|ing) the square|roots of the equation)\b/i },
-    { name: 'Algebraic fractions', match: /\b(fraction|denominator|numerator|simplify.*\/|lowest common denominator)\b/i },
-    { name: 'Exponents and surds', match: /\b(exponent\w*|surd|√|power of|index|indices|rationalis|\d\^|base)\b/i },
+    { name: 'Quadratic equations', match: /\b(quadratic|quadratic formula|complet(e|ing) the square|roots of the equation)\b|x²/i },
+    { name: 'Algebraic fractions', match: /\b(fraction|denominator|numerator|lowest common denominator)\b|\bsimplify.*\//i },
+    { name: 'Exponents and surds', match: /\b(exponent\w*|surd|power of|index|indices|rationalis|base)\b|√|\d\^/i },
     { name: 'Linear equations and inequalities', match: /\b(inequalit|interval notation|number line|solve for x\b|linear equation)\b/i },
     { name: 'Word problems and setting up equations', match: /\b(consecutive|the sum of two numbers|word problem|let x be|three times as)\b/i },
     { name: 'Simplifying and factorising expressions', match: /\b(factoris\w*|factor|simplify|expand\w*|difference of two squares|trinomial|grouping)\b/i },
@@ -758,7 +779,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Transformations of graphs', match: /\b(transform\w*|shift\w*|translat\w*|reflect\w*|stretch\w*|shrink\w*|moved .* units)\b/i },
     { name: 'Exponential and logarithmic functions', match: /\b(exponential|logarith\w*|log\b|grow\w*|decay\w*|doubling time|half[- ]life|b\^x)\b/i },
     { name: 'Hyperbolic functions', match: /\b(hyperbola|hyperbolic|asymptote|a ÷ \(x)\b/i },
-    { name: 'Quadratic functions (parabolas)', match: /\b(parabola|turning point|axis of symmetry|x²|maximum value of the (function|graph))\b/i },
+    { name: 'Quadratic functions (parabolas)', match: /\b(parabola|turning point|axis of symmetry|maximum value of the (function|graph))\b|x²/i },
     { name: 'Linear functions', match: /\b(straight line|linear function|y = mx|gradient of the line|y[- ]intercept)\b/i },
     {
       // Substituting a value into a named rule is its own skill and had no
@@ -768,14 +789,22 @@ const rules: Record<string, SubtopicRule[]> = {
       name: 'Function notation and evaluating a function',
       match: /\b[a-z]\((-?\d|x\)\s*=)/,
     },
+    // This rule is fully shadowed, and deliberately so. Once the dead "x²" stem
+    // above was repaired, every question it would have caught turned out to
+    // name a function type as well -- "determine for which values of x the
+    // graph of f(x) = x² − 4 lies below the x-axis" is a parabola question
+    // whatever else it is, and a learner revising parabolas wants it in that
+    // bucket. Reading the graph is a skill the other sub-topics all exercise
+    // rather than a topic of its own, so the heading stays, holds nothing, and
+    // Practise shows it as "none yet" -- which is the truth about this corpus.
     { name: 'Interpreting graphs', match: /\b(intercept|domain|range|point(s)? of intersection|f\(x\) *[<>]|read off the graph|sketch)\b/i },
   ],
 
   'math-trigonometry': [
     { name: 'Sine, cosine and area rules in 2D and 3D', match: /\b(sine rule|cosine rule|area rule|triangle abc|3d|three[- ]dimensional)\b/i },
     { name: 'Trigonometric graphs', match: /\b(period|amplitude|trig(onometric)? graph|(sketch|graphs? of|drawn) .{0,40}(sin|cos|tan))\b/i },
-    { name: 'Trigonometric equations and general solution', match: /\b(general solution|solve for θ|solve the equation|k ?∈ ?ℤ)\b/i },
-    { name: 'Identities', match: /\b(identit\w*|prove that|compound angle|double angle|sin ?2|cos ?2|sin²|cos²)\b/i },
+    { name: 'Trigonometric equations and general solution', match: /\b(general solution|solve the equation)\b|\bsolve for θ|\bk ?∈ ?ℤ/i },
+    { name: 'Identities', match: /\b(identit\w*|prove that|compound angle|double angle|sin ?2|cos ?2)\b|\bsin²|\bcos²/i },
     // "cast diagram" and "cast rule", not a bare "cast" -- a shadow cast by a
     // flagpole is a perfectly ordinary trigonometry question about something
     // else entirely.
@@ -783,22 +812,22 @@ const rules: Record<string, SubtopicRule[]> = {
     // in an operator, and an operator is not a word character, so a trailing
     // \b after "180° +" can never hold -- both were silently dead.
     { name: 'Reduction formulae and the CAST diagram', match: /\b(reduction|cast (diagram|rule)|quadrant|co[- ]?function)\b|(180|360)° ?[−+]/i },
-    { name: 'Special angles and the calculator', match: /\b(without (using )?a calculator|special angle|exact value\w*|30°|45°|60°)\b/i },
+    { name: 'Special angles and the calculator', match: /\b(without (using )?a calculator|special angle|exact value\w*)\b|\b(30|45|60)°/i },
     { name: 'Trig ratios in right-angled triangles', match: /\b(sin|cos|tan|hypotenuse|opposite|adjacent|right[- ]angled)\b/i },
   ],
 
   'math-analytical-geometry': [
     { name: 'Tangents to a circle', match: /\b(tangent)\b/i },
-    { name: 'Circles in the Cartesian plane', match: /\b(circle|centre|radius|\(x ?− ?a\)²)\b/i },
+    { name: 'Circles in the Cartesian plane', match: /\b(circle|centre|radius)\b|\(x ?− ?a\)²/i },
     { name: 'Angle of inclination', match: /\b(inclination|angle .* (positive )?x[- ]axis|tan ?θ ?= ?m)\b/i },
-    { name: 'Equation of a straight line', match: /\b(equation of (the|a) line|perpendicular bisector|median|altitude|y ?− ?y₁)\b/i },
+    { name: 'Equation of a straight line', match: /\b(equation of (the|a) line|perpendicular bisector|median|altitude)\b|\by ?− ?y₁/i },
     { name: 'Gradient, parallel and perpendicular lines', match: /\b(gradient|parallel|perpendicular|collinear)\b/i },
     { name: 'Midpoint', match: /\b(midpoint|mid[- ]point|bisect\w*)\b/i },
     { name: 'Distance between two points', match: /\b(distance|length of)\b/i },
   ],
 
   'math-statistics': [
-    { name: 'Scatter plots, correlation and regression', match: /\b(scatter\w*|correlation|regression|least squares|ŷ|r =)\b/i },
+    { name: 'Scatter plots, correlation and regression', match: /\b(scatter\w*|correlation|regression|least squares)\b|ŷ|\br ?=/i },
     { name: 'Ogives (cumulative frequency curves)', match: /\b(ogive|cumulative frequency)\b/i },
     { name: 'Outliers and their effect', match: /\b(outlier)\b/i },
     { name: 'Five-number summary and box-and-whisker plots', match: /\b(box[- ]and[- ]whisker|five[- ]number|skew)\b/i },
@@ -816,24 +845,24 @@ const rules: Record<string, SubtopicRule[]> = {
     // "withdrawal" alone never fired: the prompts say withdrawals, withdrawing,
     // withdrawn and withdraws, and the trailing \b rejected every one of them.
     { name: 'Timelines and changing interest rates', match: /\b(timeline|time line|rate changed|withdrew|withdraw\w*|deposited .* and .* later)\b/i },
-    { name: 'Simple and compound interest', match: /\b(interest|compound|invest\w*|p\(1 ?\+ ?i\))\b/i },
+    { name: 'Simple and compound interest', match: /\b(interest|compound|invest\w*)\b|\bp\(1 ?\+ ?i\)/i },
   ],
 
   'math-number-patterns': [
-    { name: 'Convergence and the sum to infinity', match: /\b(converge\w*|sum to infinity|s∞|infinite (geometric )?series|recurring decimal)\b/i },
-    { name: 'Sigma notation', match: /\b(sigma|∑|σ notation|sum from)\b/i },
-    { name: 'Geometric sequences and series', match: /\b(geometric|common ratio|\br\b ?=|ar\^)\b/i },
-    { name: 'Arithmetic sequences and series', match: /\b(arithmetic (sequence|series)|sum of the first|sₙ|common difference)\b/i },
+    { name: 'Convergence and the sum to infinity', match: /\b(converge\w*|sum to infinity|infinite (geometric )?series|recurring decimal)\b|\bs∞/i },
+    { name: 'Sigma notation', match: /\b(sigma|sum from)\b|∑|σ notation/i },
+    { name: 'Geometric sequences and series', match: /\b(geometric|common ratio)\b|\br ?=|\bar\^/i },
+    { name: 'Arithmetic sequences and series', match: /\b(arithmetic (sequence|series)|sum of the first|common difference)\b|\bsₙ/i },
     { name: 'Quadratic patterns', match: /\b(quadratic (pattern|sequence)|second difference|an² ?\+ ?bn)\b/i },
-    { name: 'Linear (arithmetic) patterns', match: /\b(pattern|sequence|tₙ|nth term|first difference\w*)\b/i },
+    { name: 'Linear (arithmetic) patterns', match: /\b(pattern|sequence|nth term|first difference\w*)\b|\btₙ/i },
   ],
 
   'math-calculus': [
-    { name: 'Rates of change', match: /\b(rate of change|velocit\w*|accelerat\w*|how fast|per second|s\(t\))\b/i },
+    { name: 'Rates of change', match: /\b(rate of change|velocit\w*|accelerat\w*|how fast|per second)\b|\bs\(t\)/i },
     { name: 'Optimisation', match: /\b(optimis\w*|minimis\w*|maximis\w*|maximum (volume|area|profit)|minimum (cost|surface area)|largest possible|least amount)\b/i },
     { name: 'Limits and differentiation from first principles', match: /\b(first principles|limit|lim|h ?→ ?0)\b/i },
     { name: 'Sketching cubic graphs', match: /\b(cubic|sketch the graph|point of inflection|x[- ]intercepts of f)\b/i },
-    { name: 'Stationary points and concavity', match: /\b(stationary|turning point|concav|increasing|decreasing|f″|second derivative)\b/i },
+    { name: 'Stationary points and concavity', match: /\b(stationary|turning point|concav|increasing|decreasing|second derivative)\b|\bf″/i },
     { name: 'Gradients and equations of tangents', match: /\b(tangent|gradient of the (curve|tangent)|equation of the tangent)\b/i },
     {
       // The prime sits OUTSIDE the \b(...)\b wrapper, for the same reason the
@@ -849,12 +878,12 @@ const rules: Record<string, SubtopicRule[]> = {
 
   'math-counting-probability': [
     { name: 'Arrangements with restrictions', match: /\b(restriction|must( not)? (be|sit|stand) (together|next to)|(next to|beside) each other|cannot be (next|adjacent)|begins with|ends with|code|password|number plate)\b/i },
-    { name: 'The fundamental counting principle', match: /\b(counting principle|how many (different )?(ways|arrangements)|arrange|factorial|n!)\b/i },
+    { name: 'The fundamental counting principle', match: /\b(counting principle|how many (different )?(ways|arrangements)|arrange|factorial)\b|\bn!/i },
     { name: 'Tree diagrams and two-way tables', match: /\b(tree diagram|two[- ]way table|with(out)? replacement|first .* then)\b/i },
-    { name: 'Independent events and the product rule', match: /\b(independent|product rule|p\(a\) ?× ?p\(b\))\b/i },
-    { name: 'The addition rule', match: /\b(addition rule|p\(a (or|∪) b\)|either .* or)\b/i },
+    { name: 'Independent events and the product rule', match: /\b(independent|product rule)\b|\bp\(a\) ?× ?p\(b\)/i },
+    { name: 'The addition rule', match: /\b(addition rule|either .* or)\b|\bp\(a (or|∪) b\)/i },
     { name: 'Mutually exclusive and complementary events', match: /\b(mutually exclusive|complement\w*|exhaustive)\b|P\s*\(\s*not\b/i },
-    { name: 'Venn diagrams', match: /\b(venn|∪|∩|intersection|union|neither)\b/i },
+    { name: 'Venn diagrams', match: /\b(venn|intersection|union|neither)\b|∪|∩/i },
     { name: 'Basic probability', match: /\b(probabilit\w*|chance|likelihood|roll\w*|dice|die\b|coin\w*|spinner\w*|fair|six[- ]sided)\b/i },
   ],
 
@@ -871,7 +900,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Circle geometry: same segment and cyclic quadrilaterals', match: /\b(cyclic|same segment|concyclic|exterior angle of)\b/i },
     { name: 'Circle geometry: centre and chord theorems', match: /\b(chord|centre of the circle|semicircle|arc|angle at the centre)\b/i },
     { name: 'Properties of quadrilaterals', match: /\b(parallelogram|rhombus|rectangle|square|trapezium|kite|quadrilateral)\b/i },
-    { name: 'Congruency and similarity', match: /\b(congruen|similar|sss|sas|aas|rhs|\|\|\|)\b/i },
+    { name: 'Congruency and similarity', match: /\b(congruen|similar|sss|sas|aas|rhs)\b|\|\|\|/i },
     { name: 'Lines, angles and triangles', match: /\b(angle|triangle|parallel|straight line|degrees)\b/i },
   ],
 }

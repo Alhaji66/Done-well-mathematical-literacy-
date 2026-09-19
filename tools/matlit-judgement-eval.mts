@@ -12,7 +12,18 @@
  * READ THE TWO NUMBERS DIFFERENTLY. The rule was built by reading the BUILT
  * set, so its score there is a restatement of how it was written and is
  * reported only to show the fit is exact. The HELD-OUT set was drawn and
- * labelled after the rule was fixed, and scored once. That is the result.
+ * labelled after the rule was fixed, and scored once. That is the result:
+ * 25/31 (81%), against 22/31 (71%) for calling every one of them Level 4.
+ *
+ * A NOTE ON DRIFT, because this eval has a failure mode worth knowing about.
+ * The truth sets name items by id and read their prompts out of the LIVE
+ * corpus, so rewriting a listed item silently changes what is being measured.
+ * That has already happened once: one BUILT item was later rewritten into a
+ * genuine Level 4 question, and it is excluded below rather than relabelled,
+ * because the prompt its label described no longer exists. Relabelling it
+ * would have scored the rewrite instead of the rule. Anyone rewriting a listed
+ * item should exclude it the same way. No held-out item has been rewritten, so
+ * the 81% stands on all 31 of them.
  *
  *   npm run check:matlit-judgement
  */
@@ -36,7 +47,12 @@ const BUILT: Record<string, boolean> = {
   'ml-g11-p1-22-4-4': false, // whether this exceeds a 150% increase
   'ml-g11-p1-24-3-2': true, // why a park would never be laid out that way
   'ml-g11-p1-a-1-5': true, // whether a 1 GB cap would be enough
-  'ml-g11-p1-b-3-5': false, // whether it holds 6 learners at 0,5 m² each
+  // 'ml-g11-p1-b-3-5' was here, hand-labelled false ("state whether it holds 6
+  // learners at 0,5 m² each" -- a threshold check). It is EXCLUDED rather than
+  // relabelled because the item was subsequently rewritten into a genuine
+  // Level 4 question, so the prompt this label described no longer exists in
+  // the corpus. Scoring the rule against the replacement would measure the
+  // rewrite, not the rule. Excluding it drops BUILT from 31 items to 30.
   'ml-g11-p2-21-1-2': true, // whether the stall holder can RELY on R1 480
   'ml-g11-p2-23-1-6': false, // that gain as a percentage improvement
   'ml-g11-p2-24-4-6': false, // how many more glasses

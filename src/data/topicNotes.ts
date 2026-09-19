@@ -202,6 +202,17 @@ export const topicNotes: TopicNote[] = [
         ],
       },
       {
+        name: 'Percentages and proportions in data',
+        points: [
+          'A percentage of a data set is the part divided by the whole, times 100. The whole is the TOTAL number of items, not the largest group.',
+          '"22 of the 38 snacks sold were chips" gives 22 ÷ 38 × 100 = 57,9%. Write down which number is the part and which is the whole before dividing.',
+          'Percentage increase or decrease uses the ORIGINAL value as the denominator: (new − old) ÷ old × 100. Using the new value is the most common error and gives a smaller answer.',
+          'An increase from 40 to 60 is a 50% increase, but the decrease from 60 back to 40 is 33,3% — not 50%. The base changed, so the percentages are not symmetrical.',
+          'To estimate a count from a percentage, work the other way: 35% of a future 60 books is 0,35 × 60 = 21 books. Say that it is an estimate, and that it assumes the proportion stays the same.',
+          'Percentages let you compare groups of different sizes fairly. Comparing raw counts from a sample of 40 and a sample of 400 says almost nothing.',
+        ],
+      },
+      {
         name: 'Spread: range, quartiles and box-and-whisker',
         points: [
           'Range = highest − lowest. Simple, but it uses only two values.',
@@ -219,6 +230,17 @@ export const topicNotes: TopicNote[] = [
           'Line graphs show change over time. Pie charts show parts of a whole, each slice being a percentage of 360°.',
           'A compound (stacked) bar graph shows totals and their parts at the same time.',
           'Every graph needs a title, labelled axes with units, and a sensible scale. Questions do ask you to name what is missing.',
+        ],
+      },
+      {
+        name: 'Reading values off tables and graphs',
+        points: [
+          'The first skill in Data Handling is finding a value that is already there. "Write down the spending in Week 4" asks you to read one number off, not to calculate anything.',
+          'Read the row and the column headings before the number. Most lost marks here are the right value taken from the wrong row.',
+          'On a graph, follow the line up from the value on the horizontal axis until you meet the plotted point, then straight across to the vertical axis. Check what one gridline is worth first — it is often 2, 5 or 20, not 1.',
+          '"In which week was spending lowest?" wants the WEEK, not the amount. "How much was spent in the lowest week?" wants the amount. Answer what is asked.',
+          'Highest, lowest, most and fewest questions are comparisons across a row or column; scan the whole set before answering, not just the first few.',
+          'Where a value falls between two gridlines, read it to the nearest sensible division and say so. An exact-looking answer to a value that cannot be read exactly is not more correct.',
         ],
       },
       {
@@ -661,6 +683,17 @@ export const topicNotes: TopicNote[] = [
           'f(x) > 0 means the graph lies above the x-axis; f(x) > g(x) means one graph lies above the other.',
           'The maximum vertical distance between two graphs is found by writing f(x) − g(x) and maximising it.',
           'Always state a domain or range using the correct notation, and check whether the endpoint is included.',
+        ],
+      },
+      {
+        name: 'Function notation and evaluating a function',
+        points: [
+          'f(x) is a NAME for a rule, not f multiplied by x. f(4) means "put 4 in wherever x appears", and the answer is a single number.',
+          'To evaluate, substitute and then work out: if f(x) = 2x + 3 then f(4) = 2(4) + 3 = 11.',
+          'Different letters name different functions in the same question — f, g, h, k — so read which one is being asked for before substituting.',
+          'A negative input needs brackets: if k(x) = 8 ÷ x then k(−4) = 8 ÷ (−4) = −2. Dropping the brackets is where sign errors come from, especially when the rule squares the input.',
+          'Solving f(x) = 11 is the reverse question: you are given the OUTPUT and must find the input, so form an equation and solve for x.',
+          'f(0) is the y-intercept, because putting x = 0 into the rule gives the value where the graph crosses the y-axis.',
         ],
       },
     ],
@@ -1478,6 +1511,17 @@ export const topicNotes: TopicNote[] = [
           'Redraw a crowded diagram, or the one triangle you need, separately — most lost marks in this topic come from misreading the figure.',
         ],
       },
+      {
+        name: 'Volume and surface area of solids',
+        points: [
+          'Volume of a right prism = area of the cross-section × the perpendicular height. Work the cross-section area out first, whatever shape it is.',
+          'Volume of a cylinder = πr²h, because its cross-section is a circle. Total surface area = 2πr² + 2πrh: the two circular ends plus the curved side unrolled into a rectangle.',
+          'Rectangular prism: volume = length × breadth × height; surface area = 2(lb + lh + bh).',
+          'Check the units before substituting. Lengths must all be in the same unit, and the answer is in cubic units for volume and square units for area.',
+          'Doubling a length does NOT double the volume. Doubling the radius of a cylinder multiplies its volume by four, because the radius is squared in the formula.',
+          'When two solids are said to have equal volumes, set their volume expressions equal and solve for the unknown — that is one equation in one unknown, not a comparison.',
+        ],
+      },
     ],
     formulae: [
       'Angles on a straight line = 180°, angles round a point = 360°',
@@ -1923,6 +1967,27 @@ export const topicNotes: TopicNote[] = [
           'These adaptations trap a layer of humid air next to the stomata, lowering the rate of diffusion out of the leaf',
         ],
       },
+      {
+        name: 'Translocation in the phloem',
+        points: [
+          'Translocation is the transport of the products of photosynthesis, mainly sucrose and amino acids, through the phloem.',
+          'It moves in BOTH directions, unlike the one-way upward flow of water in the xylem, and it needs energy from the plant — it is an active process.',
+          'A source is any part that loads sugar into the phloem: mainly photosynthesising leaves, but also a storage organ in spring when it is releasing its reserves.',
+          'A sink is any part that removes sugar from the phloem to use or store it: roots, growing shoot tips, developing fruits and seeds.',
+          'The same organ can change from sink to source with the season. A potato tuber is a sink in summer while it fills, and a source in spring when the new shoot grows from it.',
+          'Phloem is made of living sieve tube cells joined end to end by sieve plates, each supported by a companion cell, because active loading needs living cells with mitochondria. Xylem vessels, by contrast, are DEAD and hollow at maturity, which is what lets water move through them without resistance.',
+        ],
+      },
+      {
+        name: 'Support in plants',
+        points: [
+          'A young, non-woody plant is held up mainly by TURGOR: water in the vacuoles pushes the cell contents against the cell wall, and the walls of many turgid cells together keep the stem rigid.',
+          'When such a plant loses more water than it takes up, the cells become flaccid and the plant wilts or droops. Watering restores turgor by osmosis, and the plant stands up again — which is why wilting is reversible if caught early.',
+          'A woody plant is supported by lignified tissue instead: the thick walls of xylem vessels and sclerenchyma fibres hold it up whether or not the cells are turgid.',
+          'That is why a tree does not wilt in the way a seedling does, and why a cut flower in a vase recovers but a snapped stem does not.',
+          'Collenchyma gives flexible support to growing parts, with unevenly thickened cellulose walls; sclerenchyma gives rigid support with evenly lignified walls, and its cells are dead at maturity.',
+        ],
+      },
     ],
     commonMistakes: [
       'Water is pulled up by evaporation at the top, not pushed up from the root; root pressure alone cannot explain the height of a tall tree',
@@ -2115,6 +2180,17 @@ export const topicNotes: TopicNote[] = [
           'Removing one species affects every organism linked to it in the web',
           'A predator removed means its prey increases, which then over-grazes its own food source',
           'Bioaccumulation: substances such as DDT become more concentrated at each trophic level',
+        ],
+      },
+      {
+        name: 'Key ecological terms and abiotic factors',
+        points: [
+          'An ecosystem is a community of living organisms together with the non-living surroundings they interact with. A habitat is the place an organism lives; a niche is the ROLE it plays there.',
+          'A population is all the organisms of one species in an area; a community is all the populations of all the species in that area.',
+          'Biotic factors are the living parts of an ecosystem — predators, prey, competitors, parasites, decomposers. Abiotic factors are the non-living ones: light, temperature, water, wind, soil type, pH, salinity and the availability of minerals.',
+          'An autotroph makes its own food from inorganic materials, as a green plant does by photosynthesis; a heterotroph takes in ready-made organic food, as an animal or a fungus does.',
+          'Producers are the autotrophs; consumers are the heterotrophs that eat them, ranked primary, secondary and tertiary; decomposers break down dead matter and return the nutrients to the soil.',
+          'An apex predator sits at the top of a food chain with nothing preying on it. Apex predators occur in small numbers precisely because so much energy has been lost at each step below them.',
         ],
       },
     ],
@@ -5566,6 +5642,17 @@ export const topicNotes: TopicNote[] = [
           'They do not reduce the change in momentum; they spread it over a longer time',
         ],
       },
+      {
+        name: 'Calculating momentum and impulse',
+        points: [
+          'Momentum p = mv. It is a VECTOR, so the answer needs a direction as well as a size: 1 500 kg × 12 m·s⁻¹ north gives 18 000 kg·m·s⁻¹ north.',
+          'Momentum is measured in kg·m·s⁻¹ and has no other name. Impulse is measured in N·s, and the two units are equivalent.',
+          'Impulse = FΔt = Δp = mv_f − mv_i. Which form to use depends on what the question gives you.',
+          'Δp is a change in a VECTOR, so direction decides the signs. Choose a positive direction, write both velocities with the right sign, and subtract: for a ball that bounces back, the final velocity is negative and the change is larger than either velocity alone.',
+          'A ball brought to REST has v_f = 0, so Δp = −mv_i and the size of the impulse is just mv_i.',
+          'To find an average force, divide the change in momentum by the contact time: F = Δp ÷ Δt. A very short contact time gives a very large force, which is the whole idea behind the safety questions.',
+        ],
+      },
     ],
     formulae: [
       'p = m v',
@@ -6120,6 +6207,17 @@ export const topicNotes: TopicNote[] = [
           'Alkenes: C=C double bond, unsaturated, suffix -ene; alkynes have a triple bond, suffix -yne',
           'Alcohols: -OH, suffix -ol; carboxylic acids: -COOH, suffix -oic acid',
           'Aldehydes (-CHO, suffix -al), ketones (C=O within the chain, suffix -one), esters (suffix -oate), haloalkanes',
+        ],
+      },
+      {
+        name: 'Naming, formulae and isomers',
+        points: [
+          'A MOLECULAR formula gives the actual number of each atom (C₄H₁₀). A STRUCTURAL formula shows every atom and every bond. A condensed structural formula shortens that to CH₃−CH₂−CH₂−CH₃. An EMPIRICAL formula gives only the simplest whole-number ratio (C₂H₅).',
+          'To get a molecular formula from an empirical formula and a molar mass: work out the mass of one empirical unit, divide the molar mass by it, and multiply the empirical formula through by that whole number.',
+          'IUPAC naming, in order: find the longest continuous carbon chain and name it (meth-, eth-, prop-, but-, pent-, hex-, hept-, oct-); use the ending for the functional group (-ane, -ene, -yne, -ol, -al, -one, -oic acid); number the chain from the end that gives the functional group or substituents the lowest numbers; name the substituents alphabetically with their numbers.',
+          'A homologous series is a family of compounds with the same functional group and general formula, each differing from the next by CH₂. Members show a gradual trend in physical properties and share chemical properties.',
+          'Isomers are compounds with the SAME molecular formula but different structures. Chain isomers differ in how the carbon skeleton branches, positional isomers in where the functional group sits, and functional isomers have a different functional group altogether.',
+          'An aliphatic compound has carbon atoms in open chains, branched or unbranched. A saturated compound has only single carbon-carbon bonds; an unsaturated one has at least one double or triple bond.',
         ],
       },
       {

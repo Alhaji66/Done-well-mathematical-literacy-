@@ -92,8 +92,31 @@ const rules: Record<string, SubtopicRule[]> = {
       match: /\b(mean|median|mode|modal|average)\b/i,
     },
     {
+      // Reading a value off has to be asked BEFORE interpreting, because the
+      // interpreting rule matches "graph" on its own and would take every
+      // read-off question that happens to mention one. These are the Level 1
+      // half of the topic -- "write down the spending in Week 4", "in which
+      // month was rainfall lowest" -- and 186 Data Handling questions were
+      // unfiled, most of them this shape or a percentage.
+      name: 'Reading values off tables and graphs',
+      match:
+        /\bwrite down the\b|\bin which (week|month|day|year|quarter|term|category)\b|\b(highest|lowest|most|fewest|greatest|smallest|maximum|minimum) (number|amount|value|sales|spending|income|rainfall|attendance)\b|\bwas (the )?(highest|lowest|fewest|most)\b|\bread off\b/i,
+    },
+    {
       name: 'Interpreting and comparing graphs',
-      match: /\b(graph|trend|compare|interpret|read off|according to the (graph|table)|increase(d)? from)\b/i,
+      match: /\b(graph|trend|compare|interpret|according to the (graph|table)|increase(d)? from)\b/i,
+    },
+    {
+      // Nearly half the unfiled Data Handling questions mentioned a
+      // percentage. Working a proportion out of a data set is its own skill,
+      // and it sits below the more specific rules so that "the mean
+      // percentage" still goes to averages.
+      name: 'Percentages and proportions in data',
+      // "per cent" as two words is deliberately absent. It never fires -- this
+      // corpus writes "percentage" -- and the fix the rule checker suggests for
+      // a dead stem, "per cent\w*", would match "per centimetre", which is a
+      // rate and not a percentage at all.
+      match: /\b(percentage|percent\w*|proportion|as a fraction of|out of the total)\b/i,
     },
     {
       name: 'Collecting and organising data',
@@ -508,6 +531,51 @@ const rules: Record<string, SubtopicRule[]> = {
         /\b(define|what is meant by|renewable|non[- ]renewable|sustainab\w*|ecological footprint|resource\w*)\b/i,
     },
   ],
+  'life-sci-ecosystem-energy-flow': [
+    {
+      name: 'Key ecological terms and abiotic factors',
+      match: /\b(define|what is meant by|ecological term|habitat\w*|niche\w*|biotic|abiotic|autotroph\w*|heterotroph\w*|community|ecosystem|apex predator\w*)\b/i,
+    },
+    { name: 'Energy loss', match: /\b(energy (loss|lost|flow|transfer\w*)|10 ?%|ten per cent|pyramid\w*|trophic level\w*|biomass)\b/i },
+    { name: 'Effects of change', match: /\b(what would happen|removed|decline\w*|increase\w* in the population|disrupt\w*|introduc\w*|effect on the)\b/i },
+    { name: 'Food chains and webs', match: /\b(food (chain|web)\w*|producer\w*|consumer\w*|decomposer\w*|predator\w*|prey|feeding relationship\w*)\b/i },
+  ],
+  'phys-momentum-impulse': [
+    {
+      name: 'Safety applications',
+      match: /\b(airbag\w*|crumple zone\w*|seat ?belt\w*|helmet\w*|safety|padding|bend\w* (the|their) knees|follow through|tense the neck)\b/i,
+    },
+    {
+      name: 'Conservation of momentum',
+      match: /\b(conservation of momentum|collide\w*|collision\w*|lock together|recoil\w*|explode\w*|push off|isolated system|before and after)\b/i,
+    },
+    {
+      name: 'Calculating momentum and impulse',
+      match: /\b(momentum|impulse|change in momentum|kg·m·s|N·s|average force)\b/i,
+    },
+  ],
+  'life-sci-transport-plants': [
+    {
+      name: 'Translocation in the phloem',
+      match: /\b(translocat\w*|phloem|sieve (tube|plate)\w*|companion cell\w*|source|sink|sucrose|assimilate\w*)\b/i,
+    },
+    {
+      name: 'Support in plants',
+      match: /\b(support\w*|turgor|turgid|flaccid|wilt\w*|droop\w*|lignif\w*|sclerenchyma|collenchyma|rigid|dead at maturity)\b/i,
+    },
+    {
+      name: 'Transpiration and its rate',
+      match: /\b(transpir\w*|potometer|humidit\w*|wind speed|stomatal|rate of water loss|evaporat\w*)\b/i,
+    },
+    {
+      name: 'Adaptations to reduce water loss',
+      match: /\b(xerophyt\w*|sunken stomata|thick cuticle|hairs?|rolled leaf|reduce water loss|spine\w*)\b/i,
+    },
+    {
+      name: 'Water uptake and pathway',
+      match: /\b(root hair\w*|osmosis|xylem|cohesion|adhesion|transpiration stream|apoplast|symplast|uptake|pathway)\b/i,
+    },
+  ],
   'life-sci-response-plants': [
     {
       // Every tropism question mentions the tropism and most mention auxin, so
@@ -610,6 +678,28 @@ const rules: Record<string, SubtopicRule[]> = {
       match: /\b(photoelectric|work function|threshold frequency|cut[- ]?off frequency|electrons? (are |is )?(emitted|ejected|released)|W0|maximum kinetic energy of the (emitted|ejected))\b/i,
     },
   ],
+  'phys-organic-chemistry': [
+    {
+      name: 'Naming, formulae and isomers',
+      match:
+        /\b(iupac|name the following|structural formula|molecular formula|empirical formula|condensed|isomer\w*|homologous series|general formula|molar mass|aliphatic|saturated|unsaturated|draw the|longest (carbon )?chain|substituent\w*)\b/i,
+    },
+    {
+      name: 'Reaction types',
+      match:
+        /\b(substitution|addition|elimination|cracking|esterification|hydrogenation|hydration|halogenation|dehydrat\w*|combustion|reaction of|react\w* with)\b/i,
+    },
+    {
+      name: 'Physical property trends',
+      match:
+        /\b(boiling point\w*|melting point\w*|vapour pressure|viscosit\w*|intermolecular|van der waals|london|hydrogen bond\w*|solubilit\w*|trend|chain length|branch\w*)\b/i,
+    },
+    {
+      name: 'Functional groups',
+      match:
+        /\b(functional group\w*|alkane\w*|alkene\w*|alkyne\w*|alcohol\w*|aldehyde\w*|ketone\w*|carboxyl\w*|ester\w*|haloalkane\w*|hydroxyl|carbonyl)\b/i,
+    },
+  ],
   'phys-acids-bases': [
     {
       name: 'Titration and hydrolysis',
@@ -670,6 +760,14 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Hyperbolic functions', match: /\b(hyperbola|hyperbolic|asymptote|a ÷ \(x)\b/i },
     { name: 'Quadratic functions (parabolas)', match: /\b(parabola|turning point|axis of symmetry|x²|maximum value of the (function|graph))\b/i },
     { name: 'Linear functions', match: /\b(straight line|linear function|y = mx|gradient of the line|y[- ]intercept)\b/i },
+    {
+      // Substituting a value into a named rule is its own skill and had no
+      // rule at all: "given f(x) = 2x + 3, determine f(4)" was 77 unfiled
+      // questions. It has to be asked before the graph rules, which match on
+      // "intercept" and would take f(0).
+      name: 'Function notation and evaluating a function',
+      match: /\b[a-z]\((-?\d|x\)\s*=)/,
+    },
     { name: 'Interpreting graphs', match: /\b(intercept|domain|range|point(s)? of intersection|f\(x\) *[<>]|read off the graph|sketch)\b/i },
   ],
 
@@ -737,7 +835,16 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Sketching cubic graphs', match: /\b(cubic|sketch the graph|point of inflection|x[- ]intercepts of f)\b/i },
     { name: 'Stationary points and concavity', match: /\b(stationary|turning point|concav|increasing|decreasing|f″|second derivative)\b/i },
     { name: 'Gradients and equations of tangents', match: /\b(tangent|gradient of the (curve|tangent)|equation of the tangent)\b/i },
-    { name: 'Rules of differentiation', match: /\b(differentiat|derivative|dy\/dx|f′|d_?x)\b/i },
+    {
+      // The prime sits OUTSIDE the \b(...)\b wrapper, for the same reason the
+      // inverse rule in math-functions does. U+2032 is not a word character, so
+      // a trailing \b after "f′" asserts that the NEXT character is one -- and
+      // in "f′(x)" it is a bracket. The alternative could never fire, and 33 of
+      // this topic's 97 questions, all of them plain "determine f′(x)", were
+      // unfiled because of it.
+      name: 'Rules of differentiation',
+      match: /\b(differentiat|derivative|dy\/dx|d_?x)\b|[a-z]′/i,
+    },
   ],
 
   'math-counting-probability': [
@@ -746,12 +853,18 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Tree diagrams and two-way tables', match: /\b(tree diagram|two[- ]way table|with(out)? replacement|first .* then)\b/i },
     { name: 'Independent events and the product rule', match: /\b(independent|product rule|p\(a\) ?× ?p\(b\))\b/i },
     { name: 'The addition rule', match: /\b(addition rule|p\(a (or|∪) b\)|either .* or)\b/i },
-    { name: 'Mutually exclusive and complementary events', match: /\b(mutually exclusive|complement\w*|exhaustive)\b/i },
+    { name: 'Mutually exclusive and complementary events', match: /\b(mutually exclusive|complement\w*|exhaustive)\b|P\s*\(\s*not\b/i },
     { name: 'Venn diagrams', match: /\b(venn|∪|∩|intersection|union|neither)\b/i },
-    { name: 'Basic probability', match: /\b(probabilit\w*|chance|likelihood)\b/i },
+    { name: 'Basic probability', match: /\b(probabilit\w*|chance|likelihood|roll\w*|dice|die\b|coin\w*|spinner\w*|fair|six[- ]sided)\b/i },
   ],
 
   'math-euclidean-geometry': [
+    {
+      // Mensuration questions live in this topic and no rule reached them: 33
+      // of 321, nearly all "determine the volume of the prism/cylinder".
+      name: 'Volume and surface area of solids',
+      match: /\b(volume|surface area|cylinder\w*|prism\w*|cone\w*|sphere\w*|pyramid\w*|cross[- ]section\w*|capacity)\b/i,
+    },
     { name: 'Writing a geometry proof', match: /\b(prove that|proof|give (a )?reasons?|state the reason)\b/i },
     { name: 'Proportionality and the mid-point theorem', match: /\b(proportion|mid[- ]?point theorem|divides .* proportionally|ratio of the areas)\b/i },
     { name: 'Tangents and the tan-chord theorem', match: /\b(tangent|tan[- ]chord|alternate segment)\b/i },

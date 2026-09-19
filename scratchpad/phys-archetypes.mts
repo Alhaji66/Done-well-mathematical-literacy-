@@ -204,3 +204,118 @@ export const PS_G11_P1: Archetype[] = [
   { re: /Use Newton’s Third Law to explain/, level: 2, why: 'A taught explanation, retold. The pairs named are the textbook examples.' },
   { re: /^(Explain|State|Describe|Distinguish|Compare|Name|Define|List)/, level: 2, why: 'Recall or comprehension of a taught concept, stated back.' },
 ]
+
+/**
+ * Grade 10 Paper 2: matter and materials, and chemical change.
+ *
+ * The line here is the same one, read for chemistry. Level 2 is the taught
+ * account retold: describe metallic bonding and explain malleability with it,
+ * or say what the kinetic molecular theory says about a solid, a liquid and a
+ * gas. Those explanations are in every textbook, so producing one is
+ * comprehension. Level 3 is the model applied to something the learner has not
+ * been handed -- a particular apparatus, a comparison between two changes, a
+ * mixture whose separation has to be designed, or a calculation that works
+ * backwards from a measurement.
+ */
+export const PS_G10_P2: Archetype[] = [
+  // ---- Level 3 ----
+  {
+    re: /Describe, giving reasons, the sequence of separation techniques/,
+    level: 3,
+    why: 'A procedure has to be designed for this particular mixture and then justified. Which technique comes first depends on what is soluble, what floats and what is magnetic, and getting the order wrong makes the later steps impossible.',
+  },
+  {
+    re: /it decomposes completely to form .* g of a solid metal oxide/,
+    level: 3,
+    why: 'The gas escapes, so the mass lost IS the mass of carbon dioxide. The calculation runs backwards from what is left to what was there, which is conservation of mass used as a tool rather than stated.',
+  },
+  {
+    re: /^Naturally occurring \w+ consists of two isotopes/,
+    level: 3,
+    why: 'A weighted average, not a plain one: each isotopic mass is weighted by its abundance before anything is divided. Averaging the two masses directly is the mistake, and it gives an answer that looks reasonable.',
+  },
+  {
+    re: /^Calculate the relative atomic mass of/,
+    level: 3,
+    why: 'The same weighted average, worked from the abundances given in the question it follows.',
+  },
+  {
+    re: /observable indicators that a chemical reaction/,
+    level: 3,
+    why: 'Three indicators recalled, but then an everyday example found for each -- and a DIFFERENT one each time. The examples are not in the question, so they have to be supplied and matched.',
+  },
+  {
+    re: /justify this classification/,
+    level: 3,
+    why: 'A classification plus the argument for it, applied to a case that sits on the boundary. The justification is the marks.',
+  },
+  {
+    re: /(when the plunger of the syringe is pushed|as its temperature rises|more energy to boil a given mass|can be compressed (relatively easily|much more easily)|as it is heated and (boils|melts))/,
+    level: 3,
+    why: 'The particle model applied to a particular apparatus or to a comparison between two changes, rather than recited for the three states. The learner has to decide which part of the model is doing the work.',
+  },
+  {
+    re: /^When .* is heated, it decomposes to form/,
+    level: 3,
+    why: 'The equation is given, but the observations have to be predicted from it and the mass change explained by the gas leaving the system. Reading a reaction forwards into what would be seen is application, not recall.',
+  },
+  {
+    re: /^Hydrogen peroxide( solution)? decomposes into water and oxygen/,
+    level: 3,
+    why: 'Same demand: predict what would be observed from the equation, and account for it in terms of the gas produced.',
+  },
+
+  {
+    re: /Using the electronegativity values given/,
+    level: 3,
+    why: 'A rule applied to specific pairs: the difference has to be worked out for each pair and then read against the thresholds that separate non-polar covalent, polar covalent and ionic. The classification follows from the arithmetic, not from recall.',
+  },
+  {
+    re: /Using periodic trends only/,
+    level: 3,
+    why: 'Reasoning from the trends rather than looking anything up. The learner has to know which way the trend runs AND why, and then apply it to the particular elements named.',
+  },
+  {
+    re: /^(Potassium and lithium|Sodium and potassium|Magnesium and calcium) both belong to Group/,
+    level: 3,
+    why: 'A comparison decided by position in the table: which atom is larger, which loses an electron more readily, and the reason in terms of shells and shielding.',
+  },
+  {
+    re: /^(An unknown element|Element) [A-Z] (is|does not|has)/,
+    level: 3,
+    why: 'Evidence to conclusion: a list of observed properties, from which the element has to be classified as a metal, a non-metal or a metalloid, and the classification defended from the evidence given.',
+  },
+
+  {
+    re: /reacts completely with .* to form/,
+    level: 3,
+    why: 'Conservation of mass used as a tool: the masses that react must account for the mass produced, so the missing one is found by difference. Nothing in the question says to do that.',
+  },
+  {
+    re: /(are next to each other in the periodic table|are both in (Group|Period) )/,
+    level: 3,
+    why: 'Two elements compared by position, with the trend in atomic size, ionisation energy or reactivity explained in terms of shells and nuclear charge. The comparison and the reason are both the learner\u2019s to supply.',
+  },
+  {
+    re: /^Substance [A-Z] (has|is) /,
+    level: 3,
+    why: 'Properties given, bonding type to be deduced: conducting when molten but not when solid points to an ionic lattice, conducting in both states to a metallic one. Evidence to conclusion.',
+  },
+  {
+    re: /(Perfume sprayed in one corner|Sketch, in words, how the temperature)/,
+    level: 3,
+    why: 'The particle model applied to something outside the textbook diagram -- a smell crossing a room, or a cooling curve whose plateau has to be predicted and then accounted for.',
+  },
+
+  // ---- Level 2 ----
+  { re: /^Describe metallic bonding/, level: 2, why: 'The standard account of a lattice of positive ions in a sea of delocalised electrons, and the textbook explanation of the property named. Comprehension of taught material.' },
+  { re: /^(Using the kinetic molecular theory|Using electron dot|A (gas|liquid) is cooled until it)/, level: 2, why: 'The taught account of how particles are arranged and move in a solid, a liquid and a gas, retold. Nothing unfamiliar to apply it to.' },
+  { re: /^An element [A-Z] is located in Group/, level: 2, why: 'Reading structure off the position in the table, which is what the table is for.' },
+  { re: /^Write the full electron configuration/, level: 2, why: 'Filling the sub-shells in the standard order.' },
+  { re: /^(Classify EACH|For EACH sample)/, level: 2, why: 'Sorting given examples into categories that have been defined in class.' },
+  { re: /^An atom of \w+ has an atomic number of/, level: 2, why: 'Protons from the atomic number, neutrons from the difference, electrons equal to protons in a neutral atom.' },
+  { re: /^Determine the number of protons, neutrons, and electrons/, level: 2, why: 'Read off the atomic and mass numbers, subtract once.' },
+  { re: /(can be (mixed together|dissolved in water|separated (using|by))|can be stirred together|always consists of|Why is air classified)/, level: 2, why: 'The textbook examples of the mixture-and-compound distinction, used to state which is which.' },
+  { re: /^\(a\) Name this process/, level: 2, why: 'Name the phase change, then give the taught particle account of it.' },
+  { re: /^(Explain|State|Describe|Distinguish|Compare|Name|Define|List|Write|Give|Draw)/, level: 2, why: 'Recall or comprehension of a taught concept, stated back.' },
+]

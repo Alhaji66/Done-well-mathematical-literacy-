@@ -65,7 +65,11 @@ export const topics: Topic[] = [
     subjectId: 'mathematics',
     name: 'Analytical Geometry',
     description: 'Distance, gradient and midpoint between points, and equations of lines and circles on the Cartesian plane.',
-    grades: [11, 12],
+    // Grade 10 gets the three two-point formulae -- distance, gradient and
+    // midpoint -- which is exactly what CAPS gives it. The equation of a line
+    // and the angle of inclination arrive in Grade 11, circles in Grade 12, so
+    // the later sub-topics are simply empty at Grade 10 rather than wrong.
+    grades: [10, 11, 12],
   },
   {
     id: 'math-statistics',

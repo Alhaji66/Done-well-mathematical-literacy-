@@ -386,18 +386,20 @@ const term = (
   subjectId: string,
   grade: number,
   subject: string,
-  terms: [1 | 2 | 3 | 4, string, string | undefined, string?][],
+  /** term, label, topic, note, and the sub-topics the grade actually covers. */
+  terms: [1 | 2 | 3 | 4, string, string | undefined, string?, string[]?][],
 ): Atp => ({
   subjectId,
   grade,
   source: `CAPS sequence for ${subject} Grade ${grade} — not a provincial ATP`,
   detail: 'term',
-  weeks: terms.map(([t, label, topicId, note]) => ({
+  weeks: terms.map(([t, label, topicId, note, subtopics]) => ({
     term: t,
     weeks: `Term ${t}`,
     label,
     topicId,
     note,
+    subtopics,
   })),
 })
 
@@ -420,12 +422,18 @@ const mathsG10 = term('mathematics', 10, 'Mathematics', [
   [2, 'Trigonometry', 'math-trigonometry'],
   [2, 'Euclidean geometry and measurement', 'math-euclidean-geometry'],
   [2, 'Mid-year examination', undefined],
-  // CAPS puts analytical geometry in Grade 10 -- distance, midpoint and
-  // gradient -- but this app has no Grade 10 content for it: the topic is
-  // registered for Grades 11 and 12 only. Listing it here would hand a teacher
-  // a week that selects nothing, so it is named without a topic and recorded as
-  // a content gap instead.
-  [3, 'Analytical geometry (no Grade 10 content in the bank yet)', undefined],
+  // Grade 10 analytical geometry is the three two-point formulae and no more.
+  // The sub-topics are named here because the topic also carries the equation
+  // of a line, the angle of inclination and circles, which belong to Grades 11
+  // and 12 -- naming them keeps a Grade 10 worksheet inside the Grade 10
+  // syllabus instead of offering four headings that are empty at this grade.
+  [
+    3,
+    'Analytical geometry',
+    'math-analytical-geometry',
+    'Distance, gradient and midpoint between two points, and using them to prove properties of figures. The equation of a line and the angle of inclination are Grade 11; circles are Grade 12.',
+    ['Distance between two points', 'Gradient, parallel and perpendicular lines', 'Midpoint'],
+  ],
   [3, 'Finance and growth', 'math-finance-growth'],
   [3, 'Statistics', 'math-statistics'],
   [4, 'Probability', 'math-counting-probability'],

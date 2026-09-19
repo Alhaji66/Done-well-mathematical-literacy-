@@ -823,7 +823,10 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Equation of a straight line', match: /\b(equation of (the|a) line|perpendicular bisector|median|altitude)\b|\by ?− ?y₁/i },
     { name: 'Gradient, parallel and perpendicular lines', match: /\b(gradient|parallel|perpendicular|collinear)\b/i },
     { name: 'Midpoint', match: /\b(midpoint|mid[- ]point|bisect\w*)\b/i },
-    { name: 'Distance between two points', match: /\b(distance|length of)\b/i },
+    // "perimeter" belongs here: the perimeter of a figure given by its vertices
+    // is one distance calculation per side and nothing else. It sits last, so a
+    // question that also asks for a gradient is still a gradient question.
+    { name: 'Distance between two points', match: /\b(distance|length of|perimeter)\b/i },
   ],
 
   'math-statistics': [

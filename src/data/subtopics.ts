@@ -835,7 +835,11 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Outliers and their effect', match: /\b(outlier)\b/i },
     { name: 'Five-number summary and box-and-whisker plots', match: /\b(box[- ]and[- ]whisker|five[- ]number|skew)\b/i },
     { name: 'Measures of dispersion', match: /\b(standard deviation|variance|dispersion|interquartile|iqr|quartile|spread|range)\b/i },
-    { name: 'Grouped data, histograms and frequency polygons', match: /\b(histogram|grouped data|class interval\w*|frequency polygon|modal class)\b/i },
+    // "grouped data" needed the word "data" after it, so a table headed "Test
+    // marks of 50 learners, GROUPED" did not match and the question under it went
+    // to Measures of central tendency on the strength of the word "mean". In a
+    // statistics topic "grouped" has only the one meaning, so the stem is widened.
+    { name: 'Grouped data, histograms and frequency polygons', match: /\b(histogram|grouped\w*|class interval\w*|frequency polygon|modal class|midpoint of each)\b/i },
     { name: 'Measures of central tendency', match: /\b(mean|median|mode|modal|average)\b/i },
   ],
 
@@ -854,7 +858,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Depreciation', match: /\b(depreciat\w*|reducing balance|diminishing|book value|straight[- ]line)\b/i },
     // "withdrawal" alone never fired: the prompts say withdrawals, withdrawing,
     // withdrawn and withdraws, and the trailing \b rejected every one of them.
-    { name: 'Timelines and changing interest rates', match: /\b(timeline|time line|rate changed|withdrew|withdraw\w*|deposited .* and .* later)\b/i },
+    { name: 'Timelines and changing interest rates', match: /\b(timeline|time line|rate (then )?chang\w*|withdrew|withdraw\w*|deposited .* and .* later)\b/i },
     { name: 'Simple and compound interest', match: /\b(interest|compound|invest\w*)\b|\bp\(1 ?\+ ?i\)/i },
   ],
 

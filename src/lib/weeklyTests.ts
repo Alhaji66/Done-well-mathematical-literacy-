@@ -1,5 +1,4 @@
 import { supabase } from '@/lib/supabaseClient'
-import { questionsForSubject } from '@/data/questionBank'
 import type { Grade, Question } from '@/types'
 
 /**
@@ -22,6 +21,12 @@ export interface WeeklyTest {
   subject_id: string
   grade: Grade
   topic_ids: string[]
+  /**
+   * Sub-topics the test is limited to, each as `topicId::name`. Null or empty
+   * means the whole topic -- and a whole-topic test covers every sub-topic in
+   * it, which is what buildTestPaper guarantees.
+   */
+  subtopics: string[] | null
   question_count: number
   due_at: string
   created_at: string
@@ -53,62 +58,13 @@ export interface TestAttempt {
   per_question: PerQuestionMark[] | null
 }
 
-/**
- * A small deterministic PRNG, seeded from the test id.
- *
- * Math.random() cannot be used here: the paper has to come out the same for
- * every learner and on every reload, and a random shuffle would hand each
- * learner a different test and change it under them when they refreshed.
- * mulberry32 is a few lines, has no dependency, and is more than good enough
- * for shuffling a question list.
- */
-function seedFrom(text: string): number {
-  let h = 2166136261
-  for (let i = 0; i < text.length; i++) {
-    h ^= text.charCodeAt(i)
-    h = Math.imul(h, 16777619)
-  }
-  return h >>> 0
-}
+export {
+  qualify,
+  buildTestPaper,
+  missingSubtopics,
+  totalMarks,
+} from '@/lib/testPaper'
 
-function mulberry32(seed: number) {
-  let a = seed
-  return () => {
-    a |= 0
-    a = (a + 0x6d2b79f5) | 0
-    let t = Math.imul(a ^ (a >>> 15), 1 | a)
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
-
-/** Fisher-Yates, driven by the seeded generator rather than Math.random. */
-function shuffle<T>(items: T[], rand: () => number): T[] {
-  const out = items.slice()
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1))
-    ;[out[i], out[j]] = [out[j], out[i]]
-  }
-  return out
-}
-
-/**
- * Build the paper for a test. Sorted by id before shuffling, because
- * questionsForSubject merges a standalone bank with the papers and its natural
- * order is not guaranteed stable across builds -- without the sort, the same
- * seed could produce a different paper after a content change.
- */
-export async function buildTestPaper(test: WeeklyTest): Promise<Question[]> {
-  const all = await questionsForSubject(test.subject_id)
-  const pool = all
-    .filter((q) => q.grade === test.grade && test.topic_ids.includes(q.topicId))
-    .slice()
-    .sort((a, b) => a.id.localeCompare(b.id))
-  if (pool.length === 0) return []
-  return shuffle(pool, mulberry32(seedFrom(test.id))).slice(0, test.question_count)
-}
-
-export const totalMarks = (questions: Question[]) => questions.reduce((sum, q) => sum + q.marks, 0)
 
 // --------------------------------------------------------------------- reads
 
@@ -165,6 +121,8 @@ export async function createTest(input: {
   subjectId: string
   grade: Grade
   topicIds: string[]
+  /** Qualified `topicId::name`. Empty means the whole topic. */
+  subtopics?: string[]
   questionCount: number
   dueAt: string
 }): Promise<{ test?: WeeklyTest; error?: string }> {
@@ -178,6 +136,7 @@ export async function createTest(input: {
       subject_id: input.subjectId,
       grade: input.grade,
       topic_ids: input.topicIds,
+      subtopics: input.subtopics?.length ? input.subtopics : null,
       question_count: input.questionCount,
       due_at: input.dueAt,
     })

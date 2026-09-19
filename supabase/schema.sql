@@ -645,10 +645,18 @@ create table if not exists public.weekly_tests (
   grade smallint not null check (grade in (10, 11, 12)),
   -- Topic ids from the bundled curriculum, e.g. {'life-sci-evolution'}.
   topic_ids text[] not null check (array_length(topic_ids, 1) >= 1),
+  -- Sub-topics the test is limited to, each as 'topicId::name', e.g.
+  -- {'measurement::Units and conversions'}. NULL means the whole topic, and a
+  -- whole-topic test is built to cover every sub-topic in it rather than
+  -- whichever ones a shuffle happened to reach.
+  subtopics text[],
   question_count smallint not null check (question_count between 1 and 30),
   due_at timestamptz not null,
   created_at timestamptz not null default now()
 );
+
+-- Added after the table shipped, so existing deployments need it too.
+alter table public.weekly_tests add column if not exists subtopics text[];
 
 create index if not exists weekly_tests_school_idx on public.weekly_tests (school_id, due_at desc);
 

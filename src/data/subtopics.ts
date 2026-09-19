@@ -189,9 +189,325 @@ const rules: Record<string, SubtopicRule[]> = {
 
   // ---------------------------------------------------------- Life Sciences
   //
-  // Two topics where the scorer could not separate a sub-topic from its
-  // neighbours, because the neighbours use all of its vocabulary. Everything
-  // else in Life Sciences is left to the scorer.
+  // Life Sciences was left almost entirely to the vocabulary scorer, and it was
+  // the weakest subject for it: 530 of 2 144 questions, 24,7%, ended up in the
+  // unsorted bucket, and Photosynthesis in Grade 11 put 40 of its 67 there.
+  //
+  // The reason was not that the scorer is bad. It was that the sub-topic NAMES
+  // and the question WORDING are different vocabularies. A note headed "The
+  // light phase" has to catch "describe the light-DEPENDENT reactions"; a topic
+  // whose three headings are all about a process has nothing to catch "define
+  // photosynthesis", "write the word equation" or "describe two structural
+  // adaptations of a leaf" -- which between them were most of the bucket.
+  //
+  // So each topic below gets rules written against the words the questions
+  // actually use, and the topics that were missing whole areas of their own
+  // syllabus gained sub-topics for them, with the note content to match.
+  //
+  // ORDER IS SIGNIFICANT, first match wins. Structure rules come before process
+  // rules, because "where in the chloroplast do the light-dependent reactions
+  // occur" is a question about the chloroplast. Definition rules come LAST, as
+  // the catch-all for "define", "what is meant by" and "state the equation".
+  'life-sci-response-humans': [
+    {
+      name: 'The brain and its parts',
+      match: /\b(brain|cerebrum|cerebral|cortex|cerebell\w*|medulla|hypothalamus|corpus callosum|mening\w*|cerebrospinal|hemisphere\w*)\b/i,
+    },
+    { name: 'The eye', match: /\b(eye|retina|cornea|lens|iris|pupil|optic nerve|rod\w*|cone\w*|accommodat\w*|blind spot|fovea|aqueous|vitreous)\b/i },
+    { name: 'The ear', match: /\b(ear|cochlea|ossicle\w*|malleus|incus|stapes|eardrum|tympan\w*|semicircular|eustachian|auditory|balance)\b/i },
+    {
+      name: 'Nervous system and the reflex arc',
+      match: /\b(reflex|neuron\w*|neurone\w*|synapse\w*|spinal cord|impulse\w*|myelin|axon|dendrite\w*|effector|receptor|motor|sensory)\b/i,
+    },
+    {
+      name: 'Key terms in responding to the environment',
+      match: /\b(define|what is meant by|stimulus|stimuli|response|voluntary|involuntary|central nervous|peripheral)\b/i,
+    },
+  ],
+  'life-sci-endocrine-homeostasis': [
+    { name: 'Blood glucose control', match: /\b(glucose|insulin|glucagon|glycogen|diabet\w*|pancreas|blood sugar)\b/i },
+    {
+      name: 'Temperature and water',
+      match: /\b(thermoregulat\w*|temperature|sweat\w*|shiver\w*|vasodilat\w*|vasoconstrict\w*|ADH|osmoregulat\w*|water balance|aldosterone)\b/i,
+    },
+    {
+      name: 'Glands and hormones',
+      match: /\b(pituitary|thyroid|thyroxin\w*|adrenal|adrenalin\w*|gonad\w*|growth hormone|secret\w*|gland\w*)\b/i,
+    },
+    {
+      name: 'Key terms, and the endocrine system compared with the nervous system',
+      match: /\b(define|what is meant by|endocrine|hormone\w*|homeostasis|negative feedback|target organ|compare\w*|nervous system)\b/i,
+    },
+  ],
+  'life-sci-dna-code': [
+    { name: 'Replication', match: /\b(replicat\w*|semi[- ]conservative|DNA polymerase|unzip\w*|template strand)\b/i },
+    {
+      name: 'Protein synthesis and mutation',
+      match: /\b(transcription|translation|mRNA|tRNA|ribosome\w*|codon\w*|anticodon\w*|polypeptide|mutation\w*|protein synthesis)\b/i,
+    },
+    {
+      name: 'Structure',
+      match: /\b(double helix|nucleotide\w*|deoxyribose|ribose|base pair\w*|adenine|thymine|guanine|cytosine|uracil|hydrogen bond\w*|structure)\b/i,
+    },
+    {
+      name: 'Key terms in DNA and protein synthesis',
+      match: /\b(define|what is meant by|gene\w*|allele\w*|chromosome\w*|chromatid\w*|genetic code|triplet|DNA|RNA)\b/i,
+    },
+  ],
+  'life-sci-meiosis': [
+    { name: 'Meiosis I', match: /\b(prophase i\b|metaphase i\b|anaphase i\b|telophase i\b|crossing over|chiasma\w*|bivalent|homologous pair\w*|random assortment|first division)\b/i },
+    { name: 'Meiosis II', match: /\b(prophase ii|metaphase ii|anaphase ii|telophase ii|second division|sister chromatid\w* separate)\b/i },
+    { name: 'Variation and errors', match: /\b(variation|non[- ]disjunction|down syndrome|trisomy|abnormal\w*|error\w*|mutation\w*)\b/i },
+    {
+      name: 'What meiosis is, and why it matters',
+      match: /\b(define|what is meant by|meiosis|haploid|diploid|gamete\w*|halve\w*|significance|importance|compare\w* .*mitosis|differs? from mitosis)\b/i,
+    },
+  ],
+  'life-sci-genetics': [
+    { name: 'Dihybrid crosses and pedigrees', match: /\b(dihybrid|pedigree|family tree|9\s*:\s*3\s*:\s*3\s*:\s*1|two characteristic\w*)\b/i },
+    { name: 'Sex linkage and DNA profiling', match: /\b(sex[- ]linked|sex linkage|colour blind\w*|haemophili\w*|X chromosome|Y chromosome|carrier\w*|DNA profil\w*|paternity|forensic\w*)\b/i },
+    { name: 'Monohybrid crosses', match: /\b(monohybrid|punnett|cross\w*|f1|f2|3\s*:\s*1|1\s*:\s*1|offspring|ratio)\b/i },
+    {
+      name: 'Key terms in genetics',
+      match: /\b(define|what is meant by|genotype\w*|phenotype\w*|homozygous|heterozygous|dominant|recessive|codominan\w*|incomplete dominance|test cross|locus|loci)\b/i,
+    },
+  ],
+  'life-sci-respiration': [
+    {
+      name: 'Respiration during exercise and oxygen debt',
+      match: /\b(exercise|athlete\w*|oxygen debt|lactic acid|fatigue|cramp\w*|vigorous|training|recover\w*|after .*stops?)\b/i,
+    },
+    { name: 'Anaerobic respiration', match: /\b(anaerobic|ferment\w*|ethanol|alcohol|yeast|without oxygen)\b/i },
+    { name: 'Comparison with photosynthesis', match: /\b(compare\w* .*photosynthesis|photosynthesis and respiration|opposite\w*)\b/i },
+    { name: 'Aerobic respiration', match: /\b(aerobic|mitochondri\w*|krebs|glycolysis|electron transport|oxidative)\b/i },
+    {
+      name: 'Key terms in respiration',
+      match: /\b(define|what is meant by|cellular respiration|respiration|ATP|energy|word equation|breathing)\b/i,
+    },
+  ],
+  'life-sci-excretion': [
+    { name: 'The nephron', match: /\b(nephron|glomerul\w*|bowman\w*|convoluted tubule|loop of henle|collecting duct|ultrafiltration|reabsorb\w*|filtrate)\b/i },
+    { name: 'Homeostasis', match: /\b(ADH|osmoregulat\w*|homeostasis|water balance|concentrated urine|dilute urine|negative feedback)\b/i },
+    {
+      name: 'The kidney: structure and key terms',
+      match: /\b(define|what is meant by|kidney\w*|cortex|medulla|pelvis|renal|ureter\w*|urethra|bladder|deamination|urea|dialys\w*|excretion|egestion)\b/i,
+    },
+    { name: 'Excretory organs', match: /\b(lung\w*|skin|liver|sweat|excretory organ\w*)\b/i },
+  ],
+  'life-sci-biodiversity-animals': [
+    { name: 'Invertebrate phyla', match: /\b(porifera|cnidaria|platyhelminth\w*|annelid\w*|arthropod\w*|mollusc\w*|echinoderm\w*|nematod\w*|sponge\w*|worm\w*|insect\w*)\b/i },
+    { name: 'Chordates', match: /\b(chordate\w*|notochord|vertebrate\w*|fish|amphibian\w*|reptil\w*|bird\w*|mammal\w*)\b/i },
+    {
+      name: 'Key terms in animal classification',
+      match: /\b(define|what is meant by|symmetr\w*|cephalisation|coelom\w*|endotherm\w*|ectotherm\w*|invertebrate\w*|bilateral|radial)\b/i,
+    },
+    { name: 'Structure and lifestyle', match: /\b(structure|lifestyle|habitat|adapt\w*|locomot\w*|feed\w*)\b/i },
+  ],
+  'life-sci-mitosis': [
+    { name: 'The four phases', match: /\b(prophase|metaphase|anaphase|telophase|spindle|equator|centromere\w* split|phases? of mitosis)\b/i },
+    { name: 'Cytokinesis and cancer', match: /\b(cytokinesis|cleavage furrow|cell plate|cancer|tumour|malignant|benign|metastas\w*|uncontrolled)\b/i },
+    { name: 'Interphase', match: /\b(interphase|g1|g2|s phase|cell cycle|replicat\w*)\b/i },
+    {
+      name: 'What mitosis is, and why it matters',
+      match: /\b(define|what is meant by|mitosis|growth|repair|asexual|identical|significance|importance|chromatid\w*)\b/i,
+    },
+  ],
+  'life-sci-plant-tissues': [
+    {
+      name: 'Meristems and the dicotyledonous root and stem',
+      match: /\b(meristem\w*|apical|lateral meristem\w*|intercalary|cambium|dicotyledonous|dicot|root hair\w*|pericycle|endodermis|cortex|secondary growth|stem)\b/i,
+    },
+    { name: 'Vascular tissue', match: /\b(xylem|phloem|vessel\w*|tracheid\w*|sieve tube\w*|companion cell\w*|lignin|vascular)\b/i },
+    { name: 'The leaf in section', match: /\b(leaf|palisade|spongy|mesophyll|stoma|stomata|guard cell\w*|cuticle|epidermis)\b/i },
+    { name: 'Ground and protective tissues', match: /\b(parenchyma|collenchyma|sclerenchyma|ground tissue|protective|epiderm\w*|cork)\b/i },
+  ],
+  'life-sci-animal-tissues': [
+    { name: 'Muscle and nervous tissue', match: /\b(muscle|cardiac|skeletal|smooth muscle|striated|nervous tissue|neuron\w*|neurone\w*|axon|dendrite\w*)\b/i },
+    { name: 'Connective tissue', match: /\b(connective|cartilage|bone|tendon\w*|ligament\w*|adipose|blood|matrix|collagen|fibroblast\w*)\b/i },
+    { name: 'Epithelial tissue', match: /\b(epitheli\w*|squamous|cuboidal|columnar|ciliated|glandular|lining|cover\w*)\b/i },
+    {
+      name: 'Levels of organisation and what a tissue is',
+      match: /\b(define|what is meant by|tissue\w*|organ\w*|level\w* of organisation|four (basic )?types)\b/i,
+    },
+  ],
+  'life-sci-photosynthesis': [
+    {
+      name: 'The leaf and chloroplast as structures for photosynthesis',
+      match:
+        /\b(leaf|leaves|chloroplast\w*|organelle|palisade|mesophyll|stoma|stomata|guard cell\w*|grana|granum|thylakoid|stroma|vascular bundle\w*|xylem|phloem|vein\w*|chlorophyll|pigment|adaptation\w*|structural|cuticle|epidermis|air space\w*)\b/i,
+    },
+    {
+      name: 'Limiting factors',
+      match: /\b(limiting factor\w*|light intensity|rate of photosynthesis|plateau|levels? off|bubbles? per)\b/i,
+    },
+    {
+      name: 'The light phase',
+      match: /\b(light[- ]dependent|light phase|photolysis|split\w* of water|ADP|NADP|inorganic phosphate)\b/i,
+    },
+    {
+      name: 'The dark phase (Calvin cycle)',
+      match: /\b(dark phase|light[- ]independent|calvin|carbon (dioxide )?fixation|fixed and reduced)\b/i,
+    },
+    {
+      name: 'What photosynthesis is, and its equation',
+      match:
+        /\b(define|what is meant by|word equation|overall equation|equation|raw materials?|products?|autotroph\w*|two (main )?stages|by-?product)\b/i,
+    },
+  ],
+  'life-sci-biodiversity-microorganisms': [
+    // "Name the kingdom fungi belong to" is a question about fungi, so naming a
+    // group beats naming the hierarchy. Written the other way round this rule
+    // was fully shadowed -- all 12 of its questions went to the two below it.
+    { name: 'The main groups', match: /\b(fungi|fungus|protist\w*|algae|amoeba|paramecium|yeast|mould)\b/i },
+    {
+      name: 'Viruses and bacteria: structure and nutrition',
+      match:
+        /\b(virus\w*|viral|capsid|bacteri\w*|prokaryot\w*|plasmid|cocci|coccus|bacillus|bacilli|spirill\w*|saprophyt\w*|parasit\w*|heterotroph\w*|autotroph\w*|nutrition|living)\b/i,
+    },
+    {
+      name: 'Key terms and the classification hierarchy',
+      match:
+        /\b(taxonom\w*|classif\w*|kingdom\w*|phylum|phyla|genus|species|binomial|nomenclature|hierarch\w*|define|what is meant by|monera|protista)\b/i,
+    },
+    {
+      name: 'Roles of micro-organisms',
+      match: /\b(beneficial|harmful|decompos\w*|nitrogen[- ]fixing|antibiotic\w*|ferment\w*|yoghurt|cheese|sewage|disease|spoil\w*)\b/i,
+    },
+  ],
+  'life-sci-chemistry-of-life': [
+    {
+      name: 'Structure of the biological molecules',
+      match:
+        /\b(monosaccharide\w*|disaccharide\w*|polysaccharide\w*|glycerol|fatty acid\w*|triglyceride|saturated|unsaturated|amino acid\w*|peptide bond\w*|primary|secondary|tertiary|quaternary|nucleotide\w*|structure of|three[- ]dimensional)\b/i,
+    },
+    {
+      name: 'Enzymes',
+      match: /\b(enzym\w*|active site|substrate|denatur\w*|catalys\w*|optimum (pH|temperature)|lock and key)\b/i,
+    },
+    {
+      name: 'Organic compounds and food tests',
+      match: /\b(benedict\w*|iodine|biuret|emulsion test|food test\w*|test for (starch|glucose|protein|lipid))\b/i,
+    },
+    {
+      name: 'Inorganic compounds',
+      match: /\b(water|mineral\w*|inorganic|ion\w*|nitrate\w*|phosphate\w*|magnesium|calcium|iron)\b/i,
+    },
+    {
+      name: 'Key terms and the molecules of life',
+      match:
+        /\b(define|what is meant by|organic|carbohydrate\w*|lipid\w*|protein\w*|nucleic acid\w*|monomer\w*|polymer\w*|condensation|hydrolysis|four (groups|types)|elements?)\b/i,
+    },
+  ],
+  'life-sci-evolution': [
+    {
+      name: 'Fossils and the fossil record',
+      match:
+        /\b(fossil\w*|sediment\w*|trace fossil\w*|coprolite\w*|radiometric|relative dating|transitional|cradle of humankind|australopithecus|homo naledi|sediba|africanus|preserv\w*)\b/i,
+    },
+    {
+      name: 'Speciation and human evolution',
+      match: /\b(speciation|reproductive isolation|geographic\w* isolat\w*|allopatric|sympatric|hominid\w*|bipedal\w*|out of africa|common ancestor)\b/i,
+    },
+    {
+      name: 'Evidence for evolution',
+      match: /\b(homologous|analogous|vestigial|embryolog\w*|biogeograph\w*|comparative anatomy|evidence for)\b/i,
+    },
+    {
+      name: 'Natural selection',
+      match: /\b(natural selection|selective pressure|survival of the|darwin|lamarck|resistan\w*|selected (for|against)|overproduc\w*)\b/i,
+    },
+    {
+      name: 'Key terms in evolution',
+      match:
+        /\b(define|what is meant by|evolution|variation|adaptation\w*|fitness|gene pool|allele frequenc\w*|population|term)\b/i,
+    },
+  ],
+  'life-sci-biodiversity-plants': [
+    // Naming a plant group is unambiguous, and must be asked before the flower
+    // rule: written after it, a question about a fern's gametes or a conifer's
+    // seeds went to "the flower", which has neither. Both of these rules were
+    // fully shadowed until they were moved above it.
+    {
+      name: 'The four groups',
+      match: /\b(bryophyt\w*|moss\w*|pteridophyt\w*|fern\w*|gymnosperm\w*|angiosperm\w*|conifer\w*|monocot\w*|dicot\w*|spore\w*|four groups)\b/i,
+    },
+    {
+      name: 'Adaptations to land',
+      match: /\b(adapt\w* to (life on )?land|terrestrial|desicc\w*|water loss|cuticle|waxy)\b/i,
+    },
+    {
+      name: 'The flower, pollination and fertilisation',
+      match:
+        /\b(flower\w*|sepal\w*|petal\w*|stamen\w*|anther\w*|filament\w*|carpel\w*|pistil\w*|stigma\w*|style|ovary|ovule\w*|pollen|pollinat\w*|self[- ]pollinat\w*|cross[- ]pollinat\w*|fertilis\w*|seed\w*|fruit\w*|dispersal|gamete\w*|insect[- ]pollinated|wind[- ]pollinated)\b/i,
+    },
+    {
+      name: 'Reproduction in angiosperms',
+      match: /\b(define|what is meant by|alternation of generations|gametophyte|sporophyte|reproduc\w*)\b/i,
+    },
+  ],
+  'life-sci-human-reproduction': [
+    {
+      name: 'Contraception and reproductive health',
+      match:
+        /\b(contracept\w*|condom\w*|diaphragm|the pill|vasectomy|tubal ligation|sterilis\w*|intra[- ]uterine|IUD|prevent\w* pregnanc\w*|sexually transmitted|STI\w*)\b/i,
+    },
+    {
+      name: 'The menstrual cycle',
+      match: /\b(menstrual|menstruation|ovulation|endometrium|FSH|LH|oestrogen|progesterone|day \d+ of the cycle)\b/i,
+    },
+    {
+      name: 'Fertilisation and development',
+      match: /\b(fertilis\w*|zygote|implant\w*|placenta|umbilical|amnion|amniotic|gestation|embryo|foetus|fetus)\b/i,
+    },
+    {
+      name: 'Gametogenesis',
+      match: /\b(gametogenesis|spermatogenesis|oogenesis|sperm\w*|ovum|ova|testis|testes|ovary|ovaries|seminiferous|reproductive system|vas deferens|fallopian|oviduct|uterus|scrotum|epididymis)\b/i,
+    },
+  ],
+  'life-sci-population-ecology': [
+    {
+      name: 'Growth curves',
+      match: /\b(growth curve\w*|exponential|logistic|lag phase|log phase|stationary|j[- ]shaped|s[- ]shaped|sigmoid)\b/i,
+    },
+    {
+      name: 'Sampling and interactions',
+      match:
+        /\b(sampl\w*|quadrat\w*|mark[- ]recapture|transect|predation|competition|parasitism|mutualism|commensalism|symbio\w*|predator|prey)\b/i,
+    },
+    {
+      name: 'Limiting factors',
+      match: /\b(limiting factor\w*|density[- ]dependent|density[- ]independent|carrying capacity|resource\w* run)\b/i,
+    },
+    {
+      name: 'Key terms and what changes population size',
+      match:
+        /\b(define|what is meant by|population|community|ecosystem|habitat|niche|immigration|emigration|birth rate|death rate|density|distribution|size)\b/i,
+    },
+  ],
+  'life-sci-human-impact': [
+    {
+      name: 'Solid waste, plastic and what can be done',
+      match:
+        /\b(solid waste|plastic\w*|microplastic\w*|landfill\w*|recycl\w*|reuse|reduce|litter|packaging|marine|single[- ]use|strateg\w*|dispos\w*)\b/i,
+    },
+    {
+      name: 'Atmosphere',
+      match: /\b(atmospher\w*|greenhouse|global warming|climate change|ozone|carbon dioxide|acid rain|air pollut\w*|emission\w*)\b/i,
+    },
+    {
+      name: 'Water and soil',
+      match: /\b(water|eutrophication|algal bloom|sewage|soil|erosion|desertification|fertilis\w*|catchment|wetland\w*)\b/i,
+    },
+    {
+      name: 'Biodiversity and solutions',
+      match: /\b(biodiversity|extinct\w*|endangered|alien|invasive|indigenous|conserv\w*|poach\w*|deforest\w*|habitat loss)\b/i,
+    },
+    {
+      name: 'Key terms, resources and sustainability',
+      match:
+        /\b(define|what is meant by|renewable|non[- ]renewable|sustainab\w*|ecological footprint|resource\w*)\b/i,
+    },
+  ],
   'life-sci-response-plants': [
     {
       // Every tropism question mentions the tropism and most mention auxin, so

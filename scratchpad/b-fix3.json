@@ -1,0 +1,10 @@
+[
+ {
+  "id": "math-p1-24-6-4",
+  "prompt": "Two dice are rolled. Determine the probability that the sum of the two numbers rolled is 3, and the probability that the sum is 12.",
+  "answer": "There are 6 × 6 = 36 equally likely outcomes. A sum of 3 happens in two ways, (1;2) and (2;1), so P(sum = 3) = 2/36 = 1/18. A sum of 12 happens in one way only, (6;6), so P(sum = 12) = 1/36.",
+  "explanation": "The dice have to be treated as distinguishable, which is what makes these two answers differ: (1;2) and (2;1) are two outcomes even when the dice look identical, while (6;6) is the single way to reach 12. That is the whole point of the pair — sums are NOT equally likely, and the further a sum is from 7 the fewer ways there are to make it. Listing the outcomes for a small sum is quicker and safer than reasoning about it, and a 6 × 6 table makes the pattern visible at once.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ }
+]

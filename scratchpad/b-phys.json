@@ -1,0 +1,153 @@
+[
+ {
+  "id": "psci-g11-p1-2025-2-3",
+  "prompt": "A net force acts on an 8 kg object, giving it an acceleration of 4.5 m·s⁻². Calculate the magnitude of the net force.",
+  "answer": "Fnet = ma = (8)(4.5) = 36 N",
+  "explanation": "Newton's second law in one line: the net force is the mass times the acceleration, in the direction of the acceleration. The word NET matters — this is the resultant of every force acting, not the force one person applies, so a question giving an applied force and a friction force needs them combined before this formula is used.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Fnet = ma"
+ },
+ {
+  "id": "psci-g11-p1-2025-3-3",
+  "prompt": "A ray of light travels from air (n = 1.00) into water (n = 1.33), striking the surface at an angle of incidence of 40°. Calculate the angle of refraction.",
+  "answer": "n₁ sin θ₁ = n₂ sin θ₂ → (1.00)sin 40° = (1.33)sin θ₂ → sin θ₂ = 0.6428 ÷ 1.33 = 0.4833 → θ₂ ≈ 28.90°",
+  "explanation": "Snell's law, with the subscripts kept straight: medium 1 is the one the light comes FROM. Water is optically denser than air, so the ray bends towards the normal and the angle of refraction must come out smaller than 40° — which it does. An answer larger than the angle of incidence means the two media were swapped. Both angles are measured from the normal, never from the surface.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "n₁ sin θ₁ = n₂ sin θ₂; n(air) = 1.00"
+ },
+ {
+  "id": "psci-g11-p1-2025-3-4",
+  "prompt": "Calculate the critical angle for light travelling from glass (n = 1.52) into air (n = 1.00), and explain what happens to a ray that strikes the glass-air boundary at 50°.",
+  "answer": "sin θc = n₂ ÷ n₁ = 1.00 ÷ 1.52 = 0.6579, so θc ≈ 41.14°. A ray striking the boundary at 50° exceeds the critical angle, so it is not refracted out at all: it undergoes total internal reflection and stays inside the glass.",
+  "explanation": "The critical angle is the angle of incidence whose angle of refraction is exactly 90°, which is why the formula is Snell's law with sin 90° = 1 substituted. It exists only going from a denser medium into a less dense one; there is no critical angle for light entering glass from air. Past that angle nothing is transmitted — the boundary behaves as a perfect mirror, which is how light is carried along an optical fibre and why a diamond, with a critical angle near 24°, traps and returns so much of the light that enters it.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 4,
+  "context": "sin θc = n₂ ÷ n₁ (light travelling from a denser medium n₁ into a less dense medium n₂)"
+ },
+ {
+  "id": "psci-g11-p2-2023-4-2",
+  "prompt": "Calculate the number of moles of calcium carbonate (CaCO₃) present in a 35.0 g sample.",
+  "answer": "n = m ÷ M = 35.0 ÷ 100 = 0.35 mol",
+  "explanation": "Moles are mass divided by molar mass, and the molar mass has to be the mass of the whole formula unit: CaCO₃ is 40 + 12 + (3 × 16) = 100 g·mol⁻¹, not 40. Getting the molar mass wrong is the commonest way to lose this question, and it carries through every calculation built on it. The unit of the answer is mol, not grams.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "n = m ÷ M; M(CaCO₃) = 100 g·mol⁻¹"
+ },
+ {
+  "id": "psci-p1-2025-2-2",
+  "prompt": "A ball is thrown vertically upward at 22 m·s⁻¹. Calculate the maximum height reached.",
+  "answer": "At the maximum height v = 0. v² = u² + 2aΔy → 0 = (22)² + 2(−9.8)Δy → Δy = 484 ÷ 19.6 ≈ 24.69 m",
+  "explanation": "The fact that makes this solvable is that the velocity is zero at the highest point — the ball is momentarily at rest there, even though its acceleration is still 9.8 m·s⁻² downward. Taking upward as positive makes the acceleration negative, and the answer comes out positive, which is the check that the signs were consistent. The mass of the ball is irrelevant and is never given.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3,
+  "context": "v² = u² + 2aΔy"
+ },
+ {
+  "id": "psci-p1-2023-2-3",
+  "prompt": "A ball is thrown vertically upward at 12 m·s⁻¹. Calculate the maximum height reached.",
+  "answer": "At the maximum height v = 0. v² = u² + 2aΔy → 0 = (12)² + 2(−9.8)Δy → Δy = 144 ÷ 19.6 ≈ 7.35 m",
+  "explanation": "Velocity is zero at the top; acceleration is not. That distinction is worth more than the arithmetic, because a ball at its highest point is still accelerating downward at 9.8 m·s⁻² — which is precisely why it does not stay there. Notice how the height scales: doubling the launch speed would quadruple the height, because the speed is squared in this equation.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3,
+  "context": "v² = u² + 2aΔy"
+ },
+ {
+  "id": "psci-p1-2024-2-2",
+  "prompt": "A ball is thrown vertically downward with an initial velocity of 4 m·s⁻¹. Calculate its velocity after 3 s.",
+  "answer": "v = u + at = 4 + (9.8)(3) = 33.4 m·s⁻¹ (downward)",
+  "explanation": "Taking downward as positive makes both the initial velocity and the acceleration positive, so they add and the ball speeds up — which is what actually happens when something is thrown downward. The sign convention is a choice, but it has to be stated and then kept: upward-positive would give u = −4 and a = −9.8, and the answer −33.4 m·s⁻², meaning the same thing. The direction must appear in the answer either way.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "v = u + at (downward positive)"
+ },
+ {
+  "id": "psci-p1-2023-8-2",
+  "prompt": "A laser emits light of wavelength 480 nm at a constant power of 12.0 mW. Calculate the energy of a single photon of this light, and hence the number of photons the laser emits each second. (h = 6.63 × 10⁻³⁴ J·s; c = 3.0 × 10⁸ m·s⁻¹)",
+  "answer": "E = hc/λ = (6.63 × 10⁻³⁴)(3.0 × 10⁸) ÷ (480 × 10⁻⁹) = 4.14 × 10⁻¹⁹ J per photon. A power of 12.0 mW is 1.20 × 10⁻² J delivered every second, so the number of photons per second is n = P/E = 1.20 × 10⁻² ÷ 4.14 × 10⁻¹⁹ = 2.90 × 10¹⁶ photons per second.",
+  "explanation": "Two ideas joined by one division. The energy of a single photon depends only on the wavelength — shorter wavelength, more energetic photon — while the power says how much energy arrives each second. Dividing the second by the first gives the count. The wavelength must be converted to metres before it goes into the formula; leaving it in nanometres makes the photon energy a billion times too small and the count a billion times too large.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "psci-p1-2023-8-3",
+  "prompt": "A metal has a threshold frequency of 4.2 × 10¹⁴ Hz. Calculate its work function.",
+  "answer": "W₀ = hf₀ = (6.63 × 10⁻³⁴)(4.2 × 10¹⁴) = 2.78 × 10⁻¹⁹ J",
+  "explanation": "The work function is the minimum energy needed to free one electron from the metal's surface, and the threshold frequency is the same quantity expressed as a frequency: W₀ = hf₀ converts between them. Because it is a property of the METAL, it does not change when a different light source is used — only whether that light has enough energy per photon to overcome it.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "W₀ = hf₀"
+ },
+ {
+  "id": "psci-p1-2023-8-4",
+  "prompt": "Light of wavelength 480 nm (photon energy ≈ 4.14 × 10⁻¹⁹ J, from a previous question) shines on the metal from the previous question (work function ≈ 2.78 × 10⁻¹⁹ J). Calculate the maximum kinetic energy of the emitted photoelectrons.",
+  "answer": "Ek(max) = E − W₀ = 4.14 × 10⁻¹⁹ − 2.78 × 10⁻¹⁹ = 1.36 × 10⁻¹⁹ J",
+  "explanation": "The photon's energy is spent in two parts: the work function frees the electron, and whatever remains becomes its kinetic energy. It is MAXIMUM kinetic energy because electrons deeper in the metal need more than W₀ to escape and emerge with less. A negative result would mean the photon has too little energy to free an electron at all, and then no electrons are emitted no matter how bright the light is.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2,
+  "context": "Ek(max) = E − W₀"
+ },
+ {
+  "id": "psci-p1-a-8-2",
+  "prompt": "Calculate the energy of a photon of light with a wavelength of 650 nm.",
+  "answer": "E = hf and c = fλ, so E = hc/λ = (6.63 × 10⁻³⁴)(3.0 × 10⁸) ÷ (650 × 10⁻⁹) = 3.060 × 10⁻¹⁹ J",
+  "explanation": "Combining E = hf with c = fλ removes the frequency and gives E = hc/λ in one step. The conversion is the part that goes wrong: 650 nm is 650 × 10⁻⁹ m, and a photon energy on the order of 10⁻¹⁹ J is the sanity check — visible light always lands there. Red light at 650 nm carries less energy per photon than blue light at 450 nm, which is why red light fails to eject electrons from metals that blue light frees easily.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "E = hf; c = fλ; h = 6.63 × 10⁻³⁴ J·s; c = 3.0 × 10⁸ m·s⁻¹"
+ },
+ {
+  "id": "psci-p2-b-3-2",
+  "prompt": "Write the Kc expression for the equilibrium: H₂(g) + I₂(g) ⇌ 2HI(g).",
+  "answer": "Kc = [HI]² ÷ ([H₂][I₂])",
+  "explanation": "Products over reactants, each concentration raised to the power of its coefficient in the balanced equation. HI has a coefficient of 2, so it is squared; H₂ and I₂ have a coefficient of 1 and carry no exponent. Square brackets mean equilibrium concentration in mol·dm⁻³, and only gases and aqueous species appear — pure solids and liquids are left out. This particular equilibrium is the one where the exponents matter most visibly, because the number of molecules is the same on both sides and only the square distinguishes the expression.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Kc = [products] ÷ [reactants], each raised to the power of its coefficient"
+ },
+ {
+  "id": "psci-p2-2025-3-2",
+  "prompt": "Write the Kc expression for the equilibrium: CO(g) + 2H₂(g) ⇌ CH₃OH(g).",
+  "answer": "Kc = [CH₃OH] ÷ ([CO][H₂]²)",
+  "explanation": "Products on top, reactants underneath, each raised to its coefficient. CH₃OH and CO have a coefficient of 1, so they carry no exponent; H₂ has a coefficient of 2 and is squared. Writing the whole formula of methanol inside one set of brackets matters — [CH₃][OH] would be two different species and a different expression entirely.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Kc = [products] ÷ [reactants], each raised to the power of its coefficient"
+ },
+ {
+  "id": "psci-p2-a-4-3",
+  "prompt": "Calculate the pH of a solution with [H₃O⁺] = 5.0 × 10⁻³ mol·dm⁻³.",
+  "answer": "pH = −log[H₃O⁺] = −log(5.0 × 10⁻³) ≈ 2.30",
+  "explanation": "The negative sign is part of the formula, not a slip: hydronium concentrations are small numbers whose logarithms are negative, and the minus turns them into the positive pH scale. A concentration of 10⁻³ would give exactly pH 3, so 5.0 × 10⁻³ — five times larger — must give a pH somewhat BELOW 3, which is the check on the answer. More acid means a lower pH.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "pH = −log[H₃O⁺]"
+ },
+ {
+  "id": "psci-p2-2023-1-13",
+  "prompt": "A hydrocarbon has an empirical formula of CH₂ and a molar mass of 98 g·mol⁻¹. Determine its molecular formula.",
+  "answer": "M(CH₂) = 12 + (2 × 1) = 14 g·mol⁻¹. 98 ÷ 14 = 7, so the molecular formula is C₇H₁₄.",
+  "explanation": "The empirical formula gives the simplest whole-number ratio of atoms; the molecular formula gives the actual number. Divide the molar mass by the empirical formula mass to find how many empirical units make one molecule, then multiply every subscript by that factor. The ratio must come out a whole number — a fraction means the empirical formula mass or the molar mass was misread.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Molar mass: C = 12 g·mol⁻¹, H = 1 g·mol⁻¹"
+ },
+ {
+  "id": "psci-p2-b-1-13",
+  "prompt": "A hydrocarbon has an empirical formula of C₃H₇ and a molar mass of 86 g·mol⁻¹. Determine its molecular formula.",
+  "answer": "M(C₃H₇) = (3 × 12) + (7 × 1) = 43 g·mol⁻¹. 86 ÷ 43 = 2, so the molecular formula is C₆H₁₄.",
+  "explanation": "Divide the molar mass by the empirical formula mass, then multiply every subscript by the result: C₃H₇ doubled is C₆H₁₄, hexane. C₃H₇ is worth noticing as an empirical formula, because it cannot be a molecule on its own — a chain of three carbons carries at most eight hydrogens, so the real molecule has to be a multiple of it.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Molar mass: C = 12 g·mol⁻¹, H = 1 g·mol⁻¹"
+ },
+ {
+  "id": "psci-p2-2025-1-4",
+  "prompt": "Draw the structural formula of hex-2-ene.",
+  "answer": "CH₃−CH=CH−CH₂−CH₂−CH₃",
+  "explanation": "The name is read in three parts. 'Hex' is six carbons, '-ene' is a carbon-carbon double bond, and '2' says the double bond starts at the second carbon. Number the chain from the end that gives the double bond the lower number — counting from the other end would name this same molecule hex-4-ene, which is not the accepted name. A structural formula must show every bond and every hydrogen, so each carbon ends up with four bonds in total.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ }
+]

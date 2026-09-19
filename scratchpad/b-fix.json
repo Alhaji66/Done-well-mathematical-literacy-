@@ -1,0 +1,63 @@
+[
+ {
+  "id": "math-g11-p2-22-3-2",
+  "prompt": "Simplify without using a calculator: tan 150°",
+  "answer": "tan 150° = tan(180° − 30°) = −tan 30° = −√3/3 (equivalently −1/√3, ≈ −0.58)",
+  "explanation": "150° is in the second quadrant, where CAST leaves only sine positive, so the tangent is negative. The reduction formula tan(180° − θ) = −tan θ brings it back to the special angle 30°, whose tangent is 1/√3. Rationalising the denominator turns that into √3/3, which is the form a memo expects. The minus sign comes from the quadrant, not from the arithmetic, and it is the mark most often dropped.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-21-4-4",
+  "prompt": "O is the centre of a circle, OM ⊥ chord AB, AB = 14, and radius OA = 25. Determine the length of OM.",
+  "answer": "OM = 24",
+  "explanation": "The perpendicular from the centre bisects the chord, so AM = 14 ÷ 2 = 7. In right-angled triangle OMA the hypotenuse is the radius OA = 25, so OM = √(25² − 7²) = √(625 − 49) = √576 = 24. Halving the chord is the step that turns a circle theorem into Pythagoras, and forgetting it produces √(625 − 196) = √429, which is not a whole number — in a question built on a Pythagorean triple, that is the signal that the chord was not halved.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The perpendicular from the centre of a circle to a chord bisects the chord."
+ },
+ {
+  "id": "math-g11-p2-24-4-6",
+  "prompt": "O is the centre of a circle. Chord AB subtends an angle of 134° at O (on the minor arc side). C is a point on the major arc. Determine the angle ACB.",
+  "answer": "ACB = 134° ÷ 2 = 67°",
+  "explanation": "Half the angle at the centre, because the angle at the centre is twice the angle at the circumference on the same side of the chord. The theorem is a halving in this direction and a doubling in the other, so the first thing to settle in any question using it is which angle is at the centre — the one at the centre is always the larger of the two. An odd answer like 67° is no cause for alarm: the angle at the centre need not be a multiple of four.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The angle subtended by a chord at the centre is twice the angle subtended at the circumference, on the same side of the chord."
+ },
+ {
+  "id": "psci-p1-2023-8-3",
+  "prompt": "A metal has a threshold frequency of 4.2 × 10¹⁴ Hz. Calculate its work function.",
+  "answer": "W₀ = hf₀ = (6.63 × 10⁻³⁴)(4.2 × 10¹⁴) = 2.78 × 10⁻¹⁹ J",
+  "explanation": "The work function is the minimum energy needed to free one electron from the metal's surface, and the threshold frequency is the same quantity expressed as a frequency: W₀ = hf₀ converts between them. Because it is a property of the METAL, it does not change when a different light source is used — only whether that light has enough energy per photon to overcome it.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "W₀ = hf₀"
+ },
+ {
+  "id": "psci-p1-2023-8-4",
+  "prompt": "Light of wavelength 480 nm (photon energy ≈ 4.14 × 10⁻¹⁹ J, from a previous question) shines on the metal from the previous question (work function ≈ 2.78 × 10⁻¹⁹ J). Calculate the maximum kinetic energy of the emitted photoelectrons.",
+  "answer": "Ek(max) = E − W₀ = 4.14 × 10⁻¹⁹ − 2.78 × 10⁻¹⁹ = 1.36 × 10⁻¹⁹ J",
+  "explanation": "The photon's energy is spent in two parts: the work function frees the electron, and whatever remains becomes its kinetic energy. It is MAXIMUM kinetic energy because electrons deeper in the metal need more than W₀ to escape and emerge with less. A negative result would mean the photon has too little energy to free an electron at all, and then no electrons are emitted no matter how bright the light is.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2,
+  "context": "Ek(max) = E − W₀"
+ },
+ {
+  "id": "psci-p2-2023-1-13",
+  "prompt": "A hydrocarbon has an empirical formula of CH₂ and a molar mass of 98 g·mol⁻¹. Determine its molecular formula.",
+  "answer": "M(CH₂) = 12 + (2 × 1) = 14 g·mol⁻¹. 98 ÷ 14 = 7, so the molecular formula is C₇H₁₄.",
+  "explanation": "The empirical formula gives the simplest whole-number ratio of atoms; the molecular formula gives the actual number. Divide the molar mass by the empirical formula mass to find how many empirical units make one molecule, then multiply every subscript by that factor. The ratio must come out a whole number — a fraction means the empirical formula mass or the molar mass was misread.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Molar mass: C = 12 g·mol⁻¹, H = 1 g·mol⁻¹"
+ },
+ {
+  "id": "psci-p2-2025-1-4",
+  "prompt": "Draw the structural formula of hex-2-ene.",
+  "answer": "CH₃−CH=CH−CH₂−CH₂−CH₃",
+  "explanation": "The name is read in three parts. 'Hex' is six carbons, '-ene' is a carbon-carbon double bond, and '2' says the double bond starts at the second carbon. Number the chain from the end that gives the double bond the lower number — counting from the other end would name this same molecule hex-4-ene, which is not the accepted name. A structural formula must show every bond and every hydrogen, so each carbon ends up with four bonds in total.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ }
+]

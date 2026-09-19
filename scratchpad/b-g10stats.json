@@ -1,0 +1,506 @@
+[
+ {
+  "id": "math-g10-p2-a-1-5",
+  "prompt": "The five-number summary of a data set is Min = 9, Q1 = 12, Median = 15, Q3 = 18, Max = 21. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 18 − 12 = 6. The range is 21 − 9 = 12, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-b-1-1",
+  "context": "Data set: 55, 68, 66, 54, 53, 57, 53",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "53",
+  "explanation": "The mode is the value that appears most often. 53 appears 2 times and every other value appears once, so the mode is 53. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-b-1-2",
+  "context": "Data set: 55, 68, 66, 54, 53, 57, 53",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "58",
+  "explanation": "Mean = sum ÷ number of values = 406 ÷ 7 = 58. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-b-1-3",
+  "context": "Data set: 55, 68, 66, 54, 53, 57, 53",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "53, 53, 54, 55, 57, 66, 68; Median = 55",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 55. Reading the middle of the unsorted list gives 54, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-b-1-4",
+  "context": "Data set: 55, 68, 66, 54, 53, 57, 53",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 53, Q1 = 53, Median = 55, Q3 = 66, Max = 68",
+  "explanation": "Work from the sorted list 53, 53, 54, 55, 57, 66, 68. The median is the 4th value, 55. Q1 is the median of the three values below it — 53, 53, 54 — so Q1 = 53. Q3 is the median of the three above — 57, 66, 68 — so Q3 = 66. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-b-1-5",
+  "prompt": "The five-number summary of a data set is Min = 53, Q1 = 53, Median = 55, Q3 = 66, Max = 68. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 66 − 53 = 13. The range is 68 − 53 = 15, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-b-1-6",
+  "context": "Data set: 55, 68, 66, 54, 53, 57, 53",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 53 − 1.5 × 13 = 33.5 and Q3 + 1.5 × IQR = 66 + 1.5 × 13 = 85.5. Every value lies between 33.5 and 85.5, so there are no outliers.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-b-1-7",
+  "context": "Data set: 55, 68, 66, 54, 53, 57, 53",
+  "prompt": "Determine the range of the data set.",
+  "answer": "15",
+  "explanation": "Range = largest − smallest = 68 − 53 = 15. The range is a single number describing how far the data spreads, not an interval: writing \"53 to 68\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-c-1-1",
+  "context": "Data set: 56, 60, 47, 63, 65, 60, 69",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "60",
+  "explanation": "The mode is the value that appears most often. 60 appears 2 times and every other value appears once, so the mode is 60. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-c-1-2",
+  "context": "Data set: 56, 60, 47, 63, 65, 60, 69",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "60",
+  "explanation": "Mean = sum ÷ number of values = 420 ÷ 7 = 60. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-c-1-3",
+  "context": "Data set: 56, 60, 47, 63, 65, 60, 69",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "47, 56, 60, 60, 63, 65, 69; Median = 60",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 60. Reading the middle of the unsorted list gives 63, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-c-1-4",
+  "context": "Data set: 56, 60, 47, 63, 65, 60, 69",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 47, Q1 = 56, Median = 60, Q3 = 65, Max = 69",
+  "explanation": "Work from the sorted list 47, 56, 60, 60, 63, 65, 69. The median is the 4th value, 60. Q1 is the median of the three values below it — 47, 56, 60 — so Q1 = 56. Q3 is the median of the three above — 63, 65, 69 — so Q3 = 65. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-c-1-5",
+  "prompt": "The five-number summary of a data set is Min = 47, Q1 = 56, Median = 60, Q3 = 65, Max = 69. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 65 − 56 = 9. The range is 69 − 47 = 22, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-c-1-6",
+  "context": "Data set: 56, 60, 47, 63, 65, 60, 69",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 56 − 1.5 × 9 = 42.5 and Q3 + 1.5 × IQR = 65 + 1.5 × 9 = 78.5. Every value lies between 42.5 and 78.5, so there are no outliers.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-c-1-7",
+  "context": "Data set: 56, 60, 47, 63, 65, 60, 69",
+  "prompt": "Determine the range of the data set.",
+  "answer": "22",
+  "explanation": "Range = largest − smallest = 69 − 47 = 22. The range is a single number describing how far the data spreads, not an interval: writing \"47 to 69\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-25-1-1",
+  "context": "Data set: 20, 40, 23, 40, 41, 12, 34",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "40",
+  "explanation": "The mode is the value that appears most often. 40 appears 2 times and every other value appears once, so the mode is 40. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-25-1-2",
+  "context": "Data set: 20, 40, 23, 40, 41, 12, 34",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "30",
+  "explanation": "Mean = sum ÷ number of values = 210 ÷ 7 = 30. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-25-1-3",
+  "context": "Data set: 20, 40, 23, 40, 41, 12, 34",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "12, 20, 23, 34, 40, 40, 41; Median = 34",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 34. Reading the middle of the unsorted list gives 40, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-25-1-4",
+  "context": "Data set: 20, 40, 23, 40, 41, 12, 34",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 12, Q1 = 20, Median = 34, Q3 = 40, Max = 41",
+  "explanation": "Work from the sorted list 12, 20, 23, 34, 40, 40, 41. The median is the 4th value, 34. Q1 is the median of the three values below it — 12, 20, 23 — so Q1 = 20. Q3 is the median of the three above — 40, 40, 41 — so Q3 = 40. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-25-1-5",
+  "prompt": "The five-number summary of a data set is Min = 12, Q1 = 20, Median = 34, Q3 = 40, Max = 41. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 40 − 20 = 20. The range is 41 − 12 = 29, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-25-1-6",
+  "context": "Data set: 20, 40, 23, 40, 41, 12, 34",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 20 − 1.5 × 20 = -10 and Q3 + 1.5 × IQR = 40 + 1.5 × 20 = 70. Every value lies between -10 and 70, so there are no outliers.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-25-1-7",
+  "context": "Data set: 20, 40, 23, 40, 41, 12, 34",
+  "prompt": "Determine the range of the data set.",
+  "answer": "29",
+  "explanation": "Range = largest − smallest = 41 − 12 = 29. The range is a single number describing how far the data spreads, not an interval: writing \"12 to 41\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-24-1-1",
+  "context": "Data set: 34, 8, 24, 16, 23, 23, 33",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "23",
+  "explanation": "The mode is the value that appears most often. 23 appears 2 times and every other value appears once, so the mode is 23. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-24-1-2",
+  "context": "Data set: 34, 8, 24, 16, 23, 23, 33",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "23",
+  "explanation": "Mean = sum ÷ number of values = 161 ÷ 7 = 23. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-24-1-3",
+  "context": "Data set: 34, 8, 24, 16, 23, 23, 33",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "8, 16, 23, 23, 24, 33, 34; Median = 23",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 23. Reading the middle of the unsorted list gives 16, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-24-1-4",
+  "context": "Data set: 34, 8, 24, 16, 23, 23, 33",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 8, Q1 = 16, Median = 23, Q3 = 33, Max = 34",
+  "explanation": "Work from the sorted list 8, 16, 23, 23, 24, 33, 34. The median is the 4th value, 23. Q1 is the median of the three values below it — 8, 16, 23 — so Q1 = 16. Q3 is the median of the three above — 24, 33, 34 — so Q3 = 33. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-24-1-5",
+  "prompt": "The five-number summary of a data set is Min = 8, Q1 = 16, Median = 23, Q3 = 33, Max = 34. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 33 − 16 = 17. The range is 34 − 8 = 26, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-24-1-6",
+  "context": "Data set: 34, 8, 24, 16, 23, 23, 33",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 16 − 1.5 × 17 = -9.5 and Q3 + 1.5 × IQR = 33 + 1.5 × 17 = 58.5. Every value lies between -9.5 and 58.5, so there are no outliers.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-24-1-7",
+  "context": "Data set: 34, 8, 24, 16, 23, 23, 33",
+  "prompt": "Determine the range of the data set.",
+  "answer": "26",
+  "explanation": "Range = largest − smallest = 34 − 8 = 26. The range is a single number describing how far the data spreads, not an interval: writing \"8 to 34\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-23-1-1",
+  "context": "Data set: 12, 16, 31, 28, 31, 8, 14",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "31",
+  "explanation": "The mode is the value that appears most often. 31 appears 2 times and every other value appears once, so the mode is 31. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-23-1-2",
+  "context": "Data set: 12, 16, 31, 28, 31, 8, 14",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "20",
+  "explanation": "Mean = sum ÷ number of values = 140 ÷ 7 = 20. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-23-1-3",
+  "context": "Data set: 12, 16, 31, 28, 31, 8, 14",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "8, 12, 14, 16, 28, 31, 31; Median = 16",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 16. Reading the middle of the unsorted list gives 28, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-23-1-4",
+  "context": "Data set: 12, 16, 31, 28, 31, 8, 14",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 8, Q1 = 12, Median = 16, Q3 = 31, Max = 31",
+  "explanation": "Work from the sorted list 8, 12, 14, 16, 28, 31, 31. The median is the 4th value, 16. Q1 is the median of the three values below it — 8, 12, 14 — so Q1 = 12. Q3 is the median of the three above — 28, 31, 31 — so Q3 = 31. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-23-1-5",
+  "prompt": "The five-number summary of a data set is Min = 8, Q1 = 12, Median = 16, Q3 = 31, Max = 31. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 31 − 12 = 19. The range is 31 − 8 = 23, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-23-1-6",
+  "context": "Data set: 12, 16, 31, 28, 31, 8, 14",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 12 − 1.5 × 19 = -16.5 and Q3 + 1.5 × IQR = 31 + 1.5 × 19 = 59.5. Every value lies between -16.5 and 59.5, so there are no outliers.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-23-1-7",
+  "context": "Data set: 12, 16, 31, 28, 31, 8, 14",
+  "prompt": "Determine the range of the data set.",
+  "answer": "23",
+  "explanation": "Range = largest − smallest = 31 − 8 = 23. The range is a single number describing how far the data spreads, not an interval: writing \"8 to 31\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-22-1-1",
+  "context": "Data set: 32, 20, 27, 47, 27, 42, 29",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "27",
+  "explanation": "The mode is the value that appears most often. 27 appears 2 times and every other value appears once, so the mode is 27. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-22-1-2",
+  "context": "Data set: 32, 20, 27, 47, 27, 42, 29",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "32",
+  "explanation": "Mean = sum ÷ number of values = 224 ÷ 7 = 32. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-22-1-3",
+  "context": "Data set: 32, 20, 27, 47, 27, 42, 29",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "20, 27, 27, 29, 32, 42, 47; Median = 29",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 29. Reading the middle of the unsorted list gives 47, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-22-1-4",
+  "context": "Data set: 32, 20, 27, 47, 27, 42, 29",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 20, Q1 = 27, Median = 29, Q3 = 42, Max = 47",
+  "explanation": "Work from the sorted list 20, 27, 27, 29, 32, 42, 47. The median is the 4th value, 29. Q1 is the median of the three values below it — 20, 27, 27 — so Q1 = 27. Q3 is the median of the three above — 32, 42, 47 — so Q3 = 42. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-22-1-5",
+  "prompt": "The five-number summary of a data set is Min = 20, Q1 = 27, Median = 29, Q3 = 42, Max = 47. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 42 − 27 = 15. The range is 47 − 20 = 27, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-22-1-6",
+  "context": "Data set: 32, 20, 27, 47, 27, 42, 29",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 27 − 1.5 × 15 = 4.5 and Q3 + 1.5 × IQR = 42 + 1.5 × 15 = 64.5. Every value lies between 4.5 and 64.5, so there are no outliers.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-22-1-7",
+  "context": "Data set: 32, 20, 27, 47, 27, 42, 29",
+  "prompt": "Determine the range of the data set.",
+  "answer": "27",
+  "explanation": "Range = largest − smallest = 47 − 20 = 27. The range is a single number describing how far the data spreads, not an interval: writing \"20 to 47\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-21-1-1",
+  "context": "Data set: 20, 15, 17, 34, 19, 16, 19",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "19",
+  "explanation": "The mode is the value that appears most often. 19 appears 2 times and every other value appears once, so the mode is 19. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-21-1-2",
+  "context": "Data set: 20, 15, 17, 34, 19, 16, 19",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "20",
+  "explanation": "Mean = sum ÷ number of values = 140 ÷ 7 = 20. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-21-1-3",
+  "context": "Data set: 20, 15, 17, 34, 19, 16, 19",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "15, 16, 17, 19, 19, 20, 34; Median = 19",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 19. Reading the middle of the unsorted list gives 34, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-21-1-4",
+  "context": "Data set: 20, 15, 17, 34, 19, 16, 19",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 15, Q1 = 16, Median = 19, Q3 = 20, Max = 34",
+  "explanation": "Work from the sorted list 15, 16, 17, 19, 19, 20, 34. The median is the 4th value, 19. Q1 is the median of the three values below it — 15, 16, 17 — so Q1 = 16. Q3 is the median of the three above — 19, 20, 34 — so Q3 = 20. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-21-1-5",
+  "prompt": "The five-number summary of a data set is Min = 15, Q1 = 16, Median = 19, Q3 = 20, Max = 34. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 20 − 16 = 4. The range is 34 − 15 = 19, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-21-1-6",
+  "context": "Data set: 20, 15, 17, 34, 19, 16, 19",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 16 − 1.5 × 4 = 10 and Q3 + 1.5 × IQR = 20 + 1.5 × 4 = 26. 34 lies outside that interval, so the data set has an outlier: 34.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-21-1-7",
+  "context": "Data set: 20, 15, 17, 34, 19, 16, 19",
+  "prompt": "Determine the range of the data set.",
+  "answer": "19",
+  "explanation": "Range = largest − smallest = 34 − 15 = 19. The range is a single number describing how far the data spreads, not an interval: writing \"15 to 34\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-20-1-1",
+  "context": "Data set: 25, 26, 32, 13, 34, 32, 27",
+  "prompt": "Determine the mode of the data set.",
+  "answer": "32",
+  "explanation": "The mode is the value that appears most often. 32 appears 2 times and every other value appears once, so the mode is 32. A data set can have more than one mode, or none at all if every value appears the same number of times — but it is never an average of anything, which is the usual confusion with the mean.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-20-1-2",
+  "context": "Data set: 25, 26, 32, 13, 34, 32, 27",
+  "prompt": "Determine the mean of the data set.",
+  "answer": "27",
+  "explanation": "Mean = sum ÷ number of values = 189 ÷ 7 = 27. Every value is added, including repeats: a value that appears three times is added three times and counted three times in the divisor.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-20-1-3",
+  "context": "Data set: 25, 26, 32, 13, 34, 32, 27",
+  "prompt": "Arrange the data in ascending order, and determine the median.",
+  "answer": "13, 25, 26, 27, 32, 32, 34; Median = 27",
+  "explanation": "Sorting first is not optional — the median is the middle value of the SORTED list. With 7 values the middle one is the 4th, which is 27. Reading the middle of the unsorted list gives 13, and the two agree only by accident.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-20-1-4",
+  "context": "Data set: 25, 26, 32, 13, 34, 32, 27",
+  "prompt": "Determine the five-number summary (minimum, Q1, median, Q3, maximum) of the data set.",
+  "answer": "Min = 13, Q1 = 25, Median = 27, Q3 = 32, Max = 34",
+  "explanation": "Work from the sorted list 13, 25, 26, 27, 32, 32, 34. The median is the 4th value, 27. Q1 is the median of the three values below it — 13, 25, 26 — so Q1 = 25. Q3 is the median of the three above — 32, 32, 34 — so Q3 = 32. The median itself belongs to neither half.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g10-p2-20-1-5",
+  "prompt": "The five-number summary of a data set is Min = 13, Q1 = 25, Median = 27, Q3 = 32, Max = 34. Determine the interquartile range (IQR), and explain what it measures that the range does not.",
+  "answer": "IQR = Q3 − Q1 = 32 − 25 = 7. The range is 34 − 13 = 21, which is decided entirely by the two most extreme values. The IQR measures the spread of the middle half of the data, so a single unusually large or small value cannot change it.",
+  "explanation": "IQR = Q3 − Q1, and it is the more trustworthy of the two measures of spread. The range uses only the largest and smallest values, so one unusual reading moves it a long way; the IQR ignores the bottom quarter and the top quarter altogether and describes where the middle half of the data sits. That is why a box-and-whisker plot draws the box from Q1 to Q3: the box IS the IQR.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-20-1-6",
+  "context": "Data set: 25, 26, 32, 13, 34, 32, 27",
+  "prompt": "Using the rule that a value is an outlier if it is below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR, determine whether the data set has any outliers.",
+  "answer": "Q1 − 1.5 × IQR = 25 − 1.5 × 7 = 14.5 and Q3 + 1.5 × IQR = 32 + 1.5 × 7 = 42.5. 13 lies outside that interval, so the data set has an outlier: 13.",
+  "explanation": "Both fences have to be worked out and both have to be tested, even when the answer looks obvious from the list. The 1.5 × IQR rule is a convention, not a law of nature: it marks values far enough from the middle half to be worth a second look. Finding an outlier is not a reason to delete it — it is a reason to ask whether it is a mistake in the recording or a real and interesting value.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g10-p2-20-1-7",
+  "context": "Data set: 25, 26, 32, 13, 34, 32, 27",
+  "prompt": "Determine the range of the data set.",
+  "answer": "21",
+  "explanation": "Range = largest − smallest = 34 − 13 = 21. The range is a single number describing how far the data spreads, not an interval: writing \"13 to 34\" describes the data but does not answer the question asked.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ }
+]

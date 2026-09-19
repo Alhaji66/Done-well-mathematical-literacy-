@@ -1,0 +1,37 @@
+[
+ {
+  "id": "psci-p1-2023-8-3",
+  "prompt": "A metal has a threshold frequency of 4.2 × 10¹⁴ Hz. Calculate its work function.",
+  "answer": "W₀ = hf₀ = (6.63 × 10⁻³⁴)(4.2 × 10¹⁴) = 2.78 × 10⁻¹⁹ J",
+  "explanation": "The work function is the minimum energy needed to free one electron from the metal's surface, and the threshold frequency is the same quantity expressed as a frequency: W₀ = hf₀ converts between them. Because it is a property of the METAL, it does not change when a different light source is used — only whether that light has enough energy per photon to overcome it.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "W₀ = hf₀"
+ },
+ {
+  "id": "psci-p1-2023-8-4",
+  "prompt": "Light of wavelength 480 nm (photon energy ≈ 4.14 × 10⁻¹⁹ J, from a previous question) shines on the metal from the previous question (work function ≈ 2.78 × 10⁻¹⁹ J). Calculate the maximum kinetic energy of the emitted photoelectrons.",
+  "answer": "Ek(max) = E − W₀ = 4.14 × 10⁻¹⁹ − 2.78 × 10⁻¹⁹ = 1.36 × 10⁻¹⁹ J",
+  "explanation": "The photon's energy is spent in two parts: the work function frees the electron, and whatever remains becomes its kinetic energy. It is MAXIMUM kinetic energy because electrons deeper in the metal need more than W₀ to escape and emerge with less. A negative result would mean the photon has too little energy to free an electron at all, and then no electrons are emitted no matter how bright the light is.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2,
+  "context": "Ek(max) = E − W₀"
+ },
+ {
+  "id": "psci-p2-2023-1-13",
+  "prompt": "A hydrocarbon has an empirical formula of CH₂ and a molar mass of 98 g·mol⁻¹. Determine its molecular formula.",
+  "answer": "M(CH₂) = 12 + (2 × 1) = 14 g·mol⁻¹. 98 ÷ 14 = 7, so the molecular formula is C₇H₁₄.",
+  "explanation": "The empirical formula gives the simplest whole-number ratio of atoms; the molecular formula gives the actual number. Divide the molar mass by the empirical formula mass to find how many empirical units make one molecule, then multiply every subscript by that factor. The ratio must come out a whole number — a fraction means the empirical formula mass or the molar mass was misread.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Molar mass: C = 12 g·mol⁻¹, H = 1 g·mol⁻¹"
+ },
+ {
+  "id": "psci-p2-2025-1-4",
+  "prompt": "Draw the structural formula of hex-2-ene.",
+  "answer": "CH₃−CH=CH−CH₂−CH₂−CH₃",
+  "explanation": "The name is read in three parts. 'Hex' is six carbons, '-ene' is a carbon-carbon double bond, and '2' says the double bond starts at the second carbon. Number the chain from the end that gives the double bond the lower number — counting from the other end would name this same molecule hex-4-ene, which is not the accepted name. A structural formula must show every bond and every hydrogen, so each carbon ends up with four bonds in total.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ }
+]

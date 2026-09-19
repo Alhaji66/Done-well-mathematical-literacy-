@@ -904,8 +904,14 @@ const rules: Record<string, SubtopicRule[]> = {
       name: 'Volume and surface area of solids',
       match: /\b(volume|surface area|cylinder\w*|prism\w*|cone\w*|sphere\w*|pyramid\w*|cross[- ]section\w*|capacity)\b/i,
     },
-    { name: 'Writing a geometry proof', match: /\b(prove that|proof|give (a )?reasons?|state the reason)\b/i },
-    { name: 'Proportionality and the mid-point theorem', match: /\b(proportion|mid[- ]?point theorem|divides .* proportionally|ratio of the areas)\b/i },
+    // The proportion theorem's own configuration had no stem, so "In triangle ABC,
+    // D lies on AB and E lies on AC with DE parallel to BC" -- the sentence that
+    // opens almost every question on it -- fell through to Lines, angles and
+    // triangles, or to the proof bucket when it said "prove".
+    {
+      name: 'Proportionality and the mid-point theorem',
+      match: /\b(proportion\w*|mid[- ]?point theorem|divides .* proportionally|ratio of the areas)\b|\b[A-Z] lies on [A-Z]{2}\b[^.]{0,80}\bparallel\b/i,
+    },
     { name: 'Tangents and the tan-chord theorem', match: /\b(tangent|tan[- ]chord|alternate segment)\b/i },
     // "exterior angle of" was a stem here, for the cyclic-quadrilateral theorem
     // that an exterior angle equals the interior opposite angle. It was also
@@ -915,8 +921,21 @@ const rules: Record<string, SubtopicRule[]> = {
     // corpus says "cyclic", so the stem only ever cost accuracy.
     { name: 'Circle geometry: same segment and cyclic quadrilaterals', match: /\b(cyclic|same segment|concyclic)\b/i },
     { name: 'Circle geometry: centre and chord theorems', match: /\b(chord|centre of the circle|semicircle|arc|angle at the centre)\b/i },
-    { name: 'Properties of quadrilaterals', match: /\b(parallelogram|rhombus|rectangle|square|trapezium|kite|quadrilateral)\b/i },
+    // "square" needs guarding: on its own it was claiming "the area is 32 SQUARE
+    // UNITS" and "square root" for the quadrilateral bucket. The shape is the only
+    // sense wanted here, so the unit and the root are excluded by name.
+    {
+      name: 'Properties of quadrilaterals',
+      match: /\b(parallelogram|rhombus|rectangle|trapezium|kite|quadrilateral)\b|\bsquares?\b(?! units| root| centimetres| metres| metre)/i,
+    },
     { name: 'Congruency and similarity', match: /\b(congruen|similar|sss|sas|aas|rhs)\b|\|\|\|/i },
+    // Writing a proof sits DOWN HERE, below the rules that say what the proof is
+    // about. Second in the list it took every proof question in the topic -- the
+    // cyclic-quadrilateral theorem, the angle at the centre, the tangent-radius
+    // theorem -- and hid them from the sub-topic a teacher would look under while
+    // teaching exactly that. It now holds the proofs that name no particular
+    // figure, which is what the heading really means.
+    { name: 'Writing a geometry proof', match: /\b(prove that|proof|give (a )?reasons?|state the reason)\b/i },
     { name: 'Lines, angles and triangles', match: /\b(angle|triangle|parallel|straight line|degrees)\b/i },
   ],
 }

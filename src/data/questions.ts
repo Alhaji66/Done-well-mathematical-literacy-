@@ -3,6 +3,7 @@ import type { Question } from '@/types'
 import { taxQuestions } from '@/data/taxQuestions'
 import { perimeterQuestions } from '@/data/perimeterQuestions'
 import { analyticalGeometryG10 } from '@/data/analyticalGeometryG10'
+import { similarityG12 } from '@/data/similarityG12'
 
 /*
  * Taxation and compound-interest items live in taxQuestions.ts, and the Grade
@@ -14,6 +15,7 @@ export const questions: Question[] = [
   ...taxQuestions,
   ...perimeterQuestions,
   ...analyticalGeometryG10,
+  ...similarityG12,
   // Finance
   {
     id: 'fin-e1',

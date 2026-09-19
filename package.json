@@ -13,6 +13,7 @@
     "level:papers": "tsx tools/level-papers.mts",
     "check:latex": "tsx tools/check-latex.mts",
     "check:memos": "tsx tools/check-memos.mts",
+    "check:memo-coverage": "tsx tools/memo-coverage.mts",
     "check:totals": "tsx tools/check-paper-totals.mts",
     "check:orphans": "tsx tools/check-orphans.mts",
     "check:ambiguous": "tsx tools/check-ambiguous.mts",

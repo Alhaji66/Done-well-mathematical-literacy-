@@ -30,6 +30,10 @@ const p1SetA: Paper = {
           prompt: 'Write down the amount charged for Refuse removal.',
           answer: 'R180.00',
           explanation: 'Read the value directly from Table 1.',
+          memo: [
+            { code: 'RT', marks: 1, text: 'Locating the Refuse removal line on the account' },
+            { code: 'A', marks: 1, text: 'R180,00' },
+          ],
         },
         {
           id: 'ml-p1-a-1-2',
@@ -43,6 +47,11 @@ const p1SetA: Paper = {
           answer: 'R84.15',
           explanation:
             'VAT applies to everything except Rates: R180.00 + R216.00 + R165.00 = R561.00. VAT = R561.00 × 15% = R84.15.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Identifying which charges VAT is levied on' },
+            { code: 'S', marks: 1, text: 'Multiplying the VAT-able total by 15%' },
+            { code: 'A', marks: 1, text: 'R84,15' },
+          ],
         },
         {
           id: 'ml-p1-a-1-3',
@@ -55,6 +64,11 @@ const p1SetA: Paper = {
           prompt: 'Calculate the missing value (b): the TOTAL amount owed.',
           answer: 'R1 095.15',
           explanation: 'TOTAL = Subtotal + VAT = R1 011.00 + R84.15 = R1 095.15.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Adding all the listed charges' },
+            { code: 'CA', marks: 1, text: 'Carrying the VAT figure forward from 1.2' },
+            { code: 'A', marks: 1, text: 'R1 095,15' },
+          ],
         },
         {
           id: 'ml-p1-a-1-4',
@@ -74,6 +88,10 @@ const p1SetA: Paper = {
           correctOptionId: 'a',
           answer: 'Rates',
           explanation: 'The note under Table 1 states that property rates are VAT-exempt; every other item is taxed at 15%.',
+          memo: [
+            { code: 'A', marks: 1, text: 'Rates' },
+            { code: 'R', marks: 1, text: 'It is the one charge the VAT calculation leaves out' },
+          ],
         },
         {
           id: 'ml-p1-a-1-5',
@@ -88,6 +106,12 @@ const p1SetA: Paper = {
           prompt: "Calculate Zanele's TOTAL monthly expenses.",
           answer: 'R6 294.15',
           explanation: 'R1 095.15 + R2 450.00 + R1 200.00 + R399.00 + R800.00 + R350.00 = R6 294.15.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Listing every expense that must be included' },
+            { code: 'CA', marks: 1, text: 'Carrying the municipal total forward from 1.3' },
+            { code: 'M', marks: 1, text: 'Adding the remaining expenses' },
+            { code: 'A', marks: 1, text: 'R6 294,15' },
+          ],
         },
         {
           id: 'ml-p1-a-1-8-r',
@@ -100,6 +124,10 @@ const p1SetA: Paper = {
           prompt: 'State what the PRINCIPAL of a loan is.',
           answer: 'The original amount borrowed, before any interest is added.',
           explanation: 'Interest is always calculated on the principal (and, with compound interest, on the interest already added). Confusing the principal with the total repayment is what makes an interest rate look far smaller than it is.',
+          memo: [
+            { code: 'A', marks: 1, text: 'The original amount borrowed' },
+            { code: 'A', marks: 1, text: 'Before any interest is added' },
+          ],
         },
         {
           id: 'ml-p1-a-1-8',
@@ -113,6 +141,10 @@ const p1SetA: Paper = {
           prompt: 'Calculate how much money Zanele originally borrowed (the principal).',
           answer: 'R5 000',
           explanation: 'Simple interest formula: I = P × i × n, so P = I ÷ (i × n) = R1 200 ÷ (0.12 × 2) = R1 200 ÷ 0.24 = R5 000.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Working back from the repayment and the interest rate' },
+            { code: 'A', marks: 1, text: 'R5 000' },
+          ],
         },
         {
           id: 'ml-p1-a-1-9',
@@ -125,6 +157,10 @@ const p1SetA: Paper = {
           prompt: 'Calculate the total amount Zanele must repay (loan + interest).',
           answer: 'R6 200',
           explanation: 'R5 000 + R1 200 = R6 200.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Adding the interest to the principal' },
+            { code: 'A', marks: 1, text: 'R6 200' },
+          ],
         },
         {
           id: 'ml-p1-a-1-10-r',
@@ -137,6 +173,10 @@ const p1SetA: Paper = {
           prompt: 'State what COMPOUND interest is calculated on.',
           answer: 'On the original amount PLUS the interest already added.',
           explanation: 'That is the whole difference from simple interest, which is always calculated on the original amount alone. It is why compound interest grows faster the longer it runs.',
+          memo: [
+            { code: 'A', marks: 1, text: 'On the original amount' },
+            { code: 'A', marks: 1, text: 'PLUS the interest already added' },
+          ],
         },
         {
           id: 'ml-p1-a-1-10',
@@ -151,6 +191,10 @@ const p1SetA: Paper = {
           answer: 'More. Compound total = R6 272.00, which is more than the simple-interest total of R6 200.',
           explanation:
             'Compound: R5 000 × 1.12² = R5 000 × 1.2544 = R6 272.00. Since R6 272.00 > R6 200.00, compound interest costs more over the same period.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Calculating the compound total as 5 000 x 1,12 squared' },
+            { code: 'A', marks: 1, text: 'R6 272, which is more than the R6 200 simple-interest total' },
+          ],
         },
         {
           id: 'ml-p1-a-1-11',
@@ -164,6 +208,11 @@ const p1SetA: Paper = {
           prompt: 'Zanele says that because her savings of R800 are almost a third of what she spends on groceries, she is ‘saving enough’. Calculate her savings as a percentage of her income, and explain why the comparison she makes does not show whether she is saving enough.',
           answer: 'R800 ÷ R9 800 × 100 = 8.2% of her income. Comparing savings with a single expense says nothing about what she earns or what she needs; measured against her whole income she saves only about 8%, which is well below the 15% usually recommended.',
           explanation: 'A ratio only means something once you are clear what it is a ratio of. Groceries are one line in the budget, so ‘a third of groceries’ can sound large while the amount saved stays small against income. Percentage of income is the measure that lets her compare her saving with any guideline or with another month.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Dividing savings by INCOME, not by a single expense' },
+            { code: 'A', marks: 1, text: '8,2%' },
+            { code: 'J', marks: 1, text: 'A comparison with one expense says nothing about what she earns or what she needs' },
+          ],
         },
         {
           id: 'ml-p1-a-1-12',
@@ -177,6 +226,11 @@ const p1SetA: Paper = {
           prompt: 'Work out what each option costs in total, then advise Zanele which one to take. Your answer must weigh the total cost against her variable income, and must name ONE thing the totals alone do not tell her.',
           answer: 'Option A costs 24 × R255 = R6 120 in total, so R1 120 in interest. Option B costs 12 × R470 = R5 640 in total, so R640 in interest. Option B is R480 cheaper overall. On cost alone, Option B wins. But cost alone is not the whole decision. Option B demands R470 every month against Option A’s R255 — R215 more — and Zanele’s income varies. In a month where her expenses run high, R470 may be unaffordable, and a missed instalment usually brings a penalty, damage to her credit record, or both. Option A is the safer choice for someone with uneven income, and paying R480 more over two years buys that safety. A defensible answer either way: recommend Option B if she is confident of covering R470 in her worst month, otherwise Option A. What the totals do not tell her is what happens if she cannot pay in a given month — the risk of missing an instalment does not appear anywhere in the R6 120 or the R5 640.',
           explanation: 'The calculation here is easy; the judgement is not, and the judgement is what the marks are for. The cheaper option in total is not automatically the better option, because a total assumes every payment gets made. Affordability is about the WORST month, not the average one, which is why the size of each instalment matters as much as the sum of them. Naming what a figure leaves out is a skill CAPS tests directly: every number in a financial decision is silent about risk.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Both totals: 24 x R255 = R6 120 and 12 x R470 = R5 640' },
+            { code: 'A', marks: 1, text: 'Option B is R480 cheaper overall' },
+            { code: 'J', marks: 1, text: 'Weighing the R215 higher monthly commitment against her variable income, and naming the risk the totals omit' },
+          ],
         },
 ],
     },
@@ -199,6 +253,10 @@ const p1SetA: Paper = {
           prompt: 'Calculate the area of the whole wall (before subtracting the window).',
           answer: '16 m²',
           explanation: '6.4 m × 2.5 m = 16 m².',
+          memo: [
+            { code: 'S', marks: 1, text: 'Substituting the wall dimensions into length x breadth' },
+            { code: 'A', marks: 1, text: '16 square metres' },
+          ],
         },
         {
           id: 'ml-p1-a-2-2',
@@ -211,6 +269,11 @@ const p1SetA: Paper = {
           prompt: 'Calculate the area that actually needs to be painted (wall area minus the window).',
           answer: '14.2 m²',
           explanation: 'Window area = 1.2 m × 1.5 m = 1.8 m². Area to paint = 16 m² − 1.8 m² = 14.2 m².',
+          memo: [
+            { code: 'M', marks: 1, text: 'Calculating the window area' },
+            { code: 'CA', marks: 1, text: 'Subtracting it from the wall area found in 2.1' },
+            { code: 'A', marks: 1, text: '14,2 square metres' },
+          ],
         },
         {
           id: 'ml-p1-a-2-3',
@@ -223,6 +286,11 @@ const p1SetA: Paper = {
           prompt: 'One tin of paint covers 6 m², and only whole tins can be bought. Calculate how many tins Zanele must buy.',
           answer: '3 tins',
           explanation: '14.2 ÷ 6 = 2.37 tins. Since only whole tins can be bought, round UP to 3 tins.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Dividing the area to be painted by the 6 square metres one tin covers' },
+            { code: 'M', marks: 1, text: 'Rounding UP, because only whole tins can be bought' },
+            { code: 'A', marks: 1, text: '3 tins' },
+          ],
         },
         {
           id: 'ml-p1-a-2-4',
@@ -235,6 +303,10 @@ const p1SetA: Paper = {
           prompt: 'If one tin costs R249.99, calculate the total cost of the paint.',
           answer: 'R749.97',
           explanation: '3 × R249.99 = R749.97.',
+          memo: [
+            { code: 'CA', marks: 1, text: 'Using the number of tins found in 2.3' },
+            { code: 'A', marks: 1, text: 'R749,97' },
+          ],
         },
         {
           id: 'ml-p1-a-2-5-r',
@@ -247,6 +319,10 @@ const p1SetA: Paper = {
           prompt: 'Convert 2 000 litres to cubic metres (1 m³ = 1 000 litres).',
           answer: '2 m³',
           explanation: '2 000 ÷ 1 000 = 2 m³. Divide when converting to a LARGER unit — the number must get smaller.',
+          memo: [
+            { code: 'C', marks: 1, text: 'Dividing by 1 000 to move to the larger unit' },
+            { code: 'A', marks: 1, text: '2 cubic metres' },
+          ],
         },
         {
           id: 'ml-p1-a-2-5',
@@ -260,6 +336,10 @@ const p1SetA: Paper = {
           prompt: 'Calculate the volume of the tank in m³, using Volume = π × r² × h.',
           answer: '≈ 2.77 m³',
           explanation: 'The radius is half the diameter: r = 1.4 m ÷ 2 = 0.7 m. Volume = 3.142 × 0.7² × 1.8 = 3.142 × 0.49 × 1.8 = 2.771244 m³ ≈ 2.77 m³.',
+          memo: [
+            { code: 'SF', marks: 1, text: 'Quoting V = pi x r squared x h and substituting the radius and height' },
+            { code: 'A', marks: 1, text: 'About 2,77 cubic metres' },
+          ],
         },
         {
           id: 'ml-p1-a-2-6',
@@ -273,6 +353,10 @@ const p1SetA: Paper = {
           answer: '≈ 2 770 litres',
           explanation:
             '2.77 m³ × 1 000 = 2 770 litres. (Accept anywhere from about 2 765 ℓ to 2 775 ℓ, depending on whether the rounded or unrounded volume from 2.5 was carried through.)',
+          memo: [
+            { code: 'C', marks: 1, text: 'Multiplying by 1 000 to move to the smaller unit' },
+            { code: 'CA', marks: 1, text: 'About 2 770 litres, carried from 2.5' },
+          ],
         },
         {
           id: 'ml-p1-a-2-8',
@@ -292,6 +376,10 @@ const p1SetA: Paper = {
           correctOptionId: 'c',
           answer: 'm',
           explanation: 'A tank radius (here, 0.7 m) is best measured in metres — millimetres and centimetres are too fine, kilometres far too large.',
+          memo: [
+            { code: 'A', marks: 1, text: 'Metres (m)' },
+            { code: 'R', marks: 1, text: 'A radius is a length, and a tank radius is of the order of a metre' },
+          ],
         },
         {
           id: 'ml-p1-a-2-9',
@@ -307,6 +395,12 @@ const p1SetA: Paper = {
           answer: 'Original volume: V = π r² h = 3,142 × 0,6² × 1,5 = 3,142 × 0,36 × 1,5 = 1,697 m³. Larger tank: radius 1,2 m and height 3,0 m, so V = 3,142 × 1,2² × 3,0 = 3,142 × 1,44 × 3,0 = 13,573 m³. The larger tank holds 13,573 ÷ 1,697 = 8 times as much, not twice as much. The claim is not fair — it substantially understates what the buyer gets, so at twice the price the larger tank is actually very good value. What is misleading is the phrase "twice the size". Doubling both the radius and the height doubles two LENGTHS, but volume depends on r² × h, so doubling the radius multiplies the volume by 4 and doubling the height multiplies it by 2 again: 4 × 2 = 8. "Size" is being used to mean length when the thing being bought is capacity.',
           explanation:
             'The point worth carrying away is that squaring is what breaks the intuition: anything depending on r² grows far faster than r itself. Doubling every dimension of a solid multiplies its volume by 8, and this catches people out in both directions — here it understates the product, and elsewhere ("a pizza twice the width for twice the price") it is used to oversell one. Deciding whether a claim is fair, rather than just computing the volume, is what makes this reasoning rather than calculation.',
+          memo: [
+            { code: 'S', marks: 1, text: 'Substituting into V = pi x r squared x h for the original tank' },
+            { code: 'M', marks: 1, text: 'Substituting the doubled radius and height for the larger tank' },
+            { code: 'A', marks: 1, text: 'The larger tank holds 8 times as much, not twice' },
+            { code: 'J', marks: 1, text: 'Explaining that volume depends on r squared x h, so doubling both lengths multiplies volume by 4 x 2' },
+          ],
         },
         {
           id: 'ml-p1-a-2-10',
@@ -320,6 +414,11 @@ const p1SetA: Paper = {
           prompt: 'Calculate how long filling the tank will take, in hours and minutes, and explain why the time it actually takes is likely to be longer than your answer.',
           answer: '2 770 ÷ 12 ≈ 230.8 minutes ≈ 3 hours 51 minutes. It will probably take longer because 12 litres per minute is the best the hose delivers: the flow drops as pressure falls or as other taps are used, and some water is lost before the hose is properly in the tank.',
           explanation: 'A rate given in a problem is usually a maximum under ideal conditions. Treating it as constant gives the shortest possible time, so the calculated figure is a lower bound rather than a prediction.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Dividing the volume in litres by 12 litres per minute' },
+            { code: 'A', marks: 1, text: 'About 3 hours 51 minutes' },
+            { code: 'R', marks: 1, text: '12 litres a minute is a best-case flow rate, so the real time is longer' },
+          ],
         },
 ],
     },
@@ -342,6 +441,11 @@ const p1SetA: Paper = {
           prompt: 'Calculate the actual length of the bedroom, in metres.',
           answer: '7 m',
           explanation: '3.5 cm × 200 = 700 cm = 7 m.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Multiplying the measured plan length by the scale factor' },
+            { code: 'C', marks: 1, text: 'Converting the result to metres' },
+            { code: 'A', marks: 1, text: '7 m' },
+          ],
         },
         {
           id: 'ml-p1-a-3-2',
@@ -354,6 +458,11 @@ const p1SetA: Paper = {
           prompt: 'On the plan, the width of the bedroom measures 24 mm. Calculate the actual width, in metres.',
           answer: '4.8 m',
           explanation: 'First convert to centimetres: 24 mm = 2.4 cm. Then apply the scale: 2.4 cm × 200 = 480 cm = 4.8 m.',
+          memo: [
+            { code: 'M', marks: 1, text: '24 mm x 200' },
+            { code: 'C', marks: 1, text: 'Converting 4 800 mm to metres' },
+            { code: 'A', marks: 1, text: '4,8 m' },
+          ],
         },
         {
           id: 'ml-p1-a-3-3',
@@ -366,6 +475,12 @@ const p1SetA: Paper = {
           prompt: 'Using your answers to 3.1 and 3.2, calculate the actual floor area of the bedroom.',
           answer: '33.6 m²',
           explanation: '7 m × 4.8 m = 33.6 m².',
+          memo: [
+            { code: 'M', marks: 1, text: 'Using area = length x breadth' },
+            { code: 'CA', marks: 1, text: 'Carrying the length forward from 3.1' },
+            { code: 'CA', marks: 1, text: 'Carrying the width forward from 3.2' },
+            { code: 'A', marks: 1, text: '33,6 square metres' },
+          ],
         },
         {
           id: 'ml-p1-a-3-4',
@@ -385,6 +500,10 @@ const p1SetA: Paper = {
           correctOptionId: 'a',
           answer: '1 cm on the plan = 200 cm in real life',
           explanation: 'A scale of 1 : 200 means every 1 unit on the plan represents 200 of the same unit in real life.',
+          memo: [
+            { code: 'A', marks: 1, text: '1 cm on the plan represents 200 cm in real life' },
+            { code: 'A', marks: 1, text: 'Equivalently, 1 cm represents 2 m' },
+          ],
         },
         {
           id: 'ml-p1-a-3-5',
@@ -398,6 +517,11 @@ const p1SetA: Paper = {
           prompt: 'State the direction the wall opposite the door would then face, and explain ONE practical reason why the direction a bedroom faces matters in South Africa.',
           answer: 'North-East. In South Africa the midday sun sits in the north, so a north-facing room gets sun for most of the day and stays warmer in winter, while a south-facing room stays cooler and darker and may need more heating.',
           explanation: 'Direction on a plan is not only about orientation on paper. Because South Africa lies south of the equator, north-facing rooms are the sunny ones, which is the reverse of the rule in Europe and a common error.',
+          memo: [
+            { code: 'A', marks: 1, text: 'Naming the direction opposite the door' },
+            { code: 'R', marks: 1, text: 'Giving a practical reason that applies in South Africa' },
+            { code: 'J', marks: 1, text: 'Linking the direction to sun exposure, warmth or light through the day' },
+          ],
         },
         {
           id: 'ml-p1-a-3-6',
@@ -411,6 +535,13 @@ const p1SetA: Paper = {
           prompt: 'Determine whether Zanele’s budget covers the planned room, evaluate the builder’s suggestion, and recommend what she should do. Justify your recommendation with figures.',
           answer: 'Planned room: 33,6 × R2 850 = R95 760. Her budget is R90 000, so she is short by R95 760 − R90 000 = R5 760. The budget does not cover the planned room. The builder’s suggestion: 31,5 × R2 850 = R89 775, which is R225 under budget. So it does fit — but only just. The phrase "enough to cover the unexpected" does not hold up: R225 is 0,25% of the build cost, and building work routinely runs over by far more than that. The suggestion solves the shortfall but leaves no real contingency. A defensible recommendation: reduce further, to about 30 m², costing 30 × R2 850 = R85 500 and leaving R4 500 — around 5% of the cost — as a genuine contingency. Alternatively she keeps 31,5 m² and accepts that any overrun must come from elsewhere, which is a decision she should make knowingly rather than because a builder described R225 as a cushion.',
           explanation: 'Two separate judgements are being tested. The first is arithmetic: does the budget cover the room? The second is whether someone else’s reassurance survives contact with the numbers, and here it does not — R225 sounds like money until it is set against R89 775. Turning an amount into a percentage of the thing it is meant to cover is the move that exposes this, and it is worth applying to any "that should be enough" claim. A contingency of around 5% to 10% is the usual rule of thumb for building work.',
+          memo: [
+            { code: 'M', marks: 1, text: '33,6 x R2 850 for the planned room' },
+            { code: 'A', marks: 1, text: 'R95 760, a shortfall of R5 760 against the budget' },
+            { code: 'M', marks: 1, text: '31,5 x R2 850 for the suggestion' },
+            { code: 'A', marks: 1, text: 'R89 775, which is R225 under budget' },
+            { code: 'J', marks: 1, text: 'Judging R225 too small to be a real contingency, and recommending accordingly' },
+          ],
         },
 ],
     },
@@ -433,6 +564,10 @@ const p1SetA: Paper = {
           prompt: 'Write down the number of learners who travel by Bus.',
           answer: '8',
           explanation: 'Read the value directly from the survey data.',
+          memo: [
+            { code: 'RT', marks: 1, text: 'Reading the Bus row from the table' },
+            { code: 'A', marks: 1, text: '8 learners' },
+          ],
         },
         {
           id: 'ml-p1-a-4-4',
@@ -453,6 +588,10 @@ const p1SetA: Paper = {
           correctOptionId: 'b',
           answer: '3/20',
           explanation: '6 out of 40 travel by Car. 6/40 simplifies to 3/20.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Car users over the 40 surveyed' },
+            { code: 'A', marks: 1, text: '3/20 in simplest form' },
+          ],
         },
         {
           id: 'ml-p1-a-4-5-r',
@@ -465,6 +604,10 @@ const p1SetA: Paper = {
           prompt: 'A probability is given as 0,25. Write this as a percentage.',
           answer: '25%',
           explanation: '× 100 turns a probability into a percentage. A probability always lies between 0 and 1, so its percentage always lies between 0% and 100%.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Multiplying by 100' },
+            { code: 'A', marks: 1, text: '25%' },
+          ],
         },
         {
           id: 'ml-p1-a-4-5',
@@ -477,6 +620,10 @@ const p1SetA: Paper = {
           prompt: 'Calculate the probability, as a percentage, that a randomly chosen learner does NOT travel by Taxi.',
           answer: '70%',
           explanation: 'P(Taxi) = 12/40 = 30%. P(not Taxi) = 100% − 30% = 70%.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Using the complement: 100% minus the taxi share' },
+            { code: 'A', marks: 1, text: '70%' },
+          ],
         },
         {
           id: 'ml-p1-a-4-7-r',
@@ -489,6 +636,10 @@ const p1SetA: Paper = {
           prompt: 'Seven values are arranged in ascending order. Write down the position of the median.',
           answer: 'The 4th value',
           explanation: 'With 7 values there are 3 below and 3 above the middle one, so the median sits in position (7 + 1) ÷ 2 = 4.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Using (7 + 1) divided by 2' },
+            { code: 'A', marks: 1, text: 'The 4th value' },
+          ],
         },
         {
           id: 'ml-p1-a-4-7',
@@ -501,6 +652,10 @@ const p1SetA: Paper = {
           prompt: 'Arrange the 7 scores in ascending order and determine the median.',
           answer: '14',
           explanation: 'Sorted: 9, 12, 12, 14, 15, 18, 20. With 7 (odd) values, the median is the 4th value: 14.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Arranging the seven scores in ascending order first' },
+            { code: 'A', marks: 1, text: '14' },
+          ],
         },
         {
           id: 'ml-p1-a-4-8',
@@ -520,6 +675,10 @@ const p1SetA: Paper = {
           correctOptionId: 'a',
           answer: 'Mean',
           explanation: 'The mean uses every value in its calculation, so one very high or low value pulls it noticeably. The median and mode are far less affected.',
+          memo: [
+            { code: 'A', marks: 1, text: 'The mean' },
+            { code: 'R', marks: 1, text: 'Every value enters the calculation, so one extreme value pulls it' },
+          ],
         },
         {
           id: 'ml-p1-a-4-9',
@@ -533,6 +692,11 @@ const p1SetA: Paper = {
           prompt: 'A school newsletter claims that ‘most Grade 12 learners at this school travel by taxi’. State whether the claim is correct and justify your answer using the data.',
           answer: 'The claim is not correct. Taxi is used by 12 of the 40 learners, which is 30%. ‘Most’ means more than half, and 30% is well below half. Walking is in fact the most common mode, with 14 learners (35%).',
           explanation: '‘Most’ is a claim about a majority, not about the largest group. Taxi is not even the largest group here, so the claim fails twice over — a useful check whenever a statement about data uses ‘most’.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Expressing 12 out of 40 as a percentage' },
+            { code: 'A', marks: 1, text: '30%' },
+            { code: 'J', marks: 1, text: 'Most means more than half, and 30% is well below it; walking is the most common at 35%' },
+          ],
         },
         {
           id: 'ml-p1-a-4-10',
@@ -546,6 +710,12 @@ const p1SetA: Paper = {
           prompt: 'Calculate what happens to the bus and car percentages if every car user switched, then decide whether the teacher is right. Justify your decision.',
           answer: 'Currently car users are 8 out of 40 = 20% and bus users are 10 out of 40 = 25%. If all 8 car users switched, bus users become 18 out of 40 = 45% and car users become 0%. The teacher is wrong on the numbers: bus use would nearly double, from 25% to 45%, and car use would fall from a fifth of the school to nothing. A 20 percentage point shift in how learners travel is a large change by any reasonable standard, so "not noticeable" does not survive the calculation. There is, however, a fair point buried in the teacher’s objection: the change affects only 8 learners in absolute terms, and it assumes every single car user switches, which is unlikely. If half switched, bus use goes to 14 out of 40 = 35% and car use to 4 out of 40 = 10% — still a real change, but a more believable one. So the teacher is wrong that the effect is small, while being right to doubt that it will be total.',
           explanation: 'A percentage and a headcount tell different stories about the same 8 learners, and a good answer says so rather than picking whichever supports its conclusion. The other thing worth doing explicitly is testing the SCENARIO as well as the arithmetic: "if every car user switched" is a best case, and checking what happens under a more realistic half-switch is what separates evaluating a proposal from merely computing it.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Current percentages: 20% by car and 25% by bus' },
+            { code: 'CA', marks: 1, text: 'After the switch: 45% by bus and 0% by car' },
+            { code: 'A', marks: 1, text: 'A shift of 20 percentage points' },
+            { code: 'J', marks: 1, text: 'Judging a 20 point shift large, while conceding the assumption that EVERY car user switches' },
+          ],
         },
         {
           id: 'ml-p1-a-4-11-r',
@@ -558,6 +728,10 @@ const p1SetA: Paper = {
           prompt: 'State what the MODE of a data set is.',
           answer: 'The value that appears most often.',
           explanation: 'A data set can have more than one mode, or none at all if every value appears once. It is the only one of mean, median and mode that works on non-numerical data.',
+          memo: [
+            { code: 'A', marks: 1, text: 'The value that appears most often' },
+            { code: 'R', marks: 1, text: 'A set may have more than one mode, or none at all' },
+          ],
         },
         {
           id: 'ml-p1-a-4-11',
@@ -571,6 +745,10 @@ const p1SetA: Paper = {
           prompt: 'Their teacher reports the class average as 14.3 out of 20 and tells the class that ‘most learners are performing above average’. Determine whether the data supports the teacher’s statement, showing your working.',
           answer: 'Mean = (12 + 15 + 9 + 18 + 12 + 20 + 14) ÷ 7 = 100 ÷ 7 ≈ 14.3, so the average is correct. Scores above 14.3 are 15, 18 and 20 — that is 3 of the 7 learners, about 43%. Fewer than half are above the average, so the statement is not supported.',
           explanation: 'The two high scores of 18 and 20 pull the mean above the middle of the group, so the mean sits higher than most of the scores. This is why ‘above average’ and ‘above most people’ are not the same claim, and why the median is often the fairer summary.',
+          memo: [
+            { code: 'M', marks: 1, text: 'Counting the scores above 14,3' },
+            { code: 'J', marks: 1, text: '3 of 7 is under half, so the statement is not supported' },
+          ],
         },
 ],
     },

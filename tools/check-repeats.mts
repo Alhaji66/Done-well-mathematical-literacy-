@@ -17,10 +17,15 @@
  *   ACROSS GRADES OR PAPER NUMBERS -- nobody sits Grade 10 and Grade 11, or
  *     Paper 1 as Paper 2. Not reported.
  *
- * The long-calculation count is the one worth acting on, and it is deliberately
- * NOT auto-fixed: varying the numbers means regenerating answers and worked
+ * The long-calculation count is the one worth acting on, and it is NOT
+ * auto-fixed: varying the numbers means regenerating answers and worked
  * explanations, and a wrong answer key does a learner more harm than a repeated
  * question. Those need a person.
+ *
+ * Thirty-eight such groups were varied by hand, and the count is now zero, so
+ * the check fails on any that come back. The short repeats are still only
+ * counted: "State Ohm's Law" recurring is spaced repetition, and forbidding it
+ * would be forbidding the right thing.
  *
  *   npm run check:repeats
  */
@@ -65,5 +70,17 @@ if (insidePaper) {
 }
 console.log(`No question repeats inside a single paper.`)
 console.log(`${sameCell} repeat within a grade and paper number, which one learner can meet twice.`)
-console.log(`Of those, ${longCalc} are calculations of 4 marks or more -- worth varying by hand:`)
-for (const e of examples) console.log(e)
+
+if (longCalc) {
+  console.error(
+    `\n${longCalc} calculation(s) of 4 marks or more repeat within a grade and paper number:`,
+  )
+  for (const e of examples) console.error(e)
+  console.error(
+    '\nVary the numbers in ONE copy and recompute its answer, explanation and memo.\n' +
+      'Check first what the cell already uses -- half of one such batch collided with a\n' +
+      'value another paper in the same cell had taken, which simply moves the repeat.',
+  )
+  process.exit(1)
+}
+console.log('No calculation of 4 marks or more repeats within a grade and paper number.')

@@ -80,6 +80,18 @@ def main() -> int:
                 print(f"{spec['id']}: no {name} property", file=sys.stderr)
                 return 1
             keep[name] = value
+        # The rebuild below writes a fixed set of properties, so anything else
+        # the item carried -- a marking memo, a figure -- would be dropped
+        # silently. Refuse rather than lose it.
+        for unmanaged in ("memo", "figure", "answerFigure", "options", "correctOptionId"):
+            if re.search(r"^\s*" + unmanaged + r":", body, re.M):
+                print(
+                    f"{spec['id']}: carries a {unmanaged}, which this script does not "
+                    "preserve -- edit it by hand instead",
+                    file=sys.stderr,
+                )
+                return 1
+
         if "marks" in spec and str(spec["marks"]) != keep["marks"]:
             print(
                 f"{spec['id']}: marks are {keep['marks']} in the file, "

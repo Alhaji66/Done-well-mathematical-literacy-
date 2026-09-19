@@ -380,7 +380,9 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Future value annuities', match: /\b(future value|sinking fund|save|savings|annuity|regular deposit)\b/i },
     { name: 'Nominal and effective interest rates', match: /\b(nominal|effective (annual )?(interest )?rate|compounded (monthly|quarterly|daily))\b/i },
     { name: 'Depreciation', match: /\b(depreciat\w*|reducing balance|diminishing|book value|straight[- ]line)\b/i },
-    { name: 'Timelines and changing interest rates', match: /\b(timeline|time line|rate changed|withdrew|withdrawal|deposited .* and .* later)\b/i },
+    // "withdrawal" alone never fired: the prompts say withdrawals, withdrawing,
+    // withdrawn and withdraws, and the trailing \b rejected every one of them.
+    { name: 'Timelines and changing interest rates', match: /\b(timeline|time line|rate changed|withdrew|withdraw\w*|deposited .* and .* later)\b/i },
     { name: 'Simple and compound interest', match: /\b(interest|compound|invest\w*|p\(1 ?\+ ?i\))\b/i },
   ],
 

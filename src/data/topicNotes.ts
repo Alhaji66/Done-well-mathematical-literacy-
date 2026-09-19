@@ -88,6 +88,9 @@ export const topicNotes: TopicNote[] = [
         points: [
           'Simple interest adds the same amount every year, always calculated on the original amount.',
           'Compound interest calculates each year\'s interest on the new balance, so the amount added grows every year.',
+          'Work compound interest out ONE YEAR AT A TIME, in a table: balance at the start of the year, interest for that year, balance at the end. The end balance becomes the next year\'s start balance. Mathematical Literacy does not use the A = P(1 + i)\u207F formula from Mathematics, and it is not given in the exam.',
+          'A quick way to do each year is to multiply by (1 + the rate as a decimal): 8% a year means \u00d7 1,08 for each year. Show the year-by-year steps anyway \u2014 the method marks are for them.',
+          'R10 000 at 8% for 3 years: year 1 gives 10 000 \u00d7 1,08 = R10 800; year 2 gives 10 800 \u00d7 1,08 = R11 664; year 3 gives 11 664 \u00d7 1,08 = R12 597,12. Simple interest would have given only R12 400.',
           'Over the same period and rate, compound interest always yields more than simple interest — a standard "explain why" question.',
           'On a loan, total repaid = monthly instalment × number of instalments, and the cost of the loan = total repaid − amount borrowed.',
           'A longer loan term means smaller instalments but more interest in total. Be ready to explain that trade-off in words.',
@@ -96,9 +99,14 @@ export const topicNotes: TopicNote[] = [
       {
         name: 'Taxation: income tax, VAT and UIF',
         points: [
-          'Income tax is read off a bracket table: find the bracket, take the fixed amount, then add the stated percentage of the income ABOVE that bracket\'s lower limit.',
-          'Never apply the bracket percentage to the whole income — only to the portion above the threshold shown in that row.',
-          'Rebates are subtracted after the tax has been calculated. The primary rebate applies to everyone; secondary and tertiary rebates apply from age 65 and 75.',
+          'The order never changes: gross income \u2192 subtract deductions \u2192 TAXABLE income \u2192 read the SARS table \u2192 subtract rebates \u2192 annual tax \u2192 \u00f7 12 for monthly PAYE. Doing the steps out of order is the most common way to lose the whole question.',
+          'Pension fund, provident fund and retirement annuity contributions are DEDUCTED from gross income before the table is used. So taxable income is smaller than gross income, and using gross income in the table overcharges the tax.',
+          'A pension contribution given as a percentage is a percentage of gross salary, not of taxable income \u2014 work it out first, then subtract it.',
+          'Income tax is read off a bracket table: find the bracket the TAXABLE income falls in, take the fixed amount in that row, then add the stated percentage of the income ABOVE that row\'s lower limit.',
+          'Never apply the bracket percentage to the whole income \u2014 only to the portion above the threshold shown in that row. That is what the fixed amount in front already accounts for.',
+          'Rebates are subtracted AFTER the tax has been calculated, never from the income. The primary rebate applies to everyone; the secondary is added from age 65 and the tertiary from age 75, and they stack.',
+          'The tax threshold is the income below which no tax is payable. It is not a separate rule \u2014 it is simply the income at which the tax from the table exactly equals the rebates.',
+          'Medical aid tax credits, where a question gives them, are also subtracted after the table, in the same step as the rebates.',
           'VAT in South Africa is 15%. To add VAT, multiply by 1,15. To find the VAT inside an inclusive price, multiply by 15 and divide by 115.',
           'To get back to the exclusive price from an inclusive one, divide by 1,15. Subtracting 15% is wrong and is heavily penalised.',
           'Zero-rated items such as brown bread, maize meal, rice, milk, fruit, vegetables and paraffin carry no VAT.',
@@ -128,14 +136,23 @@ export const topicNotes: TopicNote[] = [
     formulae: [
       'Balance = income − expenditure',
       'Total tariff cost = fixed charge + (rate × units used)',
-      'Simple interest: A = P(1 + i × n)',
-      'Compound interest: A = P(1 + i)ⁿ',
+      // Mathematical Literacy does NOT use the Mathematics interest formulae.
+      // A = P(1 + i)ⁿ is not in the Mat Lit curriculum, is not supplied in the
+      // exam, and a learner who reaches for it is working outside the method
+      // the marks are written for. Compound interest here is worked out one
+      // year at a time, which is also the only way the year-by-year table a
+      // Mat Lit paper asks for can be filled in.
+      'Simple interest: interest for one year = original amount × rate. Total interest = that amount × the number of years, because it is always worked out on the ORIGINAL amount.',
+      'Compound interest: work it out ONE YEAR AT A TIME. New balance = previous balance × (1 + rate as a decimal). Repeat for each year, carrying the new balance forward.',
       'VAT at 15%: inclusive = exclusive × 1,15  |  VAT inside an inclusive price = price × 15 ÷ 115',
       'Break-even: selling price × n = fixed cost + (variable cost × n)',
       'Percentage change = (new − old) ÷ old × 100',
     ],
     commonMistakes: [
       'Applying a tax-bracket percentage to the whole income instead of only the part above the threshold.',
+      'Reading the tax table with GROSS income when a pension or retirement contribution should have been deducted first.',
+      'Subtracting the rebate from the income instead of from the tax.',
+      'Using A = P(1 + i)\u207F for compound interest. That is the Mathematics method; Mathematical Literacy works year by year and the formula is not supplied.',
       'Putting all electricity or water usage through the highest tariff block instead of charging each block at its own rate.',
       'Confusing gross and net salary on a payslip.',
       'Working out a percentage increase on the new amount instead of the original.',

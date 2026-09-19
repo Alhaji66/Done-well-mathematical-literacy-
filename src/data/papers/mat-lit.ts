@@ -190,9 +190,9 @@ const p1SetA: Paper = {
             'If the same R5 000 loan instead charged 12% per year compound interest, would the total repayment after 2 years be more, less, or the same as the simple interest option? Show a calculation to support your answer.',
           answer: 'More. Compound total = R6 272.00, which is more than the simple-interest total of R6 200.',
           explanation:
-            'Compound: R5 000 × 1.12² = R5 000 × 1.2544 = R6 272.00. Since R6 272.00 > R6 200.00, compound interest costs more over the same period.',
+            'Work it year by year, which is the Mathematical Literacy method: year 1 gives R5 000 + 12% of R5 000 = R5 600, and year 2 gives R5 600 + 12% of R5 600 = R6 272,00. Note the second year\'s interest is R672, not the R600 of the first year, because it is charged on R5 600 rather than on R5 000 — that is the whole of compound interest. Since R6 272,00 > R6 200,00, compounding costs more over the same period.',
           memo: [
-            { code: 'M', marks: 1, text: 'Calculating the compound total as 5 000 x 1,12 squared' },
+            { code: 'M', marks: 1, text: 'Year 1: 5 000 + 12% of 5 000 = 5 600; year 2: 5 600 + 12% of 5 600' },
             { code: 'A', marks: 1, text: 'R6 272, which is more than the R6 200 simple-interest total' },
           ],
         },

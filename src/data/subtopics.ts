@@ -38,7 +38,7 @@ const rules: Record<string, SubtopicRule[]> = {
   finance: [
     {
       name: 'Taxation: income tax, VAT and UIF',
-      match: /\b(vat|value[- ]added tax|income tax|tax(able|ation)?|sars|uif|rebate|tax bracket|zero[- ]rated|paye)\b/i,
+      match: /\b(vat|value[- ]added tax|income tax|tax(able|ation)?|sars|uif|rebate\w*|tax bracket|zero[- ]rated|paye|pension fund|tax threshold)\b/i,
     },
     {
       name: 'Exchange rates and inflation',

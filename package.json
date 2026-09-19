@@ -24,6 +24,7 @@
     "check:strands": "tsx tools/check-strands.mts",
     "check:physics-level": "tsx tools/physics-level-eval.mts",
     "check:matlit-level": "tsx tools/matlit-level-eval.mts",
+    "check:matlit-method": "tsx tools/check-matlit-method.mts",
     "check:math-level": "tsx tools/math-level-eval.mts",
     "check:matlit-judgement": "tsx tools/matlit-judgement-eval.mts"
   },

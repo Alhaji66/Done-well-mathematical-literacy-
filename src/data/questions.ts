@@ -1,6 +1,14 @@
 import type { Question } from '@/types'
 
+import { taxQuestions } from '@/data/taxQuestions'
+
+/*
+ * Taxation and compound-interest items live in taxQuestions.ts because their
+ * answers are COMPUTED from the SARS table rather than typed, which is the only
+ * way a tax answer and the table printed above it cannot drift apart.
+ */
 export const questions: Question[] = [
+  ...taxQuestions,
   // Finance
   {
     id: 'fin-e1',

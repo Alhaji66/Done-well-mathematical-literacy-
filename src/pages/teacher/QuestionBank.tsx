@@ -217,7 +217,7 @@ export function TeacherQuestionBank() {
                     {atp.weeks.map((w, i) =>
                       w.term === term ? (
                         <option key={i} value={String(i)} disabled={!w.topicId}>
-                          Week {w.weeks} ({w.dates}) — {w.label}
+                          {w.dates ? `Week ${w.weeks} (${w.dates})` : w.weeks} — {w.label}
                           {w.topicId ? '' : ' · no questions'}
                         </option>
                       ) : null,
@@ -226,7 +226,10 @@ export function TeacherQuestionBank() {
                 ))}
               </select>
             </div>
-            <p className="pb-2 text-xs text-navy-400">{atp.source}</p>
+            <p className="pb-2 text-xs text-navy-400">{atp.source}
+                {atp.detail === 'term'
+                  ? ' · terms only, because the week a topic starts is set by your province. Send yours and this becomes week by week.'
+                  : ''}</p>
           </div>
           {chosenWeek?.note ? (
             <p className="mt-3 rounded-lg bg-navy-50 p-3 text-sm text-navy-600">{chosenWeek.note}</p>
@@ -405,7 +408,9 @@ export function TeacherQuestionBank() {
               {chosen.size ? <p className="mt-1 text-xs font-medium text-navy-600">{[...chosen].join(' · ')}</p> : null}
               {chosenWeek ? (
                 <p className="mt-1 text-xs text-navy-500">
-                  Term {chosenWeek.term}, week {chosenWeek.weeks} ({chosenWeek.dates})
+                  {chosenWeek.dates
+                    ? `Term ${chosenWeek.term}, week ${chosenWeek.weeks} (${chosenWeek.dates})`
+                    : `Term ${chosenWeek.term} — ${chosenWeek.label}`}
                 </p>
               ) : null}
               <p className="mt-1 text-xs text-navy-500">

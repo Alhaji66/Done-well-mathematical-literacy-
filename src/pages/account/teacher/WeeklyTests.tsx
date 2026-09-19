@@ -258,7 +258,7 @@ export function WeeklyTests() {
                     {atp.weeks.map((w, i) =>
                       w.term === term ? (
                         <option key={i} value={String(i)} disabled={!w.topicId}>
-                          Week {w.weeks} ({w.dates}) — {w.label}
+                          {w.dates ? `Week ${w.weeks} (${w.dates})` : w.weeks} — {w.label}
                           {w.topicId ? '' : ' · no questions'}
                         </option>
                       ) : null,
@@ -266,7 +266,10 @@ export function WeeklyTests() {
                   </optgroup>
                 ))}
               </select>
-              <p className="mt-1 text-xs text-navy-400">{atp.source}</p>
+              <p className="mt-1 text-xs text-navy-400">{atp.source}
+                {atp.detail === 'term'
+                  ? ' · terms only, because the week a topic starts is set by your province. Send yours and this becomes week by week.'
+                  : ''}</p>
             </div>
           ) : null}
 

@@ -22,19 +22,35 @@
  * needs to see them, and because leaving them out would make the week numbers
  * lie.
  *
- * SOURCE. WCED Mathematical Literacy ATP 2026, Grades 11 and 12. Other grades
- * and subjects are absent rather than guessed: an ATP differs by province and
- * by year, and inventing one would put a teacher in front of a class with the
- * wrong work prepared. `atpFor()` returns undefined for those, and the UI
- * falls back to choosing sub-topics directly.
+ * TWO KINDS OF PLAN, AND THE DIFFERENCE MATTERS.
+ *
+ * Mathematical Literacy Grades 11 and 12 come from the actual WCED ATP 2026
+ * document, so they carry its week numbers, its dates and its sub-topic
+ * detail. Those are `detail: 'week'`.
+ *
+ * Everything else is derived from the national CAPS sequence and is
+ * `detail: 'term'`: it says which topics fall in which TERM, and stops there.
+ * That line is deliberate. Which topics a term covers is set nationally and is
+ * stable; the week a topic starts is set by each province's ATP and each
+ * school's calendar, and inventing week numbers would put a teacher in front
+ * of a class with the wrong work prepared. A term is still the question a
+ * teacher asks most often -- "what am I on this term" -- and it still narrows
+ * a worksheet from the whole year to a handful of topics.
+ *
+ * The picker says which kind it is showing. Send a provincial ATP for any of
+ * the term-level subjects and it can be promoted to week level, the way Mat
+ * Lit was.
  */
 
 export interface AtpWeek {
   term: 1 | 2 | 3 | 4
   /** As the ATP writes it: "2 – 4", "8", "9 – 12". */
   weeks: string
-  /** As the ATP writes it: "19 Jan – 6 Feb". */
-  dates: string
+  /**
+   * As the ATP writes it: "19 Jan – 6 Feb". Absent on a term-level plan, where
+   * the dates are the school calendar's and not the plan's to state.
+   */
+  dates?: string
   /** The CAPS topic heading from the ATP, or what the weeks are for. */
   label: string
   /** The topic in this app the week's work belongs to. Absent for revision and exams. */
@@ -50,6 +66,20 @@ export interface Atp {
   grade: number
   /** Whose plan this is, and for which year. Shown to the teacher. */
   source: string
+  /**
+   * How finely the plan is broken down, and how far it can be trusted.
+   *
+   * 'week' means it came from a real provincial ATP document, with that
+   * document's own week numbers and dates. 'term' means it was derived from
+   * the national CAPS sequence: which topics fall in which term is stable and
+   * worth having, but the WEEK a topic starts is set by each province and each
+   * school's calendar, so a term-level plan does not pretend to know it.
+   *
+   * The picker says which kind it is showing, because a teacher planning next
+   * week needs to know whether they are looking at their province's plan or a
+   * reasonable default.
+   */
+  detail: 'week' | 'term'
   weeks: AtpWeek[]
 }
 
@@ -57,6 +87,7 @@ const matLitG11: Atp = {
   subjectId: 'mat-lit',
   grade: 11,
   source: 'WCED Mathematical Literacy Grade 11 ATP 2026',
+  detail: 'week',
   weeks: [
     {
       term: 1,
@@ -222,6 +253,7 @@ const matLitG12: Atp = {
   subjectId: 'mat-lit',
   grade: 12,
   source: 'WCED Mathematical Literacy Grade 12 ATP 2026',
+  detail: 'week',
   weeks: [
     {
       term: 1,
@@ -343,7 +375,206 @@ const matLitG12: Atp = {
   ],
 }
 
-const plans: Atp[] = [matLitG11, matLitG12]
+
+/**
+ * A term-level plan built from the national CAPS sequence.
+ *
+ * Each entry is one term and one topic. `weeks` carries the term label rather
+ * than a week range, because a CAPS-derived plan does not know the weeks.
+ */
+const term = (
+  subjectId: string,
+  grade: number,
+  subject: string,
+  terms: [1 | 2 | 3 | 4, string, string | undefined, string?][],
+): Atp => ({
+  subjectId,
+  grade,
+  source: `CAPS sequence for ${subject} Grade ${grade} — not a provincial ATP`,
+  detail: 'term',
+  weeks: terms.map(([t, label, topicId, note]) => ({
+    term: t,
+    weeks: `Term ${t}`,
+    label,
+    topicId,
+    note,
+  })),
+})
+
+const matLitG10 = term('mat-lit', 10, 'Mathematical Literacy', [
+  [1, 'Numbers, percentages and financial documents', 'finance', 'Rounding, percentages, ratio and rate; payslips, till slips, invoices and bank statements; tariff systems.'],
+  [2, 'Measurement: conversions, time, perimeter, area and volume', 'measurement'],
+  [2, 'Maps, plans and other representations', 'maps-plans'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'Finance: income, expenditure, budgets and interest', 'finance'],
+  [3, 'Data handling', 'data-handling'],
+  [4, 'Probability', 'data-handling', 'Probability is integrated across all the CAPS topics, not taught only here.'],
+  [4, 'Models and packaging', 'maps-plans'],
+  [4, 'Revision and end-of-year examination', undefined],
+])
+
+const mathsG10 = term('mathematics', 10, 'Mathematics', [
+  [1, 'Algebraic expressions, exponents and equations', 'math-algebra'],
+  [1, 'Number patterns', 'math-number-patterns'],
+  [2, 'Functions and graphs', 'math-functions'],
+  [2, 'Trigonometry', 'math-trigonometry'],
+  [2, 'Euclidean geometry and measurement', 'math-euclidean-geometry'],
+  [2, 'Mid-year examination', undefined],
+  // CAPS puts analytical geometry in Grade 10 -- distance, midpoint and
+  // gradient -- but this app has no Grade 10 content for it: the topic is
+  // registered for Grades 11 and 12 only. Listing it here would hand a teacher
+  // a week that selects nothing, so it is named without a topic and recorded as
+  // a content gap instead.
+  [3, 'Analytical geometry (no Grade 10 content in the bank yet)', undefined],
+  [3, 'Finance and growth', 'math-finance-growth'],
+  [3, 'Statistics', 'math-statistics'],
+  [4, 'Probability', 'math-counting-probability'],
+  [4, 'Revision and end-of-year examination', undefined],
+])
+
+const mathsG11 = term('mathematics', 11, 'Mathematics', [
+  [1, 'Exponents, surds, equations and inequalities', 'math-algebra'],
+  [1, 'Number patterns', 'math-number-patterns'],
+  [1, 'Analytical geometry', 'math-analytical-geometry'],
+  [2, 'Functions and graphs', 'math-functions'],
+  [2, 'Trigonometry: reduction formulae, identities and equations', 'math-trigonometry'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'Euclidean geometry and measurement', 'math-euclidean-geometry'],
+  [3, 'Trigonometry: sine, cosine and area rules', 'math-trigonometry'],
+  [3, 'Finance, growth and decay', 'math-finance-growth'],
+  [3, 'Probability', 'math-counting-probability'],
+  [4, 'Statistics', 'math-statistics'],
+  [4, 'Revision and end-of-year examination', undefined],
+])
+
+const mathsG12 = term('mathematics', 12, 'Mathematics', [
+  [1, 'Patterns, sequences and series', 'math-number-patterns'],
+  [1, 'Functions, inverses, exponential and logarithmic graphs', 'math-functions'],
+  [1, 'Finance, growth and decay', 'math-finance-growth'],
+  [2, 'Trigonometry: compound and double angles, 2D and 3D problems', 'math-trigonometry'],
+  [2, 'Euclidean geometry', 'math-euclidean-geometry'],
+  [2, 'Statistics and regression', 'math-statistics'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'Analytical geometry', 'math-analytical-geometry'],
+  [3, 'Differential calculus', 'math-calculus'],
+  [3, 'Counting and probability', 'math-counting-probability'],
+  [3, 'Preparatory examination', undefined],
+  [4, 'Revision and final examination', undefined],
+])
+
+const lifeG10 = term('life-sciences', 10, 'Life Sciences', [
+  [1, 'The chemistry of life', 'life-sci-chemistry-of-life'],
+  [1, 'Cells: the basic units of life', 'life-sci-cells'],
+  [1, 'Cell division: mitosis', 'life-sci-mitosis'],
+  [2, 'Plant tissues', 'life-sci-plant-tissues'],
+  [2, 'Animal tissues', 'life-sci-animal-tissues'],
+  [2, 'Support and transport systems in plants', 'life-sci-transport-plants'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'Support systems in animals: the skeleton', 'life-sci-skeletal-system'],
+  [3, 'Transport systems in mammals: the circulatory system', 'life-sci-circulatory-system'],
+  [3, 'Biosphere to ecosystems: structure and energy flow', 'life-sci-ecosystem-energy-flow'],
+  [4, 'Nutrient cycling in ecosystems', 'life-sci-nutrient-cycling'],
+  [4, 'Revision and end-of-year examination', undefined],
+])
+
+const lifeG11 = term('life-sciences', 11, 'Life Sciences', [
+  [1, 'Biodiversity and classification of micro-organisms', 'life-sci-biodiversity-microorganisms'],
+  [1, 'Biodiversity in plants and reproduction', 'life-sci-biodiversity-plants'],
+  [2, 'Biodiversity in animals', 'life-sci-biodiversity-animals'],
+  [2, 'Photosynthesis', 'life-sci-photosynthesis'],
+  [2, 'Animal nutrition', 'life-sci-animal-nutrition'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'Energy transformations: cellular respiration', 'life-sci-respiration'],
+  [3, 'Gaseous exchange', 'life-sci-gaseous-exchange'],
+  [3, 'Excretion', 'life-sci-excretion'],
+  [4, 'Population ecology', 'life-sci-population-ecology'],
+  [4, 'Human impact on the environment', 'life-sci-human-impact'],
+  [4, 'Revision and end-of-year examination', undefined],
+])
+
+const lifeG12 = term('life-sciences', 12, 'Life Sciences', [
+  [1, 'Meiosis', 'life-sci-meiosis'],
+  [1, 'Reproduction in vertebrates', 'life-sci-reproduction-vertebrates'],
+  [1, 'Human reproduction', 'life-sci-human-reproduction'],
+  [2, 'Responding to the environment: humans', 'life-sci-response-humans'],
+  [2, 'The human endocrine system and homeostasis', 'life-sci-endocrine-homeostasis'],
+  [2, 'Responding to the environment: plants', 'life-sci-response-plants'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'DNA: the code of life', 'life-sci-dna-code'],
+  [3, 'Genetics and inheritance', 'life-sci-genetics'],
+  [3, 'Evolution', 'life-sci-evolution'],
+  [3, 'Preparatory examination', undefined],
+  [4, 'Revision and final examination', undefined],
+])
+
+const physG10 = term('physical-sciences', 10, 'Physical Sciences', [
+  [1, 'Classification of matter', 'phys-classification-matter'],
+  [1, 'States of matter and the kinetic molecular theory', 'phys-states-matter-kmt'],
+  [1, 'The atom', 'phys-the-atom'],
+  [1, 'The periodic table', 'phys-periodic-table'],
+  [2, 'Chemical bonding', 'phys-chemical-bonding-g10'],
+  [2, 'Transverse pulses and waves', 'phys-transverse-waves-g10'],
+  [2, 'Longitudinal waves', 'phys-longitudinal-waves-g10'],
+  [2, 'Sound', 'phys-sound-g10'],
+  [2, 'Electromagnetic radiation', 'phys-em-radiation-g10'],
+  [3, 'Physical and chemical change', 'phys-physical-chemical-change'],
+  [3, 'Vectors and scalars', 'phys-vectors-scalars-g10'],
+  [3, 'Motion in one dimension', 'phys-motion-1d'],
+  [4, 'Mechanical energy', 'phys-mechanical-energy-g10'],
+  [4, 'Revision and end-of-year examination', undefined],
+])
+
+const physG11 = term('physical-sciences', 11, 'Physical Sciences', [
+  [1, 'Vectors in two dimensions', 'phys-vectors-2d'],
+  [1, "Newton's laws and the law of universal gravitation", 'phys-newtons-laws'],
+  [2, 'Atomic combinations: molecular structure', 'phys-atomic-combinations'],
+  [2, 'Intermolecular forces', 'phys-intermolecular-forces'],
+  [2, 'Geometrical optics', 'phys-geometric-optics'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'Electrostatics', 'phys-electrostatics-g11'],
+  [3, 'Electromagnetism', 'phys-electromagnetism'],
+  [3, 'Electric circuits', 'phys-electric-circuits-g11'],
+  [3, 'Ideal gases and thermal properties', 'phys-ideal-gases'],
+  [3, 'Quantitative aspects of chemical change', 'phys-quantitative-chem-change'],
+  [4, 'Energy and chemical change', 'phys-energy-chem-change'],
+  [4, 'Types of reactions', 'phys-types-of-reactions'],
+  [4, '2D and 3D wavefronts', 'phys-wavefronts'],
+  [4, 'Revision and end-of-year examination', undefined],
+])
+
+const physG12 = term('physical-sciences', 12, 'Physical Sciences', [
+  [1, 'Momentum and impulse', 'phys-momentum-impulse'],
+  [1, 'Vertical projectile motion in one dimension', 'phys-vertical-projectile'],
+  [1, 'Organic chemistry', 'phys-organic-chemistry'],
+  [2, 'Work, energy and power', 'phys-work-energy-power'],
+  [2, 'The Doppler effect', 'phys-doppler-effect'],
+  [2, 'Rate and extent of reaction', 'phys-reaction-rate'],
+  [2, 'Chemical equilibrium', 'phys-chemical-equilibrium'],
+  [2, 'Mid-year examination', undefined],
+  [3, 'Electrostatics', 'phys-electrostatics'],
+  [3, 'Electric circuits', 'phys-electric-circuits'],
+  [3, 'Electrodynamics', 'phys-electrodynamics'],
+  [3, 'Acids and bases', 'phys-acids-bases'],
+  [3, 'Electrochemical reactions', 'phys-electrochemistry'],
+  [3, 'Preparatory examination', undefined],
+  [4, 'Optical phenomena and the photoelectric effect', 'phys-em-radiation'],
+  [4, 'Revision and final examination', undefined],
+])
+
+const plans: Atp[] = [
+  matLitG10,
+  matLitG11,
+  matLitG12,
+  mathsG10,
+  mathsG11,
+  mathsG12,
+  lifeG10,
+  lifeG11,
+  lifeG12,
+  physG10,
+  physG11,
+  physG12,
+]
 
 /** The ATP for a subject and grade, or undefined where none has been supplied. */
 export function atpFor(subjectId: string, grade: number): Atp | undefined {

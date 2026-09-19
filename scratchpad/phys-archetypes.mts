@@ -129,3 +129,78 @@ export const PS_G12_P1: Archetype[] = [
   { re: /shines on the metal from the previous question/, level: 2, why: 'One subtraction, with both energies handed over.' },
   { re: /^(Explain|State|Distinguish|Name|Define)/, level: 2, why: 'Recall or comprehension of a taught concept, stated back. No calculation and no new context.' },
 ]
+
+/** Grade 11 Paper 1: mechanics, electrostatics, electric circuits, waves and optics. */
+export const PS_G11_P1: Archetype[] = [
+  // ---- Level 3 ----
+  {
+    re: /net force on Q₂ due to Q₁ and Q₃/,
+    level: 3,
+    why: 'Two Coulomb forces on the same charge, each worked out separately and then combined as VECTORS. The signs of the outer charges decide whether they add or oppose, and no formula makes that decision.',
+  },
+  {
+    re: /third force, F₃, required to keep the object in equilibrium/,
+    level: 3,
+    why: 'Equilibrium means the resultant is zero, so the answer is the resultant of the first two forces REVERSED. Two stages, and the reversal is a step the learner has to know to take.',
+  },
+  {
+    re: /the acceleration of the system, and \(b\) the tension in the string/,
+    level: 3,
+    why: 'Two connected bodies and two unknowns: Newton’s second law on the system gives the acceleration, and only then does the law applied to one body alone give the tension. Neither can be found without the other.',
+  },
+  {
+    re: /combined series-parallel circuit/,
+    level: 3,
+    why: 'The parallel group has to be identified and reduced before the series addition can happen. Reading the circuit is the work; the arithmetic afterwards is easy.',
+  },
+  {
+    re: /coefficient of kinetic friction/,
+    level: 3,
+    why: 'Three stages: resolve the weight along and perpendicular to the slope, use the perpendicular component to get the normal force and hence the friction, and only then apply Newton’s second law along the slope.',
+  },
+  {
+    re: /Calculate the magnitude and direction of the resultant force/,
+    level: 3,
+    why: 'Magnitude by Pythagoras and direction by trigonometry, then the direction has to be stated as a bearing or an angle from a named axis. The answer is a vector, not a number.',
+  },
+  {
+    re: /whether total internal reflection takes place/,
+    level: 3,
+    why: 'Two conditions to state, then a critical angle to calculate, then a comparison that decides the answer. The calculation only matters because of the comparison it feeds.',
+  },
+  {
+    re: /Calculate the component of .*weight/,
+    level: 3,
+    why: 'The angle of the incline has to be transferred into the weight triangle before mg sin θ can be written down. Knowing WHY it is sin and not cos is the whole question, and it is the step Grade 11 learners most often get backwards.',
+  },
+  {
+    re: /connected in series to an? .* battery\. Calculate \(a\) the total resistance/,
+    level: 3,
+    why: 'The current cannot be found until the total resistance has been, so the two parts are a chain rather than a pair. The same shape as the parallel-then-current questions elsewhere in the paper.',
+  },
+
+  {
+    re: /(current-carrying conducting rod|Two parallel, current-carrying conductors)/,
+    level: 3,
+    why: 'The motor effect applied to a particular geometry: the field direction, the current direction and the resulting force direction all have to be worked out and then combined by the left-hand rule. Nothing here is a formula to substitute into.',
+  },
+  {
+    re: /loudspeaker around the corner/,
+    level: 3,
+    why: 'Two wavelengths diffracting through the same gap, compared, to explain something heard in the real world. Applying the model to an unfamiliar situation rather than reciting it.',
+  },
+
+  // ---- Level 2 ----
+  { re: /Calculate the magnitude of the electric field at a point/, level: 2, why: 'E = kQ/r², one charge, one substitution.' },
+  { re: /Calculate the magnitude of the electrostatic force between them/, level: 2, why: "Coulomb's law, one substitution." },
+  { re: /Use Newton\u2019s Second Law to explain/, level: 2, why: 'A taught explanation, retold.' },
+  { re: /(A wave of constant speed passes through a gap|A tank of water is used to generate straight wavefronts)/, level: 2, why: 'Describing what is observed in the standard ripple-tank demonstration.' },
+  { re: /Calculate the horizontal \(Fx\) and vertical \(Fy\) components/, level: 2, why: 'Two independent substitutions into F cos θ and F sin θ, with the angle measured from the horizontal exactly as the formulas assume.' },
+  { re: /connected in parallel\. Calculate the equivalent resistance/, level: 2, why: 'One formula for the combination named, applied as taught.' },
+  { re: /Calculate the number of excess electrons/, level: 2, why: 'n = Q/e, one division.' },
+  { re: /Calculate the (magnitude of the net force|.{0,24}acceleration|mass of the crate)\./, level: 2, why: "Newton's second law, rearranged once -- for the acceleration, the force or the mass, whichever is missing." },
+  { re: /Calculate the angle of refraction/, level: 2, why: "Snell's law with both refractive indices given, rearranged for one angle." },
+  { re: /Use?(ing)? Huygens/i, level: 2, why: 'Explaining diffraction with the model as it was taught. Comprehension of a standard account, not application to anything unfamiliar.' },
+  { re: /Use Newton’s Third Law to explain/, level: 2, why: 'A taught explanation, retold. The pairs named are the textbook examples.' },
+  { re: /^(Explain|State|Describe|Distinguish|Compare|Name|Define|List)/, level: 2, why: 'Recall or comprehension of a taught concept, stated back.' },
+]

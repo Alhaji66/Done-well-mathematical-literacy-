@@ -15,6 +15,7 @@
     "check:memos": "tsx tools/check-memos.mts",
     "check:totals": "tsx tools/check-paper-totals.mts",
     "check:orphans": "tsx tools/check-orphans.mts",
+    "check:ambiguous": "tsx tools/check-ambiguous.mts",
     "check:practise-links": "tsx tools/check-practise-links.mts",
     "check:strands": "tsx tools/check-strands.mts",
     "check:physics-level": "tsx tools/physics-level-eval.mts",

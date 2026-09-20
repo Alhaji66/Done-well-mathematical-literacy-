@@ -17,6 +17,8 @@
     "check:latex": "tsx tools/check-latex.mts",
     "check:context-tables": "tsx tools/check-context-tables.mts",
     "check:graphs": "tsx tools/check-graphs.mts",
+    "check:figures": "tsx tools/derive-figures.mts",
+    "figures:write": "tsx tools/derive-figures.mts --write",
     "check:graphs-fresh": "tsx tools/derive-graphs.mts",
     "graphs:write": "tsx tools/derive-graphs.mts --write",
     "check:memos": "tsx tools/check-memos.mts",

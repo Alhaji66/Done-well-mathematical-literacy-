@@ -137,6 +137,18 @@ export type FigureId =
   | 'fbd-connected'
   | 'circuit-meters'
   | 'titration-curve'
+  // Life Sciences structures, in LifeSciFigures.tsx.
+  | 'nephron'
+  | 'heart'
+  | 'alveolus'
+  | 'leaf-section'
+  | 'eye'
+  | 'ear'
+  | 'reflex-arc'
+  | 'dna-structure'
+  | 'energy-pyramid'
+  | 'plant-transport'
+  | 'flower-structure'
 
 /**
  * A curve on a set of axes, given by its family and coefficients.

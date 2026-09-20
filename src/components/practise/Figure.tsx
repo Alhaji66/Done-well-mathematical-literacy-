@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { FigureId } from '@/types'
+import { LIFE_SCI_FIGURES } from '@/components/practise/LifeSciFigures'
 
 /**
  * Inline SVG figures for the questions where a picture carries the idea.
@@ -365,6 +366,7 @@ function TitrationCurve() {
 }
 
 const FIGURES: Record<FigureId, () => JSX.Element> = {
+  ...LIFE_SCI_FIGURES,
   'cast-diagram': CastDiagram,
   'surd-number-line': SurdNumberLine,
   'charges-on-a-line': ChargesOnALine,

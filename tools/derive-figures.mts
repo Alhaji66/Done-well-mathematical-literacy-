@@ -1,0 +1,149 @@
+/**
+ * Attach the Life Sciences structure diagrams to the questions about them.
+ *
+ * Run with `--write` to regenerate `src/data/derivedFigures.ts`; without it,
+ * checks the file is current and fails if not.
+ *
+ * WHY DERIVED. 633 Life Sciences items name a structure that has a diagram,
+ * spread over 2 194 questions in eleven files. Editing them by hand would be
+ * 633 edits for no gain -- which structure a question is about is already in
+ * its own words.
+ */
+import { readFileSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+import { questions } from '../src/data/questions'
+import { papersForSubject } from '../src/data/papers'
+import { getTopic } from '../src/data/topics'
+import type { FigureId } from '../src/types'
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const OUT = join(root, 'src/data/derivedFigures.ts')
+const write = process.argv.includes('--write')
+
+interface Item {
+  id: string
+  prompt: string
+  text: string
+  hasFigure: boolean
+}
+
+const items: Item[] = []
+for (const q of questions) {
+  if (getTopic(q.topicId)?.subjectId !== 'life-sciences') continue
+  items.push({
+    id: q.id,
+    prompt: q.prompt,
+    text: `${q.prompt} ${q.context ?? ''}`,
+    hasFigure: Boolean(q.figure || q.answerFigure),
+  })
+}
+for (const p of await papersForSubject('life-sciences')) {
+  for (const s of p.sections) {
+    for (const it of s.items) {
+      items.push({
+        id: it.id,
+        prompt: it.prompt,
+        text: `${it.prompt} ${it.context ?? ''}`,
+        hasFigure: Boolean(it.figure || it.answerFigure),
+      })
+    }
+  }
+}
+
+/**
+ * Which diagram a question is about.
+ *
+ * Ordered, first match wins, most specific first: a question about the loop of
+ * Henle mentions both the kidney and water, and it is a nephron question.
+ * The patterns require a structure to be NAMED -- a question about osmosis in
+ * general is not a question about a root hair, and hanging a plant-transport
+ * diagram on it would be decoration rather than teaching.
+ */
+const RULES: [FigureId, RegExp][] = [
+  ['nephron', /\bnephron|glomerul|bowman|loop of henle|collecting duct|convoluted tubule|ultrafiltration|renal\b/i],
+  ['heart', /\bventricl|atri(um|a)\b|aorta|vena cava|semilunar|bicuspid|tricuspid|pulmonary (artery|vein)|heart (valve|wall|chamber|beat)/i],
+  ['alveolus', /\balveol|bronchiol|bronch(us|i)\b|trachea|pleural|gaseous exchange|gas exchange/i],
+  ['leaf-section', /\bstomat|guard cell|mesophyll|palisade|spongy|cuticle|epidermis of the leaf|leaf cross/i],
+  ['eye', /\bretina|cornea\b|\biris\b|\bpupil\b|optic nerve|rods and cones|accommodation of the eye|yellow spot|blind spot/i],
+  ['ear', /\bcochlea|eardrum|tympanic|ossicl|semicircular canal|auditory (canal|nerve)|eustachian|oval window|\bpinna\b/i],
+  ['reflex-arc', /\breflex arc|sensory neuron|motor neuron|interneuron|spinal cord|\bsynap|\baxon\b|\bdendrit|\bmyelin|effector\b/i],
+  ['dna-structure', /\bdouble helix|base pair|complementary base|hydrogen bond|nucleotide|deoxyribose|adenine|thymine|cytosine|guanine|DNA replicat/i],
+  ['energy-pyramid', /\bfood (chain|web)|trophic level|pyramid of (energy|numbers|biomass)|energy flow|\bproducer|\bdecompos|primary consumer/i],
+  ['plant-transport', /\bxylem|phloem|root hair|transpiration|cohesion|adhesion|translocat/i],
+  ['flower-structure', /\banther|stigma|\bstyle\b|\bovule|pollen|\bcarpel|\bstamen|\bsepal|\bpetal|pollinat/i],
+]
+
+/**
+ * A NAMING question gets its diagram only with the answer.
+ *
+ * "Name the structure where ultrafiltration occurs" is answered outright by a
+ * labelled nephron sitting above it. "Explain why the left ventricle wall is
+ * thicker" is not -- the diagram shows the thickness, the learner still has to
+ * say why. So identification goes to the answer side and everything else
+ * beside the question; anything unclassifiable goes to the answer side, where
+ * it cannot give anything away.
+ */
+const NAMING = /\b(name|identify|label|state the (name|part|structure)|which (structure|part|organ|vessel|chamber)|give the (name|label))\b/i
+
+const prompt = new Map<string, FigureId>()
+const answer = new Map<string, FigureId>()
+const counts = new Map<FigureId, number>()
+
+for (const item of items) {
+  if (item.hasFigure) continue
+  const hit = RULES.find(([, re]) => re.test(item.text))
+  if (!hit) continue
+  const [figure] = hit
+  counts.set(figure, (counts.get(figure) ?? 0) + 1)
+  if (NAMING.test(item.prompt)) answer.set(item.id, figure)
+  else prompt.set(item.id, figure)
+}
+
+console.log(`${items.length} Life Sciences item(s); ${prompt.size + answer.size} get a diagram.`)
+console.log(`  beside the question: ${prompt.size}`)
+console.log(`  with the answer (naming questions): ${answer.size}`)
+for (const [figure, n] of [...counts].sort((a, b) => b[1] - a[1])) {
+  console.log(`    ${figure.padEnd(18)} ${n}`)
+}
+
+const body = `/* GENERATED by tools/derive-figures.mts -- do not edit by hand.
+ *
+ * Which structure diagram belongs with which Life Sciences question, worked
+ * out from the question's own words. Regenerate with \`npm run figures:write\`;
+ * \`npm run check:figures\` fails if this file has drifted from the corpus.
+ */
+import type { FigureId } from '@/types'
+
+/** Shown beside the question. */
+export const derivedFigures: Record<string, FigureId> = ${JSON.stringify(
+  Object.fromEntries([...prompt.entries()].sort(([a], [b]) => a.localeCompare(b))),
+  null,
+  2,
+)}
+
+/** Shown only with the revealed answer: naming questions the diagram would answer. */
+export const derivedAnswerFigures: Record<string, FigureId> = ${JSON.stringify(
+  Object.fromEntries([...answer.entries()].sort(([a], [b]) => a.localeCompare(b))),
+  null,
+  2,
+)}
+`
+
+const existing = (() => {
+  try {
+    return readFileSync(OUT, 'utf8')
+  } catch {
+    return ''
+  }
+})()
+
+if (write) {
+  writeFileSync(OUT, body)
+  console.log(`wrote ${OUT}`)
+} else if (existing !== body) {
+  console.error('\nsrc/data/derivedFigures.ts is out of date. Run `npm run figures:write` and commit it.')
+  process.exit(1)
+} else {
+  console.log('src/data/derivedFigures.ts is up to date.')
+}

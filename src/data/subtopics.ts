@@ -85,7 +85,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Representing data in tables and graphs',
-      match: /\b(bar graph|histogram|pie chart|line graph|frequency polygon|draw (a|the) graph|tally|frequency table|compound bar|stacked)\b/i,
+      match: /\b(bar graph\w*|histogram\w*|pie chart\w*|line graph\w*|frequency polygon\w*|draw (a|the) graph|tally|frequency table\w*|compound bar|stacked)\b/i,
     },
     {
       name: 'Mean, median and mode',

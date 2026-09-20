@@ -5,13 +5,22 @@ import type { FigureId } from '@/types'
  * Inline SVG figures for the questions where a picture carries the idea.
  *
  * Scope, decided by measurement rather than assumption. A sweep for items
- * referring to "the diagram above", "shown in the figure" and so on found 4
- * hits in 7 707 items, and all four were false positives of the word
- * "alongside". The corpus was written to be self-contained, so NO question is
- * unanswerable for want of a picture. That makes figures an enhancement rather
- * than a repair, which in turn decides the design: a small set of hand-drawn
- * figures attached where they teach something, not a generic diagram engine
- * built to render a need that does not exist.
+ * referring to "the diagram above", "shown in the figure" and so on still
+ * finds no question that DEPENDS on a picture: re-measured across 9 163
+ * items, every apparent hit turned out to be self-contained -- "the circuit"
+ * describing a circuit the words already give, "the graph of f(x) = x² − 9"
+ * naming a graph by its equation. The corpus was written to stand alone.
+ *
+ * But self-contained is not the same as well taught, and treating those as
+ * the same is what left the app with eight pictures in 9 163 questions. A
+ * learner asked where a parabola cuts the axis is being asked to SEE it. So
+ * figures are an enhancement rather than a repair, and the enhancement is
+ * worth making:
+ *
+ *   - a curve given by an equation is PLOTTED, not drawn, by Graph.tsx --
+ *     there are hundreds of those and they differ only in their coefficients
+ *   - a picture that exists exactly once, like the CAST diagram below, is
+ *     hand-drawn here, because there is nothing to generalise
  *
  * SVG rather than Canvas throughout. These are diagrams of a dozen elements,
  * not generative graphics: SVG scales without blurring, the text inside it is

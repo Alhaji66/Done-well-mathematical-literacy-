@@ -7,6 +7,8 @@ import { MathText } from '@/components/practise/MathText'
 import { QuestionText } from '@/components/practise/QuestionText'
 import { MarkingMemo } from '@/components/practise/MarkingMemo'
 import { Figure } from '@/components/practise/Figure'
+import { Graph } from '@/components/practise/Graph'
+import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
 
 interface QuestionCardProps {
   question: Question
@@ -23,6 +25,9 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [attemptedText, setAttemptedText] = useState('')
   const [revealed, setRevealed] = useState(false)
+
+  const promptGraph = question.graph ?? derivedGraphs[question.id]
+  const answerGraph = question.answerGraph ?? derivedAnswerGraphs[question.id]
 
   const isMcq = Boolean(question.options && question.correctOptionId)
   const hasAttempted = isMcq ? selectedOption !== null : attemptedText.trim().length > 0 || revealed
@@ -53,6 +58,9 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
       </p>
 
       {question.figure ? <Figure id={question.figure} /> : null}
+      {/* A graph written on the question wins; otherwise one derived from the
+          equation the question itself states. See src/data/graphSpecs.ts. */}
+      {promptGraph ? <Graph spec={promptGraph} /> : null}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -138,6 +146,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
               DRAW a free-body diagram is answered for them if the finished
               diagram sits beside the prompt. */}
           {question.answerFigure ? <Figure id={question.answerFigure} /> : null}
+          {answerGraph ? <Graph spec={answerGraph} /> : null}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
         </div>
       )}

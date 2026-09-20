@@ -2066,7 +2066,7 @@ const g11P2SetA: Paper = {
           cognitiveLevel: 4,
           marks: 4,
           context:
-            "A family's monthly grocery budget is R3 200. In one month they spent: Meat R850, Vegetables R420, Dairy R380, Bread and grains R310, Household items R540.",
+            "A family's monthly grocery budget is R3 200. In one month they spent:\n|+ Grocery spending for the month\n| Meat | R850 |\n| Vegetables | R420 |\n| Dairy | R380 |\n| Bread and grains | R310 |\n| Household items | R540 |",
           prompt: 'A family spent R850 on meat, R420 vegetables, R380 dairy, R310 bread and grains, and R540 household items. Determine the total spend and the percentage on meat, then determine what percentage went on items that are not food at all, and state what that suggests about the grocery budget.',
           answer: 'Total = R2 500. Meat = 850 ÷ 2 500 × 100 = 34%. Household items are not food: 540 ÷ 2 500 × 100 = 21,6%. That suggests the grocery budget is carrying more than groceries — over a fifth goes on cleaning and similar items, so a family trying to cut the food bill should look at that line separately rather than buying less food.',
           explanation: 'Add all the lines for the total, then express each against it. The reasoning mark is for questioning the category: a budget labelled groceries that is 21,6% non-food will mislead anyone who compares it against a food-spending benchmark.',
@@ -7163,7 +7163,7 @@ const g11P2Y2023: Paper = {
           difficulty: 'Challenge',
           cognitiveLevel: 3,
           marks: 2,
-          context: "A spaza shop's daily income was R2 450. Expenses: stock R900, electricity R120, rent (daily share) R200.",
+          context: "A spaza shop's daily income was R2 450.\n|+ Expenses\n| Stock | R900 |\n| Electricity | R120 |\n| Rent (daily share) | R200 |",
           prompt: 'A spaza shop took R2 450 in a day against stock R900, electricity R120 and a daily rent share of R200. Determine total expenses and what percentage of income they are, then determine which expense would have to fall for the shop to keep half its income, and by how much.',
           answer: 'Total expenses = R1 220, which is 1 220 ÷ 2 450 × 100 ≈ 49,8% of income. To keep exactly half, expenses must not exceed R1 225 — they already sit R5 below that, so no cut is needed. But stock at R900 is the only truly variable line: electricity and rent are fixed, so any future saving has to come from buying stock better.',
           explanation: 'Add the expense lines, then express against income. Half of income is the threshold to compare against. The reasoning mark is for identifying which lines can actually be changed: naming a target is useless if the only large line is a fixed one.',
@@ -8255,7 +8255,7 @@ const g11P2Y2022: Paper = {
           difficulty: 'Challenge',
           cognitiveLevel: 4,
           marks: 4,
-          context: "A family's municipal rates bill: property rates R680, refuse removal R150, sewerage R110, fixed admin fee R45.",
+          context: "A family's municipal rates bill:\n|+ MUNICIPAL ACCOUNT\n| Property rates | R680 |\n| Refuse removal | R150 |\n| Sewerage | R110 |\n| Fixed admin fee | R45 |",
           prompt: 'The municipal bill is property rates R680, refuse R150, sewerage R110 and a fixed admin fee R45. Determine the total and the percentage that is property rates, then determine what percentage of the bill does not vary with property value, and state what that means for a low-value property.',
           answer: 'Total = R985. Property rates = 680 ÷ 985 × 100 ≈ 69,0%. Refuse, sewerage and the admin fee total R305, which is 305 ÷ 985 × 100 ≈ 31,0% and does not depend on property value. For a low-value property that R305 is the same as for an expensive one, so the bill can never fall below it however modest the home.',
           explanation: 'Add all the lines for the total, then express each part against it. The reasoning mark is for separating value-linked charges from flat ones: a flat charge is regressive, taking a larger share of a smaller household bill.',
@@ -10706,7 +10706,7 @@ const p1SetB: Paper = {
           difficulty: 'Moderate',
           cognitiveLevel: 3,
           marks: 4,
-          context: "Thabo's other monthly running costs are: Fuel R1 850, Insurance R650, Car wash R120. His annual municipal licence renewal costs R972 for the year, though he only physically owned the car for 10 of those 12 months (he bought it partway through the year).",
+          context: "Thabo's other monthly running costs are:\n|+ Monthly running costs\n| Fuel | R1 850 |\n| Insurance | R650 |\n| Car wash | R120 |\nHis annual municipal licence renewal costs R972 for the year, though he only physically owned the car for 10 of those 12 months (he bought it partway through the year).",
           prompt: "The R972 annual licence fee is a fixed yearly cost that must still be paid in full. Calculate the monthly cost of licence renewal, spread evenly over the 12 months of the year (not the 10 months Thabo owned the car).",
           answer: 'R81',
           explanation: 'The fixed annual fee is spread over the full 12-month year regardless of when the car was bought: R972 ÷ 12 = R81.',
@@ -12517,7 +12517,7 @@ const p2SetC: Paper = {
           cognitiveLevel: 3,
           marks: 4,
           context:
-            "The committee's 2024 budget: Total ticket revenue R188 000 (from Question 1). Expenses: Venue hire R45 000, Security R28 000, Prizes R15 000, Refreshments R32 000, Advertising R9 500. The committee also received a R3 000 grant from the local council, which is separate from ticket revenue and is not an expense.",
+            "The committee's 2024 budget: Total ticket revenue R188 000 (from Question 1).\n|+ Expenses\n| Venue hire | R45 000 |\n| Security | R28 000 |\n| Prizes | R15 000 |\n| Refreshments | R32 000 |\n| Advertising | R9 500 |\nThe committee also received a R3 000 grant from the local council, which is separate from ticket revenue and is not an expense.",
           prompt: "Calculate the committee's TOTAL expenses (the council grant is not an expense).",
           answer: 'R129 500',
           explanation: 'The R3 000 council grant is income, not an expense, so it is excluded. Total expenses = R45 000 + R28 000 + R15 000 + R32 000 + R9 500 = R129 500.',
@@ -13179,7 +13179,8 @@ const p1Y2025: Paper = {
           difficulty: 'Moderate',
           cognitiveLevel: 3,
           marks: 4,
-          context: 'Prices: Haircut R150, Colour R450, Treatment R280, Blow-dry R120.',
+          context: 
+            '|+ Prices\n| Haircut | R150 |\n| Colour | R450 |\n| Treatment | R280 |\n| Blow-dry | R120 |',
           prompt: 'Calculate the total revenue from Haircuts last week, then calculate what percentage this represents of the combined revenue from Haircuts and Blow-dry only (Blow-dry: 30 bookings at R120 each), rounded to one decimal place.',
           answer: 'Haircut revenue = R6 750; ≈ 65.2% of the combined Haircut + Blow-dry revenue.',
           explanation: 'Haircut revenue = 45 × R150 = R6 750. Blow-dry revenue = 30 × R120 = R3 600. Combined = R10 350. Percentage = (6 750 ÷ 10 350) × 100 ≈ 65.2%.',
@@ -13235,7 +13236,8 @@ const p1Y2025: Paper = {
           difficulty: 'Challenge',
           cognitiveLevel: 4,
           marks: 4,
-          context: 'Last week the salon had 45 Haircut, 18 Colour, 27 Treatment and 30 Blow-dry bookings. Prices are: Haircut R150, Colour R450, Treatment R280, Blow-dry R120.',
+          context: 
+            'Last week the salon had 45 Haircut, 18 Colour, 27 Treatment and 30 Blow-dry bookings.\n|+ Prices and bookings last week\n| Service | Price | Bookings |\n|---|---|---|\n| Haircut | R150 | 45 |\n| Colour | R450 | 18 |\n| Treatment | R280 | 27 |\n| Blow-dry | R120 | 30 |',
           prompt: 'Determine which service brought in the most revenue, and explain why it is not the service with the most bookings.',
           answer: 'Haircut: 45 × R150 = R6 750. Colour: 18 × R450 = R8 100. Treatment: 27 × R280 = R7 560. Blow-dry: 30 × R120 = R3 600. Colour brought in the most at R8 100, even though it had the fewest bookings of the four, because at R450 it costs three times a haircut — revenue depends on price as well as on how often a service is booked.',
           explanation: 'The mode counts bookings and revenue multiplies them by price, so the two need not agree. Here they disagree as strongly as possible: the most-booked service and the highest-earning service are at opposite ends of the table.',
@@ -13594,7 +13596,7 @@ const p2Y2025: Paper = {
           cognitiveLevel: 3,
           marks: 4,
           context:
-            "The farm's total income for the 2024 season was R145 000. Expenses: Seeds R18 000, Fertiliser R22 500, Labour R35 000, Fuel R12 800, Equipment maintenance R9 200. The farm also received a R5 000 insurance payout for storm damage, which is separate from its regular income and is not an expense.",
+            "The farm's total income for the 2024 season was R145 000.\n|+ Expenses\n| Seeds | R18 000 |\n| Fertiliser | R22 500 |\n| Labour | R35 000 |\n| Fuel | R12 800 |\n| Equipment maintenance | R9 200 |\nThe farm also received a R5 000 insurance payout for storm damage, which is separate from its regular income and is not an expense.",
           prompt: "Calculate the farm's TOTAL expenses (the insurance payout is not an expense).",
           answer: 'R97 500',
           explanation: 'The R5 000 insurance payout is income, not an expense, so it is excluded. Total expenses = R18 000 + R22 500 + R35 000 + R12 800 + R9 200 = R97 500.',
@@ -14639,7 +14641,7 @@ const p2Y2024: Paper = {
           cognitiveLevel: 3,
           marks: 4,
           context:
-            "The Fun Run's total income was R20 800 (from Question 1). Expenses: Water and refreshments R3 200, Medals and prizes R4 500, Security R2 800, Route marking R1 500, Photography R1 200. The organisers also spent R400 on a thank-you gift for a retiring staff member, from a separate discretionary fund unrelated to the Fun Run budget.",
+            "The Fun Run's total income was R20 800 (from Question 1).\n|+ Expenses\n| Water and refreshments | R3 200 |\n| Medals and prizes | R4 500 |\n| Security | R2 800 |\n| Route marking | R1 500 |\n| Photography | R1 200 |\nThe organisers also spent R400 on a thank-you gift for a retiring staff member, from a separate discretionary fund unrelated to the Fun Run budget.",
           prompt: 'Calculate the TOTAL Fun Run expenses (the unrelated staff gift is not part of this budget).',
           answer: 'R13 200',
           explanation: 'The R400 staff gift is unrelated to the Fun Run budget, so it is excluded. Total expenses = R3 200 + R4 500 + R2 800 + R1 500 + R1 200 = R13 200.',
@@ -15693,7 +15695,8 @@ const p2Y2023: Paper = {
           cognitiveLevel: 3,
           marks: 4,
           context:
-            'The Health Day received total funding of R28 000. Expenses: Medical supplies R11 500, Staff transport R3 800, Refreshments R4 200, Tents and equipment hire R6 500, Printing (pamphlets) R900. Separately, the organizing committee chairperson gave a personal gift of R500 to a volunteer nurse — this was paid privately, not from Health Day funds.',
+            
+            'The Health Day received total funding of R28 000.\n|+ Expenses\n| Medical supplies | R11 500 |\n| Staff transport | R3 800 |\n| Refreshments | R4 200 |\n| Tents and equipment hire | R6 500 |\n| Printing (pamphlets) | R900 |\nSeparately, the organizing committee chairperson gave a personal gift of R500 to a volunteer nurse — this was paid privately, not from Health Day funds.',
           prompt: 'Calculate the TOTAL Health Day expenses (exclude any amount not paid from Health Day funds).',
           answer: 'R26 900',
           explanation:
@@ -16673,7 +16676,8 @@ const p2Y2022: Paper = {
           cognitiveLevel: 3,
           marks: 4,
           context:
-            'Total income was R1 750 from the cake sale (Question 1), R4 200 from stall fees, and R980 from the raffle, giving R6 930 in total. Expenses: Venue setup R850, Prizes R1 200, Advertising R450, Entertainment (music) R1 100, Cleaning R380.',
+            
+            'Total income was R1 750 from the cake sale (Question 1), R4 200 from stall fees, and R980 from the raffle, giving R6 930 in total.\n|+ Expenses\n| Venue setup | R850 |\n| Prizes | R1 200 |\n| Advertising | R450 |\n| Entertainment (music) | R1 100 |\n| Cleaning | R380 |',
           prompt: 'Calculate the TOTAL expenses.',
           answer: 'R3 980',
           explanation: 'R850 + R1 200 + R450 + R1 100 + R380 = R3 980.',
@@ -17658,7 +17662,7 @@ const p2Y2021: Paper = {
           cognitiveLevel: 3,
           marks: 4,
           context:
-            "Sports Day's income was R3 200 from ticket sales plus a school sponsorship of R2 500, giving R5 700 in total. Expenses: Medals and trophies R1 800, Equipment hire R1 200, Refreshments R950, First aid R400, Photography R350. Separately, a teacher privately paid R150 for extra printer ink — not a Sports Day expense.",
+            "Sports Day's income was R3 200 from ticket sales plus a school sponsorship of R2 500, giving R5 700 in total.\n|+ Expenses\n| Medals and trophies | R1 800 |\n| Equipment hire | R1 200 |\n| Refreshments | R950 |\n| First aid | R400 |\n| Photography | R350 |\nSeparately, a teacher privately paid R150 for extra printer ink — not a Sports Day expense.",
           prompt: 'Calculate the TOTAL Sports Day expenses (exclude any amount not paid from Sports Day funds).',
           answer: 'R4 700',
           explanation:
@@ -18660,7 +18664,8 @@ const p2Y2020: Paper = {
           cognitiveLevel: 2,
           marks: 2,
           context:
-            'The garden project received a grant of R8 500. Expenses: Seeds and seedlings R1 800, Tools R2 400, Water (irrigation) R1 200, Fencing R2 100, Signage R300.',
+            
+            'The garden project received a grant of R8 500.\n|+ Expenses\n| Seeds and seedlings | R1 800 |\n| Tools | R2 400 |\n| Water (irrigation) | R1 200 |\n| Fencing | R2 100 |\n| Signage | R300 |',
           prompt: 'Calculate the TOTAL expenses.',
           answer: 'R7 800',
           explanation: 'R1 800 + R2 400 + R1 200 + R2 100 + R300 = R7 800.',

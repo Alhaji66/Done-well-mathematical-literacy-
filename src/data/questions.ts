@@ -1339,7 +1339,8 @@ export const questions: Question[] = [
     grade: 11,
     difficulty: 'Moderate',
     marks: 5,
-    context: 'A household spends its monthly income as follows: Rent R4 800, Food R3 600, Transport R2 400, Other R1 200. The family wants to show this as a pie chart.',
+    context: 
+      '|+ Monthly household spending\n| Rent | R4 800 |\n| Food | R3 600 |\n| Transport | R2 400 |\n| Other | R1 200 |\nThe family wants to show this as a pie chart.',
     prompt: 'Calculate the size of the sector angle for Rent and for Transport, and show that the four angles add up correctly.',
     answer: 'Total income = 4 800 + 3 600 + 2 400 + 1 200 = R12 000. Rent angle = 4 800 ÷ 12 000 × 360° = 0,4 × 360° = 144°. Transport angle = 2 400 ÷ 12 000 × 360° = 0,2 × 360° = 72°. The other two: Food = 3 600 ÷ 12 000 × 360° = 108°, Other = 1 200 ÷ 12 000 × 360° = 36°. Check: 144 + 108 + 72 + 36 = 360°, a complete circle.',
     explanation: 'Each sector angle is that category as a fraction of the total, multiplied by 360°, because a full circle represents the whole. The check at the end is not optional -- angles that do not total 360° mean an arithmetic slip somewhere, and it is the one test that catches it before the chart is drawn.',

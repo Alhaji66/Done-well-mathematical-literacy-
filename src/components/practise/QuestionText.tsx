@@ -84,7 +84,12 @@ function cells(line: string): string[] {
  * still letting the cell wrap between words -- "R1 817 001 and above" breaks
  * before "and", where it should.
  *
- * Only the RENDERED cell is changed. The data stays written with ordinary
+ * Applied to PROSE as well as to cells. "The statement prints a closing balance
+ * of R10 870,50" broke as "R10" at the end of one line and "870,50" at the
+ * start of the next, which reads as two different figures -- the same fault the
+ * tables were built to fix, a few words further down the same block.
+ *
+ * Only the RENDERED text is changed. The data stays written with ordinary
  * spaces, so nobody has to type an invisible character to author a table, and
  * every checker still reads the plain text it always did.
  */
@@ -168,7 +173,7 @@ export function QuestionText({ children, className }: QuestionTextProps) {
           // honours newlines while still collapsing runs of spaces and
           // wrapping long lines, which `pre-wrap` would not.
           <p key={i} className="whitespace-pre-line [&+*]:mt-2.5">
-            <MathText>{block.text}</MathText>
+            <MathText>{glueNumbers(block.text)}</MathText>
           </p>
         ) : (
           // The table gets its own scroll container so a wide one never makes

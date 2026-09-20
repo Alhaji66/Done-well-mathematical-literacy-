@@ -68,8 +68,15 @@ export const rands = (n: number): string => {
 /**
  * The table as a learner sees it above a question.
  *
- * Laid out as rows of "taxable income | rates of tax", which is how SARS and
- * every NSC paper print it.
+ * Laid out in the two columns SARS and every NSC paper print -- "taxable
+ * income" against "rates of tax" -- using the pipe syntax that `QuestionText`
+ * turns into a ruled table. It used to emit `band: charge` on plain lines,
+ * which rendered as one unbroken paragraph of seven brackets run together:
+ * the learner could not see where one row ended and the next began, which is
+ * the only thing the table is for.
+ *
+ * The rebates and thresholds stay as sentences under the table, which is also
+ * where a real paper puts them -- they are notes on the table, not rows of it.
  */
 export function tableContext(t: TaxTable = SARS_2025_26): string {
   const rows = t.brackets.map((b) => {
@@ -78,10 +85,11 @@ export function tableContext(t: TaxTable = SARS_2025_26): string {
       b.base === 0
         ? `${b.rate}% of taxable income`
         : `${rand(b.base)} + ${b.rate}% of taxable income above ${rand(b.from - 1)}`
-    return `${band}: ${charge}`
+    return `| ${band} | ${charge} |`
   })
   return (
-    `SARS TAX TABLE — ${t.taxYear} year of assessment (annual figures)\n` +
+    `|+ SARS TAX TABLE — ${t.taxYear} year of assessment (annual figures)\n` +
+    `| Taxable income | Rates of tax |\n|---|---|\n` +
     rows.join('\n') +
     `\nTax rebates: primary ${rand(t.rebates.primary)}; secondary (65 and older) ${rand(t.rebates.secondary)}; ` +
     `tertiary (75 and older) ${rand(t.rebates.tertiary)}.\n` +

@@ -8,6 +8,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { DifficultyBadge } from '@/components/ui/Badges'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SparkleIcon, DownloadIcon, ClipboardIcon } from '@/components/ui/Icons'
+import { QuestionText } from '@/components/practise/QuestionText'
 import { cn } from '@/lib/utils'
 import type { Difficulty, Grade, Question } from '@/types'
 
@@ -436,7 +437,9 @@ export function TeacherQuestionBank() {
                       <span className="badge-slate">{q.marks} marks</span>
                     </div>
                   </div>
-                  {q.context ? <p className="mt-1.5 text-sm italic text-navy-500">{q.context}</p> : null}
+                  {q.context ? (
+                    <QuestionText className="mt-1.5 text-sm text-navy-500">{q.context}</QuestionText>
+                  ) : null}
                   {q.options ? (
                     <ul className="mt-2 space-y-1 pl-4 text-sm text-navy-700">
                       {q.options.map((o) => (

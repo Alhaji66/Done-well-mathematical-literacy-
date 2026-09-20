@@ -4,6 +4,7 @@ import { DifficultyBadge } from '@/components/ui/Badges'
 import { CheckCircleIcon, XCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { MathText } from '@/components/practise/MathText'
+import { QuestionText } from '@/components/practise/QuestionText'
 import { MarkingMemo } from '@/components/practise/MarkingMemo'
 import { Figure } from '@/components/practise/Figure'
 
@@ -42,9 +43,9 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
       </div>
 
       {question.context ? (
-        <p className="mt-3 rounded-lg bg-navy-50 p-3 text-sm text-navy-700">
-          <MathText>{question.context}</MathText>
-        </p>
+        <QuestionText className="mt-3 rounded-lg bg-navy-50 p-3 text-sm text-navy-700">
+          {question.context}
+        </QuestionText>
       ) : null}
 
       <p className="mt-3 text-[15px] font-medium leading-relaxed text-navy-900">

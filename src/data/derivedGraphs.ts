@@ -9,6 +9,87 @@ import type { GraphSpec } from '@/types'
 
 /** Shown beside the question: reading questions, where the picture IS the task. */
 export const derivedGraphs: Record<string, GraphSpec> = {
+  "gap-concavity-g12-second-derivative": {
+    "title": "The graph of f",
+    "xRange": [
+      -5,
+      5
+    ],
+    "yRange": [
+      -361,
+      61
+    ],
+    "curves": [
+      {
+        "kind": "cubic",
+        "a": 1,
+        "b": -6,
+        "c": 9,
+        "d": 0,
+        "label": "f"
+      }
+    ]
+  },
+  "gap-exp-g10-growth-decay": {
+    "title": "The graph of f",
+    "xRange": [
+      -4,
+      3
+    ],
+    "yRange": [
+      -3,
+      17
+    ],
+    "curves": [
+      {
+        "kind": "exponential",
+        "a": 1,
+        "b": 3,
+        "q": 0,
+        "label": "f"
+      }
+    ]
+  },
+  "gap-inverse-g12-exponential": {
+    "title": "The graph of f",
+    "xRange": [
+      -4,
+      3
+    ],
+    "yRange": [
+      -3,
+      17
+    ],
+    "curves": [
+      {
+        "kind": "exponential",
+        "a": 1,
+        "b": 3,
+        "q": 0,
+        "label": "f"
+      }
+    ]
+  },
+  "gap-transform-g12-describe": {
+    "title": "The graph of f",
+    "xRange": [
+      -2,
+      2
+    ],
+    "yRange": [
+      -1,
+      5
+    ],
+    "curves": [
+      {
+        "kind": "parabola",
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "label": "f"
+      }
+    ]
+  },
   "math-g10-p1-22-4-12": {
     "title": "The graph in this question",
     "xRange": [
@@ -598,6 +679,67 @@ export const derivedGraphs: Record<string, GraphSpec> = {
 /** Shown only with the revealed answer: finding questions, where the picture
  *  would otherwise do the learner's work for them. */
 export const derivedAnswerGraphs: Record<string, GraphSpec> = {
+  "gap-cubic-g12-sketch-a": {
+    "title": "The graph of f",
+    "xRange": [
+      -5,
+      5
+    ],
+    "yRange": [
+      -361,
+      61
+    ],
+    "curves": [
+      {
+        "kind": "cubic",
+        "a": 1,
+        "b": -6,
+        "c": 9,
+        "d": 0,
+        "label": "f"
+      }
+    ]
+  },
+  "gap-cubic-g12-sketch-c": {
+    "title": "The graph of f",
+    "xRange": [
+      -5,
+      5
+    ],
+    "yRange": [
+      -52,
+      148
+    ],
+    "curves": [
+      {
+        "kind": "cubic",
+        "a": 1,
+        "b": 3,
+        "c": -9,
+        "d": -27,
+        "label": "f"
+      }
+    ]
+  },
+  "gap-exp-g10-table-and-shape": {
+    "title": "The graph in this question",
+    "xRange": [
+      -4,
+      5
+    ],
+    "yRange": [
+      -4,
+      22
+    ],
+    "curves": [
+      {
+        "kind": "exponential",
+        "a": 1,
+        "b": 2,
+        "q": 0
+      }
+    ]
+  },
   "gap-g11-simul-two-graphs": {
     "title": "The graph in this question",
     "xRange": [
@@ -613,6 +755,84 @@ export const derivedAnswerGraphs: Record<string, GraphSpec> = {
         "kind": "line",
         "m": 1,
         "c": -3
+      }
+    ]
+  },
+  "gap-transform-g10-shift-right": {
+    "title": "The graph of f",
+    "xRange": [
+      -2,
+      2
+    ],
+    "yRange": [
+      -1,
+      5
+    ],
+    "curves": [
+      {
+        "kind": "parabola",
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "label": "f"
+      }
+    ]
+  },
+  "gap-transform-g11-hyperbola-asymptotes": {
+    "title": "The graph in this question",
+    "xRange": [
+      -7,
+      7
+    ],
+    "yRange": [
+      -7,
+      7
+    ],
+    "curves": [
+      {
+        "kind": "hyperbola",
+        "a": 6,
+        "p": 0,
+        "q": 0
+      }
+    ]
+  },
+  "gap-transform-g11-two-shifts": {
+    "title": "The graph in this question",
+    "xRange": [
+      -4,
+      4
+    ],
+    "yRange": [
+      -6,
+      14
+    ],
+    "curves": [
+      {
+        "kind": "parabola",
+        "a": 1,
+        "b": 0,
+        "c": -4
+      }
+    ]
+  },
+  "gap-transform-g12-exp-shift-down": {
+    "title": "The graph of f",
+    "xRange": [
+      -4,
+      5
+    ],
+    "yRange": [
+      -4,
+      22
+    ],
+    "curves": [
+      {
+        "kind": "exponential",
+        "a": 1,
+        "b": 2,
+        "q": 0,
+        "label": "f"
       }
     ]
   },

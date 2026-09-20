@@ -1,0 +1,168 @@
+[
+ {
+  "id": "math-p1-c-4-5",
+  "prompt": "Given f(x) = 3ˣ − 5, determine the equation of the horizontal asymptote and the y-intercept.",
+  "answer": "Asymptote: y = −5; y-intercept: (0 ; −4)",
+  "explanation": "3ˣ is always positive and shrinks towards 0 as x becomes large and negative, so f(x) approaches −5 from above but never reaches it: the horizontal asymptote is y = −5. The y-intercept comes from x = 0, and 3⁰ = 1, so f(0) = 1 − 5 = −4. The −5 does two jobs in this function, and they are easy to confuse: it moves the whole graph down 5 units, which is why both the asymptote and the intercept carry it.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-p1-24-6-4",
+  "prompt": "Two dice are rolled. Determine the probability that the sum of the two numbers rolled is 3, and the probability that the sum is 12.",
+  "answer": "There are 6 × 6 = 36 equally likely outcomes. A sum of 3 happens in two ways, (1;2) and (2;1), so P(sum = 3) = 2/36 = 1/18. A sum of 12 happens in one way only, (6;6), so P(sum = 12) = 1/36.",
+  "explanation": "The dice have to be treated as distinguishable, which is what makes these two answers differ: (1;2) and (2;1) are two outcomes even when the dice look identical, while (6;6) is the single way to reach 12. That is the whole point of the pair — sums are NOT equally likely, and the further a sum is from 7 the fewer ways there are to make it. Listing the outcomes for a small sum is quicker and safer than reasoning about it, and a 6 × 6 table makes the pattern visible at once.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g11-p1-25-5-3",
+  "prompt": "A bag contains 6 red and 4 blue counters. A counter is drawn, replaced, then a second counter is drawn. Determine the probability that both counters are red, and determine the probability, as a percentage, that both counters are blue.",
+  "answer": "Both red: (6/10) × (6/10) = 36/100 = 9/25 = 36%. Both blue: (4/10) × (4/10) = 16/100 = 16%.",
+  "explanation": "Replacing the first counter is what makes the two draws independent: the bag is identical for the second draw, so each probability is unchanged and they simply multiply. Without replacement the second draw would be out of 9 counters and the answers would be 30/90 and 12/90. The two results also sanity-check each other — 36% and 16% leave 48% for one of each, which is the only other possibility.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p1-23-1-5",
+  "prompt": "Solve for x by factorising: 2x² + 5x − 12 = 0",
+  "answer": "(2x − 3)(x + 4) = 0, so x = 3/2 (= 1.5) or x = −4",
+  "explanation": "With a leading coefficient that is not 1, look for two numbers multiplying to 2 × (−12) = −24 and adding to 5: those are 8 and −3. Split the middle term — 2x² + 8x − 3x − 12 — and group: 2x(x + 4) − 3(x + 4) = (2x − 3)(x + 4). Each bracket is then set to zero separately, which is the step the whole method exists for: a product is zero only when one of its factors is.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p1-25-2-4",
+  "prompt": "Determine the general term Tₙ for the arithmetic sequence: 40, 33, 26, 19, ...",
+  "answer": "a = 40 and d = −7, so Tₙ = 40 + (n − 1)(−7) = 47 − 7n",
+  "explanation": "The common difference is found by subtracting any term from the one after it: 33 − 40 = −7, and it must be the same throughout, which it is. Substituting into Tₙ = a + (n − 1)d and simplifying gives 47 − 7n. Check it before moving on: T₁ = 47 − 7 = 40 and T₄ = 47 − 28 = 19, both correct. Leaving the answer as 40 + (n − 1)(−7) is not wrong, but the simplified form is what later questions substitute into.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p1-25-4-5",
+  "prompt": "For which value of k will the equation x² − 14x + k = 0 have equal roots?",
+  "answer": "k = 49",
+  "explanation": "Equal roots mean the discriminant is zero: b² − 4ac = 0. Here a = 1, b = −14 and c = k, so 196 − 4k = 0 and k = 49. The sign of b does not matter because it is squared, which is worth noticing — b = 14 would give the same k. The result is the perfect square x² − 14x + 49 = (x − 7)², whose only root is x = 7, and completing the square is the other route to the same answer.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g11-p1-25-4-10",
+  "prompt": "Determine for which values of x the graph of f(x) = x² − 6x + 8 lies below the x-axis.",
+  "answer": "2 < x < 4",
+  "explanation": "Below the x-axis means f(x) < 0. Factorise first: x² − 6x + 8 = (x − 2)(x − 4), so the graph cuts the x-axis at 2 and 4. The parabola opens upwards, so it is below the axis only BETWEEN its two roots. The answer is a single interval written 2 < x < 4, not two separate inequalities and not x < 2 or x > 4, which is where the graph is above the axis. Sketching the parabola roughly is faster than reasoning about signs and much harder to get backwards.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ },
+ {
+  "id": "math-g11-p2-25-3-1",
+  "prompt": "Determine the value of cos 30° × sin 60° without using a calculator.",
+  "answer": "(√3/2) × (√3/2) = 3/4 = 0.75",
+  "explanation": "Both special values are √3/2, so the product is 3/4 exactly. Multiplying two surds of the same value squares it, and √3 squared is 3 — no decimal needed anywhere. This is also an instance of a pattern worth carrying: cos 30° = sin 60°, because the two angles add to 90°, and the sine of an angle always equals the cosine of its complement.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-25-3-2",
+  "prompt": "Simplify without using a calculator: tan 120°",
+  "answer": "tan 120° = tan(180° − 60°) = −tan 60° = −√3 (≈ −1.73)",
+  "explanation": "120° sits in the second quadrant, where only sine is positive, so the tangent is negative. The reduction formula tan(180° − θ) = −tan θ turns the problem into the special angle 60°, whose tangent is √3. Two things carry the marks: the reduction step written out, and the minus sign, which comes from the quadrant and not from the arithmetic. Leave the answer as −√3 rather than −1.73 unless a decimal is asked for.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-22-3-2",
+  "prompt": "Simplify without using a calculator: tan 150°",
+  "answer": "tan 150° = tan(180° − 30°) = −tan 30° = −√3/3 (equivalently −1/√3, ≈ −0.58)",
+  "explanation": "150° is in the second quadrant, where CAST leaves only sine positive, so the tangent is negative. The reduction formula tan(180° − θ) = −tan θ brings it back to the special angle 30°, whose tangent is 1/√3. Rationalising the denominator turns that into √3/3, which is the form a memo expects. The minus sign comes from the quadrant, not from the arithmetic, and it is the mark most often dropped.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-24-3-3",
+  "prompt": "Solve for θ, correct to 1 decimal place, if 7 cos θ = 3, for 0° ≤ θ ≤ 90°.",
+  "answer": "cos θ = 3 ÷ 7 = 0.4286, so θ = cos⁻¹(0.4286) ≈ 64.6°",
+  "explanation": "Isolate the trigonometric ratio before touching the inverse function: dividing both sides by 7 first is the whole method. Pressing cos⁻¹ on 7 cos θ, or on 3, gives nothing useful. Keep the full accuracy of 3 ÷ 7 in the calculator rather than rounding to 0.43 before taking the inverse — rounding early shifts the answer by about a tenth of a degree, which is exactly the precision the question asks for. The calculator must be in DEGREE mode.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-24-3-4",
+  "prompt": "Simplify: (sin θ · cos θ) ÷ cos²θ, and evaluate the simplified expression at θ = 45°.",
+  "answer": "tan θ (equivalently, sin θ ÷ cos θ); tan 45° = 1.",
+  "explanation": "cos²θ means cos θ · cos θ, so one cos θ cancels with the one on top, leaving sin θ ÷ cos θ, which is tan θ by definition. Simplifying before substituting is the point of the question: evaluating the original expression at 45° works but takes three calculator steps and invites a rounding error, while tan 45° = 1 is exact and immediate.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "cos²θ = cos θ · cos θ. Simplify by cancelling common factors."
+ },
+ {
+  "id": "math-g11-p2-25-2-5",
+  "prompt": "Determine the gradient of the line 5x − 2y = 10.",
+  "answer": "m = 2.5 (that is, 5/2)",
+  "explanation": "The gradient can only be read off once y is alone: −2y = −5x + 10, so y = 2.5x − 5 and m = 2.5. Dividing by a NEGATIVE coefficient of y flips both signs, which is the step this question is really testing — reading the gradient straight off as −5/2, or as 5, are the two usual errors. The gradient is positive, so the line rises from left to right.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-25-2-7",
+  "prompt": "Triangle ABC has vertices A(0 ; 0), B(16 ; 0) and C(4 ; 6). Determine: (a) the length of AB; (b) the coordinates of the midpoint M of AC; (c) the gradient of BC.",
+  "answer": "(a) AB = 16; (b) M = (2 ; 3); (c) gradient of BC = (6 − 0) ÷ (4 − 16) = 6 ÷ (−12) = −0.5",
+  "explanation": "Three formulae, one figure. AB lies along the x-axis, so its length is just the difference in x-values — the distance formula gives the same 16 but is more work. The midpoint of AC averages the coordinates of A and C, and because A is the origin it is simply half of C. The gradient of BC is negative because the line falls from C down to B as x increases; a positive answer here means the subtraction was done in mixed order.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-25-4-4",
+  "prompt": "O is the centre of a circle, OM ⊥ chord AB, AB = 16, and radius OA = 10. Determine the length of OM.",
+  "answer": "OM = 6",
+  "explanation": "The perpendicular from the centre bisects the chord, so AM = 16 ÷ 2 = 8. Triangle OMA is then right-angled at M with hypotenuse OA = 10, so OM = √(10² − 8²) = √(100 − 64) = √36 = 6. Two mistakes cost everything here: using the whole chord instead of half of it, and using OA as a leg rather than the hypotenuse — the radius to the endpoint of the chord is always the longest side of that triangle.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The perpendicular from the centre of a circle to a chord bisects the chord."
+ },
+ {
+  "id": "math-g11-p2-21-4-4",
+  "prompt": "O is the centre of a circle, OM ⊥ chord AB, AB = 14, and radius OA = 25. Determine the length of OM.",
+  "answer": "OM = 24",
+  "explanation": "The perpendicular from the centre bisects the chord, so AM = 14 ÷ 2 = 7. In right-angled triangle OMA the hypotenuse is the radius OA = 25, so OM = √(25² − 7²) = √(625 − 49) = √576 = 24. Halving the chord is the step that turns a circle theorem into Pythagoras, and forgetting it produces √(625 − 196) = √429, which is not a whole number — in a question built on a Pythagorean triple, that is the signal that the chord was not halved.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The perpendicular from the centre of a circle to a chord bisects the chord."
+ },
+ {
+  "id": "math-g11-p2-25-4-6",
+  "prompt": "O is the centre of a circle. Chord AB subtends an angle of 116° at O (on the minor arc side). C is a point on the major arc. Determine the angle ACB.",
+  "answer": "ACB = 116° ÷ 2 = 58°",
+  "explanation": "The angle at the centre is twice the angle at the circumference subtended by the same chord, on the same side of it — so the angle at C is half of 116°. The condition that C lies on the MAJOR arc matters: it puts C on the same side of the chord as the 116° angle opens towards. A point on the minor arc would give the supplementary angle instead, 122°, because opposite angles of a cyclic quadrilateral are supplementary.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The angle subtended by a chord at the centre is twice the angle subtended at the circumference, on the same side of the chord."
+ },
+ {
+  "id": "math-g11-p2-24-4-6",
+  "prompt": "O is the centre of a circle. Chord AB subtends an angle of 134° at O (on the minor arc side). C is a point on the major arc. Determine the angle ACB.",
+  "answer": "ACB = 134° ÷ 2 = 67°",
+  "explanation": "Half the angle at the centre, because the angle at the centre is twice the angle at the circumference on the same side of the chord. The theorem is a halving in this direction and a doubling in the other, so the first thing to settle in any question using it is which angle is at the centre — the one at the centre is always the larger of the two. An odd answer like 67° is no cause for alarm: the angle at the centre need not be a multiple of four.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The angle subtended by a chord at the centre is twice the angle subtended at the circumference, on the same side of the chord."
+ },
+ {
+  "id": "math-g11-p2-25-4-3",
+  "prompt": "PT is a tangent to a circle at T, and TQ is a chord such that the angle between PT and TQ is 43°. Determine the angle subtended by TQ at the circumference in the alternate segment, and use the angle-at-the-centre theorem to determine the angle TQ would subtend at the centre of the circle.",
+  "answer": "43° at the circumference; 86° at the centre.",
+  "explanation": "The tangent-chord theorem gives the first answer directly: the angle between a tangent and a chord equals the angle in the alternate segment, so the angle at the circumference is also 43°. The second step is a different theorem applied to the same chord — the angle at the centre is twice the angle at the circumference, so 2 × 43° = 86°. Naming which theorem does which step is worth a mark on its own; a bare pair of numbers is not a geometry answer.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "Tangent-chord theorem: the angle between a tangent and a chord equals the angle in the alternate segment."
+ },
+ {
+  "id": "math-g10-p2-c-2-10",
+  "prompt": "Solve for θ, correct to 1 decimal place, if 0° ≤ θ ≤ 90°: 4tan(θ) = 7",
+  "answer": "tan θ = 7 ÷ 4 = 1.75, so θ = tan⁻¹(1.75) ≈ 60.3°",
+  "explanation": "Divide by 4 first so that the tangent stands alone, then apply the inverse. tan⁻¹ is the operation that undoes tan; it is not 1 ÷ tan, and the two give completely different answers. Unlike sine and cosine the tangent has no maximum, so a value above 1 is perfectly ordinary here — tan θ = 1.75 simply means the angle is larger than 45°, which 60.3° is. Check the calculator is in DEGREE mode before trusting the number.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3
+ }
+]

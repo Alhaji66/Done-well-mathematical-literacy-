@@ -1,0 +1,29 @@
+[
+ {
+  "id": "psci-p2-b-3-2",
+  "prompt": "Write the Kc expression for the equilibrium: H₂(g) + I₂(g) ⇌ 2HI(g).",
+  "answer": "Kc = [HI]² ÷ ([H₂][I₂])",
+  "explanation": "Products over reactants, each concentration raised to the power of its coefficient in the balanced equation. HI has a coefficient of 2, so it is squared; H₂ and I₂ have a coefficient of 1 and carry no exponent. Square brackets mean equilibrium concentration in mol·dm⁻³, and only gases and aqueous species appear — pure solids and liquids are left out. This particular equilibrium is the one where the exponents matter most visibly, because the number of molecules is the same on both sides and only the square distinguishes the expression.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Kc = [products] ÷ [reactants], each raised to the power of its coefficient"
+ },
+ {
+  "id": "psci-p2-a-4-3",
+  "prompt": "Calculate the pH of a solution with [H₃O⁺] = 5.0 × 10⁻³ mol·dm⁻³.",
+  "answer": "pH = −log[H₃O⁺] = −log(5.0 × 10⁻³) ≈ 2.30",
+  "explanation": "The negative sign is part of the formula, not a slip: hydronium concentrations are small numbers whose logarithms are negative, and the minus turns them into the positive pH scale. A concentration of 10⁻³ would give exactly pH 3, so 5.0 × 10⁻³ — five times larger — must give a pH somewhat BELOW 3, which is the check on the answer. More acid means a lower pH.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "pH = −log[H₃O⁺]"
+ },
+ {
+  "id": "psci-p2-b-1-13",
+  "prompt": "A hydrocarbon has an empirical formula of C₃H₇ and a molar mass of 86 g·mol⁻¹. Determine its molecular formula.",
+  "answer": "M(C₃H₇) = (3 × 12) + (7 × 1) = 43 g·mol⁻¹. 86 ÷ 43 = 2, so the molecular formula is C₆H₁₄.",
+  "explanation": "Divide the molar mass by the empirical formula mass, then multiply every subscript by the result: C₃H₇ doubled is C₆H₁₄, hexane. C₃H₇ is worth noticing as an empirical formula, because it cannot be a molecule on its own — a chain of three carbons carries at most eight hydrogens, so the real molecule has to be a multiple of it.",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "context": "Molar mass: C = 12 g·mol⁻¹, H = 1 g·mol⁻¹"
+ }
+]

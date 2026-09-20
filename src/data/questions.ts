@@ -1,6 +1,23 @@
 import type { Question } from '@/types'
 
+import { taxQuestions } from '@/data/taxQuestions'
+import { perimeterQuestions } from '@/data/perimeterQuestions'
+import { analyticalGeometryG10 } from '@/data/analyticalGeometryG10'
+import { similarityG12 } from '@/data/similarityG12'
+import { mathSubtopicGaps } from '@/data/mathSubtopicGaps'
+
+/*
+ * Taxation and compound-interest items live in taxQuestions.ts, and the Grade
+ * 10 and 11 perimeter set in perimeterQuestions.ts, because their answers are
+ * COMPUTED rather than typed -- the only way a tax answer and the table printed
+ * above it, or a perimeter and the dimensions it came from, cannot drift apart.
+ */
 export const questions: Question[] = [
+  ...taxQuestions,
+  ...perimeterQuestions,
+  ...analyticalGeometryG10,
+  ...similarityG12,
+  ...mathSubtopicGaps,
   // Finance
   {
     id: 'fin-e1',

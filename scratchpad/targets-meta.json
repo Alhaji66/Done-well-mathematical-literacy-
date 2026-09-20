@@ -1,0 +1,268 @@
+[
+ {
+  "id": "ml-g10-p1-23-2-9",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3,
+  "marks": 2,
+  "explanation": "Wasted area = 16 m² − 15.6 m² = 0.4 m². Since 0.4 m² < 1 m², this does not exceed 1 m²."
+ },
+ {
+  "id": "math-g11-p1-25-2-4",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "a = 25, d = −5. Tₙ = a + (n − 1)d = 25 + (n − 1)(−5) = 25 − 5n + 5 = 30 − 5n."
+ },
+ {
+  "id": "math-g11-p1-25-4-5",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "Equal roots occur when the discriminant is 0: b² − 4ac = 0. 10² − 4(1)(k) = 0, so 100 = 4k, so k = 25."
+ },
+ {
+  "id": "math-g11-p1-25-4-10",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 5,
+  "explanation": "f(x) < 0 means x² − 25 < 0, which factorises as (x − 5)(x + 5) < 0. This holds for −5 < x < 5."
+ },
+ {
+  "id": "math-g11-p1-25-5-3",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "Since the counter is replaced, each draw is independent: P(red) = 5/9 each time. P(both red) = 5/9 × 5/9 = 25/81. P(blue) = 4/9 each time. P(both blue) = 4/9 × 4/9 = 16/81 ≈ 19.8%."
+ },
+ {
+  "id": "math-g11-p2-25-2-5",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "Making y the subject: 8y = −4x + 16, so y = −0.5x + 2. The gradient is −0.5."
+ },
+ {
+  "id": "math-g11-p2-25-2-7",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "(a) AB = √[(12−0)² + (0−0)²] = 12. (b) M = [(0+6)÷2 ; (0+9)÷2] = (3 ; 4.5). (c) Gradient BC = (9−0) ÷ (6−12) = 9 ÷ (−6) = −1.5."
+ },
+ {
+  "id": "math-g11-p2-25-3-1",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "sin 30° = 0.5 and cos 60° = 0.5, so sin 30° × cos 60° = 0.5 × 0.5 = 0.25."
+ },
+ {
+  "id": "math-g11-p2-25-3-2",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "cos(180° − θ) = −cos θ, so cos 150° = −cos(180° − 150°) = −cos 30° = −√3/2."
+ },
+ {
+  "id": "math-g11-p2-25-4-3",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "By the tangent-chord theorem, the angle between the tangent and the chord equals the angle in the alternate segment, so the angle is 57°. The angle at the centre is twice the angle at the circumference: 2 × 57° = 114°."
+ },
+ {
+  "id": "math-g11-p2-25-4-4",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "Since OM bisects AB, AM = 12. In right triangle OMA: OM² = OA² − AM² = 169 − 144 = 25, so OM = 5."
+ },
+ {
+  "id": "math-g11-p2-25-4-6",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 5,
+  "explanation": "Angle ACB (at the circumference, major arc) = angle AOB (at the centre, minor arc) ÷ 2 = 140° ÷ 2 = 70°."
+ },
+ {
+  "id": "math-g11-p2-24-3-3",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "sin θ = 5 ÷ 6 ≈ 0.8333. θ = sin⁻¹(0.8333) ≈ 56.4°."
+ },
+ {
+  "id": "math-g11-p2-24-3-4",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "(sin θ · cos θ) ÷ (sin θ · sin θ) = cos θ ÷ sin θ = cot θ. cot 60° = 1 ÷ tan 60° = 1 ÷ √3 ≈ 0.58."
+ },
+ {
+  "id": "math-g11-p2-24-4-6",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 5,
+  "explanation": "Angle ACB (at the circumference, major arc) = angle AOB (at the centre, minor arc) ÷ 2 = 150° ÷ 2 = 75°."
+ },
+ {
+  "id": "math-g11-p1-23-1-5",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "3x² + 2x − 8 = (3x − 4)(x + 2) = 0, so x = 4/3 or x = −2."
+ },
+ {
+  "id": "math-g11-p2-22-3-2",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "sin(180° − θ) = sin θ, so sin 120° = sin(180° − 120°) = sin 60° = √3/2."
+ },
+ {
+  "id": "math-g11-p2-21-4-4",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "Since OM bisects AB, AM = 15. In right triangle OMA: OM² = OA² − AM² = 289 − 225 = 64, so OM = 8."
+ },
+ {
+  "id": "math-p1-c-4-5",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "As x → −∞, 2ˣ → 0, so the asymptote is y = −3. f(0) = 1 − 3 = −2."
+ },
+ {
+  "id": "math-p1-24-6-4",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "The pairs summing to 7 are (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) — 6 outcomes out of 36. P = 6/36 = 1/6."
+ },
+ {
+  "id": "math-g10-p2-c-2-10",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 6,
+  "explanation": "sin(θ) = 5 ÷ 6. θ = sin⁻¹(5/6) ≈ 56.4°."
+ },
+ {
+  "id": "psci-g11-p1-2025-2-3",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "Fnet = ma = 12 × 3.5 = 42 N."
+ },
+ {
+  "id": "psci-g11-p1-2025-3-3",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "n₁ sin θ₁ = n₂ sin θ₂ → 1.00 × sin 50° = 1.33 × sin θ₂ → sin θ₂ = (1.00 × sin 50°) ÷ 1.33 ≈ 0.5759 → θ₂ ≈ 35.17°."
+ },
+ {
+  "id": "psci-g11-p1-2025-3-4",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 4,
+  "marks": 5,
+  "explanation": "sin θc = n₂ ÷ n₁ = 1.00 ÷ 1.33 ≈ 0.7519 → θc ≈ 48.77°."
+ },
+ {
+  "id": "psci-g11-p2-2023-4-2",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "n = m ÷ M = 20.4 ÷ 102 = 0.20 mol."
+ },
+ {
+  "id": "psci-p1-2023-2-3",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "At maximum height v = 0: Δy = u² ÷ 2g = 16² ÷ (2 × 9.8) = 256 ÷ 19.6 ≈ 13.06 m."
+ },
+ {
+  "id": "psci-p1-2023-8-2",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "Two separate ideas, and the second cannot start until the first is finished. The wavelength must be in metres, so 550 nm becomes 550 × 10⁻⁹ m; leaving it in nanometres inflates the photon energy by a factor of a thousand million. Power is energy per second, so dividing the energy delivered each second by the energy of one photon counts the photons. The answer is enormous, which is the point: at this scale the light appears perfectly continuous, and the graininess of the photon picture only shows up in effects like the photoelectric effect."
+ },
+ {
+  "id": "psci-p1-2023-8-3",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "W₀ = hf₀ = (6.63 × 10⁻³⁴)(4.8 × 10¹⁴) ≈ 3.18 × 10⁻¹⁹ J."
+ },
+ {
+  "id": "psci-p1-2023-8-4",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "Ek(max) = E − W₀ = 3.62 × 10⁻¹⁹ − 3.18 × 10⁻¹⁹ ≈ 4.34 × 10⁻²⁰ J."
+ },
+ {
+  "id": "psci-p2-2023-1-13",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "Empirical formula mass of CH₂ = 12 + 2(1) = 14 g·mol⁻¹. 70 ÷ 14 = 5. Molecular formula = (CH₂)₅ = C₅H₁₀."
+ },
+ {
+  "id": "psci-p1-2025-2-2",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 3,
+  "marks": 4,
+  "explanation": "At maximum height v = 0: Δy = u² ÷ 2g = 18² ÷ (2 × 9.8) = 324 ÷ 19.6 ≈ 16.53 m."
+ },
+ {
+  "id": "psci-p2-2025-1-4",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "But-1-ene has 4 carbons with the C=C double bond starting at carbon 1: CH₂=CH−CH₂−CH₃."
+ },
+ {
+  "id": "psci-p2-2025-3-2",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "For aA + bB ⇌ cC, Kc = [C]^c ÷ ([A]^a[B]^b). Applied here: Kc = [SO₃]² ÷ ([SO₂]²[O₂])."
+ },
+ {
+  "id": "psci-p1-2024-2-2",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "Taking downward as positive: v = u + at = 6 + (9.8)(2) = 6 + 19.6 = 25.6 m·s⁻¹."
+ },
+ {
+  "id": "psci-p2-b-1-13",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 5,
+  "explanation": "Empirical formula mass of CH₂ = 12 + 2(1) = 14 g·mol⁻¹. 84 ÷ 14 = 6. Molecular formula = (CH₂)₆ = C₆H₁₂."
+ },
+ {
+  "id": "psci-p2-b-3-2",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "For aA + bB ⇌ cC, Kc = [C]^c ÷ ([A]^a[B]^b). Applied here: Kc = [NO₂]² ÷ ([NO]²[O₂])."
+ },
+ {
+  "id": "psci-p1-a-8-2",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "f = c ÷ λ = (3.0 × 10⁸) ÷ (500 × 10⁻⁹) = 6.0 × 10¹⁴ Hz. E = hf = (6.63 × 10⁻³⁴)(6.0 × 10¹⁴) ≈ 3.98 × 10⁻¹⁹ J."
+ },
+ {
+  "id": "psci-p2-a-4-3",
+  "difficulty": "Moderate",
+  "cognitiveLevel": 2,
+  "marks": 4,
+  "explanation": "pH = −log(2.5 × 10⁻³) ≈ 2.60."
+ }
+]

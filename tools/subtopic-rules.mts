@@ -23,6 +23,14 @@
  *                  is right to say "none yet".
  *
  * Only DEAD STEM fails the check, because only it is unambiguously a defect.
+ *
+ * DEAD STEM covers two failures with the same symptom. One is the truncated
+ * word above. The other is structural and needs no corpus at all: an
+ * alternative inside \b(...)\b that starts or ends with a non-word character
+ * -- "x²", "√", "n!", "30°", "f″", "∑" -- can never satisfy the boundary beside
+ * it. Thirty-six stems were dead that way when the second test was added,
+ * almost all of them symbolic stems written precisely because the symbol is
+ * what the question prints.
  */
 import { questionsForSubject } from '../src/data/questionBank'
 import { topicsForSubject } from '../src/data/topics'
@@ -42,17 +50,32 @@ for (const id of subjectIds) {
 const corpus = corpusText.join('\n')
 
 /**
- * The alternatives of a rule written in the `\b( a | b | c )\b` shape.
- * Nested groups are skipped rather than split naively -- "must (be|sit|stand)"
- * would otherwise look like an alternative called "sit".
+ * Split a `\b( a | b | c )\b` group's inside on its top-level pipes. Nested
+ * groups and character classes are stepped over rather than split naively --
+ * "must (be|sit|stand)" would otherwise look like an alternative called "sit".
  */
-function plainAlternatives(re: RegExp): string[] {
-  const m = /^\\b\((.*)\)\\b$/.exec(re.source)
-  if (!m) return []
+function splitAlternatives(inside: string): string[] {
   const out: string[] = []
   let depth = 0
+  let inClass = false
   let current = ''
-  for (const ch of m[1]) {
+  for (let i = 0; i < inside.length; i++) {
+    const ch = inside[i]
+    if (ch === '\\') {
+      current += ch + (inside[i + 1] ?? '')
+      i++
+      continue
+    }
+    if (inClass) {
+      inClass = ch !== ']'
+      current += ch
+      continue
+    }
+    if (ch === '[') {
+      inClass = true
+      current += ch
+      continue
+    }
     if (ch === '(') depth++
     if (ch === ')') depth--
     if (ch === '|' && depth === 0) {
@@ -61,8 +84,64 @@ function plainAlternatives(re: RegExp): string[] {
     } else current += ch
   }
   out.push(current)
-  // Only plain words can be stems; anything with regex syntax is deliberate.
-  return out.filter((a) => /^[a-z][a-z ]*$/i.test(a))
+  return out
+}
+
+/**
+ * Every `\b( ... )\b` group in a rule, wherever it sits in the source.
+ *
+ * Rules are no longer all of the form `\b(...)\b` -- the symbolic stems now sit
+ * outside the group, as `\b(words)\b|x²` -- so a check that only recognised a
+ * whole-source match would quietly stop inspecting the rules it had just been
+ * used to repair.
+ */
+function boundedGroups(re: RegExp): string[] {
+  return [...re.source.matchAll(/\\b\(((?:[^()\\]|\\.|\((?:[^()\\]|\\.)*\))*)\)\\b/g)].map((m) => m[1])
+}
+
+/** The plain-word alternatives of a rule. Anything with regex syntax is deliberate. */
+function plainAlternatives(re: RegExp): string[] {
+  return boundedGroups(re)
+    .flatMap(splitAlternatives)
+    .filter((a) => /^[a-z][a-z ]*$/i.test(a))
+}
+
+const isWordChar = (c: string) => /[A-Za-z0-9_]/.test(c)
+
+/**
+ * Alternatives inside a `\b(...)\b` group that the word boundaries forbid
+ * outright, whatever the corpus contains.
+ *
+ * A \b needs a word character on exactly one side of it. So an alternative that
+ * ENDS in a non-word character -- "x²", "30°", "n!", "p(a)" -- can never satisfy
+ * the group's trailing \b when the next character in the text is a space, and an
+ * alternative that STARTS with one -- "√", "∑", "∩" -- can never satisfy the
+ * leading \b either. The stem sits there looking correct and never fires once.
+ *
+ * Thirty-six stems were dead this way when the check was written, every one of
+ * them a symbolic stem added precisely because symbols are what the question
+ * says: √, x², sin², f″, ∑, tₙ, ŷ, n!, ∪, ∩, ε =, 10 %. The fix is always to
+ * move the alternative OUT of the group -- `\b(words)\b|x²` -- keeping a leading
+ * \b on it only where the stem starts with a word character and a longer number
+ * or name should not match it, as in `\b(30|45|60)°`.
+ */
+function boundaryBlocked(re: RegExp): string[] {
+  const blocked: string[] = []
+  for (const group of boundedGroups(re)) {
+    for (const alt of splitAlternatives(group)) {
+      if (!alt) continue
+      const first = /^(\\.|.)/s.exec(alt)![1]
+      const last = /(\\.|.)$/s.exec(alt)![1]
+      // An escaped character is always a literal. A bare one may be regex
+      // syntax -- a quantifier or a closing bracket -- which says nothing about
+      // what the match ends on, so those are left alone.
+      const badStart = first.length === 2 ? !isWordChar(first[1]) : !isWordChar(first) && !'(['.includes(first)
+      const badEnd = last.length === 2 ? !isWordChar(last[1]) : !isWordChar(last) && !'*+?)]}'.includes(last)
+      const which = [badStart && 'leading', badEnd && 'trailing'].filter(Boolean).join(' and ')
+      if (which) blocked.push(`"${alt}" -- the ${which} \\b can never hold against it`)
+    }
+  }
+  return blocked
 }
 
 const deadStems: string[] = []
@@ -78,6 +157,13 @@ for (const subjectId of subjectIds) {
     const textOf = (q: (typeof rows)[number]) => `${q.prompt} ${q.context ?? ''}`
 
     for (const rule of rules) {
+      // A stem the word boundaries forbid outright. This is checked before the
+      // corpus test because it does not depend on the corpus at all: the stem
+      // could not fire against any text whatsoever.
+      for (const why of boundaryBlocked(rule.match)) {
+        deadStems.push(`${topic.id} / ${rule.name}: ${why}. Move it outside the \\b(...)\\b group.`)
+      }
+
       // A stem that cannot fire anywhere in the corpus, but would if the
       // trailing \b let it. Reported per stem, since siblings may be fine.
       for (const alt of plainAlternatives(rule.match)) {

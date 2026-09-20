@@ -19,7 +19,7 @@
 import { papersForSubject } from '../src/data/papers/index.ts'
 import { capsWeightingFor, WEIGHTING_TOLERANCE } from '../src/data/capsWeighting.ts'
 
-for (const subj of ['life-sciences', 'physical-sciences']) {
+for (const subj of ['mat-lit', 'mathematics', 'life-sciences', 'physical-sciences']) {
   console.log(`\n=== ${subj} ===`)
   const list: any[] = (await papersForSubject(subj)) as any
   const cells = new Map<string, any>()

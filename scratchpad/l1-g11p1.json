@@ -1,0 +1,1262 @@
+[
+ {
+  "id": "math-g11-p1-20-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: 6x − 12 = 0",
+  "answer": "2",
+  "explanation": "Adding 12 to both sides gives 6x = 12, and dividing both sides by 6 gives x = 2. Whatever is done to one side of an equation must be done to the other."
+ },
+ {
+  "id": "math-g11-p1-20-5-1",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,11 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,19",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,11 + 0,08 = 0,19."
+ },
+ {
+  "id": "math-g11-p1-20-3-1",
+  "marks": 2,
+  "prompt": "An amount is invested for 11 years at 7% per annum compounded annually. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,07 and n = 11",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 1 period in a year: 0,07 ÷ 1 = 0,07. The number of periods is 11 × 1 = 11."
+ },
+ {
+  "id": "math-g11-p1-20-4-1",
+  "marks": 1,
+  "prompt": "Write down the equation of the horizontal asymptote of y = 5/x − 5.",
+  "answer": "y = −5",
+  "explanation": "As x grows large, 5/x becomes very small but never reaches zero, so y settles towards −5 without ever getting there. The asymptote is a LINE, so the answer is written as an equation, not as a single number."
+ },
+ {
+  "id": "math-g11-p1-20-2-1",
+  "marks": 1,
+  "prompt": "Write down the next term of the sequence: 5; 7; 9; 11; …",
+  "answer": "13",
+  "explanation": "Each term is 2 more than the one before, so the next term is 11 + 2 = 13. The constant difference is what makes this an arithmetic sequence."
+ },
+ {
+  "id": "math-g11-p1-20-1-3",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 8)(x + 2) = 0",
+  "answer": "x = 8 or x = −2",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 8 = 0 or x + 2 = 0. That gives x = 8 or x = −2. The signs flip: the factor (x − 8) gives the POSITIVE root 8."
+ },
+ {
+  "id": "math-g11-p1-20-4-2",
+  "marks": 1,
+  "prompt": "Write down the range of y = x² − 2.",
+  "answer": "y ≥ −2",
+  "explanation": "Since x² is never negative, x² is at its smallest, zero, when x = 0, and y is then −2. Every other x makes y larger, so the range is y ≥ −2."
+ },
+ {
+  "id": "math-g11-p1-20-1-4",
+  "marks": 1,
+  "prompt": "Factorise: x² − 36",
+  "answer": "(x − 6)(x + 6)",
+  "explanation": "This is a difference of two squares, since 36 = 6². The pattern a² − b² = (a − b)(a + b) applies directly. Note a SUM of two squares, x² + 36, cannot be factorised over the real numbers."
+ },
+ {
+  "id": "math-g11-p1-21-1-2",
+  "marks": 1,
+  "prompt": "Evaluate 7² without using a calculator.",
+  "answer": "49",
+  "explanation": "7² means 7 × 7 = 49. The exponent counts how many times the base appears in the product; it is not a multiplier, so a power is always worked out by repeated multiplication and never by multiplying the base by the exponent."
+ },
+ {
+  "id": "math-g11-p1-21-5-1",
+  "marks": 2,
+  "prompt": "A bag contains 4 red, 4 blue and 4 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/3 and P(not red) = 2/3",
+  "explanation": "There are 12 marbles altogether, of which 4 are red and the other 8 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-21-3-1",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R6 500 is invested for ONE year at 5% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R6 825",
+  "explanation": "Substituting P = 6500, i = 0,05 and n = 1: A = 6500(1 + 0,05)¹ = R6 825. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-21-4-1",
+  "marks": 1,
+  "prompt": "Write down the y-intercept of the graph of y = 6x − 2.",
+  "answer": "−2",
+  "explanation": "The y-intercept is the value of y when x = 0, and in the form y = mx + c that is just c — here −2. No substitution is needed once the equation is written this way."
+ },
+ {
+  "id": "math-g11-p1-21-2-1",
+  "marks": 1,
+  "prompt": "Write down the common difference of the sequence: 6; 8; 10; …",
+  "answer": "2",
+  "explanation": "The common difference is any term minus the one before it: 8 − 6 = 2. It must give the same answer wherever in the sequence it is taken, which is what distinguishes an arithmetic sequence from any other."
+ },
+ {
+  "id": "math-g11-p1-21-1-3",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 8x² − 9x − 2.",
+  "answer": "Coefficient of x²: 8; constant term: −2",
+  "explanation": "The coefficient is the number multiplying the term, so it is 8, and the constant term is the one with no x in it, −2. The sign in front of a term belongs to that term, which is why the constant is negative here and not 2."
+ },
+ {
+  "id": "math-g11-p1-21-4-2",
+  "marks": 1,
+  "prompt": "Write down the gradient of the line y = −6x + 1.",
+  "answer": "−6",
+  "explanation": "In y = mx + c the gradient is m, the number multiplying x, so it is −6. The minus sign is part of the gradient and is what makes this line fall from left to right."
+ },
+ {
+  "id": "math-g11-p1-21-1-4",
+  "marks": 1,
+  "prompt": "Simplify, leaving your answer in exponential form: x¹⁰ ÷ x²",
+  "answer": "x⁸",
+  "explanation": "Dividing powers of the same base subtracts the exponents: 10 − 2 = 8. The base itself never changes, so the answer is a power of x, not a power of anything else."
+ },
+ {
+  "id": "math-g11-p1-22-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: x² = 49, given that x is NEGATIVE.",
+  "answer": "−7",
+  "explanation": "Both 7 and −7 square to 49, so x² = 49 has two solutions. The condition that x is negative rules out 7, leaving x = −7. A square root sign on its own would have given only the positive root, which is why the question states the sign it wants."
+ },
+ {
+  "id": "math-g11-p1-22-5-1",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,14 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,22",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,14 + 0,08 = 0,22."
+ },
+ {
+  "id": "math-g11-p1-22-3-1",
+  "marks": 2,
+  "prompt": "An amount is invested for 12 years at 8% per annum compounded annually. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,08 and n = 12",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 1 period in a year: 0,08 ÷ 1 = 0,08. The number of periods is 12 × 1 = 12."
+ },
+ {
+  "id": "math-g11-p1-22-4-1",
+  "marks": 1,
+  "prompt": "Write down the equation of the axis of symmetry of y = (x − 5)² − 6.",
+  "answer": "x = 5",
+  "explanation": "In the form y = (x − p)² + q the graph is symmetrical about the vertical line x = p, so here x = 5. The value −6 shifts the parabola up or down and has no effect on where the axis of symmetry sits."
+ },
+ {
+  "id": "math-g11-p1-22-2-1",
+  "marks": 1,
+  "prompt": "Write down the common ratio of the sequence: 4; 8; 16; …",
+  "answer": "2",
+  "explanation": "The common ratio is any term DIVIDED by the one before it: 8 ÷ 4 = 2. Subtracting instead of dividing would give the common difference, which this sequence does not have."
+ },
+ {
+  "id": "math-g11-p1-22-1-3",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x¹¹ × x², and then (x¹¹)²",
+  "answer": "x¹³ and x²²",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 11 + 2 = 13. Raising a power to a power MULTIPLIES them: 11 × 2 = 22. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p1-22-4-2",
+  "marks": 1,
+  "prompt": "Write down the equation of the horizontal asymptote of y = 6/x − 5.",
+  "answer": "y = −5",
+  "explanation": "As x grows large, 6/x becomes very small but never reaches zero, so y settles towards −5 without ever getting there. The asymptote is a LINE, so the answer is written as an equation, not as a single number."
+ },
+ {
+  "id": "math-g11-p1-22-1-4",
+  "marks": 1,
+  "prompt": "Solve for x: 7x − 14 = 0",
+  "answer": "2",
+  "explanation": "Adding 14 to both sides gives 7x = 14, and dividing both sides by 7 gives x = 2. Whatever is done to one side of an equation must be done to the other."
+ },
+ {
+  "id": "math-g11-p1-23-1-2",
+  "marks": 1,
+  "prompt": "Factorise: x² − 49",
+  "answer": "(x − 7)(x + 7)",
+  "explanation": "This is a difference of two squares, since 49 = 7². The pattern a² − b² = (a − b)(a + b) applies directly. Note a SUM of two squares, x² + 49, cannot be factorised over the real numbers."
+ },
+ {
+  "id": "math-g11-p1-23-5-1",
+  "marks": 2,
+  "prompt": "A bag contains 5 red, 4 blue and 5 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 5/14 and P(not red) = 9/14",
+  "explanation": "There are 14 marbles altogether, of which 5 are red and the other 9 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-23-3-1",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R7 000 is invested for ONE year at 5% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R7 350",
+  "explanation": "Substituting P = 7000, i = 0,05 and n = 1: A = 7000(1 + 0,05)¹ = R7 350. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-23-4-1",
+  "marks": 1,
+  "prompt": "Write down the range of y = x² − 1.",
+  "answer": "y ≥ −1",
+  "explanation": "Since x² is never negative, x² is at its smallest, zero, when x = 0, and y is then −1. Every other x makes y larger, so the range is y ≥ −1."
+ },
+ {
+  "id": "math-g11-p1-23-2-1",
+  "marks": 1,
+  "prompt": "Write down the next term of the sequence: 6; 8; 10; 12; …",
+  "answer": "14",
+  "explanation": "Each term is 2 more than the one before, so the next term is 12 + 2 = 14. The constant difference is what makes this an arithmetic sequence."
+ },
+ {
+  "id": "math-g11-p1-23-1-3",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 9)(x + 2) = 0",
+  "answer": "x = 9 or x = −2",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 9 = 0 or x + 2 = 0. That gives x = 9 or x = −2. The signs flip: the factor (x − 9) gives the POSITIVE root 9."
+ },
+ {
+  "id": "math-g11-p1-23-4-2",
+  "marks": 1,
+  "prompt": "Write down the y-intercept of the graph of y = 7x − 2.",
+  "answer": "−2",
+  "explanation": "The y-intercept is the value of y when x = 0, and in the form y = mx + c that is just c — here −2. No substitution is needed once the equation is written this way."
+ },
+ {
+  "id": "math-g11-p1-23-1-4",
+  "marks": 1,
+  "prompt": "Evaluate 8² without using a calculator.",
+  "answer": "64",
+  "explanation": "8² means 8 × 8 = 64. The exponent counts how many times the base appears in the product; it is not a multiplier, so a power is always worked out by repeated multiplication and never by multiplying the base by the exponent."
+ },
+ {
+  "id": "math-g11-p1-24-1-2",
+  "marks": 1,
+  "prompt": "Simplify, leaving your answer in exponential form: x¹¹ ÷ x²",
+  "answer": "x⁹",
+  "explanation": "Dividing powers of the same base subtracts the exponents: 11 − 2 = 9. The base itself never changes, so the answer is a power of x, not a power of anything else."
+ },
+ {
+  "id": "math-g11-p1-24-5-1",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,17 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,25",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,17 + 0,08 = 0,25."
+ },
+ {
+  "id": "math-g11-p1-24-3-1",
+  "marks": 2,
+  "prompt": "An amount is invested for 13 years at 9% per annum compounded annually. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,09 and n = 13",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 1 period in a year: 0,09 ÷ 1 = 0,09. The number of periods is 13 × 1 = 13."
+ },
+ {
+  "id": "math-g11-p1-24-4-1",
+  "marks": 1,
+  "prompt": "Write down the gradient of the line y = −7x + 1.",
+  "answer": "−7",
+  "explanation": "In y = mx + c the gradient is m, the number multiplying x, so it is −7. The minus sign is part of the gradient and is what makes this line fall from left to right."
+ },
+ {
+  "id": "math-g11-p1-24-2-1",
+  "marks": 1,
+  "prompt": "Write down the common difference of the sequence: 7; 9; 11; …",
+  "answer": "2",
+  "explanation": "The common difference is any term minus the one before it: 9 − 7 = 2. It must give the same answer wherever in the sequence it is taken, which is what distinguishes an arithmetic sequence from any other."
+ },
+ {
+  "id": "math-g11-p1-24-1-3",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 9x² − 3x − 2.",
+  "answer": "Coefficient of x²: 9; constant term: −2",
+  "explanation": "The coefficient is the number multiplying the term, so it is 9, and the constant term is the one with no x in it, −2. The sign in front of a term belongs to that term, which is why the constant is negative here and not 2."
+ },
+ {
+  "id": "math-g11-p1-24-4-2",
+  "marks": 1,
+  "prompt": "Write down the equation of the axis of symmetry of y = (x − 6)² − 6.",
+  "answer": "x = 6",
+  "explanation": "In the form y = (x − p)² + q the graph is symmetrical about the vertical line x = p, so here x = 6. The value −6 shifts the parabola up or down and has no effect on where the axis of symmetry sits."
+ },
+ {
+  "id": "math-g11-p1-24-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 11n + 1.",
+  "answer": "T₁ = 12 and T₂ = 23",
+  "explanation": "Substitute n = 1: 11(1) + 1 = 12. Then n = 2: 11(2) + 1 = 23. The counter n starts at 1, not 0 — starting at 0 would give 1, which is not a term of this sequence."
+ },
+ {
+  "id": "math-g11-p1-25-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: x² = 64, given that x is NEGATIVE.",
+  "answer": "−8",
+  "explanation": "Both 8 and −8 square to 64, so x² = 64 has two solutions. The condition that x is negative rules out 8, leaving x = −8. A square root sign on its own would have given only the positive root, which is why the question states the sign it wants."
+ },
+ {
+  "id": "math-g11-p1-25-5-1",
+  "marks": 2,
+  "prompt": "A bag contains 6 red, 4 blue and 6 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 3/8 and P(not red) = 5/8",
+  "explanation": "There are 16 marbles altogether, of which 6 are red and the other 10 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-25-3-1",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R7 500 is invested for ONE year at 5% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R7 875",
+  "explanation": "Substituting P = 7500, i = 0,05 and n = 1: A = 7500(1 + 0,05)¹ = R7 875. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-25-4-1",
+  "marks": 1,
+  "prompt": "Write down the equation of the horizontal asymptote of y = 7/x − 5.",
+  "answer": "y = −5",
+  "explanation": "As x grows large, 7/x becomes very small but never reaches zero, so y settles towards −5 without ever getting there. The asymptote is a LINE, so the answer is written as an equation, not as a single number."
+ },
+ {
+  "id": "math-g11-p1-25-2-1",
+  "marks": 1,
+  "prompt": "Write down the common ratio of the sequence: 5; 10; 20; …",
+  "answer": "2",
+  "explanation": "The common ratio is any term DIVIDED by the one before it: 10 ÷ 5 = 2. Subtracting instead of dividing would give the common difference, which this sequence does not have."
+ },
+ {
+  "id": "math-g11-p1-25-1-3",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x¹² × x², and then (x¹²)²",
+  "answer": "x¹⁴ and x²⁴",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 12 + 2 = 14. Raising a power to a power MULTIPLIES them: 12 × 2 = 24. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p1-25-4-2",
+  "marks": 1,
+  "prompt": "Write down the range of y = x² + 1.",
+  "answer": "y ≥ 1",
+  "explanation": "Since x² is never negative, x² is at its smallest, zero, when x = 0, and y is then 1. Every other x makes y larger, so the range is y ≥ 1."
+ },
+ {
+  "id": "math-g11-p1-25-2-2",
+  "marks": 2,
+  "prompt": "For the sequence 11; 13; 15; …, write down the common difference and the fifth term.",
+  "answer": "d = 2 and T₅ = 19",
+  "explanation": "The common difference is 13 − 11 = 2. The fifth term is four steps past the first, so T₅ = 11 + 4(2) = 19. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-g11-p1-a-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: 8x − 16 = 0",
+  "answer": "2",
+  "explanation": "Adding 16 to both sides gives 8x = 16, and dividing both sides by 8 gives x = 2. Whatever is done to one side of an equation must be done to the other."
+ },
+ {
+  "id": "math-g11-p1-a-5-1",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,2 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,28",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,2 + 0,08 = 0,28."
+ },
+ {
+  "id": "math-g11-p1-a-3-1",
+  "marks": 2,
+  "prompt": "An amount is invested for 14 years at 10% per annum compounded annually. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,1 and n = 14",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 1 period in a year: 0,1 ÷ 1 = 0,1. The number of periods is 14 × 1 = 14."
+ },
+ {
+  "id": "math-g11-p1-a-4-1",
+  "marks": 1,
+  "prompt": "Write down the y-intercept of the graph of y = 8x − 2.",
+  "answer": "−2",
+  "explanation": "The y-intercept is the value of y when x = 0, and in the form y = mx + c that is just c — here −2. No substitution is needed once the equation is written this way."
+ },
+ {
+  "id": "math-g11-p1-a-2-1",
+  "marks": 1,
+  "prompt": "Write down the next term of the sequence: 7; 9; 11; 13; …",
+  "answer": "15",
+  "explanation": "Each term is 2 more than the one before, so the next term is 13 + 2 = 15. The constant difference is what makes this an arithmetic sequence."
+ },
+ {
+  "id": "math-g11-p1-a-1-3",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 10)(x + 2) = 0",
+  "answer": "x = 10 or x = −2",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 10 = 0 or x + 2 = 0. That gives x = 10 or x = −2. The signs flip: the factor (x − 10) gives the POSITIVE root 10."
+ },
+ {
+  "id": "math-g11-p1-a-4-2",
+  "marks": 1,
+  "prompt": "Write down the gradient of the line y = −8x + 1.",
+  "answer": "−8",
+  "explanation": "In y = mx + c the gradient is m, the number multiplying x, so it is −8. The minus sign is part of the gradient and is what makes this line fall from left to right."
+ },
+ {
+  "id": "math-g11-p1-a-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 2n + 2.",
+  "answer": "T₁ = 4 and T₂ = 6",
+  "explanation": "Substitute n = 1: 2(1) + 2 = 4. Then n = 2: 2(2) + 2 = 6. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-g11-p1-b-1-2",
+  "marks": 1,
+  "prompt": "Factorise: x² − 64",
+  "answer": "(x − 8)(x + 8)",
+  "explanation": "This is a difference of two squares, since 64 = 8². The pattern a² − b² = (a − b)(a + b) applies directly. Note a SUM of two squares, x² + 64, cannot be factorised over the real numbers."
+ },
+ {
+  "id": "math-g11-p1-b-5-1",
+  "marks": 2,
+  "prompt": "A bag contains 7 red, 4 blue and 1 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 7/12 and P(not red) = 5/12",
+  "explanation": "There are 12 marbles altogether, of which 7 are red and the other 5 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-b-3-1",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R8 000 is invested for ONE year at 5% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R8 400",
+  "explanation": "Substituting P = 8000, i = 0,05 and n = 1: A = 8000(1 + 0,05)¹ = R8 400. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-b-4-1",
+  "marks": 1,
+  "prompt": "Write down the equation of the axis of symmetry of y = (x − 7)² − 6.",
+  "answer": "x = 7",
+  "explanation": "In the form y = (x − p)² + q the graph is symmetrical about the vertical line x = p, so here x = 7. The value −6 shifts the parabola up or down and has no effect on where the axis of symmetry sits."
+ },
+ {
+  "id": "math-g11-p1-b-2-1",
+  "marks": 1,
+  "prompt": "Write down the common difference of the sequence: 8; 10; 12; …",
+  "answer": "2",
+  "explanation": "The common difference is any term minus the one before it: 10 − 8 = 2. It must give the same answer wherever in the sequence it is taken, which is what distinguishes an arithmetic sequence from any other."
+ },
+ {
+  "id": "math-g11-p1-b-1-3",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 10x² − 4x − 2.",
+  "answer": "Coefficient of x²: 10; constant term: −2",
+  "explanation": "The coefficient is the number multiplying the term, so it is 10, and the constant term is the one with no x in it, −2. The sign in front of a term belongs to that term, which is why the constant is negative here and not 2."
+ },
+ {
+  "id": "math-g11-p1-b-4-2",
+  "marks": 1,
+  "prompt": "Write down the equation of the horizontal asymptote of y = 8/x − 5.",
+  "answer": "y = −5",
+  "explanation": "As x grows large, 8/x becomes very small but never reaches zero, so y settles towards −5 without ever getting there. The asymptote is a LINE, so the answer is written as an equation, not as a single number."
+ },
+ {
+  "id": "math-g11-p1-b-2-2",
+  "marks": 2,
+  "prompt": "For the sequence 12; 14; 16; …, write down the common difference and the fifth term.",
+  "answer": "d = 2 and T₅ = 20",
+  "explanation": "The common difference is 14 − 12 = 2. The fifth term is four steps past the first, so T₅ = 12 + 4(2) = 20. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-g11-p1-c-1-2",
+  "marks": 1,
+  "prompt": "Evaluate 9² without using a calculator.",
+  "answer": "81",
+  "explanation": "9² means 9 × 9 = 81. The exponent counts how many times the base appears in the product; it is not a multiplier, so a power is always worked out by repeated multiplication and never by multiplying the base by the exponent."
+ },
+ {
+  "id": "math-g11-p1-c-5-1",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,23 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,31",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,23 + 0,08 = 0,31."
+ },
+ {
+  "id": "math-g11-p1-c-3-1",
+  "marks": 2,
+  "prompt": "An amount is invested for 15 years at 11% per annum compounded annually. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,11 and n = 15",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 1 period in a year: 0,11 ÷ 1 = 0,11. The number of periods is 15 × 1 = 15."
+ },
+ {
+  "id": "math-g11-p1-c-4-1",
+  "marks": 1,
+  "prompt": "Write down the range of y = x² + 2.",
+  "answer": "y ≥ 2",
+  "explanation": "Since x² is never negative, x² is at its smallest, zero, when x = 0, and y is then 2. Every other x makes y larger, so the range is y ≥ 2."
+ },
+ {
+  "id": "math-g11-p1-c-2-1",
+  "marks": 1,
+  "prompt": "Write down the common ratio of the sequence: 6; 12; 24; …",
+  "answer": "2",
+  "explanation": "The common ratio is any term DIVIDED by the one before it: 12 ÷ 6 = 2. Subtracting instead of dividing would give the common difference, which this sequence does not have."
+ },
+ {
+  "id": "math-g11-p1-c-1-3",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x⁵ × x³, and then (x⁵)³",
+  "answer": "x⁸ and x¹⁵",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 5 + 3 = 8. Raising a power to a power MULTIPLIES them: 5 × 3 = 15. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p1-c-4-2",
+  "marks": 1,
+  "prompt": "Write down the y-intercept of the graph of y = 9x − 2.",
+  "answer": "−2",
+  "explanation": "The y-intercept is the value of y when x = 0, and in the form y = mx + c that is just c — here −2. No substitution is needed once the equation is written this way."
+ },
+ {
+  "id": "math-g11-p1-c-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 3n + 2.",
+  "answer": "T₁ = 5 and T₂ = 8",
+  "explanation": "Substitute n = 1: 3(1) + 2 = 5. Then n = 2: 3(2) + 2 = 8. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-g11-p1-20-1-8",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 11)(x + 2) = 0",
+  "answer": "x = 11 or x = −2",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 11 = 0 or x + 2 = 0. That gives x = 11 or x = −2. The signs flip: the factor (x − 11) gives the POSITIVE root 11."
+ },
+ {
+  "id": "math-g11-p1-20-5-2",
+  "marks": 2,
+  "prompt": "A bag contains 8 red, 4 blue and 2 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 4/7 and P(not red) = 3/7",
+  "explanation": "There are 14 marbles altogether, of which 8 are red and the other 6 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-20-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R8 500 is invested for ONE year at 5% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R8 925",
+  "explanation": "Substituting P = 8500, i = 0,05 and n = 1: A = 8500(1 + 0,05)¹ = R8 925. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-20-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 5x − 2.",
+  "answer": "Gradient = 5; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-20-2-3",
+  "marks": 2,
+  "prompt": "For the sequence 13; 15; 17; …, write down the common difference and the fifth term.",
+  "answer": "d = 2 and T₅ = 21",
+  "explanation": "The common difference is 15 − 13 = 2. The fifth term is four steps past the first, so T₅ = 13 + 4(2) = 21. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-g11-p1-20-5-3",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,26 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,34",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,26 + 0,08 = 0,34."
+ },
+ {
+  "id": "math-g11-p1-20-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 4)² − 6.",
+  "answer": "(4; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (4; −6). The sign of p flips: the bracket reads x − 4, so p is 4 and not −4."
+ },
+ {
+  "id": "math-g11-p1-20-5-5",
+  "marks": 2,
+  "prompt": "A bag contains 9 red, 4 blue and 3 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 9/16 and P(not red) = 7/16",
+  "explanation": "There are 16 marbles altogether, of which 9 are red and the other 7 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-20-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 5/(x − 4) − 5.",
+  "answer": "x = 4 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 4 = 0, so x = 4. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-20-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 6x − 2.",
+  "answer": "Gradient = 6; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-20-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 5)² − 6.",
+  "answer": "(5; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (5; −6). The sign of p flips: the bracket reads x − 5, so p is 5 and not −5."
+ },
+ {
+  "id": "math-g11-p1-20-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 6/(x − 5) − 5.",
+  "answer": "x = 5 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 5 = 0, so x = 5. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-21-1-8",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 2x² − 4x − 3.",
+  "answer": "Coefficient of x²: 2; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 2, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-g11-p1-21-5-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,29 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,37",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,29 + 0,08 = 0,37."
+ },
+ {
+  "id": "math-g11-p1-21-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 2 years at 7% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,035 and n = 4",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,07 ÷ 2 = 0,035. The number of periods is 2 × 2 = 4."
+ },
+ {
+  "id": "math-g11-p1-21-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 7x − 2.",
+  "answer": "Gradient = 7; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-21-2-3",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 4n + 2.",
+  "answer": "T₁ = 6 and T₂ = 10",
+  "explanation": "Substitute n = 1: 4(1) + 2 = 6. Then n = 2: 4(2) + 2 = 10. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-g11-p1-21-5-3",
+  "marks": 2,
+  "prompt": "A bag contains 10 red, 4 blue and 4 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 5/9 and P(not red) = 4/9",
+  "explanation": "There are 18 marbles altogether, of which 10 are red and the other 8 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-21-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 6)² − 6.",
+  "answer": "(6; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (6; −6). The sign of p flips: the bracket reads x − 6, so p is 6 and not −6."
+ },
+ {
+  "id": "math-g11-p1-21-5-5",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,32 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,4",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,32 + 0,08 = 0,4."
+ },
+ {
+  "id": "math-g11-p1-21-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 7/(x − 6) − 5.",
+  "answer": "x = 6 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 6 = 0, so x = 6. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-21-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 8x − 2.",
+  "answer": "Gradient = 8; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-21-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 7)² − 6.",
+  "answer": "(7; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (7; −6). The sign of p flips: the bracket reads x − 7, so p is 7 and not −7."
+ },
+ {
+  "id": "math-g11-p1-21-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 8/(x − 7) − 5.",
+  "answer": "x = 7 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 7 = 0, so x = 7. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-22-1-8",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x⁶ × x³, and then (x⁶)³",
+  "answer": "x⁹ and x¹⁸",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 6 + 3 = 9. Raising a power to a power MULTIPLIES them: 6 × 3 = 18. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p1-22-5-2",
+  "marks": 2,
+  "prompt": "A bag contains 11 red, 4 blue and 5 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 11/20 and P(not red) = 9/20",
+  "explanation": "There are 20 marbles altogether, of which 11 are red and the other 9 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-22-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R9 000 is invested for ONE year at 5% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R9 450",
+  "explanation": "Substituting P = 9000, i = 0,05 and n = 1: A = 9000(1 + 0,05)¹ = R9 450. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-22-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 9x − 2.",
+  "answer": "Gradient = 9; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-22-2-3",
+  "marks": 2,
+  "prompt": "For the sequence 2; 5; 8; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 14",
+  "explanation": "The common difference is 5 − 2 = 3. The fifth term is four steps past the first, so T₅ = 2 + 4(3) = 14. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-g11-p1-22-5-3",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,35 and P(B) = 0,08. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,43",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,35 + 0,08 = 0,43."
+ },
+ {
+  "id": "math-g11-p1-22-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 8)² − 6.",
+  "answer": "(8; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (8; −6). The sign of p flips: the bracket reads x − 8, so p is 8 and not −8."
+ },
+ {
+  "id": "math-g11-p1-22-5-5",
+  "marks": 2,
+  "prompt": "A bag contains 12 red, 4 blue and 6 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 6/11 and P(not red) = 5/11",
+  "explanation": "There are 22 marbles altogether, of which 12 are red and the other 10 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-22-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 9/(x − 8) − 5.",
+  "answer": "x = 8 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 8 = 0, so x = 8. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-22-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 10x − 2.",
+  "answer": "Gradient = 10; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-22-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 9)² − 6.",
+  "answer": "(9; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (9; −6). The sign of p flips: the bracket reads x − 9, so p is 9 and not −9."
+ },
+ {
+  "id": "math-g11-p1-22-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 2/(x − 9) − 5.",
+  "answer": "x = 9 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 9 = 0, so x = 9. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-23-1-8",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 12)(x + 2) = 0",
+  "answer": "x = 12 or x = −2",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 12 = 0 or x + 2 = 0. That gives x = 12 or x = −2. The signs flip: the factor (x − 12) gives the POSITIVE root 12."
+ },
+ {
+  "id": "math-g11-p1-23-5-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,05 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,16",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,05 + 0,11 = 0,16."
+ },
+ {
+  "id": "math-g11-p1-23-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 3 years at 8% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,04 and n = 6",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,08 ÷ 2 = 0,04. The number of periods is 3 × 2 = 6."
+ },
+ {
+  "id": "math-g11-p1-23-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 11x − 2.",
+  "answer": "Gradient = 11; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-23-2-3",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 5n + 2.",
+  "answer": "T₁ = 7 and T₂ = 12",
+  "explanation": "Substitute n = 1: 5(1) + 2 = 7. Then n = 2: 5(2) + 2 = 12. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-g11-p1-23-5-3",
+  "marks": 2,
+  "prompt": "A bag contains 13 red, 4 blue and 1 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 13/18 and P(not red) = 5/18",
+  "explanation": "There are 18 marbles altogether, of which 13 are red and the other 5 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-23-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 10)² − 6.",
+  "answer": "(10; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (10; −6). The sign of p flips: the bracket reads x − 10, so p is 10 and not −10."
+ },
+ {
+  "id": "math-g11-p1-23-5-5",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,08 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,19",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,08 + 0,11 = 0,19."
+ },
+ {
+  "id": "math-g11-p1-23-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 3/(x − 10) − 5.",
+  "answer": "x = 10 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 10 = 0, so x = 10. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-23-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 12x − 2.",
+  "answer": "Gradient = 12; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-23-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 11)² − 6.",
+  "answer": "(11; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (11; −6). The sign of p flips: the bracket reads x − 11, so p is 11 and not −11."
+ },
+ {
+  "id": "math-g11-p1-23-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 4/(x − 11) − 5.",
+  "answer": "x = 11 and y = −5",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 11 = 0, so x = 11. The horizontal asymptote is the value y settles towards as x grows, which is the −5 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-24-1-8",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 3x² − 5x − 3.",
+  "answer": "Coefficient of x²: 3; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 3, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-g11-p1-24-5-2",
+  "marks": 2,
+  "prompt": "A bag contains 2 red, 5 blue and 3 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/5 and P(not red) = 4/5",
+  "explanation": "There are 10 marbles altogether, of which 2 are red and the other 8 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-24-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R9 500 is invested for ONE year at 5% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R9 975",
+  "explanation": "Substituting P = 9500, i = 0,05 and n = 1: A = 9500(1 + 0,05)¹ = R9 975. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-24-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 13x − 2.",
+  "answer": "Gradient = 13; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-24-2-3",
+  "marks": 2,
+  "prompt": "For the sequence 3; 6; 9; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 15",
+  "explanation": "The common difference is 6 − 3 = 3. The fifth term is four steps past the first, so T₅ = 3 + 4(3) = 15. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-g11-p1-24-5-3",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,11 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,22",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,11 + 0,11 = 0,22."
+ },
+ {
+  "id": "math-g11-p1-24-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 12)² − 6.",
+  "answer": "(12; −6)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (12; −6). The sign of p flips: the bracket reads x − 12, so p is 12 and not −12."
+ },
+ {
+  "id": "math-g11-p1-24-5-5",
+  "marks": 2,
+  "prompt": "A bag contains 3 red, 5 blue and 4 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/4 and P(not red) = 3/4",
+  "explanation": "There are 12 marbles altogether, of which 3 are red and the other 9 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-24-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 3/(x − 1) − 4.",
+  "answer": "x = 1 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 1 = 0, so x = 1. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-24-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 14x − 2.",
+  "answer": "Gradient = 14; y-intercept = −2",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-24-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 1)² − 5.",
+  "answer": "(1; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (1; −5). The sign of p flips: the bracket reads x − 1, so p is 1 and not −1."
+ },
+ {
+  "id": "math-g11-p1-24-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 4/(x − 2) − 4.",
+  "answer": "x = 2 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 2 = 0, so x = 2. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-25-1-8",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x⁷ × x³, and then (x⁷)³",
+  "answer": "x¹⁰ and x²¹",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 7 + 3 = 10. Raising a power to a power MULTIPLIES them: 7 × 3 = 21. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p1-25-5-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,14 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,25",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,14 + 0,11 = 0,25."
+ },
+ {
+  "id": "math-g11-p1-25-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 4 years at 9% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,045 and n = 8",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,09 ÷ 2 = 0,045. The number of periods is 4 × 2 = 8."
+ },
+ {
+  "id": "math-g11-p1-25-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 2x − 3.",
+  "answer": "Gradient = 2; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-25-2-3",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 6n + 2.",
+  "answer": "T₁ = 8 and T₂ = 14",
+  "explanation": "Substitute n = 1: 6(1) + 2 = 8. Then n = 2: 6(2) + 2 = 14. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-g11-p1-25-5-3",
+  "marks": 2,
+  "prompt": "A bag contains 4 red, 5 blue and 5 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 2/7 and P(not red) = 5/7",
+  "explanation": "There are 14 marbles altogether, of which 4 are red and the other 10 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-25-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 2)² − 5.",
+  "answer": "(2; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (2; −5). The sign of p flips: the bracket reads x − 2, so p is 2 and not −2."
+ },
+ {
+  "id": "math-g11-p1-25-5-5",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,17 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,28",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,17 + 0,11 = 0,28."
+ },
+ {
+  "id": "math-g11-p1-25-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 5/(x − 3) − 4.",
+  "answer": "x = 3 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 3 = 0, so x = 3. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-25-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 3x − 3.",
+  "answer": "Gradient = 3; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-25-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 3)² − 5.",
+  "answer": "(3; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (3; −5). The sign of p flips: the bracket reads x − 3, so p is 3 and not −3."
+ },
+ {
+  "id": "math-g11-p1-25-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 6/(x − 4) − 4.",
+  "answer": "x = 4 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 4 = 0, so x = 4. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-a-1-8",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 13)(x + 2) = 0",
+  "answer": "x = 13 or x = −2",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 13 = 0 or x + 2 = 0. That gives x = 13 or x = −2. The signs flip: the factor (x − 13) gives the POSITIVE root 13."
+ },
+ {
+  "id": "math-g11-p1-a-5-2",
+  "marks": 2,
+  "prompt": "A bag contains 5 red, 5 blue and 6 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 5/16 and P(not red) = 11/16",
+  "explanation": "There are 16 marbles altogether, of which 5 are red and the other 11 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-a-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R2 000 is invested for ONE year at 6% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R2 120",
+  "explanation": "Substituting P = 2000, i = 0,06 and n = 1: A = 2000(1 + 0,06)¹ = R2 120. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-a-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 4x − 3.",
+  "answer": "Gradient = 4; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-a-2-3",
+  "marks": 2,
+  "prompt": "For the sequence 4; 7; 10; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 16",
+  "explanation": "The common difference is 7 − 4 = 3. The fifth term is four steps past the first, so T₅ = 4 + 4(3) = 16. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-g11-p1-a-5-3",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,2 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,31",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,2 + 0,11 = 0,31."
+ },
+ {
+  "id": "math-g11-p1-a-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 4)² − 5.",
+  "answer": "(4; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (4; −5). The sign of p flips: the bracket reads x − 4, so p is 4 and not −4."
+ },
+ {
+  "id": "math-g11-p1-a-5-5",
+  "marks": 2,
+  "prompt": "A bag contains 6 red, 5 blue and 1 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/2 and P(not red) = 1/2",
+  "explanation": "There are 12 marbles altogether, of which 6 are red and the other 6 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-a-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 7/(x − 5) − 4.",
+  "answer": "x = 5 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 5 = 0, so x = 5. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-a-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 5x − 3.",
+  "answer": "Gradient = 5; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-a-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 5)² − 5.",
+  "answer": "(5; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (5; −5). The sign of p flips: the bracket reads x − 5, so p is 5 and not −5."
+ },
+ {
+  "id": "math-g11-p1-a-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 8/(x − 6) − 4.",
+  "answer": "x = 6 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 6 = 0, so x = 6. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-b-1-8",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 4x² − 6x − 3.",
+  "answer": "Coefficient of x²: 4; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 4, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-g11-p1-b-5-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,23 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,34",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,23 + 0,11 = 0,34."
+ },
+ {
+  "id": "math-g11-p1-b-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 5 years at 10% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,05 and n = 10",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,1 ÷ 2 = 0,05. The number of periods is 5 × 2 = 10."
+ },
+ {
+  "id": "math-g11-p1-b-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 6x − 3.",
+  "answer": "Gradient = 6; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-b-2-3",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 7n + 2.",
+  "answer": "T₁ = 9 and T₂ = 16",
+  "explanation": "Substitute n = 1: 7(1) + 2 = 9. Then n = 2: 7(2) + 2 = 16. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-g11-p1-b-5-3",
+  "marks": 2,
+  "prompt": "A bag contains 7 red, 5 blue and 2 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/2 and P(not red) = 1/2",
+  "explanation": "There are 14 marbles altogether, of which 7 are red and the other 7 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-b-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 6)² − 5.",
+  "answer": "(6; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (6; −5). The sign of p flips: the bracket reads x − 6, so p is 6 and not −6."
+ },
+ {
+  "id": "math-g11-p1-b-5-5",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,26 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,37",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,26 + 0,11 = 0,37."
+ },
+ {
+  "id": "math-g11-p1-b-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 9/(x − 7) − 4.",
+  "answer": "x = 7 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 7 = 0, so x = 7. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-b-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 7x − 3.",
+  "answer": "Gradient = 7; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-b-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 7)² − 5.",
+  "answer": "(7; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (7; −5). The sign of p flips: the bracket reads x − 7, so p is 7 and not −7."
+ },
+ {
+  "id": "math-g11-p1-b-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 2/(x − 8) − 4.",
+  "answer": "x = 8 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 8 = 0, so x = 8. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-c-1-8",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x⁸ × x³, and then (x⁸)³",
+  "answer": "x¹¹ and x²⁴",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 8 + 3 = 11. Raising a power to a power MULTIPLIES them: 8 × 3 = 24. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g11-p1-c-5-2",
+  "marks": 2,
+  "prompt": "A bag contains 8 red, 5 blue and 3 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/2 and P(not red) = 1/2",
+  "explanation": "There are 16 marbles altogether, of which 8 are red and the other 8 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-c-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R2 500 is invested for ONE year at 6% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R2 650",
+  "explanation": "Substituting P = 2500, i = 0,06 and n = 1: A = 2500(1 + 0,06)¹ = R2 650. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-g11-p1-c-4-4",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 8x − 3.",
+  "answer": "Gradient = 8; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-c-2-3",
+  "marks": 2,
+  "prompt": "For the sequence 5; 8; 11; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 17",
+  "explanation": "The common difference is 8 − 5 = 3. The fifth term is four steps past the first, so T₅ = 5 + 4(3) = 17. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-g11-p1-c-5-3",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,29 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,4",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,29 + 0,11 = 0,4."
+ },
+ {
+  "id": "math-g11-p1-c-4-5",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 8)² − 5.",
+  "answer": "(8; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (8; −5). The sign of p flips: the bracket reads x − 8, so p is 8 and not −8."
+ },
+ {
+  "id": "math-g11-p1-c-5-5",
+  "marks": 2,
+  "prompt": "A bag contains 9 red, 5 blue and 4 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/2 and P(not red) = 1/2",
+  "explanation": "There are 18 marbles altogether, of which 9 are red and the other 9 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-g11-p1-c-4-7",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 3/(x − 9) − 4.",
+  "answer": "x = 9 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 9 = 0, so x = 9. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-g11-p1-c-4-8",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 9x − 3.",
+  "answer": "Gradient = 9; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-g11-p1-c-4-9",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 9)² − 5.",
+  "answer": "(9; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (9; −5). The sign of p flips: the bracket reads x − 9, so p is 9 and not −9."
+ },
+ {
+  "id": "math-g11-p1-c-4-10",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 4/(x − 10) − 4.",
+  "answer": "x = 10 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 10 = 0, so x = 10. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ }
+]

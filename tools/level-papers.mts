@@ -102,8 +102,67 @@ function applyToFile(path: string, dryRun: boolean, force: boolean) {
 
 const dryRun = process.argv.includes('--dry-run')
 const force = process.argv.includes('--force')
+
+/**
+ * Subjects that now contain levels a person set by reading the item, with a
+ * note on what would be lost by re-deriving them.
+ *
+ * --force re-derives every level this tool previously wrote. That is safe for
+ * a subject whose levels are ENTIRELY machine-written, and destructive for one
+ * where a human has since overruled the machine -- which is precisely the case
+ * wherever the classifier was found to be wrong, because that is what prompted
+ * the hand-checking in the first place. Re-deriving would restore the very
+ * levels that were measured and rejected.
+ *
+ * Life Sciences needs no entry: it is not in SUBJECT_FILES at all, because it
+ * was hand-levelled from the start.
+ */
+const HAND_VERIFIED: Record<string, string> = {
+  'physical-sciences':
+    '141 Level 4 items authored and verified by hand. Many embed a calculation, and\n' +
+    '    both cognitive-level.mts and physics-level.mts document the classifier as\n' +
+    '    unreliable on exactly those.',
+  'mat-lit':
+    '256 items whose level was set by reading them -- 243 corrected from Level 3 to\n' +
+    '    Level 4, plus 13 rewritten. The classifier reads the OPENING command verb, and\n' +
+    "    all of these open with 'Determine' while ending on the judgement that decides\n" +
+    '    the level, so re-deriving would send every one of them back to Level 3.',
+}
+
+/**
+ * --subject <id> limits the run to one file, and it exists because --force is
+ * dangerous without it.
+ */
+const subjectArg = process.argv[process.argv.indexOf('--subject') + 1]
+const only = process.argv.includes('--subject') ? subjectArg : null
+if (only && !(only in SUBJECT_FILES)) {
+  console.error(`Unknown subject "${only}". Known: ${Object.keys(SUBJECT_FILES).join(', ')}`)
+  process.exit(1)
+}
+if (force && !only) {
+  console.error(
+    '--force without --subject would re-derive every machine-written level in all three\n' +
+      'subjects, including hand-verified content. Name a subject.',
+  )
+  process.exit(1)
+}
+/*
+ * Naming the subject is no longer enough on its own. Two of the three now hold
+ * levels a person set after reading the item, so --force on them is not a
+ * refresh but a revert. --i-know is deliberately awkward to type: it should be
+ * reached for only by someone who has read what they are about to discard.
+ */
+if (force && only && HAND_VERIFIED[only] && !process.argv.includes('--i-know')) {
+  console.error(
+    `--force on ${only} would discard hand-verified levels:\n\n    ${HAND_VERIFIED[only]}\n\n` +
+      'Re-run with --i-know if you have read the above and still want to re-derive them.',
+  )
+  process.exit(1)
+}
+
 let total = 0
 for (const [subject, path] of Object.entries(SUBJECT_FILES)) {
+  if (only && subject !== only) continue
   const { changed, markCounts } = applyToFile(path, dryRun, force)
   total += changed
   const all = markCounts[1] + markCounts[2] + markCounts[3] + markCounts[4]

@@ -16,6 +16,10 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { ClipboardIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { filterSubjectQuestions } from '@/data/questionBank'
+import { groupBySubtopic } from '@/data/subtopics'
+import { qualify } from '@/lib/testPaper'
+import { atpFor, type AtpWeek } from '@/data/atp'
 import type { Grade } from '@/types'
 
 /** A date input wants yyyy-mm-dd; default to a week today, which is what "weekly" means. */
@@ -41,6 +45,9 @@ export function WeeklyTests() {
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? 'mat-lit')
   const [grade, setGrade] = useState<Grade>(12)
   const [topicIds, setTopicIds] = useState<string[]>([])
+  /** Qualified `topicId::name`. Empty means the whole topic. */
+  const [subtopics, setSubtopics] = useState<string[]>([])
+  const [atpKey, setAtpKey] = useState('')
   const [questionCount, setQuestionCount] = useState(8)
   const [dueDate, setDueDate] = useState(weekFromToday())
   const [saving, setSaving] = useState(false)
@@ -82,7 +89,73 @@ export function WeeklyTests() {
   // the old pair -- keeping them would set a test on topics that are not in it.
   useEffect(() => {
     setTopicIds([])
+    setSubtopics([])
+    setAtpKey('')
   }, [subjectId, grade])
+
+  /*
+   * The sub-topics available across whichever topics are ticked, with how many
+   * questions sit behind each.
+   *
+   * A test set on a whole topic covers every sub-topic in it -- buildTestPaper
+   * takes questions round-robin -- so these chips are for NARROWING a test to
+   * the week's work, not for making a topic test complete. That is why leaving
+   * them all off is the normal case and is labelled as the whole topic.
+   */
+  const [available, setAvailable] = useState<{ key: string; name: string; topic: string; count: number }[]>([])
+  useEffect(() => {
+    let live = true
+    if (!topicIds.length) {
+      setAvailable([])
+      return
+    }
+    Promise.all(
+      topicIds.map(async (id) => {
+        const qs = await filterSubjectQuestions(subjectId, { topicId: id, grade })
+        const topicName = topics.find((t) => t.id === id)?.name ?? id
+        return groupBySubtopic(id, qs).map((g) => ({
+          key: qualify(id, g.name),
+          name: g.name,
+          topic: topicName,
+          count: g.questions.length,
+        }))
+      }),
+    ).then((lists) => {
+      if (live) setAvailable(lists.flat())
+    })
+    return () => {
+      live = false
+    }
+  }, [subjectId, grade, topicIds, topics])
+
+  // Sub-topics belonging to a topic that has since been unticked must go too,
+  // or the test would be limited to something it no longer draws from.
+  useEffect(() => {
+    setSubtopics((prev) => prev.filter((k) => topicIds.includes(k.split('::')[0])))
+  }, [topicIds])
+
+  const atp = atpFor(subjectId, grade)
+  const chosenWeek = atpKey && atp ? (atp.weeks[Number(atpKey)] as AtpWeek | undefined) : undefined
+
+  /** Pick an ATP week: set the topic and that week's sub-topics together. */
+  const applyWeek = (key: string) => {
+    setAtpKey(key)
+    if (!key || !atp) return
+    const week = atp.weeks[Number(key)]
+    if (!week?.topicId) return
+    setTopicIds([week.topicId])
+    setSubtopics((week.subtopics ?? []).map((n) => qualify(week.topicId!, n)))
+    if (!title.trim()) setTitle(`Weekly Test: ${week.label}`)
+  }
+
+  /*
+   * How many sub-topics the test will actually reach. A whole-topic test is
+   * built to cover all of them, so a count lower than the number of sub-topics
+   * is the one thing that stops it -- and the teacher should be told before
+   * they set it, not after the class has sat it.
+   */
+  const targeted = subtopics.length ? subtopics.length : available.length
+  const uncovered = Math.max(0, targeted - questionCount)
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -104,6 +177,7 @@ export function WeeklyTests() {
       subjectId,
       grade,
       topicIds,
+      subtopics,
       questionCount,
       // End of the chosen day, not midnight at its start -- a test "due Friday"
       // is due at the end of Friday, which is what a learner expects.
@@ -116,6 +190,8 @@ export function WeeklyTests() {
     }
     setTitle('')
     setTopicIds([])
+    setSubtopics([])
+    setAtpKey('')
     setShowForm(false)
     await reload(schoolId)
   }
@@ -169,6 +245,33 @@ export function WeeklyTests() {
       ) : (
         <form onSubmit={submit} className="card space-y-4 p-5">
           <h2 className="text-base font-bold text-navy-900">New weekly test</h2>
+
+          {atp ? (
+            <div>
+              <label className="text-xs font-medium text-navy-500" htmlFor="testWeek">
+                What did you teach this week?
+              </label>
+              <select id="testWeek" className="select mt-1" value={atpKey} onChange={(e) => applyWeek(e.target.value)}>
+                <option value="">Choose a week from the teaching plan…</option>
+                {[1, 2, 3, 4].map((term) => (
+                  <optgroup key={term} label={`Term ${term}`}>
+                    {atp.weeks.map((w, i) =>
+                      w.term === term ? (
+                        <option key={i} value={String(i)} disabled={!w.topicId}>
+                          {w.dates ? `Week ${w.weeks} (${w.dates})` : w.weeks} — {w.label}
+                          {w.topicId ? '' : ' · no questions'}
+                        </option>
+                      ) : null,
+                    )}
+                  </optgroup>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-navy-400">{atp.source}
+                {atp.detail === 'term'
+                  ? ' · terms only, because the week a topic starts is set by your province. Send yours and this becomes week by week.'
+                  : ''}</p>
+            </div>
+          ) : null}
 
           <div>
             <label className="text-xs font-medium text-navy-500" htmlFor="testTitle">
@@ -254,6 +357,63 @@ export function WeeklyTests() {
             </div>
           </div>
 
+          {available.length ? (
+            <div>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="text-xs font-medium text-navy-500">
+                  Sub-topics{' '}
+                  {subtopics.length ? (
+                    <span className="text-navy-800">· {subtopics.length} chosen</span>
+                  ) : (
+                    <span className="text-navy-400">· the whole topic, every sub-topic covered</span>
+                  )}
+                </label>
+                {subtopics.length ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubtopics([])
+                      setAtpKey('')
+                    }}
+                    className="text-xs font-semibold text-gold-700 underline"
+                  >
+                    Test the whole topic
+                  </button>
+                ) : null}
+              </div>
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                {available.map((sub) => {
+                  const on = subtopics.includes(sub.key)
+                  return (
+                    <button
+                      key={sub.key}
+                      type="button"
+                      aria-pressed={on}
+                      title={sub.topic}
+                      onClick={() => {
+                        setAtpKey('')
+                        setSubtopics((prev) =>
+                          prev.includes(sub.key) ? prev.filter((k) => k !== sub.key) : [...prev, sub.key],
+                        )
+                      }}
+                      className={cn(
+                        'rounded-full border px-3 py-1.5 text-xs font-medium transition',
+                        on
+                          ? 'border-navy-900 bg-navy-900 text-white'
+                          : 'border-navy-200 bg-white text-navy-700 hover:border-navy-400',
+                      )}
+                    >
+                      {sub.name}{' '}
+                      <span className={cn('ml-1 tabular-nums', on ? 'text-white/70' : 'text-navy-400')}>
+                        {sub.count}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ) : null}
+
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-medium text-navy-500" htmlFor="qCount">
@@ -283,6 +443,28 @@ export function WeeklyTests() {
               />
             </div>
           </div>
+
+          {/*
+            A topic test is built to reach every sub-topic, so the only thing
+            that can stop it is being too short. Say so here, with the number to
+            raise it to, rather than letting the class sit a test that silently
+            skips a third of the topic.
+          */}
+          {uncovered > 0 ? (
+            <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800">
+              {questionCount} question{questionCount === 1 ? '' : 's'} cannot reach all {targeted} sub-topics
+              {subtopics.length ? ' you chose' : ' in this topic'} — {uncovered} would go untested. Raise it to{' '}
+              <button type="button" onClick={() => setQuestionCount(Math.min(30, targeted))} className="font-semibold underline">
+                {Math.min(30, targeted)}
+              </button>{' '}
+              to cover them all.
+            </p>
+          ) : targeted > 0 ? (
+            <p className="text-xs text-navy-500">
+              Covers all {targeted} sub-topic{targeted === 1 ? '' : 's'}
+              {subtopics.length ? ' you chose' : ' in this topic'}.
+            </p>
+          ) : null}
 
           {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
@@ -327,8 +509,11 @@ export function WeeklyTests() {
                   <div className="min-w-0">
                     <h3 className="text-base font-bold text-navy-900">{test.title}</h3>
                     <p className="mt-0.5 text-xs text-navy-500">
-                      Grade {test.grade} · {test.question_count} questions · {test.topic_ids.length} topic
-                      {test.topic_ids.length === 1 ? '' : 's'} ·{' '}
+                      Grade {test.grade} · {test.question_count} questions ·{' '}
+                      {test.subtopics?.length
+                        ? `${test.subtopics.length} sub-topic${test.subtopics.length === 1 ? '' : 's'}`
+                        : `${test.topic_ids.length} topic${test.topic_ids.length === 1 ? '' : 's'}, all sub-topics`}{' '}
+                      ·{' '}
                       <span className={overdue ? 'text-navy-500' : 'font-semibold text-navy-700'}>
                         {overdue ? 'closed' : 'due'} {due.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}
                       </span>

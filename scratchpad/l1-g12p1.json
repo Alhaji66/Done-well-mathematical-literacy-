@@ -1,0 +1,821 @@
+[
+ {
+  "id": "math-p1-20-1-2",
+  "marks": 1,
+  "prompt": "Simplify, leaving your answer in exponential form: x¹² ÷ x²",
+  "answer": "x¹⁰",
+  "explanation": "Dividing powers of the same base subtracts the exponents: 12 − 2 = 10. The base itself never changes, so the answer is a power of x, not a power of anything else."
+ },
+ {
+  "id": "math-p1-20-5-1",
+  "marks": 1,
+  "prompt": "Determine f′(x) if f(x) = 3.",
+  "answer": "0",
+  "explanation": "A constant function has the same value everywhere, so its graph is a horizontal line and its gradient is 0 at every point. The size of the constant makes no difference — 3 and 3 have the same derivative."
+ },
+ {
+  "id": "math-p1-20-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,32 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,43",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,32 + 0,11 = 0,43."
+ },
+ {
+  "id": "math-p1-20-3-1",
+  "marks": 1,
+  "prompt": "Write 7% as a decimal.",
+  "answer": "0,07",
+  "explanation": "A percentage is a number of hundredths, so it is divided by 100 to become a decimal: 7 ÷ 100 = 0,07. This is the form the interest formulas need for i."
+ },
+ {
+  "id": "math-p1-20-4-2",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 10x − 3.",
+  "answer": "Gradient = 10; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-p1-20-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 8n + 2.",
+  "answer": "T₁ = 10 and T₂ = 18",
+  "explanation": "Substitute n = 1: 8(1) + 2 = 10. Then n = 2: 8(2) + 2 = 18. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-p1-20-1-3",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 2)(x + 3) = 0",
+  "answer": "x = 2 or x = −3",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 2 = 0 or x + 3 = 0. That gives x = 2 or x = −3. The signs flip: the factor (x − 2) gives the POSITIVE root 2."
+ },
+ {
+  "id": "math-p1-20-5-2",
+  "marks": 2,
+  "prompt": "Determine f′(x) if f(x) = 2x² − 2.",
+  "answer": "4x",
+  "explanation": "Differentiate term by term. The first term gives 2 × 2 = 4, with the exponent dropping to 1. The constant −2 differentiates to 0, so it disappears entirely — a vertical shift of the graph does not change any of its gradients."
+ },
+ {
+  "id": "math-p1-20-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 10 red, 5 blue and 5 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/2 and P(not red) = 1/2",
+  "explanation": "There are 20 marbles altogether, of which 10 are red and the other 10 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-20-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 6 years at 11% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,055 and n = 12",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,11 ÷ 2 = 0,055. The number of periods is 6 × 2 = 12."
+ },
+ {
+  "id": "math-p1-20-4-3",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 10)² − 5.",
+  "answer": "(10; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (10; −5). The sign of p flips: the bracket reads x − 10, so p is 10 and not −10."
+ },
+ {
+  "id": "math-p1-20-2-3",
+  "marks": 1,
+  "prompt": "Write down the next term of the sequence: 8; 10; 12; 14; …",
+  "answer": "16",
+  "explanation": "Each term is 2 more than the one before, so the next term is 14 + 2 = 16. The constant difference is what makes this an arithmetic sequence."
+ },
+ {
+  "id": "math-p1-20-1-4",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 5x² − 7x − 3.",
+  "answer": "Coefficient of x²: 5; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 5, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-p1-21-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: x² = 81, given that x is NEGATIVE.",
+  "answer": "−9",
+  "explanation": "Both 9 and −9 square to 81, so x² = 81 has two solutions. The condition that x is negative rules out 9, leaving x = −9. A square root sign on its own would have given only the positive root, which is why the question states the sign it wants."
+ },
+ {
+  "id": "math-p1-21-5-1",
+  "marks": 1,
+  "prompt": "Determine f′(x) if f(x) = x².",
+  "answer": "2x",
+  "explanation": "The power rule brings the exponent down as a coefficient and reduces it by one: the derivative of xⁿ is nxⁿ⁻¹, so here it is 2x."
+ },
+ {
+  "id": "math-p1-21-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,35 and P(B) = 0,11. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,46",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,35 + 0,11 = 0,46."
+ },
+ {
+  "id": "math-p1-21-3-1",
+  "marks": 1,
+  "prompt": "Money is invested for 5 years at interest compounded annually. Write down the value of n to be used in A = P(1 + i)ⁿ.",
+  "answer": "5",
+  "explanation": "n counts COMPOUNDING PERIODS, not years. Interest is added 1 time a year for 5 years, so n = 5 × 1 = 5."
+ },
+ {
+  "id": "math-p1-21-4-2",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 5/(x − 11) − 4.",
+  "answer": "x = 11 and y = −4",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 11 = 0, so x = 11. The horizontal asymptote is the value y settles towards as x grows, which is the −4 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-p1-21-2-2",
+  "marks": 2,
+  "prompt": "For the sequence 6; 9; 12; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 18",
+  "explanation": "The common difference is 9 − 6 = 3. The fifth term is four steps past the first, so T₅ = 6 + 4(3) = 18. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-p1-21-1-3",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x⁹ × x³, and then (x⁹)³",
+  "answer": "x¹² and x²⁷",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 9 + 3 = 12. Raising a power to a power MULTIPLIES them: 9 × 3 = 27. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-p1-21-5-2",
+  "marks": 2,
+  "prompt": "Determine the derivative of f(x) = 2x³ − 2x².",
+  "answer": "6x² − 4x",
+  "explanation": "Each term is handled separately by the power rule: 2 × 3 = 6 with the exponent falling to 2, and 2 × 2 = 4 with the exponent falling to 1. The minus sign is carried across with its term."
+ },
+ {
+  "id": "math-p1-21-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 11 red, 5 blue and 6 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/2 and P(not red) = 1/2",
+  "explanation": "There are 22 marbles altogether, of which 11 are red and the other 11 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-21-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R3 000 is invested for ONE year at 6% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R3 180",
+  "explanation": "Substituting P = 3000, i = 0,06 and n = 1: A = 3000(1 + 0,06)¹ = R3 180. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-p1-21-4-3",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 11x − 3.",
+  "answer": "Gradient = 11; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-p1-21-2-3",
+  "marks": 1,
+  "prompt": "Write down the common difference of the sequence: 9; 11; 13; …",
+  "answer": "2",
+  "explanation": "The common difference is any term minus the one before it: 11 − 9 = 2. It must give the same answer wherever in the sequence it is taken, which is what distinguishes an arithmetic sequence from any other."
+ },
+ {
+  "id": "math-p1-21-1-4",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 3)(x + 3) = 0",
+  "answer": "x = 3 or x = −3",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 3 = 0 or x + 3 = 0. That gives x = 3 or x = −3. The signs flip: the factor (x − 3) gives the POSITIVE root 3."
+ },
+ {
+  "id": "math-p1-22-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: 9x − 18 = 0",
+  "answer": "2",
+  "explanation": "Adding 18 to both sides gives 9x = 18, and dividing both sides by 9 gives x = 2. Whatever is done to one side of an equation must be done to the other."
+ },
+ {
+  "id": "math-p1-22-5-1",
+  "marks": 1,
+  "prompt": "Determine the derivative of f(x) = 2x.",
+  "answer": "2",
+  "explanation": "The coefficient stays in place while the power rule acts on the x: 2 × 1 = 2, and the exponent drops to 0. A term in x alone has derivative equal to its coefficient, since its graph is a straight line of that gradient."
+ },
+ {
+  "id": "math-p1-22-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,05 and P(B) = 0,14. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,19",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,05 + 0,14 = 0,19."
+ },
+ {
+  "id": "math-p1-22-3-1",
+  "marks": 1,
+  "prompt": "Calculate the SIMPLE interest earned on R2 500 invested at 5% per annum for one year.",
+  "answer": "R125",
+  "explanation": "One year of simple interest is 5% of the principal: 0,05 × R2 500 = R125. This is the interest alone — the accumulated amount would be R2 625."
+ },
+ {
+  "id": "math-p1-22-4-2",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 11)² − 5.",
+  "answer": "(11; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (11; −5). The sign of p flips: the bracket reads x − 11, so p is 11 and not −11."
+ },
+ {
+  "id": "math-p1-22-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 9n + 2.",
+  "answer": "T₁ = 11 and T₂ = 20",
+  "explanation": "Substitute n = 1: 9(1) + 2 = 11. Then n = 2: 9(2) + 2 = 20. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-p1-22-1-3",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 6x² − 8x − 3.",
+  "answer": "Coefficient of x²: 6; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 6, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-p1-22-5-2",
+  "marks": 2,
+  "prompt": "Determine f′(x) if f(x) = 3x³ − 2.",
+  "answer": "9x²",
+  "explanation": "Differentiate term by term. The first term gives 3 × 3 = 9, with the exponent dropping to 2. The constant −2 differentiates to 0, so it disappears entirely — a vertical shift of the graph does not change any of its gradients."
+ },
+ {
+  "id": "math-p1-22-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 12 red, 5 blue and 1 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 2/3 and P(not red) = 1/3",
+  "explanation": "There are 18 marbles altogether, of which 12 are red and the other 6 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-22-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 7 years at 12% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,06 and n = 14",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,12 ÷ 2 = 0,06. The number of periods is 7 × 2 = 14."
+ },
+ {
+  "id": "math-p1-22-4-3",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 4/(x − 1) − 3.",
+  "answer": "x = 1 and y = −3",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 1 = 0, so x = 1. The horizontal asymptote is the value y settles towards as x grows, which is the −3 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-p1-22-2-3",
+  "marks": 1,
+  "prompt": "Write down the common ratio of the sequence: 1; 3; 9; …",
+  "answer": "3",
+  "explanation": "The common ratio is any term DIVIDED by the one before it: 3 ÷ 1 = 3. Subtracting instead of dividing would give the common difference, which this sequence does not have."
+ },
+ {
+  "id": "math-p1-22-1-4",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x¹⁰ × x³, and then (x¹⁰)³",
+  "answer": "x¹³ and x³⁰",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 10 + 3 = 13. Raising a power to a power MULTIPLIES them: 10 × 3 = 30. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-p1-23-1-2",
+  "marks": 1,
+  "prompt": "Factorise: x² − 81",
+  "answer": "(x − 9)(x + 9)",
+  "explanation": "This is a difference of two squares, since 81 = 9². The pattern a² − b² = (a − b)(a + b) applies directly. Note a SUM of two squares, x² + 81, cannot be factorised over the real numbers."
+ },
+ {
+  "id": "math-p1-23-5-1",
+  "marks": 1,
+  "prompt": "Determine f′(x) if f(x) = 4.",
+  "answer": "0",
+  "explanation": "A constant function has the same value everywhere, so its graph is a horizontal line and its gradient is 0 at every point. The size of the constant makes no difference — 4 and 3 have the same derivative."
+ },
+ {
+  "id": "math-p1-23-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,08 and P(B) = 0,14. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,22",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,08 + 0,14 = 0,22."
+ },
+ {
+  "id": "math-p1-23-3-1",
+  "marks": 1,
+  "prompt": "Write 8% as a decimal.",
+  "answer": "0,08",
+  "explanation": "A percentage is a number of hundredths, so it is divided by 100 to become a decimal: 8 ÷ 100 = 0,08. This is the form the interest formulas need for i."
+ },
+ {
+  "id": "math-p1-23-4-2",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 12x − 3.",
+  "answer": "Gradient = 12; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-p1-23-2-2",
+  "marks": 2,
+  "prompt": "For the sequence 7; 10; 13; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 19",
+  "explanation": "The common difference is 10 − 7 = 3. The fifth term is four steps past the first, so T₅ = 7 + 4(3) = 19. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-p1-23-1-3",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 4)(x + 3) = 0",
+  "answer": "x = 4 or x = −3",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 4 = 0 or x + 3 = 0. That gives x = 4 or x = −3. The signs flip: the factor (x − 4) gives the POSITIVE root 4."
+ },
+ {
+  "id": "math-p1-23-5-2",
+  "marks": 2,
+  "prompt": "Determine the derivative of f(x) = 3x³ − 2x².",
+  "answer": "9x² − 4x",
+  "explanation": "Each term is handled separately by the power rule: 3 × 3 = 9 with the exponent falling to 2, and 2 × 2 = 4 with the exponent falling to 1. The minus sign is carried across with its term."
+ },
+ {
+  "id": "math-p1-23-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 13 red, 5 blue and 2 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 13/20 and P(not red) = 7/20",
+  "explanation": "There are 20 marbles altogether, of which 13 are red and the other 7 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-23-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R3 500 is invested for ONE year at 6% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R3 710",
+  "explanation": "Substituting P = 3500, i = 0,06 and n = 1: A = 3500(1 + 0,06)¹ = R3 710. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-p1-23-4-3",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 12)² − 5.",
+  "answer": "(12; −5)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (12; −5). The sign of p flips: the bracket reads x − 12, so p is 12 and not −12."
+ },
+ {
+  "id": "math-p1-23-2-3",
+  "marks": 1,
+  "prompt": "Write down the next term of the sequence: 9; 11; 13; 15; …",
+  "answer": "17",
+  "explanation": "Each term is 2 more than the one before, so the next term is 15 + 2 = 17. The constant difference is what makes this an arithmetic sequence."
+ },
+ {
+  "id": "math-p1-23-1-4",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 7x² − 9x − 3.",
+  "answer": "Coefficient of x²: 7; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 7, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-p1-24-1-2",
+  "marks": 1,
+  "prompt": "Evaluate 2³ without using a calculator.",
+  "answer": "8",
+  "explanation": "2³ means 2 × 2 × 2 = 8. The exponent counts how many times the base appears in the product; it is not a multiplier, so a power is always worked out by repeated multiplication and never by multiplying the base by the exponent."
+ },
+ {
+  "id": "math-p1-24-5-1",
+  "marks": 1,
+  "prompt": "Determine f′(x) if f(x) = x³.",
+  "answer": "3x²",
+  "explanation": "The power rule brings the exponent down as a coefficient and reduces it by one: the derivative of xⁿ is nxⁿ⁻¹, so here it is 3x²."
+ },
+ {
+  "id": "math-p1-24-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,11 and P(B) = 0,14. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,25",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,11 + 0,14 = 0,25."
+ },
+ {
+  "id": "math-p1-24-3-1",
+  "marks": 1,
+  "prompt": "Money is invested for 6 years at interest compounded annually. Write down the value of n to be used in A = P(1 + i)ⁿ.",
+  "answer": "6",
+  "explanation": "n counts COMPOUNDING PERIODS, not years. Interest is added 1 time a year for 6 years, so n = 6 × 1 = 6."
+ },
+ {
+  "id": "math-p1-24-4-2",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 5/(x − 2) − 3.",
+  "answer": "x = 2 and y = −3",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 2 = 0, so x = 2. The horizontal asymptote is the value y settles towards as x grows, which is the −3 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-p1-24-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 10n + 2.",
+  "answer": "T₁ = 12 and T₂ = 22",
+  "explanation": "Substitute n = 1: 10(1) + 2 = 12. Then n = 2: 10(2) + 2 = 22. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-p1-24-1-3",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x¹¹ × x³, and then (x¹¹)³",
+  "answer": "x¹⁴ and x³³",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 11 + 3 = 14. Raising a power to a power MULTIPLIES them: 11 × 3 = 33. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-p1-24-5-2",
+  "marks": 2,
+  "prompt": "Determine f′(x) if f(x) = 4x⁴ − 2.",
+  "answer": "16x³",
+  "explanation": "Differentiate term by term. The first term gives 4 × 4 = 16, with the exponent dropping to 3. The constant −2 differentiates to 0, so it disappears entirely — a vertical shift of the graph does not change any of its gradients."
+ },
+ {
+  "id": "math-p1-24-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 2 red, 6 blue and 4 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/6 and P(not red) = 5/6",
+  "explanation": "There are 12 marbles altogether, of which 2 are red and the other 10 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-24-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 8 years at 13% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,065 and n = 16",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,13 ÷ 2 = 0,065. The number of periods is 8 × 2 = 16."
+ },
+ {
+  "id": "math-p1-24-4-3",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 13x − 3.",
+  "answer": "Gradient = 13; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-p1-24-2-3",
+  "marks": 1,
+  "prompt": "Write down the common difference of the sequence: 10; 12; 14; …",
+  "answer": "2",
+  "explanation": "The common difference is any term minus the one before it: 12 − 10 = 2. It must give the same answer wherever in the sequence it is taken, which is what distinguishes an arithmetic sequence from any other."
+ },
+ {
+  "id": "math-p1-24-1-4",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 5)(x + 3) = 0",
+  "answer": "x = 5 or x = −3",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 5 = 0 or x + 3 = 0. That gives x = 5 or x = −3. The signs flip: the factor (x − 5) gives the POSITIVE root 5."
+ },
+ {
+  "id": "math-p1-25-1-2",
+  "marks": 1,
+  "prompt": "Simplify, leaving your answer in exponential form: x⁵ ÷ x³",
+  "answer": "x²",
+  "explanation": "Dividing powers of the same base subtracts the exponents: 5 − 3 = 2. The base itself never changes, so the answer is a power of x, not a power of anything else."
+ },
+ {
+  "id": "math-p1-25-5-1",
+  "marks": 1,
+  "prompt": "Determine the derivative of f(x) = 3x.",
+  "answer": "3",
+  "explanation": "The coefficient stays in place while the power rule acts on the x: 3 × 1 = 3, and the exponent drops to 0. A term in x alone has derivative equal to its coefficient, since its graph is a straight line of that gradient."
+ },
+ {
+  "id": "math-p1-25-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,14 and P(B) = 0,14. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,28",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,14 + 0,14 = 0,28."
+ },
+ {
+  "id": "math-p1-25-3-1",
+  "marks": 1,
+  "prompt": "Calculate the SIMPLE interest earned on R3 000 invested at 5% per annum for one year.",
+  "answer": "R150",
+  "explanation": "One year of simple interest is 5% of the principal: 0,05 × R3 000 = R150. This is the interest alone — the accumulated amount would be R3 150."
+ },
+ {
+  "id": "math-p1-25-4-2",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 1)² − 4.",
+  "answer": "(1; −4)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (1; −4). The sign of p flips: the bracket reads x − 1, so p is 1 and not −1."
+ },
+ {
+  "id": "math-p1-25-2-2",
+  "marks": 2,
+  "prompt": "For the sequence 8; 11; 14; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 20",
+  "explanation": "The common difference is 11 − 8 = 3. The fifth term is four steps past the first, so T₅ = 8 + 4(3) = 20. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-p1-25-1-3",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 8x² − 3x − 3.",
+  "answer": "Coefficient of x²: 8; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 8, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-p1-25-5-2",
+  "marks": 2,
+  "prompt": "Determine the derivative of f(x) = 4x³ − 2x².",
+  "answer": "12x² − 4x",
+  "explanation": "Each term is handled separately by the power rule: 4 × 3 = 12 with the exponent falling to 2, and 2 × 2 = 4 with the exponent falling to 1. The minus sign is carried across with its term."
+ },
+ {
+  "id": "math-p1-25-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 3 red, 6 blue and 5 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 3/14 and P(not red) = 11/14",
+  "explanation": "There are 14 marbles altogether, of which 3 are red and the other 11 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-25-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R4 000 is invested for ONE year at 6% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R4 240",
+  "explanation": "Substituting P = 4000, i = 0,06 and n = 1: A = 4000(1 + 0,06)¹ = R4 240. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-p1-25-4-3",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 6/(x − 3) − 3.",
+  "answer": "x = 3 and y = −3",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 3 = 0, so x = 3. The horizontal asymptote is the value y settles towards as x grows, which is the −3 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-p1-25-2-3",
+  "marks": 1,
+  "prompt": "Write down the common ratio of the sequence: 2; 6; 18; …",
+  "answer": "3",
+  "explanation": "The common ratio is any term DIVIDED by the one before it: 6 ÷ 2 = 3. Subtracting instead of dividing would give the common difference, which this sequence does not have."
+ },
+ {
+  "id": "math-p1-25-1-4",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x¹² × x³, and then (x¹²)³",
+  "answer": "x¹⁵ and x³⁶",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 12 + 3 = 15. Raising a power to a power MULTIPLIES them: 12 × 3 = 36. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-p1-a-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: x² = 100, given that x is NEGATIVE.",
+  "answer": "−10",
+  "explanation": "Both 10 and −10 square to 100, so x² = 100 has two solutions. The condition that x is negative rules out 10, leaving x = −10. A square root sign on its own would have given only the positive root, which is why the question states the sign it wants."
+ },
+ {
+  "id": "math-p1-a-5-1",
+  "marks": 1,
+  "prompt": "Determine f′(x) if f(x) = 5.",
+  "answer": "0",
+  "explanation": "A constant function has the same value everywhere, so its graph is a horizontal line and its gradient is 0 at every point. The size of the constant makes no difference — 5 and 3 have the same derivative."
+ },
+ {
+  "id": "math-p1-a-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,17 and P(B) = 0,14. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,31",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,17 + 0,14 = 0,31."
+ },
+ {
+  "id": "math-p1-a-3-1",
+  "marks": 1,
+  "prompt": "Write 9% as a decimal.",
+  "answer": "0,09",
+  "explanation": "A percentage is a number of hundredths, so it is divided by 100 to become a decimal: 9 ÷ 100 = 0,09. This is the form the interest formulas need for i."
+ },
+ {
+  "id": "math-p1-a-4-2",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 14x − 3.",
+  "answer": "Gradient = 14; y-intercept = −3",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-p1-a-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 11n + 2.",
+  "answer": "T₁ = 13 and T₂ = 24",
+  "explanation": "Substitute n = 1: 11(1) + 2 = 13. Then n = 2: 11(2) + 2 = 24. The counter n starts at 1, not 0 — starting at 0 would give 2, which is not a term of this sequence."
+ },
+ {
+  "id": "math-p1-a-1-3",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 6)(x + 3) = 0",
+  "answer": "x = 6 or x = −3",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 6 = 0 or x + 3 = 0. That gives x = 6 or x = −3. The signs flip: the factor (x − 6) gives the POSITIVE root 6."
+ },
+ {
+  "id": "math-p1-a-5-2",
+  "marks": 2,
+  "prompt": "Determine f′(x) if f(x) = 5x⁵ − 2.",
+  "answer": "25x⁴",
+  "explanation": "Differentiate term by term. The first term gives 5 × 5 = 25, with the exponent dropping to 4. The constant −2 differentiates to 0, so it disappears entirely — a vertical shift of the graph does not change any of its gradients."
+ },
+ {
+  "id": "math-p1-a-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 4 red, 6 blue and 6 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 1/4 and P(not red) = 3/4",
+  "explanation": "There are 16 marbles altogether, of which 4 are red and the other 12 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-a-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 9 years at 6% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,03 and n = 18",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,06 ÷ 2 = 0,03. The number of periods is 9 × 2 = 18."
+ },
+ {
+  "id": "math-p1-a-4-3",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 2)² − 4.",
+  "answer": "(2; −4)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (2; −4). The sign of p flips: the bracket reads x − 2, so p is 2 and not −2."
+ },
+ {
+  "id": "math-p1-a-2-3",
+  "marks": 1,
+  "prompt": "Write down the next term of the sequence: 10; 12; 14; 16; …",
+  "answer": "18",
+  "explanation": "Each term is 2 more than the one before, so the next term is 16 + 2 = 18. The constant difference is what makes this an arithmetic sequence."
+ },
+ {
+  "id": "math-p1-a-1-4",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 9x² − 4x − 3.",
+  "answer": "Coefficient of x²: 9; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 9, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-p1-b-1-2",
+  "marks": 1,
+  "prompt": "Solve for x: 10x − 20 = 0",
+  "answer": "2",
+  "explanation": "Adding 20 to both sides gives 10x = 20, and dividing both sides by 10 gives x = 2. Whatever is done to one side of an equation must be done to the other."
+ },
+ {
+  "id": "math-p1-b-5-1",
+  "marks": 1,
+  "prompt": "Determine f′(x) if f(x) = x⁴.",
+  "answer": "4x³",
+  "explanation": "The power rule brings the exponent down as a coefficient and reduces it by one: the derivative of xⁿ is nxⁿ⁻¹, so here it is 4x³."
+ },
+ {
+  "id": "math-p1-b-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,2 and P(B) = 0,14. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,34",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,2 + 0,14 = 0,34."
+ },
+ {
+  "id": "math-p1-b-3-1",
+  "marks": 1,
+  "prompt": "Money is invested for 7 years at interest compounded annually. Write down the value of n to be used in A = P(1 + i)ⁿ.",
+  "answer": "7",
+  "explanation": "n counts COMPOUNDING PERIODS, not years. Interest is added 1 time a year for 7 years, so n = 7 × 1 = 7."
+ },
+ {
+  "id": "math-p1-b-4-2",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 7/(x − 4) − 3.",
+  "answer": "x = 4 and y = −3",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 4 = 0, so x = 4. The horizontal asymptote is the value y settles towards as x grows, which is the −3 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-p1-b-2-2",
+  "marks": 2,
+  "prompt": "For the sequence 9; 12; 15; …, write down the common difference and the fifth term.",
+  "answer": "d = 3 and T₅ = 21",
+  "explanation": "The common difference is 12 − 9 = 3. The fifth term is four steps past the first, so T₅ = 9 + 4(3) = 21. Four steps, not five — the first term is already there before any step is taken."
+ },
+ {
+  "id": "math-p1-b-1-3",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x⁵ × x⁴, and then (x⁵)⁴",
+  "answer": "x⁹ and x²⁰",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 5 + 4 = 9. Raising a power to a power MULTIPLIES them: 5 × 4 = 20. These two laws are easy to swap by mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-p1-b-5-2",
+  "marks": 2,
+  "prompt": "Determine the derivative of f(x) = 5x³ − 2x².",
+  "answer": "15x² − 4x",
+  "explanation": "Each term is handled separately by the power rule: 5 × 3 = 15 with the exponent falling to 2, and 2 × 2 = 4 with the exponent falling to 1. The minus sign is carried across with its term."
+ },
+ {
+  "id": "math-p1-b-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 5 red, 6 blue and 1 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 5/12 and P(not red) = 7/12",
+  "explanation": "There are 12 marbles altogether, of which 5 are red and the other 7 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-b-3-2",
+  "marks": 2,
+  "prompt": "Calculate the accumulated amount if R4 500 is invested for ONE year at 6% per annum compounded annually. Use A = P(1 + i)ⁿ.",
+  "answer": "R4 770",
+  "explanation": "Substituting P = 4500, i = 0,06 and n = 1: A = 4500(1 + 0,06)¹ = R4 770. Over one year compound and simple interest agree — they only separate once interest starts earning interest."
+ },
+ {
+  "id": "math-p1-b-4-3",
+  "marks": 2,
+  "prompt": "Write down the gradient and the y-intercept of the line y = 2x − 4.",
+  "answer": "Gradient = 2; y-intercept = −4",
+  "explanation": "The equation is already in the form y = mx + c, so the gradient is the number multiplying x and the y-intercept is the constant. Reading them off in any other form first requires rearranging."
+ },
+ {
+  "id": "math-p1-b-2-3",
+  "marks": 1,
+  "prompt": "Write down the common difference of the sequence: 11; 13; 15; …",
+  "answer": "2",
+  "explanation": "The common difference is any term minus the one before it: 13 − 11 = 2. It must give the same answer wherever in the sequence it is taken, which is what distinguishes an arithmetic sequence from any other."
+ },
+ {
+  "id": "math-p1-b-1-4",
+  "marks": 2,
+  "prompt": "Solve for x: (x − 7)(x + 3) = 0",
+  "answer": "x = 7 or x = −3",
+  "explanation": "If a product is zero then at least one factor is zero, so x − 7 = 0 or x + 3 = 0. That gives x = 7 or x = −3. The signs flip: the factor (x − 7) gives the POSITIVE root 7."
+ },
+ {
+  "id": "math-p1-c-1-2",
+  "marks": 1,
+  "prompt": "Factorise: x² − 100",
+  "answer": "(x − 10)(x + 10)",
+  "explanation": "This is a difference of two squares, since 100 = 10². The pattern a² − b² = (a − b)(a + b) applies directly. Note a SUM of two squares, x² + 100, cannot be factorised over the real numbers."
+ },
+ {
+  "id": "math-p1-c-5-1",
+  "marks": 1,
+  "prompt": "Determine the derivative of f(x) = 4x.",
+  "answer": "4",
+  "explanation": "The coefficient stays in place while the power rule acts on the x: 4 × 1 = 4, and the exponent drops to 0. A term in x alone has derivative equal to its coefficient, since its graph is a straight line of that gradient."
+ },
+ {
+  "id": "math-p1-c-6-2",
+  "marks": 2,
+  "prompt": "A and B are mutually exclusive events with P(A) = 0,23 and P(B) = 0,14. Write down P(A and B) and P(A or B).",
+  "answer": "P(A and B) = 0 and P(A or B) = 0,37",
+  "explanation": "Mutually exclusive means the two events cannot both happen, so P(A and B) = 0. With no overlap to subtract, P(A or B) is simply 0,23 + 0,14 = 0,37."
+ },
+ {
+  "id": "math-p1-c-3-1",
+  "marks": 1,
+  "prompt": "Calculate the SIMPLE interest earned on R3 500 invested at 5% per annum for one year.",
+  "answer": "R175",
+  "explanation": "One year of simple interest is 5% of the principal: 0,05 × R3 500 = R175. This is the interest alone — the accumulated amount would be R3 675."
+ },
+ {
+  "id": "math-p1-c-4-2",
+  "marks": 2,
+  "prompt": "Write down the coordinates of the turning point of y = (x − 3)² − 4.",
+  "answer": "(3; −4)",
+  "explanation": "In the form y = (x − p)² + q the turning point is (p; q), so it is (3; −4). The sign of p flips: the bracket reads x − 3, so p is 3 and not −3."
+ },
+ {
+  "id": "math-p1-c-2-2",
+  "marks": 2,
+  "prompt": "Write down the first TWO terms of the sequence with general term Tₙ = 2n + 3.",
+  "answer": "T₁ = 5 and T₂ = 7",
+  "explanation": "Substitute n = 1: 2(1) + 3 = 5. Then n = 2: 2(2) + 3 = 7. The counter n starts at 1, not 0 — starting at 0 would give 3, which is not a term of this sequence."
+ },
+ {
+  "id": "math-p1-c-1-3",
+  "marks": 2,
+  "prompt": "Write down the coefficient of x² and the constant term of f(x) = 10x² − 5x − 3.",
+  "answer": "Coefficient of x²: 10; constant term: −3",
+  "explanation": "The coefficient is the number multiplying the term, so it is 10, and the constant term is the one with no x in it, −3. The sign in front of a term belongs to that term, which is why the constant is negative here and not 3."
+ },
+ {
+  "id": "math-p1-c-5-2",
+  "marks": 2,
+  "prompt": "Determine f′(x) if f(x) = 6x² − 2.",
+  "answer": "12x",
+  "explanation": "Differentiate term by term. The first term gives 6 × 2 = 12, with the exponent dropping to 1. The constant −2 differentiates to 0, so it disappears entirely — a vertical shift of the graph does not change any of its gradients."
+ },
+ {
+  "id": "math-p1-c-6-3",
+  "marks": 2,
+  "prompt": "A bag contains 6 red, 6 blue and 2 green marbles, identical apart from colour. One marble is drawn at random. Write down P(red) and P(not red).",
+  "answer": "P(red) = 3/7 and P(not red) = 4/7",
+  "explanation": "There are 14 marbles altogether, of which 6 are red and the other 8 are not. The two probabilities add to 1, which is the quickest check that neither has been worked out wrongly."
+ },
+ {
+  "id": "math-p1-c-3-2",
+  "marks": 2,
+  "prompt": "An amount is invested for 10 years at 7% per annum compounded half-yearly. Write down the values of i and n to be used in A = P(1 + i)ⁿ.",
+  "answer": "i = 0,035 and n = 20",
+  "explanation": "Both i and n must be per PERIOD, not per year. The rate is divided by the 2 periods in a year: 0,07 ÷ 2 = 0,035. The number of periods is 10 × 2 = 20."
+ },
+ {
+  "id": "math-p1-c-4-3",
+  "marks": 2,
+  "prompt": "Write down the equations of the asymptotes of y = 8/(x − 5) − 3.",
+  "answer": "x = 5 and y = −3",
+  "explanation": "The vertical asymptote is where the denominator would be zero, x − 5 = 0, so x = 5. The horizontal asymptote is the value y settles towards as x grows, which is the −3 added on. Both are lines, so both are written as equations."
+ },
+ {
+  "id": "math-p1-c-2-3",
+  "marks": 1,
+  "prompt": "Write down the common ratio of the sequence: 3; 9; 27; …",
+  "answer": "3",
+  "explanation": "The common ratio is any term DIVIDED by the one before it: 9 ÷ 3 = 3. Subtracting instead of dividing would give the common difference, which this sequence does not have."
+ },
+ {
+  "id": "math-p1-c-1-4",
+  "marks": 2,
+  "prompt": "Simplify, leaving your answers in exponential form: x⁶ × x⁴, and then (x⁶)⁴",
+  "answer": "x¹⁰ and x²⁴",
+  "explanation": "Multiplying powers of the same base ADDS the exponents: 6 + 4 = 10. Raising a power to a power MULTIPLIES them: 6 × 4 = 24. These two laws are easy to swap by mistake, which is why they are asked together."
+ }
+]

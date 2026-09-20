@@ -1,0 +1,26 @@
+[
+ {
+  "id": "math-g10-p2-a-3-6-r",
+  "prompt": "ABCD is a parallelogram with Â = 27°. Write down the size of Ĉ.",
+  "answer": "Ĉ = 27°",
+  "explanation": "The opposite angles of a parallelogram are equal, so Ĉ = Â = 27°. It is the angles facing each other across the shape that are equal. The angles next to each other are supplementary instead and add to 180°, so B̂ and D̂ are each 180° − 27° = 153° — which is the fact learners reach for by mistake here.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-24-3-1-r",
+  "prompt": "ABCD is a parallelogram with Â = 26°. Write down the size of Ĉ.",
+  "answer": "Ĉ = 26°",
+  "explanation": "The opposite angles of a parallelogram are equal, so Ĉ = Â = 26°. It is the angles facing each other across the shape that are equal. The angles next to each other are supplementary instead and add to 180°, so B̂ and D̂ are each 180° − 26° = 154° — which is the fact learners reach for by mistake here.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ },
+ {
+  "id": "math-g10-p2-21-3-6-r",
+  "prompt": "ABCD is a parallelogram with Â = 28°. Write down the size of Ĉ.",
+  "answer": "Ĉ = 28°",
+  "explanation": "The opposite angles of a parallelogram are equal, so Ĉ = Â = 28°. It is the angles facing each other across the shape that are equal. The angles next to each other are supplementary instead and add to 180°, so B̂ and D̂ are each 180° − 28° = 152° — which is the fact learners reach for by mistake here.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 1
+ }
+]

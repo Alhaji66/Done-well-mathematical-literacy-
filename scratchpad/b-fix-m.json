@@ -1,0 +1,28 @@
+[
+ {
+  "id": "math-g11-p2-22-3-2",
+  "prompt": "Simplify without using a calculator: tan 150°",
+  "answer": "tan 150° = tan(180° − 30°) = −tan 30° = −√3/3 (equivalently −1/√3, ≈ −0.58)",
+  "explanation": "150° is in the second quadrant, where CAST leaves only sine positive, so the tangent is negative. The reduction formula tan(180° − θ) = −tan θ brings it back to the special angle 30°, whose tangent is 1/√3. Rationalising the denominator turns that into √3/3, which is the form a memo expects. The minus sign comes from the quadrant, not from the arithmetic, and it is the mark most often dropped.",
+  "difficulty": "Easy",
+  "cognitiveLevel": 2
+ },
+ {
+  "id": "math-g11-p2-21-4-4",
+  "prompt": "O is the centre of a circle, OM ⊥ chord AB, AB = 14, and radius OA = 25. Determine the length of OM.",
+  "answer": "OM = 24",
+  "explanation": "The perpendicular from the centre bisects the chord, so AM = 14 ÷ 2 = 7. In right-angled triangle OMA the hypotenuse is the radius OA = 25, so OM = √(25² − 7²) = √(625 − 49) = √576 = 24. Halving the chord is the step that turns a circle theorem into Pythagoras, and forgetting it produces √(625 − 196) = √429, which is not a whole number — in a question built on a Pythagorean triple, that is the signal that the chord was not halved.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The perpendicular from the centre of a circle to a chord bisects the chord."
+ },
+ {
+  "id": "math-g11-p2-24-4-6",
+  "prompt": "O is the centre of a circle. Chord AB subtends an angle of 134° at O (on the minor arc side). C is a point on the major arc. Determine the angle ACB.",
+  "answer": "ACB = 134° ÷ 2 = 67°",
+  "explanation": "Half the angle at the centre, because the angle at the centre is twice the angle at the circumference on the same side of the chord. The theorem is a halving in this direction and a doubling in the other, so the first thing to settle in any question using it is which angle is at the centre — the one at the centre is always the larger of the two. An odd answer like 67° is no cause for alarm: the angle at the centre need not be a multiple of four.",
+  "difficulty": "Challenge",
+  "cognitiveLevel": 3,
+  "context": "The angle subtended by a chord at the centre is twice the angle subtended at the circumference, on the same side of the chord."
+ }
+]

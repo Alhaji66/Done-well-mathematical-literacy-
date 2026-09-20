@@ -1,3 +1,5 @@
+import type { Grade } from '@/types'
+
 export interface WorkedExample {
   problem: string
   steps: string[]
@@ -13,6 +15,25 @@ export interface WorkedExample {
 export interface SubtopicNote {
   name: string
   points: string[]
+  /**
+   * The grades CAPS actually teaches this sub-topic in.
+   *
+   * Absent means "every grade the topic is taught in", which is the ordinary
+   * case and is why almost none of these carry the field. It is set only where
+   * CAPS puts a sub-topic in some grades and not others -- annuities are Grade
+   * 12, the angle of inclination is Grade 11 onwards, hire purchase is Grade 10.
+   *
+   * Two things read it. The per-grade gap report in check:subtopics uses it to
+   * tell a real content gap from a syllabus boundary: before it existed, the
+   * report called Grade 11 having no outstanding-balance questions a hole, when
+   * Grade 11 does not teach outstanding balance at all. And check:subtopic-grades
+   * uses it the other way round -- a question sitting under a heading its own
+   * grade does not teach is either mis-filed or out of syllabus, and both are
+   * worth knowing. That check is what caught nine Grade 10 hire-purchase
+   * questions filed under Outstanding balance, a Grade 12 heading, on the
+   * strength of the words "balance owing".
+   */
+  grades?: Grade[]
 }
 
 export interface TopicNote {
@@ -88,6 +109,9 @@ export const topicNotes: TopicNote[] = [
         points: [
           'Simple interest adds the same amount every year, always calculated on the original amount.',
           'Compound interest calculates each year\'s interest on the new balance, so the amount added grows every year.',
+          'Work compound interest out ONE YEAR AT A TIME, in a table: balance at the start of the year, interest for that year, balance at the end. The end balance becomes the next year\'s start balance. Mathematical Literacy does not use the A = P(1 + i)\u207F formula from Mathematics, and it is not given in the exam.',
+          'A quick way to do each year is to multiply by (1 + the rate as a decimal): 8% a year means \u00d7 1,08 for each year. Show the year-by-year steps anyway \u2014 the method marks are for them.',
+          'R10 000 at 8% for 3 years: year 1 gives 10 000 \u00d7 1,08 = R10 800; year 2 gives 10 800 \u00d7 1,08 = R11 664; year 3 gives 11 664 \u00d7 1,08 = R12 597,12. Simple interest would have given only R12 400.',
           'Over the same period and rate, compound interest always yields more than simple interest — a standard "explain why" question.',
           'On a loan, total repaid = monthly instalment × number of instalments, and the cost of the loan = total repaid − amount borrowed.',
           'A longer loan term means smaller instalments but more interest in total. Be ready to explain that trade-off in words.',
@@ -96,9 +120,14 @@ export const topicNotes: TopicNote[] = [
       {
         name: 'Taxation: income tax, VAT and UIF',
         points: [
-          'Income tax is read off a bracket table: find the bracket, take the fixed amount, then add the stated percentage of the income ABOVE that bracket\'s lower limit.',
-          'Never apply the bracket percentage to the whole income — only to the portion above the threshold shown in that row.',
-          'Rebates are subtracted after the tax has been calculated. The primary rebate applies to everyone; secondary and tertiary rebates apply from age 65 and 75.',
+          'The order never changes: gross income \u2192 subtract deductions \u2192 TAXABLE income \u2192 read the SARS table \u2192 subtract rebates \u2192 annual tax \u2192 \u00f7 12 for monthly PAYE. Doing the steps out of order is the most common way to lose the whole question.',
+          'Pension fund, provident fund and retirement annuity contributions are DEDUCTED from gross income before the table is used. So taxable income is smaller than gross income, and using gross income in the table overcharges the tax.',
+          'A pension contribution given as a percentage is a percentage of gross salary, not of taxable income \u2014 work it out first, then subtract it.',
+          'Income tax is read off a bracket table: find the bracket the TAXABLE income falls in, take the fixed amount in that row, then add the stated percentage of the income ABOVE that row\'s lower limit.',
+          'Never apply the bracket percentage to the whole income \u2014 only to the portion above the threshold shown in that row. That is what the fixed amount in front already accounts for.',
+          'Rebates are subtracted AFTER the tax has been calculated, never from the income. The primary rebate applies to everyone; the secondary is added from age 65 and the tertiary from age 75, and they stack.',
+          'The tax threshold is the income below which no tax is payable. It is not a separate rule \u2014 it is simply the income at which the tax from the table exactly equals the rebates.',
+          'Medical aid tax credits, where a question gives them, are also subtracted after the table, in the same step as the rebates.',
           'VAT in South Africa is 15%. To add VAT, multiply by 1,15. To find the VAT inside an inclusive price, multiply by 15 and divide by 115.',
           'To get back to the exclusive price from an inclusive one, divide by 1,15. Subtracting 15% is wrong and is heavily penalised.',
           'Zero-rated items such as brown bread, maize meal, rice, milk, fruit, vegetables and paraffin carry no VAT.',
@@ -128,14 +157,23 @@ export const topicNotes: TopicNote[] = [
     formulae: [
       'Balance = income − expenditure',
       'Total tariff cost = fixed charge + (rate × units used)',
-      'Simple interest: A = P(1 + i × n)',
-      'Compound interest: A = P(1 + i)ⁿ',
+      // Mathematical Literacy does NOT use the Mathematics interest formulae.
+      // A = P(1 + i)ⁿ is not in the Mat Lit curriculum, is not supplied in the
+      // exam, and a learner who reaches for it is working outside the method
+      // the marks are written for. Compound interest here is worked out one
+      // year at a time, which is also the only way the year-by-year table a
+      // Mat Lit paper asks for can be filled in.
+      'Simple interest: interest for one year = original amount × rate. Total interest = that amount × the number of years, because it is always worked out on the ORIGINAL amount.',
+      'Compound interest: work it out ONE YEAR AT A TIME. New balance = previous balance × (1 + rate as a decimal). Repeat for each year, carrying the new balance forward.',
       'VAT at 15%: inclusive = exclusive × 1,15  |  VAT inside an inclusive price = price × 15 ÷ 115',
       'Break-even: selling price × n = fixed cost + (variable cost × n)',
       'Percentage change = (new − old) ÷ old × 100',
     ],
     commonMistakes: [
       'Applying a tax-bracket percentage to the whole income instead of only the part above the threshold.',
+      'Reading the tax table with GROSS income when a pension or retirement contribution should have been deducted first.',
+      'Subtracting the rebate from the income instead of from the tax.',
+      'Using A = P(1 + i)\u207F for compound interest. That is the Mathematics method; Mathematical Literacy works year by year and the formula is not supplied.',
       'Putting all electricity or water usage through the highest tariff block instead of charging each block at its own rate.',
       'Confusing gross and net salary on a payslip.',
       'Working out a percentage increase on the new amount instead of the original.',
@@ -185,6 +223,17 @@ export const topicNotes: TopicNote[] = [
         ],
       },
       {
+        name: 'Percentages and proportions in data',
+        points: [
+          'A percentage of a data set is the part divided by the whole, times 100. The whole is the TOTAL number of items, not the largest group.',
+          '"22 of the 38 snacks sold were chips" gives 22 ÷ 38 × 100 = 57,9%. Write down which number is the part and which is the whole before dividing.',
+          'Percentage increase or decrease uses the ORIGINAL value as the denominator: (new − old) ÷ old × 100. Using the new value is the most common error and gives a smaller answer.',
+          'An increase from 40 to 60 is a 50% increase, but the decrease from 60 back to 40 is 33,3% — not 50%. The base changed, so the percentages are not symmetrical.',
+          'To estimate a count from a percentage, work the other way: 35% of a future 60 books is 0,35 × 60 = 21 books. Say that it is an estimate, and that it assumes the proportion stays the same.',
+          'Percentages let you compare groups of different sizes fairly. Comparing raw counts from a sample of 40 and a sample of 400 says almost nothing.',
+        ],
+      },
+      {
         name: 'Spread: range, quartiles and box-and-whisker',
         points: [
           'Range = highest − lowest. Simple, but it uses only two values.',
@@ -202,6 +251,17 @@ export const topicNotes: TopicNote[] = [
           'Line graphs show change over time. Pie charts show parts of a whole, each slice being a percentage of 360°.',
           'A compound (stacked) bar graph shows totals and their parts at the same time.',
           'Every graph needs a title, labelled axes with units, and a sensible scale. Questions do ask you to name what is missing.',
+        ],
+      },
+      {
+        name: 'Reading values off tables and graphs',
+        points: [
+          'The first skill in Data Handling is finding a value that is already there. "Write down the spending in Week 4" asks you to read one number off, not to calculate anything.',
+          'Read the row and the column headings before the number. Most lost marks here are the right value taken from the wrong row.',
+          'On a graph, follow the line up from the value on the horizontal axis until you meet the plotted point, then straight across to the vertical axis. Check what one gridline is worth first — it is often 2, 5 or 20, not 1.',
+          '"In which week was spending lowest?" wants the WEEK, not the amount. "How much was spent in the lowest week?" wants the amount. Answer what is asked.',
+          'Highest, lowest, most and fewest questions are comparisons across a row or column; scan the whole set before answering, not just the first few.',
+          'Where a value falls between two gridlines, read it to the nearest sensible division and say so. An exact-looking answer to a value that cannot be read exactly is not more correct.',
         ],
       },
       {
@@ -492,6 +552,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Algebraic fractions',
+        /** Simplifying algebraic fractions is Grade 10 and Grade 11 work. */
+        grades: [10, 11],
         points: [
           'Factorise every numerator and denominator before cancelling anything.',
           'You may cancel factors, never terms. Cancelling across a + or − sign is always wrong.',
@@ -521,6 +583,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Nature of the roots',
+        /** The discriminant and the nature of the roots are Grade 11. */
+        grades: [11],
         points: [
           'The discriminant is Δ = b² − 4ac.',
           'Δ > 0 gives two real unequal roots; Δ = 0 gives two real equal roots; Δ < 0 gives no real roots.',
@@ -530,6 +594,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Simultaneous equations',
+        /** Grade 10 solves two linear equations together, Grade 11 adds a quadratic. Grade 12 does not return to them as a topic. */
+        grades: [10, 11],
         points: [
           'Two linear equations can be solved by substitution or by elimination.',
           'With one linear and one quadratic equation, always make a variable the subject of the LINEAR one and substitute into the quadratic.',
@@ -630,6 +696,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Inverse functions',
+        /** Inverses are Grade 12. */
+        grades: [12],
         points: [
           'To find an inverse, swap x and y and then make y the subject.',
           'The graph of an inverse is the reflection of the original in the line y = x.',
@@ -644,6 +712,17 @@ export const topicNotes: TopicNote[] = [
           'f(x) > 0 means the graph lies above the x-axis; f(x) > g(x) means one graph lies above the other.',
           'The maximum vertical distance between two graphs is found by writing f(x) − g(x) and maximising it.',
           'Always state a domain or range using the correct notation, and check whether the endpoint is included.',
+        ],
+      },
+      {
+        name: 'Function notation and evaluating a function',
+        points: [
+          'f(x) is a NAME for a rule, not f multiplied by x. f(4) means "put 4 in wherever x appears", and the answer is a single number.',
+          'To evaluate, substitute and then work out: if f(x) = 2x + 3 then f(4) = 2(4) + 3 = 11.',
+          'Different letters name different functions in the same question — f, g, h, k — so read which one is being asked for before substituting.',
+          'A negative input needs brackets: if k(x) = 8 ÷ x then k(−4) = 8 ÷ (−4) = −2. Dropping the brackets is where sign errors come from, especially when the rule squares the input.',
+          'Solving f(x) = 11 is the reverse question: you are given the OUTPUT and must find the input, so form an equation and solve for x.',
+          'f(0) is the y-intercept, because putting x = 0 into the rule gives the value where the graph crosses the y-axis.',
         ],
       },
     ],
@@ -701,6 +780,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Reduction formulae and the CAST diagram',
+        /** Grade 10 trigonometry stays in the first quadrant; reduction formulae arrive in Grade 11. */
+        grades: [11, 12],
         points: [
           'CAST: all ratios are positive in the first quadrant, only sine in the second, only tangent in the third, only cosine in the fourth.',
           'sin(180° − θ) = sin θ, cos(180° − θ) = −cos θ, tan(180° + θ) = tan θ.',
@@ -816,6 +897,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Equation of a straight line',
+      /** Grade 10 analytical geometry stops at the three two-point formulae; the equation of a line arrives in Grade 11. */
+      grades: [11, 12],
         points: [
           'Point-gradient form: y − y₁ = m(x − x₁).',
           'With two points, find the gradient first, then substitute either point.',
@@ -825,6 +908,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Angle of inclination',
+      /** tan θ = m is Grade 11 onwards. */
+      grades: [11, 12],
         points: [
           'tan θ = m, where θ is the angle the line makes with the positive x-axis.',
           'If the gradient is negative, the calculator gives a negative angle — add 180° to get the inclination between 0° and 180°.',
@@ -834,6 +919,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Circles in the Cartesian plane',
+      /** The equation of a circle is Grade 12. */
+      grades: [12],
         points: [
           'Centre at the origin: x² + y² = r².',
           'Centre at (a, b): (x − a)² + (y − b)² = r².',
@@ -843,6 +930,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Tangents to a circle',
+      /** Tangents to a circle on the Cartesian plane are Grade 12. */
+      grades: [12],
         points: [
           'The tangent at a point is perpendicular to the radius drawn to that point.',
           'Find the gradient of the radius, take the negative reciprocal, then use point-gradient form at the point of contact.',
@@ -926,6 +1015,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Ogives (cumulative frequency curves)',
+        /** Ogives are Grade 11 onwards. */
+        grades: [11, 12],
         points: [
           'Cumulative frequency is a running total. Plot it against the UPPER boundary of each interval.',
           'The curve starts on the horizontal axis at the lower boundary of the first interval.',
@@ -935,6 +1026,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Scatter plots, correlation and regression',
+        /** Grade 11 draws scatter plots and a line of best fit by eye; Grade 12 adds the regression line and r. Grade 10 does neither. */
+        grades: [11, 12],
         points: [
           'A scatter plot shows the relationship between two variables; describe it as strong or weak, positive or negative, linear or not.',
           'The least-squares regression line is ŷ = a + bx, found with the calculator\'s statistics mode.',
@@ -998,7 +1091,21 @@ export const topicNotes: TopicNote[] = [
         ],
       },
       {
+        name: 'Hire purchase and instalment buying',
+        /** Hire purchase is Grade 10 finance. Grades 11 and 12 do not return to it. */
+        grades: [10],
+        points: [
+          'Hire purchase is buying on credit: a deposit now, then equal monthly instalments until the balance and its interest are paid off.',
+          'The deposit comes off the cash price FIRST. Interest is charged on what is left owing after the deposit, never on the full cash price.',
+          'Hire purchase uses SIMPLE interest: I = P x i x n, with P the balance owing after the deposit and n the length of the agreement in years.',
+          'Monthly instalment = (balance owing + interest) divided by the number of months. Add the deposit back to get the total actually paid.',
+          'The whole point of the comparison is the extra cost: total paid minus cash price is what the credit cost the buyer, and it is often a quarter of the price again.',
+        ],
+      },
+      {
         name: 'Nominal and effective interest rates',
+      /** Converting between nominal and effective rates is Grade 11 onwards. */
+      grades: [11, 12],
         points: [
           'A nominal rate is quoted per year but compounded more often; an effective rate is the true annual rate.',
           '1 + i_eff = (1 + i_nom ÷ m)^m, where m is the number of compounding periods in a year.',
@@ -1008,6 +1115,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Depreciation',
+      /** Grade 10 does growth only; depreciation on the reducing balance is Grade 11. */
+      grades: [11, 12],
         points: [
           'Straight-line (simple) depreciation: A = P(1 − in) — the same amount is lost each year.',
           'Reducing-balance depreciation: A = P(1 − i)ⁿ — the loss is calculated on the current value each year.',
@@ -1017,6 +1126,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Timelines and changing interest rates',
+      /** Timelines with a rate change or a withdrawal partway are Grade 11 onwards. */
+      grades: [11, 12],
         points: [
           'Draw a timeline first, marking every deposit, withdrawal and rate change.',
           'Move each amount to the required date separately, then add.',
@@ -1026,6 +1137,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Future value annuities',
+      /** Annuities are Grade 12. */
+      grades: [12],
         points: [
           'F = x[(1 + i)ⁿ − 1] ÷ i, where x is the regular payment.',
           'This applies when equal payments are made at the end of each period — a savings plan or a sinking fund.',
@@ -1035,6 +1148,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Present value annuities and loans',
+      /** Annuities and loan repayment are Grade 12. */
+      grades: [12],
         points: [
           'P = x[1 − (1 + i)⁻ⁿ] ÷ i.',
           'This is the loan amount that a series of equal repayments will settle — a bond or a vehicle finance agreement.',
@@ -1044,6 +1159,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Outstanding balance',
+      /** The balance outstanding on a loan partway through its term is Grade 12 annuity work. Grade 10 hire purchase is a different idea and has its own heading above. */
+      grades: [12],
         points: [
           'The balance outstanding equals the present value of the payments still to be made.',
           'Alternatively, grow the original loan forward and subtract the future value of the payments already made. Both methods must agree.',
@@ -1099,6 +1216,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Quadratic patterns',
+      /** Second differences are Grade 11; Grade 12 patterns are arithmetic and geometric series. */
+      grades: [11],
         points: [
           'The SECOND difference is constant. The first differences themselves form a linear pattern.',
           'General term: Tₙ = an² + bn + c, with 2a = second difference.',
@@ -1126,6 +1245,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Sigma notation',
+      /** Sigma notation is Grade 12. */
+      grades: [12],
         points: [
           'Σ from k = 1 to n of Tₖ means add the terms from k = 1 up to k = n.',
           'The number of terms is (upper limit − lower limit + 1), not just the upper limit.',
@@ -1135,6 +1256,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Convergence and the sum to infinity',
+      /** Convergence and S∞ are Grade 12. */
+      grades: [12],
         points: [
           'An infinite geometric series converges only when −1 < r < 1.',
           'S∞ = a ÷ (1 − r).',
@@ -1319,6 +1442,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Independent events and the product rule',
+        /** Grade 10 probability is relative frequency, Venn diagrams and two-way tables; the product rule for independent events is Grade 11. */
+        grades: [11, 12],
         points: [
           'Events are independent when one happening does not change the probability of the other.',
           'For independent events, P(A and B) = P(A) × P(B). This equality is also the test for independence.',
@@ -1346,6 +1471,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Arrangements with restrictions',
+        /** The counting principle and arrangements are Grade 12. */
+        grades: [12],
         points: [
           'If certain items must stay together, treat the group as a single unit, then multiply by the arrangements within it.',
           'If two items may not be adjacent, count all arrangements and subtract those where they are together.',
@@ -1400,6 +1527,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Congruency and similarity',
+      /** This heading spans two grades: congruency is Grade 10, similarity is Grade 12. Grade 11 Euclidean geometry is circle geometry, so the gap in the middle is the syllabus and not missing content. */
+      grades: [10, 12],
         points: [
           'Congruent triangles are identical in shape and size: SSS, SAS, AAS or RHS.',
           'Similar triangles have equal angles and sides in proportion (AAA, or three sides in proportion).',
@@ -1418,6 +1547,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Circle geometry: centre and chord theorems',
+        /** Circle geometry begins in Grade 11. */
+        grades: [11, 12],
         points: [
           'The line from the centre perpendicular to a chord bisects that chord, and the converse also holds.',
           'The angle at the centre is twice the angle at the circumference on the same arc.',
@@ -1427,6 +1558,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Circle geometry: same segment and cyclic quadrilaterals',
+        /** Circle geometry begins in Grade 11. */
+        grades: [11, 12],
         points: [
           'Angles in the same segment, subtended by the same chord, are equal.',
           'Opposite angles of a cyclic quadrilateral add to 180°.',
@@ -1436,6 +1569,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Tangents and the tan-chord theorem',
+        /** Circle geometry begins in Grade 11. */
+        grades: [11, 12],
         points: [
           'A tangent is perpendicular to the radius at the point of contact.',
           'Two tangents drawn from the same external point are equal in length.',
@@ -1445,6 +1580,8 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Proportionality and the mid-point theorem',
+      /** The same shape as Congruency and similarity: the mid-point theorem is Grade 10, the proportion theorem is Grade 12, and Grade 11 does circle geometry instead. */
+      grades: [10, 12],
         points: [
           'A line parallel to one side of a triangle divides the other two sides proportionally.',
           'The mid-point theorem: the line joining the midpoints of two sides is parallel to the third side and half its length.',
@@ -1454,11 +1591,26 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Writing a geometry proof',
+      /** Proving a theorem, rather than applying one, is examined in Grade 12. */
+      grades: [12],
         points: [
           'Mark everything you are given onto the diagram before writing anything.',
           'Write one statement per line with its reason beside it, in the accepted wording.',
           'Work backwards from what is to be proved to see which theorem would deliver it, then write the proof forwards.',
           'Redraw a crowded diagram, or the one triangle you need, separately — most lost marks in this topic come from misreading the figure.',
+        ],
+      },
+      {
+        name: 'Volume and surface area of solids',
+        /** Measurement of solids is Grade 10 and Grade 11; Grade 12 Euclidean geometry is proof and similarity. */
+        grades: [10, 11],
+        points: [
+          'Volume of a right prism = area of the cross-section × the perpendicular height. Work the cross-section area out first, whatever shape it is.',
+          'Volume of a cylinder = πr²h, because its cross-section is a circle. Total surface area = 2πr² + 2πrh: the two circular ends plus the curved side unrolled into a rectangle.',
+          'Rectangular prism: volume = length × breadth × height; surface area = 2(lb + lh + bh).',
+          'Check the units before substituting. Lengths must all be in the same unit, and the answer is in cubic units for volume and square units for area.',
+          'Doubling a length does NOT double the volume. Doubling the radius of a cylinder multiplies its volume by four, because the radius is squared in the formula.',
+          'When two solids are said to have equal volumes, set their volume expressions equal and solve for the unknown — that is one equation in one unknown, not a comparison.',
         ],
       },
     ],
@@ -1523,6 +1675,27 @@ export const topicNotes: TopicNote[] = [
           'Optimum temperature is about 37 degrees Celsius in humans; above it the enzyme denatures and the active site changes shape permanently',
           'Optimum pH differs by enzyme: pepsin works at about pH 2 in the stomach, amylase at about pH 7 in the mouth',
           'Denaturing is permanent; slowing down in the cold is not',
+        ],
+      },
+      {
+        name: 'Key terms and the molecules of life',
+        points: [
+          'Inorganic compounds generally contain no carbon-hydrogen bonds — water and mineral salts are the important ones. Organic compounds are carbon-based and are made by living things.',
+          'There are FOUR groups of organic compounds: carbohydrates, lipids, proteins and nucleic acids.',
+          'Carbohydrates contain carbon, hydrogen and oxygen, with hydrogen and oxygen in a 2:1 ratio. Lipids contain the same three elements but far less oxygen. Proteins contain carbon, hydrogen, oxygen and NITROGEN, and often sulfur. Nucleic acids contain carbon, hydrogen, oxygen, nitrogen and PHOSPHORUS.',
+          'A monomer is a single small unit; a polymer is many monomers joined together. Glucose is the monomer of starch, an amino acid of a protein, a nucleotide of a nucleic acid.',
+          'Condensation joins two monomers and releases a molecule of water. Hydrolysis is the reverse: it uses a molecule of water to split a bond, which is what digestion does.',
+        ],
+      },
+      {
+        name: 'Structure of the biological molecules',
+        points: [
+          'Carbohydrates: a monosaccharide is a single sugar (glucose, fructose); a disaccharide is two joined (maltose, sucrose, lactose); a polysaccharide is many (starch and cellulose in plants, glycogen in animals).',
+          'A lipid is one molecule of glycerol joined to THREE fatty acids, which is why it is also called a triglyceride. Saturated fatty acids have no double bonds between their carbons and are usually solid at room temperature; unsaturated ones have one or more and are usually liquid.',
+          'A protein is a chain of amino acids joined by PEPTIDE bonds. There are about twenty different amino acids, and the order in which they are strung together decides what the protein is.',
+          'Protein structure has levels: primary is the order of amino acids, secondary the coiling or folding of that chain, tertiary its overall three-dimensional shape, quaternary two or more such chains together.',
+          'A nucleic acid is a chain of nucleotides, and each nucleotide is a sugar, a phosphate group and a nitrogenous base.',
+          'Shape decides function: an enzyme works because of the precise shape of its active site, so anything that changes the shape — heat, extreme pH — stops it working.',
         ],
       },
     ],
@@ -1660,6 +1833,17 @@ export const topicNotes: TopicNote[] = [
           'Benign tumours stay in one place; malignant tumours spread to other organs, which is called metastasis',
         ],
       },
+      {
+        name: 'What mitosis is, and why it matters',
+        points: [
+          'Mitosis is nuclear division producing two daughter nuclei genetically identical to each other and to the parent nucleus.',
+          'It happens for growth, for the repair and replacement of worn-out cells, and for asexual reproduction.',
+          'The chromosome number is kept the SAME: a diploid cell divides into two diploid cells. That is the difference from meiosis, which halves it.',
+          'The cell cycle is interphase (G1, S and G2) followed by mitosis and then cytokinesis. Interphase is by far the longest part, and it is when DNA replicates — not during mitosis itself.',
+          'A chromatid is one of the two identical copies of a replicated chromosome, joined to its sister at the centromere until anaphase pulls them apart.',
+          'Cancer is uncontrolled mitosis: cells divide without the normal checks, forming a tumour. A benign tumour stays in one place; a malignant one invades other tissue and can spread.',
+        ],
+      },
     ],
     commonMistakes: [
       'Chromosomes line up singly in metaphase of mitosis; lining up in pairs happens in meiosis I',
@@ -1722,6 +1906,17 @@ export const topicNotes: TopicNote[] = [
           'Upper epidermis with cuticle, then palisade mesophyll packed with chloroplasts, then spongy mesophyll with air spaces, then lower epidermis with most of the stomata',
           'Palisade cells are long and vertical so that more chloroplasts sit near the light',
           'Air spaces in the spongy layer allow carbon dioxide to diffuse to the photosynthesising cells',
+        ],
+      },
+      {
+        name: 'Meristems and the dicotyledonous root and stem',
+        points: [
+          'A meristem is a region of unspecialised cells that keep dividing by mitosis, so it is where all plant growth originates.',
+          'Apical meristems at root and shoot tips lengthen the plant (primary growth). Lateral meristems, such as the cambium, thicken it (secondary growth). Intercalary meristems at the base of leaves and internodes are what let grass regrow after it is cut or grazed.',
+          'In a dicotyledonous STEM the vascular bundles are arranged in a ring near the outside, each with xylem on the inside and phloem on the outside, and cambium between them.',
+          'In a dicotyledonous ROOT the vascular tissue forms a solid central core, with the xylem in a star shape and the phloem between its arms. A central position resists the pulling forces on a root.',
+          'The root\'s epidermis carries root hairs, which are long extensions of single cells that greatly increase surface area for absorbing water and minerals.',
+          'Moving outwards in a root: epidermis, cortex, endodermis, pericycle, then the vascular tissue. Lateral roots grow from the pericycle.',
         ],
       },
     ],
@@ -1789,6 +1984,17 @@ export const topicNotes: TopicNote[] = [
           'Neurons carry impulses; the cell body, dendrites and axon each have a distinct role',
         ],
       },
+      {
+        name: 'Levels of organisation and what a tissue is',
+        points: [
+          'A tissue is a group of similar cells working together to perform the same function.',
+          'The levels of organisation run: cell, tissue, organ, organ system, organism. Each level is made of the one before it.',
+          'An organ is made of several different tissues working together — the stomach has epithelial, connective, muscle and nervous tissue in it.',
+          'The four basic animal tissue types are epithelial, connective, muscle and nervous.',
+          'Epithelial tissue covers and lines surfaces. Connective tissue binds, supports and transports, and always has cells scattered in a non-living matrix. Muscle tissue contracts. Nervous tissue conducts impulses.',
+          'Structure fits function at every level: flattened epithelium for diffusion, columnar for absorption and secretion, and a matrix hard with calcium salts in bone but liquid in blood.',
+        ],
+      },
     ],
     commonMistakes: [
       'Blood and bone are both connective tissues, because both consist of cells scattered in a matrix',
@@ -1850,6 +2056,27 @@ export const topicNotes: TopicNote[] = [
         points: [
           'Thick waxy cuticle, sunken stomata, rolled leaves, hairs on the leaf surface, reduced leaf area (spines)',
           'These adaptations trap a layer of humid air next to the stomata, lowering the rate of diffusion out of the leaf',
+        ],
+      },
+      {
+        name: 'Translocation in the phloem',
+        points: [
+          'Translocation is the transport of the products of photosynthesis, mainly sucrose and amino acids, through the phloem.',
+          'It moves in BOTH directions, unlike the one-way upward flow of water in the xylem, and it needs energy from the plant — it is an active process.',
+          'A source is any part that loads sugar into the phloem: mainly photosynthesising leaves, but also a storage organ in spring when it is releasing its reserves.',
+          'A sink is any part that removes sugar from the phloem to use or store it: roots, growing shoot tips, developing fruits and seeds.',
+          'The same organ can change from sink to source with the season. A potato tuber is a sink in summer while it fills, and a source in spring when the new shoot grows from it.',
+          'Phloem is made of living sieve tube cells joined end to end by sieve plates, each supported by a companion cell, because active loading needs living cells with mitochondria. Xylem vessels, by contrast, are DEAD and hollow at maturity, which is what lets water move through them without resistance.',
+        ],
+      },
+      {
+        name: 'Support in plants',
+        points: [
+          'A young, non-woody plant is held up mainly by TURGOR: water in the vacuoles pushes the cell contents against the cell wall, and the walls of many turgid cells together keep the stem rigid.',
+          'When such a plant loses more water than it takes up, the cells become flaccid and the plant wilts or droops. Watering restores turgor by osmosis, and the plant stands up again — which is why wilting is reversible if caught early.',
+          'A woody plant is supported by lignified tissue instead: the thick walls of xylem vessels and sclerenchyma fibres hold it up whether or not the cells are turgid.',
+          'That is why a tree does not wilt in the way a seedling does, and why a cut flower in a vase recovers but a snapped stem does not.',
+          'Collenchyma gives flexible support to growing parts, with unevenly thickened cellulose walls; sclerenchyma gives rigid support with evenly lignified walls, and its cells are dead at maturity.',
         ],
       },
     ],
@@ -2046,6 +2273,17 @@ export const topicNotes: TopicNote[] = [
           'Bioaccumulation: substances such as DDT become more concentrated at each trophic level',
         ],
       },
+      {
+        name: 'Key ecological terms and abiotic factors',
+        points: [
+          'An ecosystem is a community of living organisms together with the non-living surroundings they interact with. A habitat is the place an organism lives; a niche is the ROLE it plays there.',
+          'A population is all the organisms of one species in an area; a community is all the populations of all the species in that area.',
+          'Biotic factors are the living parts of an ecosystem — predators, prey, competitors, parasites, decomposers. Abiotic factors are the non-living ones: light, temperature, water, wind, soil type, pH, salinity and the availability of minerals.',
+          'An autotroph makes its own food from inorganic materials, as a green plant does by photosynthesis; a heterotroph takes in ready-made organic food, as an animal or a fungus does.',
+          'Producers are the autotrophs; consumers are the heterotrophs that eat them, ranked primary, secondary and tertiary; decomposers break down dead matter and return the nutrients to the soil.',
+          'An apex predator sits at the top of a food chain with nothing preying on it. Apex predators occur in small numbers precisely because so much energy has been lost at each step below them.',
+        ],
+      },
     ],
     formulae: [
       'Percentage energy transferred = (energy at the higher level / energy at the lower level) x 100',
@@ -2180,6 +2418,29 @@ export const topicNotes: TopicNote[] = [
           'Very high temperature lowers the rate because the enzymes of the dark phase denature',
         ],
       },
+      {
+        name: 'What photosynthesis is, and its equation',
+        points: [
+          'Photosynthesis is the process in which green plants use light energy, trapped by chlorophyll, to convert carbon dioxide and water into glucose, releasing oxygen as a by-product.',
+          'Word equation: carbon dioxide + water, in the presence of light energy and chlorophyll, gives glucose + oxygen.',
+          'The raw materials are carbon dioxide, taken in through the stomata from the air, and water, taken up from the soil by the roots and carried to the leaf in the xylem.',
+          'The products are glucose, which the plant uses or stores as starch, and oxygen, which is released as a waste gas.',
+          'Autotrophic nutrition means making your own organic food from inorganic raw materials. Photosynthesis is how green plants do it, which is why they are called autotrophs or producers.',
+          'There are TWO stages: the light-dependent phase (also called the light phase) and the light-independent phase (the dark phase or Calvin cycle).',
+        ],
+      },
+      {
+        name: 'The leaf and chloroplast as structures for photosynthesis',
+        points: [
+          'The leaf blade is broad and flat to catch as much light as possible, and thin so that carbon dioxide has only a short distance to diffuse to the mesophyll cells.',
+          'The palisade mesophyll sits just under the upper surface and its cells are packed with chloroplasts, so the most light reaches the cells best able to use it. The spongy mesophyll below has fewer chloroplasts and large air spaces that let gases move freely.',
+          'Stomata, mostly on the lower surface, are pores that let carbon dioxide in and oxygen and water vapour out. Each is opened and closed by a pair of guard cells, which balances gas exchange against water loss.',
+          'The vascular bundles bring water and minerals to the leaf in the xylem and carry glucose away in the phloem, and their branching network means no mesophyll cell is far from a vein.',
+          'A chloroplast has a double membrane. Inside, the thylakoid membranes are stacked into grana, which hold the chlorophyll and are where the light phase happens; the fluid stroma around them is where the dark phase happens.',
+          'Stacking the thylakoids into grana packs a very large membrane area into a small volume, so many more chlorophyll molecules can be held and more light trapped.',
+          'Chlorophyll looks green because it absorbs mainly red and blue light and REFLECTS green. The green we see is the light the plant could not use.',
+        ],
+      },
     ],
     formulae: [
       '6CO2 + 12H2O, in the presence of light energy and chlorophyll, gives C6H12O6 + 6O2 + 6H2O',
@@ -2312,6 +2573,28 @@ export const topicNotes: TopicNote[] = [
           'Photosynthesis stores energy and builds glucose; respiration releases energy and breaks glucose down',
           'Photosynthesis uses carbon dioxide and water and produces oxygen; respiration does the reverse',
           'Photosynthesis occurs only in light and only in cells with chloroplasts; respiration occurs in all living cells at all times',
+        ],
+      },
+      {
+        name: 'Respiration during exercise and oxygen debt',
+        points: [
+          'At rest and during gentle exercise, muscles respire aerobically and oxygen supply keeps up with demand.',
+          'During vigorous exercise the heart and lungs cannot deliver oxygen fast enough, so muscle cells switch to anaerobic respiration alongside aerobic respiration.',
+          'Anaerobic respiration in muscle produces lactic acid and only a small amount of ATP. The lactic acid builds up, lowers the pH and causes muscle fatigue and cramp.',
+          'Oxygen debt is the extra oxygen the body must take in AFTER the exercise stops, to break down the lactic acid that accumulated.',
+          'That is why breathing rate and heart rate stay high for some minutes after an athlete stops: the debt is being repaid, and the lactic acid is being oxidised or converted back to glucose in the liver.',
+          'A trained athlete has a larger lung capacity, a stronger heart and more mitochondria in the muscle, so they stay aerobic for longer and recover faster.',
+        ],
+      },
+      {
+        name: 'Key terms in respiration',
+        points: [
+          'Cellular respiration is the controlled release of energy from glucose inside every living cell. It is not the same as breathing, which is the movement of air in and out of the lungs.',
+          'Aerobic respiration uses oxygen and releases a large amount of energy; anaerobic respiration happens without oxygen and releases far less.',
+          'The word equation for aerobic respiration: glucose + oxygen gives carbon dioxide + water + energy.',
+          'ATP is the molecule in which the released energy is carried and spent. Energy is not released as heat and light but stored briefly in ATP.',
+          'Glycolysis is the first stage, in the cytoplasm, and happens whether or not oxygen is present. The rest of aerobic respiration takes place in the mitochondria.',
+          'Fermentation in yeast produces ethanol and carbon dioxide; anaerobic respiration in muscle produces lactic acid. Same idea, different product.',
         ],
       },
     ],
@@ -2450,6 +2733,17 @@ export const topicNotes: TopicNote[] = [
           'Kidney failure is treated by dialysis or by transplant',
         ],
       },
+      {
+        name: 'The kidney: structure and key terms',
+        points: [
+          'Excretion is the removal of the toxic waste products of metabolism. Egestion is the removal of undigested food, which was never part of the body\'s chemistry — the two are not the same.',
+          'The main excretory organs are the kidneys (urea, excess water and salts), the lungs (carbon dioxide and water vapour), the skin (water, salts and a little urea in sweat) and the liver, which makes urea in the first place.',
+          'A kidney has three regions in section: the outer cortex, the inner medulla, and the pelvis where urine collects before passing down the ureter.',
+          'The renal artery brings oxygenated blood carrying urea INTO the kidney; the renal vein carries filtered blood away. The ureter carries urine to the bladder, and the urethra carries it out.',
+          'Deamination is the breakdown of excess amino acids in the liver, producing ammonia, which is immediately converted to the less toxic urea.',
+          'Dialysis does the kidney\'s job artificially when they fail, using a partially permeable membrane and a dialysing fluid to remove urea and excess salts from the blood.',
+        ],
+      },
     ],
     commonMistakes: [
       'Glucose in the urine is abnormal: a healthy nephron reabsorbs all of it, so its presence suggests diabetes',
@@ -2496,6 +2790,28 @@ export const topicNotes: TopicNote[] = [
           'Hierarchy: kingdom, phylum, class, order, family, genus, species',
           'The genus name is capitalised and the species name is not; both are italicised or underlined',
           'A species is a group whose members can interbreed to produce fertile offspring',
+        ],
+      },
+      {
+        name: 'Key terms and the classification hierarchy',
+        points: [
+          'Taxonomy is the science of naming and classifying organisms; a taxon is any one group within that system.',
+          'The hierarchy runs kingdom, phylum, class, order, family, genus, species — each level more specific than the one above, and each organism belongs to exactly one group at every level.',
+          'A species is a group of organisms that can interbreed under natural conditions to produce fertile offspring.',
+          'Binomial nomenclature gives every species a two-part Latin name: the genus with a capital letter, then the species name in lower case, both italicised or underlined, as in Homo sapiens.',
+          'The five-kingdom system is Monera (bacteria), Protista, Fungi, Plantae and Animalia. Monera is sometimes split into Bacteria and Archaea, giving six.',
+          'Classification is based on shared features — structure, the way the organism feeds, and increasingly its DNA — so organisms in the same group are thought to share a more recent common ancestor.',
+        ],
+      },
+      {
+        name: 'Viruses and bacteria: structure and nutrition',
+        points: [
+          'A virus is not a cell. It is a strand of nucleic acid (DNA or RNA) inside a protein coat called a capsid, sometimes with an outer envelope.',
+          'Viruses are not usually counted as living because they have no cells, no cytoplasm and no organelles, cannot respire or grow, and can only reproduce inside a host cell using that cell\'s machinery.',
+          'A bacterium is a prokaryotic cell: it has a cell wall, cell membrane, cytoplasm and ribosomes, but NO nucleus and no membrane-bound organelles. Its DNA lies free in the cytoplasm, often with small extra rings called plasmids.',
+          'Bacteria are named by shape: cocci are spherical, bacilli rod-shaped, spirilla spiral.',
+          'Autotrophic micro-organisms make their own food; heterotrophic ones take it in ready-made. Saprophytic feeders digest dead matter outside themselves and absorb it; parasitic ones feed on a living host and harm it.',
+          'Beneficial roles include decomposition and nutrient cycling, nitrogen fixation, making yoghurt, cheese and bread, sewage treatment and antibiotic production. Harmful roles include disease, and the spoiling of food.',
         ],
       },
       {
@@ -2581,6 +2897,17 @@ export const topicNotes: TopicNote[] = [
           'After fertilisation the ovule becomes the seed and the ovary becomes the fruit',
         ],
       },
+      {
+        name: 'The flower, pollination and fertilisation',
+        points: [
+          'A flower\'s parts, from the outside in: sepals protect the bud; petals attract pollinators; the stamen is the male part, made of an anther that produces pollen on a filament; the carpel or pistil is the female part, made of a stigma, a style and an ovary containing ovules.',
+          'Pollination is the transfer of pollen from an anther to a stigma. Fertilisation is the fusion of the male and female gametes afterwards. They are two different events and the words are not interchangeable.',
+          'Self-pollination is pollen landing on a stigma of the same plant; cross-pollination is pollen reaching a different plant of the same species. Cross-pollination gives more genetic variation.',
+          'Insect-pollinated flowers are large and brightly coloured, scented, produce nectar, and have sticky pollen and stigmas inside the flower. Wind-pollinated flowers are small and dull, have no scent or nectar, and hang their anthers and feathery stigmas outside the flower where the wind can reach them.',
+          'After pollination the pollen grain grows a pollen tube down the style to the ovule, and the male gamete travels down it to fuse with the egg cell.',
+          'After fertilisation the ovule becomes the seed and the ovary becomes the fruit. Seed dispersal then moves the offspring away from the parent, reducing competition.',
+        ],
+      },
     ],
     commonMistakes: [
       'Pollination and fertilisation are different events: pollination is transfer, fertilisation is fusion of nuclei',
@@ -2650,6 +2977,17 @@ export const topicNotes: TopicNote[] = [
           'Radial symmetry allows an animal to meet food or danger from any direction equally well',
         ],
       },
+      {
+        name: 'Key terms in animal classification',
+        points: [
+          'A vertebrate has a backbone; an invertebrate does not. Chordates are the group that has a notochord at some stage of development.',
+          'Symmetry divides the animal kingdom: radial symmetry means the body can be divided into similar halves through many planes; bilateral symmetry means only one plane gives mirror halves, and goes with a distinct head end.',
+          'Cephalisation is the concentration of sense organs and nervous tissue at the head end, which follows from bilateral symmetry and moving forwards.',
+          'A coelom is a fluid-filled body cavity between the gut and the body wall. It allows organs to move and grow independently of the body wall.',
+          'Endothermic animals generate their own body heat and keep a constant temperature; ectothermic animals take their temperature from their surroundings.',
+          'The five vertebrate classes are fish, amphibians, reptiles, birds and mammals, distinguished by body covering, how they breathe, how they reproduce and whether they are endo- or ectothermic.',
+        ],
+      },
     ],
     commonMistakes: [
       'Insects are arthropods, not a separate phylum; spiders and crabs are arthropods too',
@@ -2712,6 +3050,18 @@ export const topicNotes: TopicNote[] = [
           'Quadrats estimate the density of plants and slow-moving animals',
           'Mark-recapture estimates mobile animals: population = (first catch x second catch) / number recaptured',
           'Predation, competition, parasitism, mutualism and commensalism describe how species affect each other',
+        ],
+      },
+      {
+        name: 'Key terms and what changes population size',
+        points: [
+          'A population is all the organisms of the SAME species living in the same area at the same time. A community is all the populations of different species in that area. An ecosystem is that community together with its non-living surroundings.',
+          'A habitat is where an organism lives; a niche is the role it plays there — what it eats, what eats it, and how it interacts with everything around it.',
+          'Population size changes by four processes only: births and immigration increase it, deaths and emigration decrease it. Size = (births + immigration) − (deaths + emigration).',
+          'Immigration is individuals moving INTO the population; emigration is individuals moving OUT. Swapping the two reverses the answer, so read carefully.',
+          'Population density is the number of individuals per unit area or volume. Distribution is the pattern in which they are spread — clumped, uniform or random.',
+          'Carrying capacity is the largest population size an environment can support indefinitely with the resources available.',
+          'Growth rate is the change in population size over a period of time, and can be positive, zero or negative.',
         ],
       },
     ],
@@ -2782,6 +3132,28 @@ export const topicNotes: TopicNote[] = [
           'Threats: habitat destruction, poaching, alien invasive species, pollution and climate change',
           'Alien invasive plants such as black wattle use far more water than indigenous species',
           'Solutions: protected areas, recycling, renewable energy, alien clearing programmes such as Working for Water, and legislation',
+        ],
+      },
+      {
+        name: 'Key terms, resources and sustainability',
+        points: [
+          'A renewable resource can be replaced naturally within a human lifetime — timber, fresh water, wind, solar. A non-renewable resource cannot: coal, oil, natural gas and minerals took millions of years to form.',
+          'Sustainable use means meeting present needs without reducing the ability of future generations to meet theirs.',
+          'An ecological footprint is the area of land and water needed to supply one person\'s resources and absorb their waste.',
+          'Biodiversity is the variety of life — of species, of genes within a species, and of ecosystems.',
+          'An indigenous species occurs naturally in an area; an alien or exotic species has been introduced; an invasive species is an alien that spreads and outcompetes indigenous species.',
+          'Conservation is protecting and managing resources so they continue to exist; preservation is keeping an area untouched.',
+        ],
+      },
+      {
+        name: 'Solid waste, plastic and what can be done',
+        points: [
+          'Solid waste is any discarded solid material — domestic refuse, packaging, building rubble, electronic waste. Most of it goes to landfill, which takes up land, produces methane as it decomposes, and can leach pollutants into groundwater.',
+          'Plastic is the hardest waste to deal with because it is durable and does not biodegrade. It breaks into ever smaller microplastics instead, which stay in the environment.',
+          'In the sea, plastic kills by entanglement and by being eaten: an animal with a stomach full of plastic feels full and starves. Microplastics pass up the food chain and accumulate.',
+          'The strategies are ordered by how much they help: REDUCE what is used, REUSE what has been made, RECYCLE what cannot be reused, and only then dispose of the rest.',
+          'Other measures include banning or taxing single-use plastic, deposit-return schemes, separating waste at source, composting organic waste, and extended producer responsibility, which makes manufacturers responsible for their packaging.',
+          'When a question asks you to discuss a strategy, say what it does, why it helps, and one practical limitation — cost, convenience or the need for people to change habits.',
         ],
       },
     ],
@@ -2916,6 +3288,18 @@ export const topicNotes: TopicNote[] = [
           'The umbilical cord carries two arteries and one vein between foetus and placenta; the amnion protects the foetus in amniotic fluid',
         ],
       },
+      {
+        name: 'Contraception and reproductive health',
+        points: [
+          'Contraception is the deliberate prevention of pregnancy. Methods are grouped as barrier, hormonal, surgical, intra-uterine and natural.',
+          'Barrier methods — the male and female condom, the diaphragm — work by physically stopping sperm from reaching the egg. The condom is the only method that also reduces the transmission of sexually transmitted infections.',
+          'Hormonal methods — the pill, the injection, the implant — supply oestrogen and/or progesterone, which suppress FSH and LH. Without the LH surge there is no ovulation, so no egg is released to be fertilised.',
+          'An intra-uterine device works mainly by preventing implantation in the endometrium.',
+          'Surgical methods are permanent: a vasectomy cuts the vas deferens so sperm cannot leave; tubal ligation cuts or ties the Fallopian tubes so the egg cannot meet sperm.',
+          'Natural methods rely on avoiding intercourse around ovulation. They are the least reliable because the timing of ovulation varies.',
+          'When a question asks you to evaluate a method, weigh reliability, side-effects, cost, whether it is reversible, and whether it protects against infection.',
+        ],
+      },
     ],
     formulae: [
       'FSH stimulates follicle development and oestrogen secretion',
@@ -2986,6 +3370,28 @@ export const topicNotes: TopicNote[] = [
           'The cochlea converts vibrations into nerve impulses, carried by the auditory nerve to the temporal lobe',
           'The semicircular canals detect movement of the head and the vestibule detects position, giving balance',
           'The Eustachian tube equalises pressure on the two sides of the tympanic membrane',
+        ],
+      },
+      {
+        name: 'The brain and its parts',
+        points: [
+          'The cerebrum is the largest part. Its outer layer, the cerebral cortex, is where thinking, memory, reasoning, language and voluntary movement happen, and where sensations are consciously felt.',
+          'The cerebellum, below and behind the cerebrum, coordinates muscle movement, balance and posture. Damage to it causes clumsy, uncoordinated movement rather than paralysis.',
+          'The medulla oblongata controls involuntary processes that keep you alive without thought: heart rate, breathing rate, blood pressure, swallowing and coughing.',
+          'The hypothalamus links the nervous and endocrine systems. It monitors blood temperature, water content and glucose, and controls the pituitary gland.',
+          'The corpus callosum is the band of nerve fibres joining the two cerebral hemispheres so they can exchange information.',
+          'The brain is protected by the skull, by three meninges, and by cerebrospinal fluid that cushions it against shock.',
+        ],
+      },
+      {
+        name: 'Key terms in responding to the environment',
+        points: [
+          'A stimulus is a change in the environment that an organism detects; a response is the reaction to it.',
+          'A receptor detects the stimulus; an effector — a muscle or a gland — carries out the response.',
+          'A reflex action is a rapid, automatic response that does not involve the cerebrum, which is why it happens before you are aware of it.',
+          'Voluntary actions are initiated by the cerebrum and are under conscious control; involuntary actions are not.',
+          'The central nervous system is the brain and spinal cord. The peripheral nervous system is all the nerves connecting them to the rest of the body.',
+          'Accommodation is the eye\'s adjustment of lens shape to focus on near or distant objects; the pupil reflex adjusts how much light enters.',
         ],
       },
     ],
@@ -3122,6 +3528,17 @@ export const topicNotes: TopicNote[] = [
           'Thermoregulation and osmoregulation are both negative feedback systems',
         ],
       },
+      {
+        name: 'Key terms, and the endocrine system compared with the nervous system',
+        points: [
+          'The endocrine system is the set of ductless glands that release hormones directly into the bloodstream.',
+          'A hormone is a chemical messenger, made by a gland, carried in the blood, that acts on a specific target organ.',
+          'Homeostasis is the maintenance of a constant internal environment despite changes outside.',
+          'Negative feedback is the mechanism that does it: a change away from the norm triggers a response that reverses the change and restores the norm.',
+          'The two control systems differ in the same four ways every time: the nervous system sends electrical impulses along neurons, acts within milliseconds, on a precise target, with a short-lived effect; the endocrine system sends chemicals in the blood, acts in seconds to hours, on any target with the right receptors, with a longer-lasting effect.',
+          'A target organ is one whose cells carry receptors for a particular hormone, which is why a hormone reaching every cell in the body affects only some of them.',
+        ],
+      },
     ],
     commonMistakes: [
       'Insulin lowers blood glucose and glucagon raises it; the names are easily swapped',
@@ -3187,6 +3604,17 @@ export const topicNotes: TopicNote[] = [
           'Translation: the ribosome reads the mRNA codon by codon; tRNA brings the matching amino acid; a peptide bond joins them',
           'Gene mutation: substitution changes one base; insertion or deletion shifts the reading frame and changes every codon that follows',
           'Chromosome mutation: non-disjunction gives a gamete with the wrong number of chromosomes, as in Down syndrome',
+        ],
+      },
+      {
+        name: 'Key terms in DNA and protein synthesis',
+        points: [
+          'A gene is a length of DNA that codes for one polypeptide or protein. An allele is one of the alternative forms a gene can take.',
+          'A chromosome is a long DNA molecule wound around proteins; a chromatid is one of the two identical copies of a chromosome joined at the centromere after replication.',
+          'The genetic code is the sequence of bases in DNA. A triplet or codon is three bases, which together code for one amino acid.',
+          'Transcription is the copying of a gene\'s code from DNA into mRNA, in the nucleus. Translation is the building of the polypeptide from that mRNA, at the ribosome.',
+          'A mutation is any change in the base sequence of DNA. It is the ultimate source of all new alleles, and therefore of all genetic variation.',
+          'DNA and RNA differ in three ways: DNA is double-stranded, RNA single; DNA has deoxyribose, RNA ribose; DNA has thymine, RNA has uracil.',
         ],
       },
     ],
@@ -3260,6 +3688,17 @@ export const topicNotes: TopicNote[] = [
           'Non-disjunction in meiosis I or II gives a gamete with an extra or missing chromosome; fertilisation then produces conditions such as Down syndrome',
         ],
       },
+      {
+        name: 'What meiosis is, and why it matters',
+        points: [
+          'Meiosis is a form of nuclear division that produces four haploid cells from one diploid cell, each genetically different from the parent and from each other.',
+          'Diploid (2n) means two sets of chromosomes, one from each parent. Haploid (n) means one set. Human body cells are 2n = 46; gametes are n = 23.',
+          'Meiosis halves the chromosome number so that when two gametes fuse at fertilisation the diploid number is restored, generation after generation. Without it the number would double every generation.',
+          'Meiosis is the source of genetic variation, by three mechanisms: crossing over in prophase I, random assortment of homologous pairs in metaphase I, and random fertilisation afterwards.',
+          'Homologous chromosomes are a matching pair, the same length with the same genes in the same order, one from each parent — though the alleles may differ.',
+          'Mitosis makes two identical diploid cells for growth and repair; meiosis makes four different haploid cells for reproduction. Confusing the two is the most common error in this topic.',
+        ],
+      },
     ],
     commonMistakes: [
       'The chromosome number is halved in anaphase I, when whole chromosomes separate, not in anaphase II',
@@ -3325,6 +3764,18 @@ export const topicNotes: TopicNote[] = [
           'An affected male inherits the allele from his mother, since his only X comes from her',
           'DNA profiling: restriction enzymes cut the DNA, gel electrophoresis separates the fragments by length, and the banding pattern is compared',
           'Uses include criminal investigation, paternity testing, and tracing the origin of confiscated wildlife products',
+        ],
+      },
+      {
+        name: 'Key terms in genetics',
+        points: [
+          'A genotype is the combination of alleles an organism carries; a phenotype is the characteristic you can observe. The genotype produces the phenotype.',
+          'Homozygous means two identical alleles (TT or tt); heterozygous means two different ones (Tt).',
+          'A dominant allele shows in the phenotype whenever it is present; a recessive allele shows only when homozygous. Dominant is written with a capital letter, recessive with the same letter in lower case.',
+          'Complete dominance means the heterozygote looks like the dominant homozygote. Incomplete dominance gives an intermediate phenotype, and codominance shows BOTH alleles fully, as in blood group AB.',
+          'A test cross crosses an individual of unknown genotype with a homozygous recessive, to find out whether it is homozygous or heterozygous.',
+          'A Punnett square sets one parent\'s gametes along the top and the other\'s down the side; the boxes give the possible offspring genotypes and the ratio in which they are expected.',
+          'Genetic ratios are expected, not guaranteed: they say what is probable over many offspring, not what any one cross will produce.',
         ],
       },
     ],
@@ -3397,6 +3848,30 @@ export const topicNotes: TopicNote[] = [
           'Sympatric speciation: reproductive isolation arises without a geographic barrier, for example through polyploidy in plants',
           'Genetic drift, the founder effect and bottlenecks change allele frequencies by chance, especially in small populations',
           'Hominid trends: bipedalism, an increasing cranial capacity, smaller jaws and teeth, and a flatter face; African fossils such as Australopithecus africanus and Homo naledi are central evidence',
+        ],
+      },
+      {
+        name: 'Key terms in evolution',
+        points: [
+          'Evolution is the change in the inherited characteristics of a population over many generations.',
+          'Variation is the differences between individuals of the same species. Only INHERITED variation can be acted on by natural selection.',
+          'An adaptation is an inherited feature that improves an organism\'s chance of surviving and reproducing in its environment.',
+          'Fitness, in evolution, does not mean strength or health. It means how successfully an organism passes its genes to the next generation.',
+          'A gene pool is all the alleles present in a population; evolution can be described as a change in allele frequencies in that pool.',
+          'Speciation is the formation of a new species, which happens when populations become reproductively isolated and their gene pools diverge.',
+          'Natural selection acts on the individual, but evolution happens to the POPULATION. An individual does not evolve during its lifetime.',
+        ],
+      },
+      {
+        name: 'Fossils and the fossil record',
+        points: [
+          'A fossil is the preserved remains, or the trace, of an organism that lived in the distant past.',
+          'Fossils form when an organism is buried quickly in sediment, usually after dying in water or being covered by mud, ash or sand, so that decomposers cannot reach it. Hard parts such as bone, teeth and shell are gradually replaced by minerals.',
+          'Trace fossils are not the body itself but evidence of it: footprints, burrows, coprolites (fossilised droppings).',
+          'The fossil record shows that life has changed over time, that simpler forms appear in older rocks, and it preserves transitional forms with features of two groups.',
+          'The record is incomplete because fossilisation needs unusual conditions, soft-bodied organisms rarely fossilise, and many fossils are destroyed by erosion or remain undiscovered.',
+          'Relative dating uses the position of the rock layer — deeper is older. Radiometric dating uses the known decay rate of a radioactive isotope to give an age in years.',
+          'Southern Africa\'s fossil record is unusually rich, and the Cradle of Humankind has yielded hominid fossils including Australopithecus africanus, Australopithecus sediba and Homo naledi.',
         ],
       },
     ],
@@ -5258,6 +5733,17 @@ export const topicNotes: TopicNote[] = [
           'They do not reduce the change in momentum; they spread it over a longer time',
         ],
       },
+      {
+        name: 'Calculating momentum and impulse',
+        points: [
+          'Momentum p = mv. It is a VECTOR, so the answer needs a direction as well as a size: 1 500 kg × 12 m·s⁻¹ north gives 18 000 kg·m·s⁻¹ north.',
+          'Momentum is measured in kg·m·s⁻¹ and has no other name. Impulse is measured in N·s, and the two units are equivalent.',
+          'Impulse = FΔt = Δp = mv_f − mv_i. Which form to use depends on what the question gives you.',
+          'Δp is a change in a VECTOR, so direction decides the signs. Choose a positive direction, write both velocities with the right sign, and subtract: for a ball that bounces back, the final velocity is negative and the change is larger than either velocity alone.',
+          'A ball brought to REST has v_f = 0, so Δp = −mv_i and the size of the impulse is just mv_i.',
+          'To find an average force, divide the change in momentum by the contact time: F = Δp ÷ Δt. A very short contact time gives a very large force, which is the whole idea behind the safety questions.',
+        ],
+      },
     ],
     formulae: [
       'p = m v',
@@ -5812,6 +6298,17 @@ export const topicNotes: TopicNote[] = [
           'Alkenes: C=C double bond, unsaturated, suffix -ene; alkynes have a triple bond, suffix -yne',
           'Alcohols: -OH, suffix -ol; carboxylic acids: -COOH, suffix -oic acid',
           'Aldehydes (-CHO, suffix -al), ketones (C=O within the chain, suffix -one), esters (suffix -oate), haloalkanes',
+        ],
+      },
+      {
+        name: 'Naming, formulae and isomers',
+        points: [
+          'A MOLECULAR formula gives the actual number of each atom (C₄H₁₀). A STRUCTURAL formula shows every atom and every bond. A condensed structural formula shortens that to CH₃−CH₂−CH₂−CH₃. An EMPIRICAL formula gives only the simplest whole-number ratio (C₂H₅).',
+          'To get a molecular formula from an empirical formula and a molar mass: work out the mass of one empirical unit, divide the molar mass by it, and multiply the empirical formula through by that whole number.',
+          'IUPAC naming, in order: find the longest continuous carbon chain and name it (meth-, eth-, prop-, but-, pent-, hex-, hept-, oct-); use the ending for the functional group (-ane, -ene, -yne, -ol, -al, -one, -oic acid); number the chain from the end that gives the functional group or substituents the lowest numbers; name the substituents alphabetically with their numbers.',
+          'A homologous series is a family of compounds with the same functional group and general formula, each differing from the next by CH₂. Members show a gradual trend in physical properties and share chemical properties.',
+          'Isomers are compounds with the SAME molecular formula but different structures. Chain isomers differ in how the carbon skeleton branches, positional isomers in where the functional group sits, and functional isomers have a different functional group altogether.',
+          'An aliphatic compound has carbon atoms in open chains, branched or unbranched. A saturated compound has only single carbon-carbon bonds; an unsaturated one has at least one double or triple bond.',
         ],
       },
       {

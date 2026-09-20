@@ -1,0 +1,1199 @@
+[
+ {
+  "id": "math-g10-p2-20-3-1",
+  "marks": 1,
+  "prompt": "Write down the sum of the interior angles of a triangle.",
+  "answer": "180°",
+  "explanation": "This holds for every triangle, whatever its shape or size. It is a fact to recall, not something to derive in the exam."
+ },
+ {
+  "id": "math-g10-p2-20-1-1",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 5; 9; 2; 8; 7.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 9 − 2 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-20-2-1",
+  "marks": 1,
+  "prompt": "Write down the value of sin 30° without using a calculator.",
+  "answer": "½",
+  "explanation": "This is a special angle: in a 30-60-90 triangle the side opposite 30° is exactly half the hypotenuse. These values are worth knowing by heart, since a calculator is not allowed for them."
+ },
+ {
+  "id": "math-g10-p2-20-3-2",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 25°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 25° and Â = 155°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 25°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 25° = 155°."
+ },
+ {
+  "id": "math-g10-p2-20-1-2",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 2; 6; 3; 6; 5.",
+  "answer": "6",
+  "explanation": "The mode is the value that appears most often, and 6 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-20-2-2",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = cos x.",
+  "answer": "Amplitude = 1; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 1, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-20-3-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 26° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 113° and the exterior angle = 67°",
+  "explanation": "Ĉ = 180° − 26° − 41° = 113°. The exterior angle at C is 180° − 113° = 67°, which is exactly 26° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-20-1-3",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 4; 7; 2; 6; 5.",
+  "answer": "Smallest = 2; range = 5",
+  "explanation": "The smallest value is 2 and the largest is 7, so the range is 7 − 2 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-20-2-3",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = sin x − 8.",
+  "answer": "Maximum = -7; minimum = −9",
+  "explanation": "sin x runs between −1 and 1, so sin x runs between −1 and 1, and the − 8 shifts both ends: maximum 1 + (−8) = -7 and minimum −1 + (−8) = −9."
+ },
+ {
+  "id": "math-g10-p2-20-3-5",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 3 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "180° and 60°",
+  "explanation": "A polygon with 3 sides splits into 1 triangles, so the interior angles total 1 × 180° = 180°. Regular means all 3 angles are equal, so each is 180° ÷ 3 = 60°."
+ },
+ {
+  "id": "math-g10-p2-20-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 4; 5; 6; 7; 8.",
+  "answer": "6",
+  "explanation": "The five values add up to 30, and 30 ÷ 5 = 6. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-20-2-6",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 2 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 3/2 and tan C = 2/3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 2. So the two ratios are reciprocals of each other, 3/2 and 2/3."
+ },
+ {
+  "id": "math-g10-p2-20-3-6",
+  "marks": 1,
+  "prompt": "In △ABC, Â = 25° and B̂ = 42°. Write down the size of Ĉ.",
+  "answer": "113°",
+  "explanation": "The interior angles of a triangle add up to 180°, so Ĉ = 180° − 25° − 42° = 113°. No construction or theorem beyond that sum is needed."
+ },
+ {
+  "id": "math-g10-p2-20-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 5; 8; 3; 7; 6.",
+  "answer": "Smallest = 3; range = 5",
+  "explanation": "The smallest value is 3 and the largest is 8, so the range is 8 − 3 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-20-2-7",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 2 cos x.",
+  "answer": "Amplitude = 2; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 2, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-20-3-7",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 26°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 26° and Â = 154°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 26°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 26° = 154°."
+ },
+ {
+  "id": "math-g10-p2-20-1-7",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 2; 4; 6; 8; 10.",
+  "answer": "6",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 6. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-20-1-10",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 6; 10; 3; 9; 8.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 10 − 3 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-21-3-1",
+  "marks": 1,
+  "prompt": "ABCD is a parallelogram with Â = 22°. Write down the size of Ĉ.",
+  "answer": "22°",
+  "explanation": "The opposite angles of a parallelogram are equal, so Ĉ = Â = 22°. It is B̂ and D̂ that would instead be 180° − 22° = 158°, being co-interior with Â."
+ },
+ {
+  "id": "math-g10-p2-21-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 3; 7; 4; 7; 6.",
+  "answer": "7",
+  "explanation": "The mode is the value that appears most often, and 7 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-21-2-1",
+  "marks": 1,
+  "prompt": "Write down the amplitude of y = sin x.",
+  "answer": "1",
+  "explanation": "The amplitude is how far the graph reaches above and below its middle, which is the size of the coefficient of sin, so it is 1. The coefficient of x inside the function changes the PERIOD instead, not the amplitude."
+ },
+ {
+  "id": "math-g10-p2-21-3-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 29° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 110° and the exterior angle = 70°",
+  "explanation": "Ĉ = 180° − 29° − 41° = 110°. The exterior angle at C is 180° − 110° = 70°, which is exactly 29° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-21-1-2",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 3; 5; 7; 9; 11.",
+  "answer": "7",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 7. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-21-2-2",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 2 sin x − 8.",
+  "answer": "Maximum = -6; minimum = −10",
+  "explanation": "sin x runs between −1 and 1, so 2 × sin x runs between −2 and 2, and the − 8 shifts both ends: maximum 2 + (−8) = -6 and minimum −2 + (−8) = −10."
+ },
+ {
+  "id": "math-g10-p2-21-3-4",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 4 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "360° and 90°",
+  "explanation": "A polygon with 4 sides splits into 2 triangles, so the interior angles total 2 × 180° = 360°. Regular means all 4 angles are equal, so each is 360° ÷ 4 = 90°."
+ },
+ {
+  "id": "math-g10-p2-21-1-3",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 5; 6; 7; 8; 9.",
+  "answer": "7",
+  "explanation": "The five values add up to 35, and 35 ÷ 5 = 7. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-21-2-3",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 3 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 1 and tan C = 1",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 3. So the two ratios are reciprocals of each other, 1 and 1."
+ },
+ {
+  "id": "math-g10-p2-21-3-5",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 27°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 27° and Â = 153°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 27°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 27° = 153°."
+ },
+ {
+  "id": "math-g10-p2-21-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 6; 9; 4; 8; 7.",
+  "answer": "Smallest = 4; range = 5",
+  "explanation": "The smallest value is 4 and the largest is 9, so the range is 9 − 4 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-21-2-6",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 3 cos x.",
+  "answer": "Amplitude = 3; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 3, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-21-3-6",
+  "marks": 1,
+  "prompt": "ABCD is a cyclic quadrilateral with Â = 25°. Write down the size of Ĉ.",
+  "answer": "155°",
+  "explanation": "The opposite angles of a cyclic quadrilateral are supplementary, so Ĉ = 180° − 25° = 155°. Supplementary means adding to 180°, not being equal — that would be a parallelogram."
+ },
+ {
+  "id": "math-g10-p2-21-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 6; 7; 8; 9; 10.",
+  "answer": "8",
+  "explanation": "The five values add up to 40, and 40 ÷ 5 = 8. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-21-2-7",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 3 sin x − 8.",
+  "answer": "Maximum = -5; minimum = −11",
+  "explanation": "sin x runs between −1 and 1, so 3 × sin x runs between −3 and 3, and the − 8 shifts both ends: maximum 3 + (−8) = -5 and minimum −3 + (−8) = −11."
+ },
+ {
+  "id": "math-g10-p2-21-3-7",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 32° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 107° and the exterior angle = 73°",
+  "explanation": "Ĉ = 180° − 32° − 41° = 107°. The exterior angle at C is 180° − 107° = 73°, which is exactly 32° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-21-1-7",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 7; 11; 4; 10; 9.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 11 − 4 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-21-1-10",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 4; 8; 5; 8; 7.",
+  "answer": "8",
+  "explanation": "The mode is the value that appears most often, and 8 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-22-3-1",
+  "marks": 1,
+  "prompt": "Write down the size of each exterior angle of a regular polygon with 3 sides.",
+  "answer": "120°",
+  "explanation": "The exterior angles of any polygon add up to one full turn, 360°, and in a regular polygon they are all equal: 360° ÷ 3 = 120°. This works straight from the number of sides, with no need for the interior angle first."
+ },
+ {
+  "id": "math-g10-p2-22-1-1",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 4; 6; 8; 10; 12.",
+  "answer": "8",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 8. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-22-2-1",
+  "marks": 1,
+  "prompt": "Write down the period of y = sin x.",
+  "answer": "360°",
+  "explanation": "The period of sin x is 360°, and a coefficient of 1 inside the function completes the cycle 1 times as fast: 360° ÷ 1 = 360°. The coefficient in front stretches the graph vertically and leaves the period alone."
+ },
+ {
+  "id": "math-g10-p2-22-3-2",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 5 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "540° and 108°",
+  "explanation": "A polygon with 5 sides splits into 3 triangles, so the interior angles total 3 × 180° = 540°. Regular means all 5 angles are equal, so each is 540° ÷ 5 = 108°."
+ },
+ {
+  "id": "math-g10-p2-22-1-2",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 8; 12; 5; 11; 10.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 12 − 5 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-22-2-2",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 4 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 3/4 and tan C = 4/3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 4. So the two ratios are reciprocals of each other, 3/4 and 4/3."
+ },
+ {
+  "id": "math-g10-p2-22-3-4",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 28°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 28° and Â = 152°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 28°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 28° = 152°."
+ },
+ {
+  "id": "math-g10-p2-22-1-3",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 7; 10; 5; 9; 8.",
+  "answer": "Smallest = 5; range = 5",
+  "explanation": "The smallest value is 5 and the largest is 10, so the range is 10 − 5 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-22-2-3",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 4 cos x.",
+  "answer": "Amplitude = 4; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 4, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-22-3-5",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 35° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 104° and the exterior angle = 76°",
+  "explanation": "Ĉ = 180° − 35° − 41° = 104°. The exterior angle at C is 180° − 104° = 76°, which is exactly 35° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-22-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 7; 8; 9; 10; 11.",
+  "answer": "9",
+  "explanation": "The five values add up to 45, and 45 ÷ 5 = 9. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-22-2-6",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 4 sin x − 8.",
+  "answer": "Maximum = -4; minimum = −12",
+  "explanation": "sin x runs between −1 and 1, so 4 × sin x runs between −4 and 4, and the − 8 shifts both ends: maximum 4 + (−8) = -4 and minimum −4 + (−8) = −12."
+ },
+ {
+  "id": "math-g10-p2-22-3-6",
+  "marks": 1,
+  "prompt": "Write down the sum of the interior angles of a quadrilateral.",
+  "answer": "360°",
+  "explanation": "A quadrilateral splits into two triangles, and 2 × 180° = 360°. It is a fact to recall, not something to derive in the exam."
+ },
+ {
+  "id": "math-g10-p2-22-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 8; 11; 6; 10; 9.",
+  "answer": "Smallest = 6; range = 5",
+  "explanation": "The smallest value is 6 and the largest is 11, so the range is 11 − 6 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-22-2-7",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 5 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 3/5 and tan C = 5/3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 5. So the two ratios are reciprocals of each other, 3/5 and 5/3."
+ },
+ {
+  "id": "math-g10-p2-22-3-7",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 6 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "720° and 120°",
+  "explanation": "A polygon with 6 sides splits into 4 triangles, so the interior angles total 4 × 180° = 720°. Regular means all 6 angles are equal, so each is 720° ÷ 6 = 120°."
+ },
+ {
+  "id": "math-g10-p2-22-1-7",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 5; 9; 6; 9; 8.",
+  "answer": "9",
+  "explanation": "The mode is the value that appears most often, and 9 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-22-1-10",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 5; 7; 9; 11; 13.",
+  "answer": "9",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 9. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-23-3-1",
+  "marks": 1,
+  "prompt": "In △ABC, Â = 27° and B̂ = 42°. Write down the size of Ĉ.",
+  "answer": "111°",
+  "explanation": "The interior angles of a triangle add up to 180°, so Ĉ = 180° − 27° − 42° = 111°. No construction or theorem beyond that sum is needed."
+ },
+ {
+  "id": "math-g10-p2-23-1-1",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 9; 13; 6; 12; 11.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 13 − 6 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-23-2-1",
+  "marks": 1,
+  "prompt": "In △PQR, Q̂ = 90°, PQ = 3 units and QR = 2 units. Write down tan P.",
+  "answer": "2/3",
+  "explanation": "tan is opposite ÷ adjacent. The side opposite P̂ is QR = 2 and the side next to it is PQ = 3, so tan P = 2/3. The hypotenuse PR plays no part in the tan ratio."
+ },
+ {
+  "id": "math-g10-p2-23-3-2",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 29°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 29° and Â = 151°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 29°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 29° = 151°."
+ },
+ {
+  "id": "math-g10-p2-23-1-2",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 6; 10; 7; 10; 9.",
+  "answer": "10",
+  "explanation": "The mode is the value that appears most often, and 10 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-23-2-2",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 5 cos x.",
+  "answer": "Amplitude = 5; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 5, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-23-3-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 38° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 101° and the exterior angle = 79°",
+  "explanation": "Ĉ = 180° − 38° − 41° = 101°. The exterior angle at C is 180° − 101° = 79°, which is exactly 38° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-23-1-3",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 8; 9; 10; 11; 12.",
+  "answer": "10",
+  "explanation": "The five values add up to 50, and 50 ÷ 5 = 10. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-23-2-3",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 5 sin x − 8.",
+  "answer": "Maximum = -3; minimum = −13",
+  "explanation": "sin x runs between −1 and 1, so 5 × sin x runs between −5 and 5, and the − 8 shifts both ends: maximum 5 + (−8) = -3 and minimum −5 + (−8) = −13."
+ },
+ {
+  "id": "math-g10-p2-23-3-5",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 7 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "900° and 128,57°",
+  "explanation": "A polygon with 7 sides splits into 5 triangles, so the interior angles total 5 × 180° = 900°. Regular means all 7 angles are equal, so each is 900° ÷ 7 = 128,57°."
+ },
+ {
+  "id": "math-g10-p2-23-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 9; 12; 7; 11; 10.",
+  "answer": "Smallest = 7; range = 5",
+  "explanation": "The smallest value is 7 and the largest is 12, so the range is 12 − 7 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-23-2-6",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 6 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 1/2 and tan C = 2",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 6. So the two ratios are reciprocals of each other, 1/2 and 2."
+ },
+ {
+  "id": "math-g10-p2-23-3-6",
+  "marks": 1,
+  "prompt": "ABCD is a parallelogram with Â = 23°. Write down the size of Ĉ.",
+  "answer": "23°",
+  "explanation": "The opposite angles of a parallelogram are equal, so Ĉ = Â = 23°. It is B̂ and D̂ that would instead be 180° − 23° = 157°, being co-interior with Â."
+ },
+ {
+  "id": "math-g10-p2-23-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 9; 10; 11; 12; 13.",
+  "answer": "11",
+  "explanation": "The five values add up to 55, and 55 ÷ 5 = 11. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-23-2-7",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 6 cos x.",
+  "answer": "Amplitude = 6; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 6, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-23-3-7",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 30°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 30° and Â = 150°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 30°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 30° = 150°."
+ },
+ {
+  "id": "math-g10-p2-23-1-7",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 6; 8; 10; 12; 14.",
+  "answer": "10",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 10. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-23-1-10",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 10; 14; 7; 13; 12.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 14 − 7 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-24-3-1",
+  "marks": 1,
+  "prompt": "ABCD is a cyclic quadrilateral with Â = 26°. Write down the size of Ĉ.",
+  "answer": "154°",
+  "explanation": "The opposite angles of a cyclic quadrilateral are supplementary, so Ĉ = 180° − 26° = 154°. Supplementary means adding to 180°, not being equal — that would be a parallelogram."
+ },
+ {
+  "id": "math-g10-p2-24-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 7; 11; 8; 11; 10.",
+  "answer": "11",
+  "explanation": "The mode is the value that appears most often, and 11 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-24-2-1",
+  "marks": 1,
+  "prompt": "Write down the value of cos 60° without using a calculator.",
+  "answer": "½",
+  "explanation": "This is a special angle: it equals sin 30°, because 30° and 60° are complementary angles. These values are worth knowing by heart, since a calculator is not allowed for them."
+ },
+ {
+  "id": "math-g10-p2-24-3-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 41° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 98° and the exterior angle = 82°",
+  "explanation": "Ĉ = 180° − 41° − 41° = 98°. The exterior angle at C is 180° − 98° = 82°, which is exactly 41° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-24-1-2",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 7; 9; 11; 13; 15.",
+  "answer": "11",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 11. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-24-2-2",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 6 sin x − 8.",
+  "answer": "Maximum = -2; minimum = −14",
+  "explanation": "sin x runs between −1 and 1, so 6 × sin x runs between −6 and 6, and the − 8 shifts both ends: maximum 6 + (−8) = -2 and minimum −6 + (−8) = −14."
+ },
+ {
+  "id": "math-g10-p2-24-3-4",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 8 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "1080° and 135°",
+  "explanation": "A polygon with 8 sides splits into 6 triangles, so the interior angles total 6 × 180° = 1080°. Regular means all 8 angles are equal, so each is 1080° ÷ 8 = 135°."
+ },
+ {
+  "id": "math-g10-p2-24-1-3",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 10; 13; 8; 12; 11.",
+  "answer": "Smallest = 8; range = 5",
+  "explanation": "The smallest value is 8 and the largest is 13, so the range is 13 − 8 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-24-2-3",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 7 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 3/7 and tan C = 7/3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 7. So the two ratios are reciprocals of each other, 3/7 and 7/3."
+ },
+ {
+  "id": "math-g10-p2-24-3-5",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 31°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 31° and Â = 149°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 31°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 31° = 149°."
+ },
+ {
+  "id": "math-g10-p2-24-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 10; 11; 12; 13; 14.",
+  "answer": "12",
+  "explanation": "The five values add up to 60, and 60 ÷ 5 = 12. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-24-2-6",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 7 cos x.",
+  "answer": "Amplitude = 7; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 7, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-24-3-6",
+  "marks": 1,
+  "prompt": "Write down the size of each exterior angle of a regular polygon with 4 sides.",
+  "answer": "90°",
+  "explanation": "The exterior angles of any polygon add up to one full turn, 360°, and in a regular polygon they are all equal: 360° ÷ 4 = 90°. This works straight from the number of sides, with no need for the interior angle first."
+ },
+ {
+  "id": "math-g10-p2-24-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 11; 14; 9; 13; 12.",
+  "answer": "Smallest = 9; range = 5",
+  "explanation": "The smallest value is 9 and the largest is 14, so the range is 14 − 9 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-24-2-7",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 7 sin x − 8.",
+  "answer": "Maximum = -1; minimum = −15",
+  "explanation": "sin x runs between −1 and 1, so 7 × sin x runs between −7 and 7, and the − 8 shifts both ends: maximum 7 + (−8) = -1 and minimum −7 + (−8) = −15."
+ },
+ {
+  "id": "math-g10-p2-24-3-7",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 44° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 95° and the exterior angle = 85°",
+  "explanation": "Ĉ = 180° − 44° − 41° = 95°. The exterior angle at C is 180° − 95° = 85°, which is exactly 44° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-24-1-7",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 11; 15; 8; 14; 13.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 15 − 8 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-24-2-8",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 8 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 3/8 and tan C = 8/3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 8. So the two ratios are reciprocals of each other, 3/8 and 8/3."
+ },
+ {
+  "id": "math-g10-p2-25-3-1",
+  "marks": 1,
+  "prompt": "Write down the sum of the angles on a straight line.",
+  "answer": "180°",
+  "explanation": "A straight line is half a revolution. It is a fact to recall, not something to derive in the exam."
+ },
+ {
+  "id": "math-g10-p2-25-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 8; 12; 9; 12; 11.",
+  "answer": "12",
+  "explanation": "The mode is the value that appears most often, and 12 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-25-2-1",
+  "marks": 1,
+  "prompt": "Write down the amplitude of y = 2 sin x.",
+  "answer": "2",
+  "explanation": "The amplitude is how far the graph reaches above and below its middle, which is the size of the coefficient of sin, so it is 2. The coefficient of x inside the function changes the PERIOD instead, not the amplitude."
+ },
+ {
+  "id": "math-g10-p2-25-3-2",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 9 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "1260° and 140°",
+  "explanation": "A polygon with 9 sides splits into 7 triangles, so the interior angles total 7 × 180° = 1260°. Regular means all 9 angles are equal, so each is 1260° ÷ 9 = 140°."
+ },
+ {
+  "id": "math-g10-p2-25-1-2",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 8; 10; 12; 14; 16.",
+  "answer": "12",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 12. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-25-2-2",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 8 cos x.",
+  "answer": "Amplitude = 8; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 8, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-25-3-4",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 32°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 32° and Â = 148°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 32°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 32° = 148°."
+ },
+ {
+  "id": "math-g10-p2-25-1-3",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 11; 12; 13; 14; 15.",
+  "answer": "13",
+  "explanation": "The five values add up to 65, and 65 ÷ 5 = 13. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-25-2-3",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 8 sin x − 8.",
+  "answer": "Maximum = 0; minimum = −16",
+  "explanation": "sin x runs between −1 and 1, so 8 × sin x runs between −8 and 8, and the − 8 shifts both ends: maximum 8 + (−8) = 0 and minimum −8 + (−8) = −16."
+ },
+ {
+  "id": "math-g10-p2-25-3-5",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 47° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 92° and the exterior angle = 88°",
+  "explanation": "Ĉ = 180° − 47° − 41° = 92°. The exterior angle at C is 180° − 92° = 88°, which is exactly 47° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-25-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 12; 15; 10; 14; 13.",
+  "answer": "Smallest = 10; range = 5",
+  "explanation": "The smallest value is 10 and the largest is 15, so the range is 15 − 10 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-25-2-6",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 9 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 1/3 and tan C = 3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 9. So the two ratios are reciprocals of each other, 1/3 and 3."
+ },
+ {
+  "id": "math-g10-p2-25-3-6",
+  "marks": 1,
+  "prompt": "In △ABC, Â = 29° and B̂ = 42°. Write down the size of Ĉ.",
+  "answer": "109°",
+  "explanation": "The interior angles of a triangle add up to 180°, so Ĉ = 180° − 29° − 42° = 109°. No construction or theorem beyond that sum is needed."
+ },
+ {
+  "id": "math-g10-p2-25-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 12; 13; 14; 15; 16.",
+  "answer": "14",
+  "explanation": "The five values add up to 70, and 70 ÷ 5 = 14. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-25-2-7",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 9 cos x.",
+  "answer": "Amplitude = 9; period = 360°",
+  "explanation": "The number in FRONT sets the amplitude, 9, and the number INSIDE sets the period: 360° ÷ 1 = 360°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-25-3-7",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 10 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "1440° and 144°",
+  "explanation": "A polygon with 10 sides splits into 8 triangles, so the interior angles total 8 × 180° = 1440°. Regular means all 10 angles are equal, so each is 1440° ÷ 10 = 144°."
+ },
+ {
+  "id": "math-g10-p2-25-1-7",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 12; 16; 9; 15; 14.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 16 − 9 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-25-2-8",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 9 sin x − 8.",
+  "answer": "Maximum = 1; minimum = −17",
+  "explanation": "sin x runs between −1 and 1, so 9 × sin x runs between −9 and 9, and the − 8 shifts both ends: maximum 9 + (−8) = 1 and minimum −9 + (−8) = −17."
+ },
+ {
+  "id": "math-g10-p2-a-3-1",
+  "marks": 1,
+  "prompt": "ABCD is a parallelogram with Â = 24°. Write down the size of Ĉ.",
+  "answer": "24°",
+  "explanation": "The opposite angles of a parallelogram are equal, so Ĉ = Â = 24°. It is B̂ and D̂ that would instead be 180° − 24° = 156°, being co-interior with Â."
+ },
+ {
+  "id": "math-g10-p2-a-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 9; 13; 10; 13; 12.",
+  "answer": "13",
+  "explanation": "The mode is the value that appears most often, and 13 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-a-2-1",
+  "marks": 1,
+  "prompt": "Write down the period of y = sin 2x.",
+  "answer": "180°",
+  "explanation": "The period of sin x is 360°, and a coefficient of 2 inside the function completes the cycle 2 times as fast: 360° ÷ 2 = 180°. The coefficient in front stretches the graph vertically and leaves the period alone."
+ },
+ {
+  "id": "math-g10-p2-a-3-2",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 33°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 33° and Â = 147°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 33°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 33° = 147°."
+ },
+ {
+  "id": "math-g10-p2-a-1-2",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 9; 11; 13; 15; 17.",
+  "answer": "13",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 13. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-a-2-2",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 10 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 3/10 and tan C = 10/3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 10. So the two ratios are reciprocals of each other, 3/10 and 10/3."
+ },
+ {
+  "id": "math-g10-p2-a-3-4",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 50° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 89° and the exterior angle = 91°",
+  "explanation": "Ĉ = 180° − 50° − 41° = 89°. The exterior angle at C is 180° − 89° = 91°, which is exactly 50° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-a-1-3",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 13; 16; 11; 15; 14.",
+  "answer": "Smallest = 11; range = 5",
+  "explanation": "The smallest value is 11 and the largest is 16, so the range is 16 − 11 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-a-2-3",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = cos 2x.",
+  "answer": "Amplitude = 1; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 1, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-a-3-5",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 11 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "1620° and 147,27°",
+  "explanation": "A polygon with 11 sides splits into 9 triangles, so the interior angles total 9 × 180° = 1620°. Regular means all 11 angles are equal, so each is 1620° ÷ 11 = 147,27°."
+ },
+ {
+  "id": "math-g10-p2-a-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 13; 14; 15; 16; 17.",
+  "answer": "15",
+  "explanation": "The five values add up to 75, and 75 ÷ 5 = 15. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-a-2-6",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = sin x − 7.",
+  "answer": "Maximum = -6; minimum = −8",
+  "explanation": "sin x runs between −1 and 1, so sin x runs between −1 and 1, and the − 7 shifts both ends: maximum 1 + (−7) = -6 and minimum −1 + (−7) = −8."
+ },
+ {
+  "id": "math-g10-p2-a-3-6",
+  "marks": 1,
+  "prompt": "ABCD is a cyclic quadrilateral with Â = 27°. Write down the size of Ĉ.",
+  "answer": "153°",
+  "explanation": "The opposite angles of a cyclic quadrilateral are supplementary, so Ĉ = 180° − 27° = 153°. Supplementary means adding to 180°, not being equal — that would be a parallelogram."
+ },
+ {
+  "id": "math-g10-p2-a-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 14; 17; 12; 16; 15.",
+  "answer": "Smallest = 12; range = 5",
+  "explanation": "The smallest value is 12 and the largest is 17, so the range is 17 − 12 = 5. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-a-2-7",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 11 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 3/11 and tan C = 11/3",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 11. So the two ratios are reciprocals of each other, 3/11 and 11/3."
+ },
+ {
+  "id": "math-g10-p2-a-3-7",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 34°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 34° and Â = 146°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 34°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 34° = 146°."
+ },
+ {
+  "id": "math-g10-p2-a-1-7",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 13; 17; 10; 16; 15.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 17 − 10 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-a-2-8",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 2 cos 2x.",
+  "answer": "Amplitude = 2; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 2, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-b-3-1",
+  "marks": 1,
+  "prompt": "Write down the size of each exterior angle of a regular polygon with 5 sides.",
+  "answer": "72°",
+  "explanation": "The exterior angles of any polygon add up to one full turn, 360°, and in a regular polygon they are all equal: 360° ÷ 5 = 72°. This works straight from the number of sides, with no need for the interior angle first."
+ },
+ {
+  "id": "math-g10-p2-b-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 10; 14; 11; 14; 13.",
+  "answer": "14",
+  "explanation": "The mode is the value that appears most often, and 14 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-b-2-1",
+  "marks": 1,
+  "prompt": "In △PQR, Q̂ = 90°, PQ = 3 units and QR = 3 units. Write down tan P.",
+  "answer": "1",
+  "explanation": "tan is opposite ÷ adjacent. The side opposite P̂ is QR = 3 and the side next to it is PQ = 3, so tan P = 1. The hypotenuse PR plays no part in the tan ratio."
+ },
+ {
+  "id": "math-g10-p2-b-3-2",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 53° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 86° and the exterior angle = 94°",
+  "explanation": "Ĉ = 180° − 53° − 41° = 86°. The exterior angle at C is 180° − 86° = 94°, which is exactly 53° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-b-1-2",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 10; 12; 14; 16; 18.",
+  "answer": "14",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 14. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-b-2-2",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 2 sin x − 7.",
+  "answer": "Maximum = -5; minimum = −9",
+  "explanation": "sin x runs between −1 and 1, so 2 × sin x runs between −2 and 2, and the − 7 shifts both ends: maximum 2 + (−7) = -5 and minimum −2 + (−7) = −9."
+ },
+ {
+  "id": "math-g10-p2-b-3-4",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 12 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "1800° and 150°",
+  "explanation": "A polygon with 12 sides splits into 10 triangles, so the interior angles total 10 × 180° = 1800°. Regular means all 12 angles are equal, so each is 1800° ÷ 12 = 150°."
+ },
+ {
+  "id": "math-g10-p2-b-1-3",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 14; 15; 16; 17; 18.",
+  "answer": "16",
+  "explanation": "The five values add up to 80, and 80 ÷ 5 = 16. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-b-2-3",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 12 units and BC = 3 units. Write down tan A and tan C.",
+  "answer": "tan A = 1/4 and tan C = 4",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 3 while opposite C is AB = 12. So the two ratios are reciprocals of each other, 1/4 and 4."
+ },
+ {
+  "id": "math-g10-p2-b-3-5",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 35°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 35° and Â = 145°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 35°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 35° = 145°."
+ },
+ {
+  "id": "math-g10-p2-b-1-4",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 4; 8; 2; 7; 5.",
+  "answer": "Smallest = 2; range = 6",
+  "explanation": "The smallest value is 2 and the largest is 8, so the range is 8 − 2 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-b-2-6",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 3 cos 2x.",
+  "answer": "Amplitude = 3; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 3, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-b-3-6",
+  "marks": 1,
+  "prompt": "Write down the sum of the angles around a point.",
+  "answer": "360°",
+  "explanation": "Angles around a point make one complete revolution. It is a fact to recall, not something to derive in the exam."
+ },
+ {
+  "id": "math-g10-p2-b-1-6",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 15; 16; 17; 18; 19.",
+  "answer": "17",
+  "explanation": "The five values add up to 85, and 85 ÷ 5 = 17. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-b-2-7",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 3 sin x − 7.",
+  "answer": "Maximum = -4; minimum = −10",
+  "explanation": "sin x runs between −1 and 1, so 3 × sin x runs between −3 and 3, and the − 7 shifts both ends: maximum 3 + (−7) = -4 and minimum −3 + (−7) = −10."
+ },
+ {
+  "id": "math-g10-p2-b-3-7",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 56° and B̂ = 41°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 83° and the exterior angle = 97°",
+  "explanation": "Ĉ = 180° − 56° − 41° = 83°. The exterior angle at C is 180° − 83° = 97°, which is exactly 56° + 41° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-b-1-7",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 14; 18; 11; 17; 16.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 18 − 11 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-b-2-8",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 2 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 2 and tan C = 1/2",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 2. So the two ratios are reciprocals of each other, 2 and 1/2."
+ },
+ {
+  "id": "math-g10-p2-c-3-1",
+  "marks": 1,
+  "prompt": "In △ABC, Â = 31° and B̂ = 42°. Write down the size of Ĉ.",
+  "answer": "107°",
+  "explanation": "The interior angles of a triangle add up to 180°, so Ĉ = 180° − 31° − 42° = 107°. No construction or theorem beyond that sum is needed."
+ },
+ {
+  "id": "math-g10-p2-c-1-1",
+  "marks": 1,
+  "prompt": "Write down the mode of the data set: 11; 15; 12; 15; 14.",
+  "answer": "15",
+  "explanation": "The mode is the value that appears most often, and 15 appears twice while every other value appears once. A data set can have more than one mode, or none at all if no value repeats."
+ },
+ {
+  "id": "math-g10-p2-c-2-1",
+  "marks": 1,
+  "prompt": "Write down the value of tan 45° without using a calculator.",
+  "answer": "1",
+  "explanation": "This is a special angle: in a 45-45-90 triangle the opposite and adjacent sides are equal, so their ratio is 1. These values are worth knowing by heart, since a calculator is not allowed for them."
+ },
+ {
+  "id": "math-g10-p2-c-3-2",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 13 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "1980° and 152,31°",
+  "explanation": "A polygon with 13 sides splits into 11 triangles, so the interior angles total 11 × 180° = 1980°. Regular means all 13 angles are equal, so each is 1980° ÷ 13 = 152,31°."
+ },
+ {
+  "id": "math-g10-p2-c-1-2",
+  "marks": 1,
+  "prompt": "Write down the median of the data set: 11; 13; 15; 17; 19.",
+  "answer": "15",
+  "explanation": "The values are already in order and there are five of them, so the median is the third one, 15. With an even number of values the median would instead be the average of the middle two."
+ },
+ {
+  "id": "math-g10-p2-c-2-2",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 4 cos 2x.",
+  "answer": "Amplitude = 4; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 4, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-c-3-4",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 36°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 36° and Â = 144°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 36°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 36° = 144°."
+ },
+ {
+  "id": "math-g10-p2-c-1-3",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 5; 9; 3; 8; 6.",
+  "answer": "Smallest = 3; range = 6",
+  "explanation": "The smallest value is 3 and the largest is 9, so the range is 9 − 3 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-c-2-3",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 4 sin x − 7.",
+  "answer": "Maximum = -3; minimum = −11",
+  "explanation": "sin x runs between −1 and 1, so 4 × sin x runs between −4 and 4, and the − 7 shifts both ends: maximum 4 + (−7) = -3 and minimum −4 + (−7) = −11."
+ },
+ {
+  "id": "math-g10-p2-c-3-5",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 26° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 109° and the exterior angle = 71°",
+  "explanation": "Ĉ = 180° − 26° − 45° = 109°. The exterior angle at C is 180° − 109° = 71°, which is exactly 26° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-c-1-4",
+  "marks": 2,
+  "prompt": "Calculate the mean of the data set: 2; 4; 6; 8; 10.",
+  "answer": "6",
+  "explanation": "The five values add up to 30, and 30 ÷ 5 = 6. The mean uses every value, which is why one unusually large or small value pulls it about while the median stays put."
+ },
+ {
+  "id": "math-g10-p2-c-2-6",
+  "marks": 2,
+  "prompt": "In △ABC, B̂ = 90°, AB = 3 units and BC = 4 units. Write down tan A and tan C.",
+  "answer": "tan A = 4/3 and tan C = 3/4",
+  "explanation": "tan is opposite ÷ adjacent, and the two acute angles swap which side is which: opposite A is BC = 4 while opposite C is AB = 3. So the two ratios are reciprocals of each other, 4/3 and 3/4."
+ },
+ {
+  "id": "math-g10-p2-c-3-6",
+  "marks": 1,
+  "prompt": "ABCD is a parallelogram with Â = 25°. Write down the size of Ĉ.",
+  "answer": "25°",
+  "explanation": "The opposite angles of a parallelogram are equal, so Ĉ = Â = 25°. It is B̂ and D̂ that would instead be 180° − 25° = 155°, being co-interior with Â."
+ },
+ {
+  "id": "math-g10-p2-c-1-6",
+  "marks": 2,
+  "prompt": "Write down the smallest value and the range of the data set: 6; 10; 4; 9; 7.",
+  "answer": "Smallest = 4; range = 6",
+  "explanation": "The smallest value is 4 and the largest is 10, so the range is 10 − 4 = 6. The range is a single number measuring spread, not the pair of extremes it is worked out from."
+ },
+ {
+  "id": "math-g10-p2-c-2-7",
+  "marks": 2,
+  "prompt": "Write down the amplitude and the period of y = 5 cos 2x.",
+  "answer": "Amplitude = 5; period = 180°",
+  "explanation": "The number in FRONT sets the amplitude, 5, and the number INSIDE sets the period: 360° ÷ 2 = 180°. Swapping the two is the usual mistake, which is why they are asked together."
+ },
+ {
+  "id": "math-g10-p2-c-3-7",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 14 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "2160° and 154,29°",
+  "explanation": "A polygon with 14 sides splits into 12 triangles, so the interior angles total 12 × 180° = 2160°. Regular means all 14 angles are equal, so each is 2160° ÷ 14 = 154,29°."
+ },
+ {
+  "id": "math-g10-p2-c-1-7",
+  "marks": 1,
+  "prompt": "Write down the range of the data set: 15; 19; 12; 18; 17.",
+  "answer": "7",
+  "explanation": "Range = highest − lowest = 19 − 12 = 7. Only the two extreme values are used, so the values in between do not affect it at all."
+ },
+ {
+  "id": "math-g10-p2-c-2-8",
+  "marks": 2,
+  "prompt": "Write down the maximum and minimum values of y = 5 sin x − 7.",
+  "answer": "Maximum = -2; minimum = −12",
+  "explanation": "sin x runs between −1 and 1, so 5 × sin x runs between −5 and 5, and the − 7 shifts both ends: maximum 5 + (−7) = -2 and minimum −5 + (−7) = −12."
+ },
+ {
+  "id": "math-g10-p2-20-3-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 37°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 37° and Â = 143°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 37°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 37° = 143°."
+ },
+ {
+  "id": "math-g10-p2-21-3-3",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 29° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 106° and the exterior angle = 74°",
+  "explanation": "Ĉ = 180° − 29° − 45° = 106°. The exterior angle at C is 180° − 106° = 74°, which is exactly 29° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-22-3-3",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 15 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "2340° and 156°",
+  "explanation": "A polygon with 15 sides splits into 13 triangles, so the interior angles total 13 × 180° = 2340°. Regular means all 15 angles are equal, so each is 2340° ÷ 15 = 156°."
+ },
+ {
+  "id": "math-g10-p2-23-3-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 38°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 38° and Â = 142°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 38°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 38° = 142°."
+ },
+ {
+  "id": "math-g10-p2-24-3-3",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 32° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 103° and the exterior angle = 77°",
+  "explanation": "Ĉ = 180° − 32° − 45° = 103°. The exterior angle at C is 180° − 103° = 77°, which is exactly 32° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-25-3-3",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 16 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "2520° and 157,5°",
+  "explanation": "A polygon with 16 sides splits into 14 triangles, so the interior angles total 14 × 180° = 2520°. Regular means all 16 angles are equal, so each is 2520° ÷ 16 = 157,5°."
+ },
+ {
+  "id": "math-g10-p2-a-3-3",
+  "marks": 2,
+  "prompt": "ABCD is a parallelogram with B̂ = 39°. Write down the sizes of D̂ and Â.",
+  "answer": "D̂ = 39° and Â = 141°",
+  "explanation": "Opposite angles of a parallelogram are equal, so D̂ = B̂ = 39°. Â is co-interior with B̂ between the parallel sides AD and BC, so Â = 180° − 39° = 141°."
+ },
+ {
+  "id": "math-g10-p2-b-3-3",
+  "marks": 2,
+  "prompt": "In △ABC, Â = 35° and B̂ = 45°. Write down the size of Ĉ and the size of the exterior angle of the triangle at C.",
+  "answer": "Ĉ = 100° and the exterior angle = 80°",
+  "explanation": "Ĉ = 180° − 35° − 45° = 100°. The exterior angle at C is 180° − 100° = 80°, which is exactly 35° + 45° — the exterior angle of a triangle equals the sum of the two opposite interior angles."
+ },
+ {
+  "id": "math-g10-p2-c-3-3",
+  "marks": 2,
+  "prompt": "Write down the sum of the interior angles of a polygon with 17 sides, and the size of each interior angle if the polygon is regular.",
+  "answer": "2700° and 158,82°",
+  "explanation": "A polygon with 17 sides splits into 15 triangles, so the interior angles total 15 × 180° = 2700°. Regular means all 17 angles are equal, so each is 2700° ÷ 17 = 158,82°."
+ }
+]

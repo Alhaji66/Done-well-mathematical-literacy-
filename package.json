@@ -15,6 +15,7 @@
     "check:test-coverage": "tsx tools/check-test-coverage.mts",
     "level:papers": "tsx tools/level-papers.mts",
     "check:latex": "tsx tools/check-latex.mts",
+    "check:context-tables": "tsx tools/check-context-tables.mts",
     "check:memos": "tsx tools/check-memos.mts",
     "check:memo-coverage": "tsx tools/memo-coverage.mts",
     "check:totals": "tsx tools/check-paper-totals.mts",

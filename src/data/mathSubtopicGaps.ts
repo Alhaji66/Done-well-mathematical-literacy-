@@ -135,9 +135,11 @@ const medianClass = (() => {
   }
   return CLASSES[CLASSES.length - 1]
 })()
+/** Pipe rows, so `QuestionText` rules this as a real two-column table. */
 const tableContext =
-  `Test marks of ${total} learners, grouped:\n` +
-  CLASSES.map((c) => `${c.from} ≤ x < ${c.to}: ${c.f} learners`).join('\n')
+  `|+ Test marks of ${total} learners, grouped\n` +
+  `| Mark (x) | Frequency |\n|---|---|\n` +
+  CLASSES.map((c) => `| ${c.from} ≤ x < ${c.to} | ${c.f} |`).join('\n')
 
 out.push({
   topicId: 'math-statistics',
@@ -228,8 +230,9 @@ const PAIRS: [number, number][] = [
 const meanX = PAIRS.reduce((a, [x]) => a + x, 0) / PAIRS.length
 const meanY = PAIRS.reduce((a, [, y]) => a + y, 0) / PAIRS.length
 const scatterContext =
-  'Hours spent revising (x) and the test mark out of 100 (y) for six learners:\n' +
-  PAIRS.map(([x, y]) => `${x} hours: ${y}%`).join('\n')
+  '|+ Hours spent revising (x) and the test mark out of 100 (y), six learners\n' +
+  '| Hours (x) | Mark (y) |\n|---|---|\n' +
+  PAIRS.map(([x, y]) => `| ${x} | ${y}% |`).join('\n')
 
 out.push({
   topicId: 'math-statistics',

@@ -14,6 +14,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { MarkingMemo } from '@/components/practise/MarkingMemo'
 import { MathText } from '@/components/practise/MathText'
+import { QuestionText } from '@/components/practise/QuestionText'
 import { Figure } from '@/components/practise/Figure'
 import { ClipboardIcon, CheckCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
@@ -138,9 +139,9 @@ export function LearnerWeeklyTests() {
             {q.marks} mark{q.marks === 1 ? '' : 's'}
           </p>
           {q.context ? (
-            <p className="mt-3 rounded-lg bg-navy-50 p-3 text-sm leading-relaxed text-navy-700">
-              <MathText>{q.context}</MathText>
-            </p>
+            <QuestionText className="mt-3 rounded-lg bg-navy-50 p-3 text-sm leading-relaxed text-navy-700">
+              {q.context}
+            </QuestionText>
           ) : null}
           {q.figure ? (
             <div className="mt-3">

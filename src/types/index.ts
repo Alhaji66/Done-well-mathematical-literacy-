@@ -125,6 +125,14 @@ export interface Question {
    * finished sketch sits above the prompt.
    */
   answerGraph?: GraphSpec
+  /** A circuit diagram, described by its components. */
+  circuit?: CircuitSpec
+  /**
+   * A circuit shown only with the answer -- for "draw a circuit diagram
+   * showing where the ammeter must be connected", where printing the finished
+   * diagram beside the prompt answers it.
+   */
+  answerCircuit?: CircuitSpec
 }
 
 /** Figures live in src/components/practise/Figure.tsx. */
@@ -179,6 +187,46 @@ export type GraphCurve =
       label?: string
       dashed?: boolean
     }
+
+/**
+ * One thing in series along a circuit: a resistor, or a bank of resistors
+ * sharing both junctions and therefore in parallel with each other.
+ */
+export type CircuitElement =
+  | { kind: 'resistor'; ohms: number; label?: string }
+  | { kind: 'parallel'; of: { ohms: number; label?: string }[] }
+
+/**
+ * A circuit to draw above a question.
+ *
+ * Described rather than drawn, for the same reason a graph is: "a 4 Ω and an
+ * 8 Ω resistor in series to a 12 V battery" is the same picture as the next
+ * question's with different numbers on it, and there are scores of them.
+ * Circuits live in src/components/practise/Circuit.tsx.
+ */
+export interface CircuitSpec {
+  title: string
+  /**
+   * emf of the cell, in volts.
+   *
+   * ABSENT means there is no cell, and the picture is an open network between
+   * two terminals rather than a closed loop. That is not a missing detail: a
+   * third of these questions are "calculate the equivalent resistance of the
+   * combination", which every paper prints with no source in the diagram,
+   * because the answer does not depend on one. Drawing a battery there would
+   * invent a voltage the question never gave and invite a learner to go on and
+   * compute a current from it.
+   */
+  emf?: number
+  /** Internal resistance in ohms. Absent means "negligible", as papers say. */
+  internalResistance?: number
+  /** In series, left to right along the top wire. */
+  elements: CircuitElement[]
+  /** Draw an ammeter in series in the return wire. */
+  ammeter?: boolean
+  /** Draw a voltmeter across the element at this index. */
+  voltmeterAcross?: number
+}
 
 /** A point marked on the axes, e.g. a turning point or an intercept. */
 export interface GraphPoint {

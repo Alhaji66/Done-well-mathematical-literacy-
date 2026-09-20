@@ -8,8 +8,10 @@ import { QuestionText } from '@/components/practise/QuestionText'
 import { MarkingMemo } from '@/components/practise/MarkingMemo'
 import { Figure } from '@/components/practise/Figure'
 import { Graph } from '@/components/practise/Graph'
+import { Circuit } from '@/components/practise/Circuit'
 import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
 import { derivedFigures, derivedAnswerFigures } from '@/data/derivedFigures'
+import { derivedCircuits, derivedAnswerCircuits } from '@/data/derivedCircuits'
 
 interface QuestionCardProps {
   question: Question
@@ -34,6 +36,8 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
   const answerGraph = question.answerGraph ?? derivedAnswerGraphs[question.id]
   const promptFigure = question.figure ?? derivedFigures[question.id]
   const answerFigureId = question.answerFigure ?? derivedAnswerFigures[question.id]
+  const promptCircuit = question.circuit ?? derivedCircuits[question.id]
+  const answerCircuit = question.answerCircuit ?? derivedAnswerCircuits[question.id]
 
   const isMcq = Boolean(question.options && question.correctOptionId)
   const hasAttempted = isMcq ? selectedOption !== null : attemptedText.trim().length > 0 || revealed
@@ -65,6 +69,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
 
       {promptFigure ? <Figure id={promptFigure} /> : null}
       {promptGraph ? <Graph spec={promptGraph} /> : null}
+      {promptCircuit ? <Circuit spec={promptCircuit} /> : null}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -151,6 +156,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
               diagram sits beside the prompt. */}
           {answerFigureId ? <Figure id={answerFigureId} /> : null}
           {answerGraph ? <Graph spec={answerGraph} /> : null}
+          {answerCircuit ? <Circuit spec={answerCircuit} /> : null}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
         </div>
       )}

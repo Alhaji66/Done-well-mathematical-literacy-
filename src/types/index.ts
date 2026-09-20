@@ -90,10 +90,11 @@ export interface Question {
    */
   memo?: MemoStep[]
   /**
-   * An inline SVG figure to show with the question, by id. Optional and rare:
-   * a sweep found that no question in the corpus depends on a diagram, so a
-   * figure is attached only where the picture genuinely teaches something the
-   * prose cannot.
+   * An inline SVG figure to show with the question, by id.
+   *
+   * For a picture that exists exactly once -- the CAST diagram, a free-body
+   * diagram of a block on an incline. A curve given by an equation is not one
+   * of these: use `graph` for those, which plots from the coefficients.
    */
   figure?: FigureId
   /**
@@ -106,6 +107,24 @@ export interface Question {
    * They draw it on paper, then check it against this.
    */
   answerFigure?: FigureId
+  /**
+   * A plotted graph, described by its equations rather than drawn by hand.
+   *
+   * SEPARATE FROM `figure` because the two are authored completely differently.
+   * A `figure` is one fixed picture with an id -- there is exactly one CAST
+   * diagram, and it never varies. A graph is a different picture every time:
+   * `y = x² − 9` and `y = x² − 16` are the same drawing with different numbers,
+   * and there are hundreds of them. Giving every parabola in the corpus its own
+   * FigureId would mean hand-drawing each one, which is why the corpus had no
+   * graphs in it at all.
+   */
+  graph?: GraphSpec
+  /**
+   * A graph shown only once the answer is revealed, for the same reason as
+   * `answerFigure`: "Sketch the graph of f" is answered for the learner if the
+   * finished sketch sits above the prompt.
+   */
+  answerGraph?: GraphSpec
 }
 
 /** Figures live in src/components/practise/Figure.tsx. */
@@ -118,6 +137,84 @@ export type FigureId =
   | 'fbd-connected'
   | 'circuit-meters'
   | 'titration-curve'
+  // Life Sciences structures, in LifeSciFigures.tsx.
+  | 'nephron'
+  | 'heart'
+  | 'alveolus'
+  | 'leaf-section'
+  | 'eye'
+  | 'ear'
+  | 'reflex-arc'
+  | 'dna-structure'
+  | 'energy-pyramid'
+  | 'plant-transport'
+  | 'flower-structure'
+
+/**
+ * A curve on a set of axes, given by its family and coefficients.
+ *
+ * The coefficients are named the way CAPS names them, so that a question and
+ * its graph cannot drift apart: a hyperbola is `a/(x − p) + q` in every Grade
+ * 11 textbook in the country, so `{ kind: 'hyperbola', a, p, q }` is what an
+ * author already has in front of them.
+ */
+export type GraphCurve =
+  /** y = mx + c */
+  | { kind: 'line'; m: number; c: number; label?: string; dashed?: boolean }
+  /** y = ax² + bx + c */
+  | { kind: 'parabola'; a: number; b: number; c: number; label?: string; dashed?: boolean }
+  /** y = a/(x − p) + q -- vertical asymptote x = p, horizontal y = q */
+  | { kind: 'hyperbola'; a: number; p: number; q: number; label?: string; dashed?: boolean }
+  /** y = a·bˣ⁻ᵖ + q -- horizontal asymptote y = q */
+  | { kind: 'exponential'; a: number; b: number; p?: number; q?: number; label?: string; dashed?: boolean }
+  /** y = ax³ + bx² + cx + d */
+  | { kind: 'cubic'; a: number; b: number; c: number; d: number; label?: string; dashed?: boolean }
+  /** y = a·sin(k(x + p)) + q, with x in DEGREES. Same shape for cos and tan. */
+  | {
+      kind: 'sin' | 'cos' | 'tan'
+      a?: number
+      k?: number
+      p?: number
+      q?: number
+      label?: string
+      dashed?: boolean
+    }
+
+/** A point marked on the axes, e.g. a turning point or an intercept. */
+export interface GraphPoint {
+  x: number
+  y: number
+  label?: string
+  /** Drop dashed lines to both axes, the way a paper shows a read-off. */
+  guides?: boolean
+}
+
+/**
+ * A graph to plot above a question.
+ *
+ * `title` is required and does double duty: it captions the figure and names
+ * it for a screen reader. The longer spoken description is generated from the
+ * curves and points, so a learner who cannot see the graph is told what is on
+ * it rather than merely that a graph exists.
+ */
+export interface GraphSpec {
+  title: string
+  /** Visible x range. In degrees when any curve is sin, cos or tan. */
+  xRange: [number, number]
+  yRange: [number, number]
+  curves: GraphCurve[]
+  points?: GraphPoint[]
+  /** Dashed asymptote lines. A hyperbola's own two are drawn automatically. */
+  asymptotes?: { x?: number; y?: number; label?: string }[]
+  /** Shade under/over curve `curveIndex` between two x values. */
+  shade?: { from: number; to: number; curveIndex?: number; label?: string }
+  /** Axis names, when they are not the bare x and y -- Mat Lit graphs. */
+  xLabel?: string
+  yLabel?: string
+  /** Step between numbered ticks. Defaults to something sensible for the range. */
+  xStep?: number
+  yStep?: number
+}
 
 /**
  * A mark code as used in the official NSC marking guidelines.

@@ -85,7 +85,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Representing data in tables and graphs',
-      match: /\b(bar graph|histogram|pie chart|line graph|frequency polygon|draw (a|the) graph|tally|frequency table|compound bar|stacked)\b/i,
+      match: /\b(bar graph\w*|histogram\w*|pie chart\w*|line graph\w*|frequency polygon\w*|draw (a|the) graph|tally|frequency table\w*|compound bar|stacked)\b/i,
     },
     {
       name: 'Mean, median and mode',
@@ -876,7 +876,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Optimisation', match: /\b(optimis\w*|minimis\w*|maximis\w*|maximum (volume|area|profit)|minimum (cost|surface area)|largest possible|least amount)\b/i },
     { name: 'Limits and differentiation from first principles', match: /\b(first principles|limit|lim|h ?→ ?0)\b/i },
     { name: 'Sketching cubic graphs', match: /\b(cubic|sketch the graph|point of inflection|x[- ]intercepts of f)\b/i },
-    { name: 'Stationary points and concavity', match: /\b(stationary|turning point|concav|increasing|decreasing|second derivative)\b|\bf″/i },
+    { name: 'Stationary points and concavity', match: /\b(stationary|turning point|concav\w*|increasing|decreasing|second derivative)\b|\bf″/i },
     { name: 'Gradients and equations of tangents', match: /\b(tangent|gradient of the (curve|tangent)|equation of the tangent)\b/i },
     {
       // The prime sits OUTSIDE the \b(...)\b wrapper, for the same reason the

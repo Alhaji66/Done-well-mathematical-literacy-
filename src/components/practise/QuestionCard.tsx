@@ -7,6 +7,9 @@ import { MathText } from '@/components/practise/MathText'
 import { QuestionText } from '@/components/practise/QuestionText'
 import { MarkingMemo } from '@/components/practise/MarkingMemo'
 import { Figure } from '@/components/practise/Figure'
+import { Graph } from '@/components/practise/Graph'
+import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
+import { derivedFigures, derivedAnswerFigures } from '@/data/derivedFigures'
 
 interface QuestionCardProps {
   question: Question
@@ -23,6 +26,14 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [attemptedText, setAttemptedText] = useState('')
   const [revealed, setRevealed] = useState(false)
+
+  // A figure or graph written on the question always wins; otherwise one
+  // derived from the question's own words. See src/data/graphSpecs.ts and
+  // tools/derive-figures.mts.
+  const promptGraph = question.graph ?? derivedGraphs[question.id]
+  const answerGraph = question.answerGraph ?? derivedAnswerGraphs[question.id]
+  const promptFigure = question.figure ?? derivedFigures[question.id]
+  const answerFigureId = question.answerFigure ?? derivedAnswerFigures[question.id]
 
   const isMcq = Boolean(question.options && question.correctOptionId)
   const hasAttempted = isMcq ? selectedOption !== null : attemptedText.trim().length > 0 || revealed
@@ -52,7 +63,8 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
         <MathText>{question.prompt}</MathText>
       </p>
 
-      {question.figure ? <Figure id={question.figure} /> : null}
+      {promptFigure ? <Figure id={promptFigure} /> : null}
+      {promptGraph ? <Graph spec={promptGraph} /> : null}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -137,7 +149,8 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
           {/* Shown only now, with the answer. A question asking the learner to
               DRAW a free-body diagram is answered for them if the finished
               diagram sits beside the prompt. */}
-          {question.answerFigure ? <Figure id={question.answerFigure} /> : null}
+          {answerFigureId ? <Figure id={answerFigureId} /> : null}
+          {answerGraph ? <Graph spec={answerGraph} /> : null}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
         </div>
       )}

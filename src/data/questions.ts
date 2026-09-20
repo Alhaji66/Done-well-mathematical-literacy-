@@ -1339,7 +1339,8 @@ export const questions: Question[] = [
     grade: 11,
     difficulty: 'Moderate',
     marks: 5,
-    context: 'A household spends its monthly income as follows: Rent R4 800, Food R3 600, Transport R2 400, Other R1 200. The family wants to show this as a pie chart.',
+    context: 
+      '|+ Monthly household spending\n| Rent | R4 800 |\n| Food | R3 600 |\n| Transport | R2 400 |\n| Other | R1 200 |\nThe family wants to show this as a pie chart.',
     prompt: 'Calculate the size of the sector angle for Rent and for Transport, and show that the four angles add up correctly.',
     answer: 'Total income = 4 800 + 3 600 + 2 400 + 1 200 = R12 000. Rent angle = 4 800 ÷ 12 000 × 360° = 0,4 × 360° = 144°. Transport angle = 2 400 ÷ 12 000 × 360° = 0,2 × 360° = 72°. The other two: Food = 3 600 ÷ 12 000 × 360° = 108°, Other = 1 200 ÷ 12 000 × 360° = 36°. Check: 144 + 108 + 72 + 36 = 360°, a complete circle.',
     explanation: 'Each sector angle is that category as a fraction of the total, multiplied by 360°, because a full circle represents the whole. The check at the end is not optional -- angles that do not total 360° mean an arithmetic slip somewhere, and it is the one test that catches it before the chart is drawn.',
@@ -1468,7 +1469,8 @@ export const questions: Question[] = [
     grade: 10,
     difficulty: 'Easy',
     marks: 3,
-    context: 'A till slip lists: 2 × bread at R18,50 each, 1 × milk at R24,90, 3 × eggs (6-pack) at R21,00 each. The customer pays with R150.',
+    context:
+      '|+ TILL SLIP\n| Qty | Item | Price each |\n|---|---|---|\n| 2 | Bread | R18,50 |\n| 1 | Milk | R24,90 |\n| 3 | Eggs (6-pack) | R21,00 |\nThe customer pays with R150,00.',
     prompt: 'Calculate the total on the till slip and the change the customer receives.',
     answer: 'Bread: 2 × R18,50 = R37,00. Milk: R24,90. Eggs: 3 × R21,00 = R63,00. Total = R37,00 + R24,90 + R63,00 = R124,90. Change = R150,00 − R124,90 = R25,10.',
     explanation: 'Work down the slip line by line, multiplying quantity by unit price before adding anything, then subtract the total from what was paid. Keeping every amount to two decimal places throughout is what stops the cents going astray -- rounding partway is the usual cause of a change figure that is out by a few cents.',
@@ -1479,7 +1481,8 @@ export const questions: Question[] = [
     grade: 11,
     difficulty: 'Moderate',
     marks: 5,
-    context: 'A payslip shows: Basic salary R18 400, Housing allowance R2 100. Deductions: Pension fund 7,5% of basic salary, Medical aid R1 850, Union fees R95.',
+    context:
+      '|+ PAYSLIP — monthly\n| Earnings | Amount |\n|---|---|\n| Basic salary | R18 400 |\n| Housing allowance | R2 100 |\n\n| Deductions | Amount |\n|---|---|\n| Pension fund | 7,5% of basic salary |\n| Medical aid | R1 850 |\n| Union fees | R95 |',
     prompt: 'Calculate the gross salary, the total deductions and the net salary.',
     answer: 'Gross salary = basic + allowance = R18 400 + R2 100 = R20 500. Pension = 7,5% of the BASIC salary = 7,5 ÷ 100 × 18 400 = R1 380. Total deductions = R1 380 + R1 850 + R95 = R3 325. Net salary = R20 500 − R3 325 = R17 175.',
     explanation: 'Gross is everything earned before anything is taken off; net is what actually reaches the bank account. The detail that catches people is that the pension is a percentage of the BASIC salary, not of the gross -- the payslip says so, and using R20 500 instead of R18 400 gives R1 537,50 and a wrong net figure. Read which base each percentage applies to before calculating it.',
@@ -1490,7 +1493,8 @@ export const questions: Question[] = [
     grade: 12,
     difficulty: 'Challenge',
     marks: 6,
-    context: 'A bank statement shows an opening balance of R4 320,00, then: 03/05 Salary deposit R12 800,00. 07/05 Debit order R2 450,00. 12/05 Card purchase R1 180,50. 19/05 Card purchase R2 604,00. 25/05 Service fee R115,00. The statement prints a closing balance of R10 870,50.',
+    context:
+      '|+ BANK STATEMENT — May\n| Date | Description | Money out | Money in |\n|---|---|---|---|\n| 01/05 | Opening balance | | R4 320,00 |\n| 03/05 | Salary deposit | | R12 800,00 |\n| 07/05 | Debit order | R2 450,00 | |\n| 12/05 | Card purchase | R1 180,50 | |\n| 19/05 | Card purchase | R2 604,00 | |\n| 25/05 | Service fee | R115,00 | |\nThe statement prints a closing balance of R10 870,50.',
     prompt: 'Calculate the correct closing balance, state whether the printed balance is right, and explain what a customer should do if a transaction on a statement is not recognised.',
     answer: 'Money in: R4 320,00 + R12 800,00 = R17 120,00. Money out: R2 450,00 + R1 180,50 + R2 604,00 + R115,00 = R6 349,50. Correct closing balance = R17 120,00 − R6 349,50 = R10 770,50. The printed balance of R10 870,50 is wrong by R100,00 -- it is R100 too high. A customer who does not recognise a transaction should not ignore it: they should check it against their own receipts first, then contact the bank promptly to query it, since banks set time limits for disputing a transaction and an unrecognised debit may be an error or fraud.',
     explanation: 'Separate the credits from the debits before doing any arithmetic, rather than working down the column adding and subtracting alternately -- that is where sign errors creep in. Checking a statement against your own records is the practical point of this skill: the bank’s figure is not automatically correct, and a discrepancy is only recoverable if it is noticed and reported in time.',

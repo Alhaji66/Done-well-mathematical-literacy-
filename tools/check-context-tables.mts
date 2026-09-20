@@ -15,12 +15,41 @@
  * check stops anyone writing the run-on form again, and checks that the
  * tables that do exist are well formed.
  *
- * WHAT COUNTS AS A RUN-ON TABLE: three or more consecutive lines of
- * "short label: short value". The two qualifiers matter. "Note: Property
- * rates are VAT-exempt. VAT of 15% is added to ..." is a sentence with a
- * colon in it, and a rule that counted it would demand a table row be ruled
- * around a footnote. So the value side has to be short and free of a second
- * sentence before a line counts.
+ * WHAT COUNTS AS A RUN-ON TABLE, in two shapes.
+ *
+ * THE FIRST is three or more consecutive lines of "short label: short value".
+ * The two qualifiers matter. "Note: Property rates are VAT-exempt. VAT of 15%
+ * is added to ..." is a sentence with a colon in it, and a rule that counted it
+ * would demand a table row be ruled around a footnote. So the value side has to
+ * be short and free of a second sentence before a line counts.
+ *
+ * THE SECOND is a financial document written as ONE line, with its rows
+ * separated by commas and full stops instead of newlines:
+ *
+ *   "A bank statement shows an opening balance of R4 320,00, then: 03/05 Salary
+ *   deposit R12 800,00. 07/05 Debit order R2 450,00. 12/05 Card purchase ..."
+ *
+ * This shape was found only after a learner reported it, because the original
+ * check looked for a table that had LOST its line breaks and this one never had
+ * any. It is the same bug wearing different clothes, and it was hiding fourteen
+ * more documents -- budgets, price lists, municipal accounts -- behind the
+ * three that were reported.
+ *
+ * WHAT IT DOES NOT COUNT. Prose that happens to mention money. "Zanele earns
+ * R9 800 a month. Her total expenses come to R6 294.15, of which R2 450.00 is
+ * groceries" is a sentence a learner reads straight through, not a record they
+ * read a value out of, and ruling a box around it would help nobody. So a line
+ * only counts when it is a LABELLED AMOUNT -- a CAPITALISED noun phrase
+ * immediately followed by a rand figure -- and the threshold is set where a
+ * list stops reading as a sentence.
+ *
+ * WHERE THAT LEAVES A GAP, stated plainly rather than papered over. The capital
+ * letter is what keeps the rule off prose, and it also means a document whose
+ * labels are lower-case -- "Expenses: stock R900, electricity R120" -- slips
+ * past. Dropping the capital was tried and caught one more real document at the
+ * cost of two false alarms on ordinary sentences, which is the wrong trade for
+ * a check that has to be trusted every build. The three that shape missed were
+ * fixed by hand; a future one will need an eye rather than this rule.
  */
 import { questions } from '../src/data/questions'
 import { papersForSubject } from '../src/data/papers'
@@ -48,6 +77,20 @@ for (const subject of subjects) {
 }
 
 const PAIR = /^([^|:]{1,44}):\s+(\S.{0,44})$/
+
+/**
+ * "Venue hire R45 000," or "03/05 Salary deposit R12 800,00." -- a short label
+ * with a rand amount stuck to the end of it, which is what a row of a financial
+ * document looks like once its line break has been taken away.
+ *
+ * The label is capped at 30 characters and may not contain a full stop, so a
+ * whole clause ending in an amount ("she puts R800.00 into savings") does not
+ * count as a row.
+ */
+const LABELLED_AMOUNT = /(?:^|[,.;:]\s|\n)\s*(?:\d{2}\/\d{2}\s+)?[A-Z][A-Za-z()\/ -]{2,30}?\s+R\s?\d/g
+/** Below this many labelled amounts on one line, it still reads as a sentence. */
+const RUN_ON_THRESHOLD = 4
+
 const problems: string[] = []
 const seen = new Set<string>()
 
@@ -74,7 +117,23 @@ for (const { id, where, context } of items) {
     )
   }
 
-  // 2. A table whose rows disagree about how many columns it has, which
+  // 2. A financial document written as a single unbroken line.
+  if (!blocks.some((b) => b.kind === 'table')) {
+    for (const line of lines) {
+      const hits = (line.match(LABELLED_AMOUNT) ?? []).length
+      if (hits >= RUN_ON_THRESHOLD) {
+        problems.push(
+          `${id} (${where}): ${hits} labelled amounts run together in one line.\n` +
+            `    "${line.trim().slice(0, 90)}..."\n` +
+            `    A learner has to read a value out of this under time pressure. Write the\n` +
+            `    rows as pipes -- | label | amount | -- so they render as a ruled table.`,
+        )
+        break
+      }
+    }
+  }
+
+  // 3. A table whose rows disagree about how many columns it has, which
   //    renders as a ragged table with holes in it.
   for (const block of blocks) {
     if (block.kind !== 'table') continue

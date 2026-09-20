@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { MathText } from '@/components/practise/MathText'
+import { cn } from '@/lib/utils'
 
 /**
  * Render a question's `context` -- the block of information printed ABOVE the
@@ -83,7 +84,12 @@ function cells(line: string): string[] {
  * still letting the cell wrap between words -- "R1 817 001 and above" breaks
  * before "and", where it should.
  *
- * Only the RENDERED cell is changed. The data stays written with ordinary
+ * Applied to PROSE as well as to cells. "The statement prints a closing balance
+ * of R10 870,50" broke as "R10" at the end of one line and "870,50" at the
+ * start of the next, which reads as two different figures -- the same fault the
+ * tables were built to fix, a few words further down the same block.
+ *
+ * Only the RENDERED text is changed. The data stays written with ordinary
  * spaces, so nobody has to type an invisible character to author a table, and
  * every checker still reads the plain text it always did.
  */
@@ -145,6 +151,11 @@ export function parseContext(input: string): ContextBlock[] {
   return blocks
 }
 
+/** The widest row in a table, which decides how tight the layout has to be. */
+function columnsIn(block: TableBlock): number {
+  return Math.max(block.head?.length ?? 0, ...block.rows.map((r) => r.length), 0)
+}
+
 interface QuestionTextProps {
   children: string
   /** Extra classes for the wrapper. */
@@ -162,13 +173,26 @@ export function QuestionText({ children, className }: QuestionTextProps) {
           // honours newlines while still collapsing runs of spaces and
           // wrapping long lines, which `pre-wrap` would not.
           <p key={i} className="whitespace-pre-line [&+*]:mt-2.5">
-            <MathText>{block.text}</MathText>
+            <MathText>{glueNumbers(block.text)}</MathText>
           </p>
         ) : (
           // The table gets its own scroll container so a wide one never makes
           // the whole page scroll sideways on a phone.
           <div key={i} className="-mx-1 overflow-x-auto px-1 [&+*]:mt-2.5">
-            <table className="w-full border-collapse text-left text-[13px] tabular-nums">
+            {/*
+              A four-column table is set smaller and tighter than a two-column
+              one. A bank statement prints Date, Detail, Money out and Money in,
+              and at the two-column size those four ran past the edge of a phone
+              -- the "Money in" heading and its amounts were cut off. Shrinking
+              the type is better than dropping a column, because which column an
+              amount sits in IS what the question asks the learner to read.
+            */}
+            <table
+              className={cn(
+                'w-full border-collapse text-left tabular-nums',
+                columnsIn(block) >= 4 ? 'text-[11px]' : 'text-[13px]',
+              )}
+            >
               {block.caption ? (
                 // Not uppercased: these captions are sentences ("Sipho's spaza
                 // shop monthly sales"), and setting them in capitals makes the
@@ -184,7 +208,10 @@ export function QuestionText({ children, className }: QuestionTextProps) {
                       <th
                         key={c}
                         scope="col"
-                        className="border border-navy-200 bg-navy-100 px-2 py-1.5 align-top font-semibold text-navy-800"
+                        className={cn(
+                          'border border-navy-200 bg-navy-100 py-1.5 align-top font-semibold text-navy-800',
+                          columnsIn(block) >= 4 ? 'px-1' : 'px-2',
+                        )}
                       >
                         <MathText>{glueNumbers(cell)}</MathText>
                       </th>
@@ -204,14 +231,20 @@ export function QuestionText({ children, className }: QuestionTextProps) {
                         <th
                           key={c}
                           scope="row"
-                          className="border border-navy-200 px-2 py-1.5 text-left align-top font-medium text-navy-800"
+                          className={cn(
+                            'border border-navy-200 py-1.5 text-left align-top font-medium text-navy-800',
+                            columnsIn(block) >= 4 ? 'px-1' : 'px-2',
+                          )}
                         >
                           <MathText>{glueNumbers(cell)}</MathText>
                         </th>
                       ) : (
                         <td
                           key={c}
-                          className="border border-navy-200 px-2 py-1.5 align-top text-navy-700"
+                          className={cn(
+                            'border border-navy-200 py-1.5 align-top text-navy-700',
+                            columnsIn(block) >= 4 ? 'px-1' : 'px-2',
+                          )}
                         >
                           <MathText>{glueNumbers(cell)}</MathText>
                         </td>

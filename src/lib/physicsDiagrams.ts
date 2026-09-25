@@ -1,4 +1,5 @@
 import type { Question, SceneSpec, ScenePoint } from '@/types'
+import { chemDiagramsFor } from '@/lib/chemDiagrams'
 
 /**
  * Physical Sciences sketches, built from the question's own words and drawn by
@@ -23,7 +24,7 @@ import type { Question, SceneSpec, ScenePoint } from '@/types'
  * sketch drawn to scale is measured.
  */
 
-type Q = Pick<Question, 'id' | 'topicId' | 'prompt' | 'context'>
+type Q = Pick<Question, 'id' | 'topicId' | 'prompt' | 'context' | 'answer'>
 
 const DEG = Math.PI / 180
 const NUM = '(\\d+(?:\\.\\d+)?)'
@@ -465,6 +466,7 @@ function labelledTransverse(): SceneSpec {
     ],
     notes: ['One wavelength is the distance from a crest to the next crest, or a trough to the next trough.'],
     toScale: false,
+    schematic: true,
   }
 }
 
@@ -511,6 +513,7 @@ function energyProfile(kind: 'exo' | 'endo', catalysed = false): SceneSpec {
       ...(catalysed ? [{ x: 5, y: 4.9, text: 'with catalyst', size: 9, accent: true }] : []),
     ],
     toScale: false,
+    schematic: true,
   }
 }
 
@@ -536,6 +539,90 @@ function gasVolume(kind: 'catalyst' | 'temperature' | 'single'): SceneSpec {
     texts,
     notes: kind === 'single' ? ['Steep at first while reactants are plentiful; flat once one reactant is used up.'] : undefined,
     toScale: false,
+    schematic: true,
+  }
+}
+
+
+/** Plane wavefronts meeting a barrier with a gap, and what comes out the far side. */
+function diffraction(): SceneSpec[] {
+  const panel = (narrow: boolean): SceneSpec => {
+    const gap = narrow ? 0.6 : 4
+    const points: ScenePoint[] = [pt('w0', 0, 3.5), pt('w1', 0, gap / 2), pt('w2', 0, -gap / 2), pt('w3', 0, -3.5)]
+    const segments: NonNullable<SceneSpec['segments']> = [
+      { a: 'w0', b: 'w1', thick: true },
+      { a: 'w2', b: 'w3', thick: true },
+    ]
+    // Incoming plane wavefronts.
+    for (let k = 1; k <= 3; k++) {
+      points.push(pt(`i${k}a`, -k * 1.1, 3), pt(`i${k}b`, -k * 1.1, -3))
+      segments.push({ a: `i${k}a`, b: `i${k}b` })
+    }
+    points.push(pt('ra', -3.9, 0), pt('rb', -2.9, 0))
+    segments.push({ a: 'ra', b: 'rb', arrow: true })
+    // Outgoing wavefronts: arcs from a narrow gap, flat with curled ends from a wide one.
+    const curves: NonNullable<SceneSpec['curves']> = []
+    for (let k = 1; k <= 3; k++) {
+      const r = k * 1.1
+      if (narrow) curves.push({ points: Array.from({ length: 31 }, (_, i) => {
+        const a = -Math.PI / 2 + (Math.PI * i) / 30
+        return [r * Math.cos(a), r * Math.sin(a)] as [number, number]
+      }), accent: true })
+      else
+        curves.push({
+          points: [
+            ...Array.from({ length: 8 }, (_, i) => {
+              const a = -Math.PI / 2 + (Math.PI / 2) * (i / 7)
+              return [r * 0.5 * Math.cos(a), -gap / 2 + r * 0.5 * Math.sin(a)] as [number, number]
+            }).slice(0, -1),
+            [r * 0.5, -gap / 2],
+            [r * 0.5, gap / 2],
+            ...Array.from({ length: 8 }, (_, i) => {
+              const a = (Math.PI / 2) * (i / 7)
+              return [r * 0.5 * Math.cos(a), gap / 2 + r * 0.5 * Math.sin(a)] as [number, number]
+            }).slice(1),
+          ],
+          accent: true,
+        })
+    }
+    return {
+      title: narrow ? 'A gap close to the wavelength: strong diffraction' : 'A gap much wider than the wavelength: little diffraction',
+      points,
+      segments,
+      curves,
+      notes: [narrow ? 'The wave spreads out in circular wavefronts, as if the gap were a point source.' : 'The wave passes almost straight through; only the edges curve.'],
+      toScale: false,
+      schematic: true,
+    }
+  }
+  return [panel(true), panel(false)]
+}
+
+/** Huygens: each point on a wavefront sends out a wavelet; the new wavefront touches them all. */
+function huygens(): SceneSpec {
+  const points: ScenePoint[] = [pt('f0', 0, 3), pt('f1', 0, -3), pt('n0', 1.6, 3), pt('n1', 1.6, -3)]
+  const curves: NonNullable<SceneSpec['curves']> = []
+  const discs: NonNullable<SceneSpec['discs']> = []
+  for (let k = -2; k <= 2; k++) {
+    const y = k * 1.2
+    discs.push({ x: 0, y, r: 0.07, fill: 'ink' })
+    curves.push({ points: Array.from({ length: 21 }, (_, i) => {
+      const a = -Math.PI / 2 + (Math.PI * i) / 20
+      return [1.6 * Math.cos(a), y + 1.6 * Math.sin(a)] as [number, number]
+    }), dashed: true })
+  }
+  return {
+    title: "Huygens' principle",
+    points,
+    segments: [
+      { a: 'f0', b: 'f1', label: 'wavefront now' },
+      { a: 'n0', b: 'n1', label: 'new wavefront', accent: true },
+    ],
+    curves,
+    discs,
+    notes: ['Every point on a wavefront is a source of secondary wavelets; the new wavefront is the line touching all of them.'],
+    toScale: false,
+    schematic: true,
   }
 }
 
@@ -551,6 +638,10 @@ function standardFigures(q: Q, t: string): SceneSpec[] {
     if (exo && endo) return [energyProfile('exo'), energyProfile('endo')]
     if (endo) return [energyProfile('endo')]
     return [energyProfile('exo')]
+  }
+  if (q.topicId === 'phys-wavefronts') {
+    if (/diffract|slit|gap|doorway|obstacle|around the corner/i.test(t)) return diffraction()
+    if (/Huygens|wavelet|wavefront/i.test(t)) return [huygens()]
   }
   if (q.topicId === 'phys-reaction-rate' && /volume[- ]of[- ]gas|volume of gas produced|volume-time graph/i.test(t)) {
     if (/catalys/i.test(t)) return [gasVolume('catalyst')]
@@ -577,6 +668,6 @@ export function physicsDiagramsFor(q: Q): { prompt: SceneSpec[]; answer: SceneSp
     (/longitudinal|sound|compression|rarefaction/i.test(t) ? longitudinal(t, q.prompt) : null) ??
     (/transverse|crests|troughs|rope|string/i.test(t) ? transverse(t, q.prompt) : null)
   if (given) return { prompt: [given], answer: [] }
-  return { prompt: [], answer: standardFigures(q, t) }
+  return { prompt: [], answer: [...standardFigures(q, t), ...chemDiagramsFor(q)] }
 }
 

@@ -13,6 +13,7 @@ import { Chart } from '@/components/practise/Chart'
 import { ProbabilityDiagrams } from '@/components/practise/ProbabilityDiagrams'
 import { GeometryDiagram } from '@/components/practise/GeometryDiagram'
 import { geometryDiagramFor } from '@/lib/geometryDiagrams'
+import { physicsDiagramsFor } from '@/lib/physicsDiagrams'
 import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
 import { derivedFigures, derivedAnswerFigures } from '@/data/derivedFigures'
 import { derivedCircuits, derivedAnswerCircuits } from '@/data/derivedCircuits'
@@ -54,7 +55,10 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
   const promptChart = question.chart ?? chartSpecs[question.id]?.chart
   const answerChart = question.answerChart ?? chartSpecs[question.id]?.answerChart
   // A sketch read off the question's words, when nothing else is drawn for it.
-  const promptSketch = promptFigure || promptGraph || promptCircuit || promptChart ? null : geometryDiagramFor(question)
+  const drawnAlready = Boolean(promptFigure || promptGraph || promptCircuit || promptChart)
+  const promptSketch = drawnAlready ? null : geometryDiagramFor(question)
+  const physics = physicsDiagramsFor(question)
+  const answerDrawnAlready = Boolean(answerFigureId || answerGraph || answerCircuit || answerChart)
 
   const isMcq = Boolean(question.options && question.correctOptionId)
   const hasAttempted = isMcq ? selectedOption !== null : attemptedText.trim().length > 0 || revealed
@@ -90,6 +94,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
       {promptCircuit ? <Circuit spec={promptCircuit} /> : null}
       {promptChart ? <Chart spec={promptChart} /> : null}
       {promptSketch ? <GeometryDiagram spec={promptSketch} /> : null}
+      {drawnAlready ? null : physics.prompt.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -180,6 +185,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
           {answerCircuit ? <Circuit spec={answerCircuit} /> : null}
           {answerChart ? <Chart spec={answerChart} /> : null}
           <ProbabilityDiagrams question={question} />
+          {answerDrawnAlready ? null : physics.answer.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
           {!isMcq && onResult ? (
             selfMark === null ? (

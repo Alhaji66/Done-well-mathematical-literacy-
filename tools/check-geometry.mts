@@ -20,11 +20,12 @@
 import { questions } from '../src/data/questions'
 import { papersForSubject } from '../src/data/papers'
 import { geometryDiagramFor } from '../src/lib/geometryDiagrams'
+import { physicsDiagramsFor } from '../src/lib/physicsDiagrams'
 import type { Question, SceneSpec } from '../src/types'
 
 const items: Question[] = [...questions]
 const seen = new Set(items.map((q) => q.id))
-for (const s of ['mat-lit', 'mathematics'] as const)
+for (const s of ['mat-lit', 'mathematics', 'physical-sciences'] as const)
   for (const p of await papersForSubject(s)) for (const sec of p.sections) for (const it of sec.items) if (!seen.has(it.id)) (seen.add(it.id), items.push(it))
 
 const problems: string[] = []
@@ -44,6 +45,8 @@ function check(id: string, text: string, s: SceneSpec) {
     ...(s.segments ?? []).map((g) => g.label),
     ...(s.angles ?? []).map((a) => a.label),
     ...(s.notes ?? []),
+    ...(s.texts ?? []).map((x) => x.text),
+    ...(s.discs ?? []).map((x) => x.text),
   ].filter((l): l is string => !!l)
   for (const l of labels) {
     for (const n of numbersIn(l)) if (!stated.some((v) => Math.abs(v - n) < 1e-9)) fail(id, `"${l}" on the sketch is not a number the question states`)
@@ -80,10 +83,22 @@ function check(id: string, text: string, s: SceneSpec) {
 
 let drawn = 0
 for (const q of items) {
+  const text = [q.context ?? '', q.prompt].join(' ')
   const s = geometryDiagramFor(q)
-  if (!s) continue
-  drawn++
-  check(q.id, [q.context ?? '', q.prompt].join(' '), s)
+  if (s) {
+    drawn++
+    check(q.id, text, s)
+  }
+  const phys = physicsDiagramsFor(q)
+  for (const p of phys.prompt) {
+    drawn++
+    check(q.id, text, p)
+  }
+  // A figure shown with the answer may use the answer's numbers too.
+  for (const p of phys.answer) {
+    drawn++
+    check(q.id, [text, q.answer, q.explanation ?? ''].join(' '), p)
+  }
 }
 console.log(`${drawn} geometry sketches checked.`)
 if (problems.length) {

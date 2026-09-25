@@ -41,6 +41,19 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
     xs.push(e.cx - e.rx, e.cx + e.rx)
     ys.push(e.cy - e.ry, e.cy + e.ry)
   }
+  for (const c of spec.curves ?? [])
+    for (const [x, y] of c.points) {
+      xs.push(x)
+      ys.push(y)
+    }
+  for (const t of spec.texts ?? []) {
+    xs.push(t.x)
+    ys.push(t.y)
+  }
+  for (const d of spec.discs ?? []) {
+    xs.push(d.x - d.r, d.x + d.r)
+    ys.push(d.y - d.r, d.y + d.r)
+  }
   const minX = Math.min(...xs)
   const maxX = Math.max(...xs)
   const minY = Math.min(...ys)
@@ -110,13 +123,19 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
         <line
           x1={a.x}
           y1={a.y}
-          x2={b.x}
-          y2={b.y}
-          stroke={INK}
-          strokeWidth={g.thick ? 3 : 1.6}
+          x2={g.arrow ? b.x - ux * 6 : b.x}
+          y2={g.arrow ? b.y - uy * 6 : b.y}
+          stroke={g.accent ? ACCENT : INK}
+          strokeWidth={g.thick ? 3 : g.arrow ? 2 : 1.6}
           strokeDasharray={g.dashed ? '5 4' : undefined}
           strokeLinecap="round"
         />
+        {g.arrow ? (
+          <polygon
+            points={`${b.x},${b.y} ${b.x - ux * 10 + uy * 4.5},${b.y - uy * 10 - ux * 4.5} ${b.x - ux * 10 - uy * 4.5},${b.y - uy * 10 + ux * 4.5}`}
+            fill={g.accent ? ACCENT : INK}
+          />
+        ) : null}
         {marks}
         {g.label ? (
           <text x={tx} y={ty} textAnchor={anchor} fontSize="12" fontWeight="700" fill={isAsk(g.label) ? ACCENT : INK}>
@@ -191,7 +210,40 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
         {(spec.circles ?? []).map((c, i) => (
           <circle key={`c${i}`} cx={sx(P(c.c).x)} cy={sy(P(c.c).y)} r={c.r * s} fill="none" stroke={INK} strokeWidth="1.6" />
         ))}
+        {(spec.curves ?? []).map((c, i) => (
+          <polyline
+            key={`k${i}`}
+            points={c.points.map(([x, y]) => `${sx(x)},${sy(y)}`).join(' ')}
+            fill="none"
+            stroke={c.accent ? ACCENT : INK}
+            strokeWidth="1.8"
+            strokeDasharray={c.dashed ? '5 4' : undefined}
+            strokeLinejoin="round"
+          />
+        ))}
         {segs}
+        {(spec.discs ?? []).map((d, i) => (
+          <g key={`d${i}`}>
+            <circle
+              cx={sx(d.x)}
+              cy={sy(d.y)}
+              r={Math.max(d.r * s, 9)}
+              fill={d.fill === 'accent' ? ACCENT : d.fill === 'ink' ? INK : 'white'}
+              stroke={d.fill === 'accent' ? ACCENT : INK}
+              strokeWidth="1.5"
+            />
+            {d.text ? (
+              <text x={sx(d.x)} y={sy(d.y) + 4} textAnchor="middle" fontSize="11" fontWeight="700" fill={d.fill && d.fill !== 'none' ? 'white' : INK}>
+                {d.text}
+              </text>
+            ) : null}
+          </g>
+        ))}
+        {(spec.texts ?? []).map((t, i) => (
+          <text key={`x${i}`} x={sx(t.x)} y={sy(t.y) + 4} textAnchor={t.anchor ?? 'middle'} fontSize={t.size ?? 11} fontWeight="600" fill={t.accent ? ACCENT : INK}>
+            {t.text}
+          </text>
+        ))}
         {angles}
         {spec.points.map((p) => {
           const o = at(p.id)

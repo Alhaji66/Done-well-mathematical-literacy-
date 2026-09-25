@@ -301,7 +301,17 @@ export interface SceneSpec {
     arrows?: number
     /** A wall or the ground: drawn heavier. */
     thick?: boolean
+    /** An arrowhead at `b`: a force, a velocity, a ray of light. */
+    arrow?: boolean
+    /** Drawn in the accent colour -- the resultant, the refracted ray. */
+    accent?: boolean
   }[]
+  /** Smooth curves through many points: a wave, a graph, an energy profile. */
+  curves?: { points: [number, number][]; dashed?: boolean; accent?: boolean }[]
+  /** Free-standing text, placed exactly: "air (n = 1,00)", axis names, "Ea". */
+  texts?: { x: number; y: number; text: string; anchor?: 'start' | 'middle' | 'end'; size?: number; accent?: boolean }[]
+  /** Small spheres with a sign or charge written on them. */
+  discs?: { x: number; y: number; r: number; text?: string; fill?: 'accent' | 'ink' | 'none' }[]
   circles?: { c: string; r: number }[]
   /** Ellipses for the round ends of a cylinder; `dashedTop` draws the far half dashed. */
   ellipses?: { cx: number; cy: number; rx: number; ry: number; dashedTop?: boolean }[]

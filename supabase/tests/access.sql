@@ -1055,5 +1055,131 @@ insert into results
   from public.audit_log where action like 'school.%' or action like 'subscription.%';
 reset role;
 
+-- ===========================================================================
+-- CONTENT MANAGEMENT (STEP 18)
+-- ===========================================================================
+
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000000d7', 'author@example.org'),
+  ('00000000-0000-0000-0000-0000000000d8', 'reviewer@example.org');
+
+-- 52. Only content editors can write content; drafts are invisible to learners.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin insert into public.content_items (kind, title) values ('lesson', 'Teacher sneaks one in'); exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+select public.add_content_editor('author@example.org', false);
+select public.add_content_editor('Reviewer@Example.org', true);
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000d7');
+set role authenticated;
+insert into public.content_items (kind, title, summary, subject_id, grade, audience)
+  values ('lesson', 'Reading a payslip', 'Gross, deductions and net pay', 'mat-lit', 12, 'everyone'),
+         ('teacher_resource', 'Marking guide: payslips', 'For teachers', 'mat-lit', 12, 'teachers');
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '52. a teacher cannot add content; a learner cannot see drafts',
+         (select count(*) from public.content_items where title = 'Teacher sneaks one in')::text || ' sneaked in, '
+           || count(*)::text || ' draft(s) visible to the learner',
+         count(*) = 0 and not exists (select 1 from public.content_items where title = 'Teacher sneaks one in')
+  from public.content_items;
+reset role;
+
+-- 53. Two people see every item: the author cannot approve their own work.
+create temp table items as select id, title from public.content_items;
+grant select on items to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000d7');
+set role authenticated;
+select public.content_transition(id, 'review') from items;
+do $$ begin
+  begin perform public.content_transition((select id from items where title = 'Reading a payslip'), 'approved');
+  exception when others then null; end;
+  begin update public.content_items set status = 'published'; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '53. the author approves or publishes their own work',
+         string_agg(title || ': ' || status, '; ' order by title),
+         bool_and(status = 'review')
+  from public.content_items;
+
+-- 53b. A reviewer cannot approve their own work either; another reviewer can.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d8');
+set role authenticated;
+insert into public.content_items (kind, title) values ('worksheet', 'Reviewer''s own worksheet');
+select public.content_transition((select id from public.content_items where title = 'Reviewer''s own worksheet'), 'review');
+do $$ begin
+  begin perform public.content_transition((select id from public.content_items where title = 'Reviewer''s own worksheet'), 'approved');
+  exception when others then null; end;
+end $$;
+reset role;
+create temp table own_status as select status from public.content_items where title = 'Reviewer''s own worksheet';
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+select public.content_transition((select id from public.content_items where title = 'Reviewer''s own worksheet'), 'approved');
+reset role;
+insert into results
+  select '53b. a reviewer approves their own worksheet; an administrator then can',
+         (select status from own_status) || ' -> ' || status,
+         (select status from own_status) = 'review' and status = 'approved'
+  from public.content_items where title = 'Reviewer''s own worksheet';
+
+-- 54. A reviewer approves and publishes; learners see only what is for everyone.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d8');
+set role authenticated;
+select public.content_transition(id, 'approved') from items;
+select public.content_transition(id, 'published', 'Checked against CAPS') from items;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '54. published: the learner sees the lesson, not the teacher resource',
+         coalesce(string_agg(title, ', '), 'nothing'),
+         count(*) = 1 and bool_and(title = 'Reading a payslip')
+  from public.content_items;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '54b. a teacher sees both', count(*)::text || ' item(s)', count(*) = 2 from public.content_items;
+reset role;
+
+-- 55. Published work cannot be changed in place.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d7');
+set role authenticated;
+do $$ begin
+  begin update public.content_items set title = 'Edited after publishing'; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '55. the author edits a published item in place',
+         count(*) filter (where title = 'Edited after publishing')::text || ' changed',
+         count(*) filter (where title = 'Edited after publishing') = 0
+  from public.content_items;
+
+-- 56. Archiving takes it off the learner's resource centre; the history is kept.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d8');
+set role authenticated;
+select public.content_transition((select id from items where title = 'Reading a payslip'), 'archived', 'Replaced');
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '56. an archived lesson is gone for the learner, who also cannot read the history',
+         (select count(*) from public.content_items)::text || ' item(s), ' || (select count(*) from public.content_events)::text || ' history row(s)',
+         (select count(*) from public.content_items) = 0 and (select count(*) from public.content_events) = 0;
+reset role;
+insert into results
+  select '56b. the lesson''s whole journey is recorded',
+         string_agg(coalesce(from_status, '') || '->' || to_status, ' ' order by id),
+         string_agg(to_status, ',' order by id) = 'review,approved,published,archived'
+  from public.content_events where content_id = (select id from items where title = 'Reading a payslip');
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

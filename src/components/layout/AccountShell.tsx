@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAccountAuth, type AccountRole } from '@/context/AccountAuthContext'
 import { LogOutIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
@@ -7,6 +7,7 @@ import type { RoleNavItem } from '@/components/layout/RoleShell'
 import { NotificationBell } from '@/components/account/NotificationBell'
 import { logSignedIn } from '@/lib/activity'
 import { usePlatformAccess } from '@/lib/platform'
+import { useContentAccess } from '@/lib/content'
 
 const roleLabels: Record<AccountRole, string> = {
   learner: 'Learner',
@@ -24,6 +25,9 @@ interface AccountShellProps {
 export function AccountShell({ basePath, navItems }: AccountShellProps) {
   const { profile, signOut } = useAccountAuth()
   const platform = usePlatformAccess(profile?.id)
+  const content = useContentAccess(profile?.id)
+  const navigate = useNavigate()
+  const [query, setQuery] = useState('')
 
   // One "signed in" event a day, for the school's active-learner count.
   useEffect(() => {
@@ -54,6 +58,31 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
               <p className="text-sm font-semibold text-navy-900">{profile?.full_name}</p>
               <p className="text-xs text-navy-500">{profile ? roleLabels[profile.role] : ''}</p>
             </div>
+            <form
+              role="search"
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (query.trim()) navigate(`${basePath}/search?q=${encodeURIComponent(query.trim())}`)
+              }}
+              className="hidden lg:block"
+            >
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search DONE WELL…"
+                aria-label="Search DONE WELL"
+                className="input !h-9 w-56 !py-1.5 text-sm"
+              />
+            </form>
+            <Link to={`${basePath}/search`} className="btn-ghost btn-sm !px-2.5 lg:hidden" aria-label="Search">
+              <SearchGlyph />
+            </Link>
+            {content.editor ? (
+              <Link to="/account/content" className="hidden text-sm font-medium text-gold-700 hover:text-navy-900 sm:inline">
+                Content studio
+              </Link>
+            ) : null}
             {platform.admin ? (
               <Link to="/account/admin" className="hidden text-sm font-medium text-gold-700 hover:text-navy-900 sm:inline">
                 Platform console
@@ -131,5 +160,15 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
         ))}
       </nav>
     </div>
+  )
+}
+
+/** A magnifying glass, for the small-screen search link. */
+function SearchGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4 4" />
+    </svg>
   )
 }

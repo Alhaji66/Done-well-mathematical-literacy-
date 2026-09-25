@@ -9,9 +9,11 @@ import { MarkingMemo } from '@/components/practise/MarkingMemo'
 import { Figure } from '@/components/practise/Figure'
 import { Graph } from '@/components/practise/Graph'
 import { Circuit } from '@/components/practise/Circuit'
+import { Chart } from '@/components/practise/Chart'
 import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
 import { derivedFigures, derivedAnswerFigures } from '@/data/derivedFigures'
 import { derivedCircuits, derivedAnswerCircuits } from '@/data/derivedCircuits'
+import { chartSpecs } from '@/data/chartSpecs'
 
 interface QuestionCardProps {
   question: Question
@@ -38,6 +40,8 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
   const answerFigureId = question.answerFigure ?? derivedAnswerFigures[question.id]
   const promptCircuit = question.circuit ?? derivedCircuits[question.id]
   const answerCircuit = question.answerCircuit ?? derivedAnswerCircuits[question.id]
+  const promptChart = question.chart ?? chartSpecs[question.id]?.chart
+  const answerChart = question.answerChart ?? chartSpecs[question.id]?.answerChart
 
   const isMcq = Boolean(question.options && question.correctOptionId)
   const hasAttempted = isMcq ? selectedOption !== null : attemptedText.trim().length > 0 || revealed
@@ -70,6 +74,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
       {promptFigure ? <Figure id={promptFigure} /> : null}
       {promptGraph ? <Graph spec={promptGraph} /> : null}
       {promptCircuit ? <Circuit spec={promptCircuit} /> : null}
+      {promptChart ? <Chart spec={promptChart} /> : null}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -157,6 +162,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
           {answerFigureId ? <Figure id={answerFigureId} /> : null}
           {answerGraph ? <Graph spec={answerGraph} /> : null}
           {answerCircuit ? <Circuit spec={answerCircuit} /> : null}
+          {answerChart ? <Chart spec={answerChart} /> : null}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
         </div>
       )}

@@ -234,13 +234,16 @@ export const topicNotes: TopicNote[] = [
         ],
       },
       {
-        name: 'Spread: range, quartiles and box-and-whisker',
+        name: 'Spread: range, quartiles, percentiles and box-and-whisker',
         points: [
           'Range = highest − lowest. Simple, but it uses only two values.',
           'The quartiles split ordered data into four equal parts: Q1, the median (Q2), and Q3.',
           'Interquartile range = Q3 − Q1. It describes the middle half of the data and ignores the extremes.',
           'The five-number summary is minimum, Q1, median, Q3, maximum — exactly what a box-and-whisker diagram draws.',
           'A long whisker on one side means the data is spread out on that side; a short box means the middle half is tightly bunched.',
+          'Each of the four sections of a box-and-whisker diagram holds a QUARTER of the data, however long it is drawn. A long section means spread out, not more values.',
+          'A percentile is a position: the 85th percentile is the value 85% of the group lies below. The lower quartile is the 25th percentile and the median the 50th.',
+          'A BMI-for-age chart is read like any graph — age across, BMI up — and the child is classified by the percentile curves on either side of the point: below the 5th underweight, 5th to 85th healthy, 85th to 95th overweight, 95th and above obese.',
         ],
       },
       {
@@ -479,6 +482,7 @@ export const topicNotes: TopicNote[] = [
           'Fuel given as ℓ per 100 km: litres needed = distance ÷ 100 × consumption.',
           'A flow rate fills a container: time = volume ÷ flow rate, with both in matching units.',
           'Cooking and dosage questions scale a recipe or a dose in proportion — set up the ratio and keep the units consistent.',
+          'BMI = mass (kg) ÷ height (m)². Square the height FIRST. To find the mass for a target BMI, multiply instead: mass = BMI × height².',
         ],
       },
       {

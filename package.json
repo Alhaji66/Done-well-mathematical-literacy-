@@ -20,6 +20,7 @@
     "check:figures": "tsx tools/derive-figures.mts",
     "figures:write": "tsx tools/derive-figures.mts --write",
     "check:circuits": "tsx tools/derive-circuits.mts",
+    "check:charts": "tsx tools/check-charts.mts",
     "circuits:write": "tsx tools/derive-circuits.mts --write",
     "check:graphs-fresh": "tsx tools/derive-graphs.mts",
     "graphs:write": "tsx tools/derive-graphs.mts --write",

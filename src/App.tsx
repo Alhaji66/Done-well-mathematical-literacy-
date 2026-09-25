@@ -55,6 +55,10 @@ const AccountParentResources = lazy(() =>
 const AccountActivityLog = lazy(() =>
   import('@/pages/account/ActivityLog').then((m) => ({ default: m.ActivityLog })),
 )
+const AccountClasses = lazy(() => import('@/pages/account/Classes').then((m) => ({ default: m.Classes })))
+const AccountClassDetail = lazy(() =>
+  import('@/pages/account/ClassDetail').then((m) => ({ default: m.ClassDetail })),
+)
 const AccountHodDashboard = lazy(() =>
   import('@/pages/account/hod/HodDashboard').then((m) => ({ default: m.HodDashboard })),
 )
@@ -181,6 +185,8 @@ export default function App() {
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="classes" element={<AccountClasses />} />
+                <Route path="classes/:classId" element={<AccountClassDetail />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -216,6 +222,8 @@ export default function App() {
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="classes" element={<AccountClasses />} />
+                <Route path="classes/:classId" element={<AccountClassDetail />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -232,6 +240,8 @@ export default function App() {
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="classes" element={<AccountClasses />} />
+                <Route path="classes/:classId" element={<AccountClassDetail />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>

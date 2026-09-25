@@ -11,6 +11,7 @@ import {
   type TestAttempt,
 } from '@/lib/weeklyTests'
 import { fetchSchoolLearners, type RosterLearner } from '@/lib/teacherRoster'
+import { classesInView, fetchClassMembers, fetchClasses, type ClassMember, type SchoolClass } from '@/lib/classes'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ProgressBar } from '@/components/ui/ProgressBar'
@@ -40,6 +41,10 @@ export function WeeklyTests() {
   const [attempts, setAttempts] = useState<Record<string, TestAttempt[]>>({})
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [classes, setClasses] = useState<SchoolClass[]>([])
+  const [classMembers, setClassMembers] = useState<ClassMember[]>([])
+  /** '' means the whole grade. */
+  const [classId, setClassId] = useState('')
 
   const [title, setTitle] = useState('')
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? 'mat-lit')
@@ -73,6 +78,12 @@ export function WeeklyTests() {
       if (!active) return
       setTests(rows)
       setLearners(roster)
+      // Classes are optional: on a database without STEP 14 this is simply empty
+      // and the form offers the whole grade only, as before.
+      const { classes: found } = await fetchClasses(schoolId)
+      if (!active) return
+      setClasses(found)
+      setClassMembers(await fetchClassMembers(found.map((c) => c.id)))
       const byTest: Record<string, TestAttempt[]> = {}
       for (const t of rows) byTest[t.id] = await fetchAttemptsForTest(t.id)
       if (active) {
@@ -91,7 +102,13 @@ export function WeeklyTests() {
     setTopicIds([])
     setSubtopics([])
     setAtpKey('')
+    setClassId('')
   }, [subjectId, grade])
+
+  // The classes a test for this subject and grade could be set for: a
+  // teacher's own, or any for the school account and an HOD.
+  const classChoices = classesInView(profile, classes).filter((c) => c.subject_id === subjectId && c.grade === grade)
+  const className = (id: string | null | undefined) => classes.find((c) => c.id === id)?.name
 
   /*
    * The sub-topics available across whichever topics are ticked, with how many
@@ -182,6 +199,7 @@ export function WeeklyTests() {
       // End of the chosen day, not midnight at its start -- a test "due Friday"
       // is due at the end of Friday, which is what a learner expects.
       dueAt: new Date(`${dueDate}T23:59:59`).toISOString(),
+      classId: classId || null,
     })
     setSaving(false)
     if (createError) {
@@ -324,6 +342,22 @@ export function WeeklyTests() {
               </select>
             </div>
           </div>
+
+          {classChoices.length ? (
+            <div>
+              <label className="text-xs font-medium text-navy-500" htmlFor="testClass">
+                Who is it for?
+              </label>
+              <select id="testClass" className="select mt-1" value={classId} onChange={(e) => setClassId(e.target.value)}>
+                <option value="">Everyone in Grade {grade} {subjects.find((s) => s.id === subjectId)?.name}</option>
+                {classChoices.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} only
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
 
           <div>
             <label className="text-xs font-medium text-navy-500">Topics ({topicIds.length} chosen)</label>
@@ -485,13 +519,19 @@ export function WeeklyTests() {
         <EmptyState
           icon={<ClipboardIcon className="h-6 w-6" />}
           title="No tests set yet"
-          description="Set one above and it appears for every learner at your school in that subject and grade."
+          description="Set one above and it appears for every learner at your school in that subject and grade, or only for the class you choose."
         />
       ) : (
         <div className="space-y-4">
           {tests.map((test) => {
             const rows = (attempts[test.id] ?? []).filter((a) => a.submitted_at)
-            const forGrade = expected.filter((l) => l.grade === test.grade && l.subject_id === test.subject_id)
+            // A class test is sat by that class; any other by the whole grade.
+            const inClass = test.class_id
+              ? new Set(classMembers.filter((m) => m.class_id === test.class_id).map((m) => m.learner_id))
+              : null
+            const forGrade = inClass
+              ? learners.filter((l) => inClass.has(l.id))
+              : expected.filter((l) => l.grade === test.grade && l.subject_id === test.subject_id)
             const average =
               rows.length > 0
                 ? Math.round(
@@ -509,7 +549,8 @@ export function WeeklyTests() {
                   <div className="min-w-0">
                     <h3 className="text-base font-bold text-navy-900">{test.title}</h3>
                     <p className="mt-0.5 text-xs text-navy-500">
-                      Grade {test.grade} · {test.question_count} questions ·{' '}
+                      {test.class_id ? `${className(test.class_id) ?? 'One class'}` : `Grade ${test.grade}`} ·{' '}
+                      {test.question_count} questions ·{' '}
                       {test.subtopics?.length
                         ? `${test.subtopics.length} sub-topic${test.subtopics.length === 1 ? '' : 's'}`
                         : `${test.topic_ids.length} topic${test.topic_ids.length === 1 ? '' : 's'}, all sub-topics`}{' '}

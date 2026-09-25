@@ -57,7 +57,7 @@ export function LearnerWeeklyTests() {
     }
     let live = true
     Promise.all([
-      fetchTestsForLearner(profile.school_id, profile.subject_id, profile.grade),
+      fetchTestsForLearner(profile.school_id, profile.subject_id, profile.grade, profile.id),
       fetchMyAttempts(profile.id),
     ]).then(([t, a]) => {
       if (!live) return

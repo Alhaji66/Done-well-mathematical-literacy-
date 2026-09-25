@@ -387,5 +387,204 @@ insert into results
   from public.audit_log where target_table = 'weekly_tests';
 reset role;
 
+-- ===========================================================================
+-- CLASSES (STEP 14)
+-- ===========================================================================
+
+-- 20. A teacher creates a class and puts two learners in it.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.classes (school_id, name, grade, subject_id, teacher_id)
+  select school_id, '12A Mat Lit', 12, 'mat-lit', '00000000-0000-0000-0000-00000000000a' from s;
+insert into public.class_members (class_id, learner_id)
+  select id, l from public.classes, unnest(array['00000000-0000-0000-0000-0000000000b1',
+                                                 '00000000-0000-0000-0000-0000000000b2']::uuid[]) l
+  where name = '12A Mat Lit';
+reset role;
+insert into results
+  select '20. teacher creates a class and adds two learners',
+         count(*)::text || ' member(s)',
+         count(*) = 2
+  from public.class_members m join public.classes c on c.id = m.class_id where c.name = '12A Mat Lit';
+
+-- 21. Only learners at the same school can be put in a class.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  -- a colleague (not a learner)
+  begin
+    insert into public.class_members (class_id, learner_id)
+      select id, '00000000-0000-0000-0000-0000000000d1' from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+  -- a teacher at another school
+  begin
+    insert into public.class_members (class_id, learner_id)
+      select id, '00000000-0000-0000-0000-0000000000f1' from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '21. teacher adds a colleague and an outsider to a class',
+         count(*)::text || ' wrongly added',
+         count(*) = 0
+  from public.class_members
+  where learner_id in ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000f1');
+
+-- 22. A learner sees their class and their own membership, not the class list.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '22. learner sees the class they are in',
+         count(*)::text || ' class(es) visible',
+         count(*) = 1
+  from public.classes;
+insert into results
+  select '22b. learner lists who else is in their class',
+         count(*)::text || ' other member row(s) visible',
+         count(*) = 0
+  from public.class_members where learner_id <> '00000000-0000-0000-0000-0000000000b1';
+reset role;
+
+-- 23. A learner cannot add themselves to a class, or remove a classmate.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000b3');
+do $$
+declare v_school uuid := (select school_id from s);
+begin
+  perform pg_temp.act('00000000-0000-0000-0000-0000000000b3');
+  execute 'set role authenticated';
+  insert into public.profiles (id, role, full_name, school_id, grade, subject_id)
+    values ('00000000-0000-0000-0000-0000000000b3', 'learner', 'Learner Three', v_school, 12, 'mat-lit');
+  begin
+    insert into public.class_members (class_id, learner_id)
+      select id, auth.uid() from public.classes;  -- sees none, so tries by id below too
+  exception when others then null; end;
+  begin
+    insert into public.class_members (class_id, learner_id)
+      values ((select id from public.classes where false), auth.uid());
+  exception when others then null; end;
+  execute 'reset role';
+end $$;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b3');
+create temp table class_ids as select id from public.classes;
+grant select on class_ids to authenticated;
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.class_members (class_id, learner_id) select id, auth.uid() from class_ids;
+  exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin
+    delete from public.class_members where learner_id = '00000000-0000-0000-0000-0000000000b2';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '23. learner joins a class themselves, or removes a classmate',
+         (select count(*) from public.class_members where learner_id = '00000000-0000-0000-0000-0000000000b3')::text
+           || ' self-added, '
+           || (select count(*) from public.class_members where learner_id = '00000000-0000-0000-0000-0000000000b2')::text
+           || ' classmate row(s) left',
+         not exists (select 1 from public.class_members where learner_id = '00000000-0000-0000-0000-0000000000b3')
+           and exists (select 1 from public.class_members where learner_id = '00000000-0000-0000-0000-0000000000b2');
+
+-- 24. Another school's teacher sees none of it and cannot add to it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.class_members (class_id, learner_id)
+      select id, '00000000-0000-0000-0000-0000000000b3' from class_ids;
+  exception when others then null; end;
+end $$;
+insert into results
+  select '24. teacher at another school reads this school''s classes',
+         (select count(*) from public.classes)::text || ' class(es), '
+           || (select count(*) from public.class_members)::text || ' member row(s)',
+         (select count(*) from public.classes) = 0 and (select count(*) from public.class_members) = 0;
+reset role;
+insert into results
+  select '24b. ...or adds a learner to one',
+         count(*)::text || ' added',
+         count(*) = 0
+  from public.class_members where learner_id = '00000000-0000-0000-0000-0000000000b3';
+
+-- 25. A colleague can see a teacher's class but not take it over or delete it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000c1');
+set role authenticated;
+insert into results
+  select '25. colleague sees the class and its list',
+         (select count(*) from public.classes)::text || ' class(es), '
+           || (select count(*) from public.class_members)::text || ' member row(s)',
+         (select count(*) from public.classes) = 1 and (select count(*) from public.class_members) = 2;
+do $$ begin
+  begin update public.classes set teacher_id = auth.uid(); exception when others then null; end;
+  begin delete from public.class_members; exception when others then null; end;
+  begin delete from public.classes; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '25b. ...but cannot take it over, empty it or delete it',
+         coalesce((select teacher_id::text from public.classes where name = '12A Mat Lit'), 'deleted') || ', '
+           || (select count(*) from public.class_members)::text || ' member(s)',
+         (select teacher_id from public.classes where name = '12A Mat Lit') = '00000000-0000-0000-0000-00000000000a'
+           and (select count(*) from public.class_members) = 2;
+
+-- 26. A test can be set for a class at the teacher's own school only.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at, class_id)
+  select s.school_id, '00000000-0000-0000-0000-00000000000a', '12A finance', 'mat-lit', 12, array['finance'], 10,
+         now() + interval '7 days', c.id
+  from s, public.classes c where c.name = '12A Mat Lit';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at, class_id)
+      select o.school_id, auth.uid(), 'Borrowed class', 'mat-lit', 12, array['finance'], 10, now(), c.id
+      from other o, class_ids c;
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '26. tests set for a class: own school allowed, another school''s class refused',
+         string_agg(title, ', ' order by title),
+         bool_or(title = '12A finance') and not bool_or(title = 'Borrowed class')
+  from public.weekly_tests where class_id is not null;
+
+-- 27. A class with tests cannot be deleted (it would lose results).
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin delete from public.classes where name = '12A Mat Lit'; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '27. deleting a class that still has a weekly test',
+         case when count(*) = 1 then 'class kept' else 'class deleted' end,
+         count(*) = 1
+  from public.classes where name = '12A Mat Lit';
+
+-- 28. Leaving the school takes a learner out of its classes.
+update public.profiles set school_id = null where id = '00000000-0000-0000-0000-0000000000b2';
+insert into results
+  select '28. a learner who leaves the school leaves its classes',
+         count(*)::text || ' membership(s) left',
+         count(*) = 0
+  from public.class_members where learner_id = '00000000-0000-0000-0000-0000000000b2';
+
+-- 29. Classes and class lists are in the audit log, without the class name.
+insert into results
+  select '29. class created and learners added are logged',
+         string_agg(distinct action, ', '),
+         bool_or(action = 'class.created') and bool_or(action = 'class_member.added')
+           and not bool_or(details::text ilike '%12A%')
+  from public.audit_log where target_table in ('classes', 'class_members');
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

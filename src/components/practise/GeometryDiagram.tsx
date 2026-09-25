@@ -247,12 +247,24 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
         {angles}
         {spec.points.map((p) => {
           const o = at(p.id)
-          const l = away(o, 13)
+          // A long label -- a coordinate pair -- goes beside its dot, to the
+          // outside, rather than centred over it.
+          const long = (p.label?.length ?? 0) > 2
+          const side = o.x >= mid.x ? 1 : -1
+          const l = long ? { x: o.x + side * 7, y: o.y - 7 } : away(o, 13)
           return (
             <g key={p.id}>
               {p.dot ? <circle cx={o.x} cy={o.y} r="2.6" fill={INK} /> : null}
               {p.label ? (
-                <text x={l.x} y={l.y + 4} textAnchor="middle" fontSize="13" fontWeight="700" fontStyle="italic" fill={INK}>
+                <text
+                  x={l.x}
+                  y={l.y + 4}
+                  textAnchor={long ? (side > 0 ? 'start' : 'end') : 'middle'}
+                  fontSize={long ? 11 : 13}
+                  fontWeight="700"
+                  fontStyle="italic"
+                  fill={INK}
+                >
                   {p.label}
                 </text>
               ) : null}

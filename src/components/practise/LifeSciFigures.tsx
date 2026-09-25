@@ -104,9 +104,17 @@ function Label({
   anchor?: 'start' | 'end' | 'middle'
   colour?: string
 }) {
+  // The leader starts at whichever end of the text is nearer its target, so
+  // it never runs back through the label it belongs to. The width is an
+  // estimate from the character count at this font size.
+  const w = text.length * 4.1
+  const left = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2
+  const right = left + w
+  const x1 = to[0] >= right ? right + 1 : to[0] <= left ? left - 1 : x
+  const y1 = to[0] > left && to[0] < right ? (to[1] > y ? y + 2 : y - 9) : y - 3
   return (
     <g>
-      <line x1={x} y1={y - 3} x2={to[0]} y2={to[1]} stroke={MUTED} strokeWidth="0.8" />
+      <line x1={x1} y1={y1} x2={to[0]} y2={to[1]} stroke={MUTED} strokeWidth="0.8" />
       <circle cx={to[0]} cy={to[1]} r="1.6" fill={MUTED} />
       <text x={x} y={y} textAnchor={anchor} fontSize="8" fill={colour}>
         {text}
@@ -684,6 +692,230 @@ export function FlowerStructure() {
   )
 }
 
+
+/* ================================================================== */
+/* Cells, tissues, vessels and bone                                   */
+/* ================================================================== */
+
+export function PlantCell() {
+  return (
+    <Frame
+      title="A plant cell"
+      desc="A rectangular plant cell. Outermost is the rigid cellulose cell wall, with the cell membrane just inside it. A large central vacuole filled with cell sap takes up most of the cell and pushes the cytoplasm to the edges. The nucleus, surrounded by a nuclear envelope with pores, sits in the cytoplasm at one side. Oval chloroplasts, each containing stacks of thylakoids called grana in a fluid stroma, lie in the cytoplasm, along with mitochondria and endoplasmic reticulum."
+      viewBox="0 0 320 200"
+    >
+      <rect x="40" y="22" width="170" height="130" rx="4" fill="#f0fdf4" stroke={GREEN} strokeWidth="5" />
+      <rect x="46" y="28" width="158" height="118" rx="3" fill="none" stroke={INK} strokeWidth="1" />
+      <rect x="92" y="44" width="96" height="86" rx="18" fill="#e0f2fe" stroke={BLUE} strokeWidth="1.4" />
+      <circle cx="68" cy="60" r="14" fill={FILL} stroke={INK} strokeWidth="1.6" strokeDasharray="4 1.5" />
+      <circle cx="68" cy="60" r="4" fill={INK} />
+      {[
+        [62, 104],
+        [70, 130],
+        [196, 36],
+      ].map(([x, y], i) => (
+        <g key={i}>
+          <ellipse cx={x} cy={y} rx="11" ry="6" fill="#bbf7d0" stroke={GREEN} strokeWidth="1.2" />
+          <line x1={x - 5} y1={y - 3} x2={x - 5} y2={y + 3} stroke={GREEN} strokeWidth="1.6" />
+          <line x1={x} y1={y - 3} x2={x} y2={y + 3} stroke={GREEN} strokeWidth="1.6" />
+          <line x1={x + 5} y1={y - 3} x2={x + 5} y2={y + 3} stroke={GREEN} strokeWidth="1.6" />
+        </g>
+      ))}
+      <ellipse cx="160" cy="140" rx="9" ry="4" fill="#fed7aa" stroke={RED} strokeWidth="1" />
+      <path d="M52 84 q8 -4 16 0 t16 0" fill="none" stroke={MUTED} strokeWidth="1" />
+      <Label x={306} y={20} to={[208, 30]} text="cell wall (cellulose)" anchor="end" colour={GREEN} />
+      <Label x={306} y={48} to={[204, 60]} text="cell membrane" anchor="end" />
+      <Label x={306} y={86} to={[188, 86]} text="large central vacuole" anchor="end" colour={BLUE} />
+      <Label x={306} y={118} to={[168, 140]} text="mitochondrion" anchor="end" colour={RED} />
+      <Label x={306} y={146} to={[206, 38]} text="chloroplast" anchor="end" colour={GREEN} />
+      <Label x={14} y={14} to={[62, 50]} text="nucleus" />
+      <Label x={14} y={170} to={[62, 86]} text="endoplasmic reticulum" />
+      <Note y={180} lines={['Only plant cells have a cell wall, a large central vacuole and chloroplasts (grana stacked in a fluid stroma).']} />
+    </Frame>
+  )
+}
+
+export function AnimalCell() {
+  return (
+    <Frame
+      title="An animal cell"
+      desc="A rounded animal cell with no cell wall: the cell membrane, a phospholipid bilayer, is its outer boundary. The nucleus, containing chromatin and a nucleolus and surrounded by a double nuclear envelope with pores, is near the centre. Around it lie rough endoplasmic reticulum studded with ribosomes, smooth endoplasmic reticulum without them, a Golgi body of flattened sacs, mitochondria with folded inner membranes, small lysosomes containing digestive enzymes, and a pair of centrioles. The cell has only small vacuoles, if any."
+      viewBox="0 0 320 200"
+    >
+      <ellipse cx="128" cy="92" rx="96" ry="70" fill="#fff7ed" stroke={INK} strokeWidth="1.8" />
+      <circle cx="122" cy="90" r="24" fill={FILL} stroke={INK} strokeWidth="2" strokeDasharray="5 1.5" />
+      <circle cx="126" cy="86" r="7" fill={MUTED} />
+      <path d="M98 56 q14 -10 30 -4 q16 6 32 -2 M100 64 q14 -8 28 -2 q16 6 30 0" fill="none" stroke={BLUE} strokeWidth="1.6" />
+      {[
+        [104, 52],
+        [116, 50],
+        [130, 55],
+        [142, 54],
+        [154, 51],
+      ].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="1.6" fill={BLUE} />
+      ))}
+      <path d="M150 118 q10 6 20 0 M148 126 q12 7 24 0 M150 134 q10 6 20 0" fill="none" stroke={ACCENT} strokeWidth="1.8" />
+      <ellipse cx="190" cy="80" rx="16" ry="8" fill="#fed7aa" stroke={RED} strokeWidth="1.2" />
+      <path d="M178 80 q4 -6 8 0 t8 0 t8 0" fill="none" stroke={RED} strokeWidth="1" />
+      <circle cx="80" cy="128" r="6" fill="#ede9fe" stroke="#6d28d9" strokeWidth="1.2" />
+      <circle cx="64" cy="100" r="5" fill="#ede9fe" stroke="#6d28d9" strokeWidth="1.2" />
+      <path d="M78 60 q-8 6 -16 2" fill="none" stroke={MUTED} strokeWidth="1.4" />
+      <Label x={306} y={24} to={[204, 64]} text="cell membrane (no cell wall)" anchor="end" />
+      <Label x={306} y={70} to={[202, 80]} text="mitochondrion" anchor="end" colour={RED} />
+      <Label x={306} y={126} to={[170, 126]} text="Golgi body" anchor="end" colour={ACCENT} />
+      <Label x={306} y={152} to={[146, 90]} text="nucleus: chromatin, nucleolus" anchor="end" />
+      <Label x={14} y={14} to={[104, 52]} text="rough ER (with ribosomes)" colour={BLUE} />
+      <Label x={14} y={178} to={[80, 132]} text="lysosome (digestive enzymes)" colour="#6d28d9" />
+      <Label x={14} y={72} to={[64, 62]} text="smooth ER" />
+      <Note y={194} lines={['The nuclear envelope is a double membrane with pores.']} />
+    </Frame>
+  )
+}
+
+export function EpithelialTissue() {
+  const cells = (x0: number, w: number, h: number, n: number, y0 = 60) =>
+    Array.from({ length: n }, (_, i) => (
+      <g key={i}>
+        <rect x={x0 + i * w} y={y0 + 40 - h} width={w} height={h} fill="#fff7ed" stroke={INK} strokeWidth="1.2" />
+        <ellipse cx={x0 + i * w + w / 2} cy={y0 + 40 - h / 2} rx={Math.min(w, h) / 4.5} ry={Math.min(w, h) / (h > w ? 6 : 4.5)} fill={MUTED} />
+      </g>
+    ))
+  return (
+    <Frame
+      title="Types of simple epithelium"
+      desc="Three kinds of simple epithelium, each one cell layer thick on a basement membrane. Squamous cells are flat and thin with flattened nuclei, lining the alveoli and blood capillaries where diffusion must be fast. Cuboidal cells are cube-shaped with round central nuclei, lining kidney tubules and glands. Columnar cells are tall and narrow with nuclei near their base, lining the stomach and intestine, where they secrete and absorb."
+      viewBox="0 0 320 170"
+    >
+      {cells(14, 22, 8, 4)}
+      {cells(118, 21, 21, 4)}
+      {cells(222, 14, 38, 6)}
+      {[14, 118, 222].map((x) => (
+        <line key={x} x1={x - 2} y1={102} x2={x + 88} y2={102} stroke={ACCENT} strokeWidth="2.2" />
+      ))}
+      <text x={58} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>squamous</text>
+      <text x={160} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>cuboidal</text>
+      <text x={264} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>columnar</text>
+      <text x={58} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>flat: alveoli, capillaries</text>
+      <text x={160} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>cube: kidney tubules</text>
+      <text x={264} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>tall: stomach, intestine</text>
+      <Label x={14} y={30} to={[30, 100]} text="basement membrane" colour={ACCENT} />
+      <Note y={154} lines={['One layer thick is "simple"; several layers, as in the skin, is "stratified".']} />
+    </Frame>
+  )
+}
+
+export function MuscleTissue() {
+  return (
+    <Frame
+      title="The three types of muscle tissue"
+      desc="Skeletal muscle: long cylindrical fibres with many nuclei at the edge and cross-striations; voluntary. Smooth muscle: spindle-shaped cells, one central nucleus each, no striations; involuntary, in the walls of the gut and blood vessels. Cardiac muscle: branched, striated cells with one or two central nuclei, joined end to end by intercalated discs; involuntary, found only in the heart, and does not fatigue."
+      viewBox="0 0 320 180"
+    >
+      {/* Skeletal */}
+      <rect x="14" y="30" width="84" height="22" rx="10" fill="#fee2e2" stroke={RED} strokeWidth="1.2" />
+      <rect x="14" y="58" width="84" height="22" rx="10" fill="#fee2e2" stroke={RED} strokeWidth="1.2" />
+      {Array.from({ length: 13 }, (_, i) => (
+        <line key={i} x1={20 + i * 6} y1={32} x2={20 + i * 6} y2={78} stroke={RED} strokeWidth="0.7" />
+      ))}
+      {[24, 50, 76].map((x) => (
+        <g key={x}>
+          <ellipse cx={x} cy={33} rx="4" ry="1.8" fill={INK} />
+          <ellipse cx={x + 10} cy={61} rx="4" ry="1.8" fill={INK} />
+        </g>
+      ))}
+      {/* Smooth */}
+      {[34, 56, 78].map((y, i) => (
+        <g key={y}>
+          <path d={`M${118 + (i % 2) * 14} ${y} q34 -12 68 0 q-34 12 -68 0`} fill="#fef3c7" stroke={ACCENT} strokeWidth="1.2" />
+          <ellipse cx={152 + (i % 2) * 14} cy={y} rx="5" ry="2" fill={INK} />
+        </g>
+      ))}
+      {/* Cardiac */}
+      <path d="M216 36 h40 l14 10 h34 M216 62 h40 l14 -16 M256 62 h48 M216 84 h88" fill="none" stroke={RED} strokeWidth="9" strokeLinecap="round" opacity="0.35" />
+      {[244, 284].map((x) => (
+        <line key={x} x1={x} y1={28} x2={x} y2={92} stroke={INK} strokeWidth="2" />
+      ))}
+      {[230, 270, 296].map((x) => (
+        <ellipse key={x} cx={x} cy={62} rx="4" ry="2" fill={INK} />
+      ))}
+      <text x={56} y={108} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>skeletal</text>
+      <text x={160} y={108} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>smooth</text>
+      <text x={260} y={108} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>cardiac</text>
+      <text x={56} y={120} textAnchor="middle" fontSize="7.5" fill={MUTED}>striated, many nuclei</text>
+      <text x={56} y={130} textAnchor="middle" fontSize="7.5" fill={MUTED}>voluntary</text>
+      <text x={160} y={120} textAnchor="middle" fontSize="7.5" fill={MUTED}>no striations, one nucleus</text>
+      <text x={160} y={130} textAnchor="middle" fontSize="7.5" fill={MUTED}>involuntary: gut, vessels</text>
+      <text x={260} y={120} textAnchor="middle" fontSize="7.5" fill={MUTED}>striated, branched</text>
+      <text x={260} y={130} textAnchor="middle" fontSize="7.5" fill={MUTED}>involuntary: heart only</text>
+      <Label x={306} y={18} to={[284, 30]} text="intercalated disc" anchor="end" />
+      <Note y={156} lines={['Cardiac muscle is joined by intercalated discs so the heart contracts as one, and it does not tire.']} />
+    </Frame>
+  )
+}
+
+export function BloodVessels() {
+  const vessel = (cx: number, wall: number, lumen: number, colour: string) => (
+    <g>
+      <circle cx={cx} cy={70} r={lumen + wall} fill={colour} opacity="0.35" stroke={INK} strokeWidth="1.2" />
+      <circle cx={cx} cy={70} r={lumen} fill="white" stroke={INK} strokeWidth="1.2" />
+    </g>
+  )
+  return (
+    <Frame
+      title="Artery, vein and capillary in cross-section"
+      desc="An artery has a thick wall of muscle and elastic tissue around a narrow lumen, to withstand and maintain the high pressure of blood leaving the heart. A vein has a thin wall and a wide lumen, and valves along its length to stop blood flowing backwards at low pressure. A capillary's wall is a single layer of squamous cells around a lumen just wide enough for red blood cells in single file, so substances diffuse across it quickly."
+      viewBox="0 0 320 170"
+    >
+      {vessel(60, 20, 10, RED)}
+      {vessel(170, 7, 26, BLUE)}
+      <circle cx={262} cy={70} r={9} fill="white" stroke={RED} strokeWidth="1.2" />
+      <path d="M156 46 q14 12 28 0" fill="none" stroke={BLUE} strokeWidth="1.6" />
+      <text x={60} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>artery</text>
+      <text x={170} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>vein</text>
+      <text x={262} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>capillary</text>
+      <text x={60} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>thick muscular, elastic wall</text>
+      <text x={60} y={144} textAnchor="middle" fontSize="7.5" fill={MUTED}>narrow lumen, high pressure</text>
+      <text x={170} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>thin wall, wide lumen</text>
+      <text x={170} y={144} textAnchor="middle" fontSize="7.5" fill={MUTED}>valves, low pressure</text>
+      <text x={262} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>wall one cell thick</text>
+      <text x={262} y={144} textAnchor="middle" fontSize="7.5" fill={MUTED}>exchange by diffusion</text>
+      <Label x={14} y={14} to={[48, 58]} text="lumen" />
+      <Label x={306} y={20} to={[182, 48]} text="valve" anchor="end" colour={BLUE} />
+      <Note y={162} lines={['Not to scale: a capillary is far narrower than an artery or vein.']} />
+    </Frame>
+  )
+}
+
+export function BoneAndJoint() {
+  return (
+    <Frame
+      title="A long bone and a synovial joint"
+      desc="Left: a long bone. The shaft is the diaphysis, a tube of compact bone around a marrow cavity containing yellow marrow. Each end is an epiphysis of spongy bone containing red marrow, capped with hyaline cartilage. Compact bone is built of osteons, each with a central Haversian canal carrying blood vessels, surrounded by rings of lamellae. Right: a synovial joint. Two bone ends covered with cartilage meet inside a joint capsule lined by the synovial membrane, which secretes synovial fluid that lubricates the joint. Ligaments hold bone to bone; tendons join muscle to bone."
+      viewBox="0 0 320 200"
+    >
+      {/* Long bone */}
+      <path d="M40 30 q-14 -14 4 -18 q16 -2 24 8 q8 -10 22 -6 q14 8 0 20 v110 q14 12 0 20 q-14 4 -22 -6 q-8 10 -24 8 q-18 -4 -4 -18 z" fill={FILL} stroke={INK} strokeWidth="1.6" />
+      <rect x="54" y="42" width="22" height="96" rx="4" fill="#fef9c3" stroke={ACCENT} strokeWidth="1" />
+      <path d="M36 22 q30 -16 60 0 M36 158 q30 16 60 0" fill="none" stroke={BLUE} strokeWidth="3" />
+      <Label x={110} y={24} to={[88, 22]} text="articular cartilage" colour={BLUE} />
+      <Label x={110} y={44} to={[80, 34]} text="epiphysis (spongy bone)" />
+      <Label x={110} y={90} to={[76, 90]} text="diaphysis (compact bone)" />
+      <Label x={110} y={110} to={[66, 110]} text="marrow cavity (yellow marrow)" colour={ACCENT} />
+      {/* Synovial joint */}
+      <path d="M230 20 v48 q0 14 18 14 q18 0 18 -14 v-48" fill={FILL} stroke={INK} strokeWidth="1.6" />
+      <path d="M230 180 v-48 q0 -14 18 -14 q18 0 18 14 v48" fill={FILL} stroke={INK} strokeWidth="1.6" />
+      <path d="M232 70 q16 14 32 0 M232 130 q16 -14 32 0" fill="none" stroke={BLUE} strokeWidth="3" />
+      <rect x="222" y="74" width="52" height="52" rx="16" fill="#e0f2fe" opacity="0.6" stroke={GREEN} strokeWidth="1.4" strokeDasharray="4 2" />
+      <path d="M224 62 q-8 38 0 76 M272 62 q8 38 0 76" fill="none" stroke={ACCENT} strokeWidth="2.4" />
+      <Label x={306} y={172} to={[266, 100]} text="synovial fluid" anchor="end" colour={BLUE} />
+      <Label x={306} y={154} to={[274, 112]} text="synovial membrane" anchor="end" colour={GREEN} />
+      <Label x={306} y={14} to={[278, 80]} text="ligament" anchor="end" colour={ACCENT} />
+      <Note y={192} lines={['Ligaments join bone to bone; tendons join muscle to bone.']} />
+    </Frame>
+  )
+}
+
 export const LIFE_SCI_FIGURES = {
   nephron: Nephron,
   heart: Heart,
@@ -696,6 +928,12 @@ export const LIFE_SCI_FIGURES = {
   'energy-pyramid': EnergyPyramid,
   'plant-transport': PlantTransport,
   'flower-structure': FlowerStructure,
+  'plant-cell': PlantCell,
+  'animal-cell': AnimalCell,
+  'epithelial-tissue': EpithelialTissue,
+  'muscle-tissue': MuscleTissue,
+  'blood-vessels': BloodVessels,
+  'bone-joint': BoneAndJoint,
 } as const
 
 export type LifeSciFigureId = keyof typeof LIFE_SCI_FIGURES

@@ -22,6 +22,7 @@ import { ProbabilityDiagrams } from '@/components/practise/ProbabilityDiagrams'
 import { GeometryDiagram } from '@/components/practise/GeometryDiagram'
 import { geometryDiagramFor } from '@/lib/geometryDiagrams'
 import { physicsDiagramsFor } from '@/lib/physicsDiagrams'
+import { lifeSciDiagramsFor } from '@/lib/lifeSciDiagrams'
 import { ClipboardIcon, CheckCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import type { Question } from '@/types'
@@ -160,7 +161,7 @@ export function LearnerWeeklyTests() {
             </div>
           ) : null}
           {!q.figure && geometryDiagramFor(q) ? <GeometryDiagram spec={geometryDiagramFor(q)!} /> : null}
-          {!q.figure ? physicsDiagramsFor(q).prompt.map((s) => <GeometryDiagram key={s.title} spec={s} />) : null}
+          {!q.figure ? [...physicsDiagramsFor(q).prompt, ...lifeSciDiagramsFor(q).prompt].map((s) => <GeometryDiagram key={s.title} spec={s} />) : null}
           <p className="mt-3 text-base leading-relaxed text-navy-900">
             <MathText>{q.prompt}</MathText>
           </p>
@@ -240,6 +241,7 @@ export function LearnerWeeklyTests() {
                 ) : null}
                 <ProbabilityDiagrams question={q} />
                 {!q.answerFigure ? physicsDiagramsFor(q).answer.map((s) => <GeometryDiagram key={s.title} spec={s} />) : null}
+                {lifeSciDiagramsFor(q).answer.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
               </div>
 
               {q.memo ? (

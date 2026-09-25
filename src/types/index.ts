@@ -348,6 +348,12 @@ export type FigureId =
   | 'energy-pyramid'
   | 'plant-transport'
   | 'flower-structure'
+  | 'plant-cell'
+  | 'animal-cell'
+  | 'epithelial-tissue'
+  | 'muscle-tissue'
+  | 'blood-vessels'
+  | 'bone-joint'
 
 /**
  * A curve on a set of axes, given by its family and coefficients.

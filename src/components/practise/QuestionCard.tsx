@@ -14,6 +14,7 @@ import { ProbabilityDiagrams } from '@/components/practise/ProbabilityDiagrams'
 import { GeometryDiagram } from '@/components/practise/GeometryDiagram'
 import { geometryDiagramFor } from '@/lib/geometryDiagrams'
 import { physicsDiagramsFor } from '@/lib/physicsDiagrams'
+import { lifeSciDiagramsFor } from '@/lib/lifeSciDiagrams'
 import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
 import { derivedFigures, derivedAnswerFigures } from '@/data/derivedFigures'
 import { derivedCircuits, derivedAnswerCircuits } from '@/data/derivedCircuits'
@@ -58,6 +59,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
   const drawnAlready = Boolean(promptFigure || promptGraph || promptCircuit || promptChart)
   const promptSketch = drawnAlready ? null : geometryDiagramFor(question)
   const physics = physicsDiagramsFor(question)
+  const lifeSci = lifeSciDiagramsFor(question)
   const answerDrawnAlready = Boolean(answerFigureId || answerGraph || answerCircuit || answerChart)
 
   const isMcq = Boolean(question.options && question.correctOptionId)
@@ -94,7 +96,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
       {promptCircuit ? <Circuit spec={promptCircuit} /> : null}
       {promptChart ? <Chart spec={promptChart} /> : null}
       {promptSketch ? <GeometryDiagram spec={promptSketch} /> : null}
-      {drawnAlready ? null : physics.prompt.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
+      {drawnAlready ? null : [...physics.prompt, ...lifeSci.prompt].map((s) => <GeometryDiagram key={s.title} spec={s} />)}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">
@@ -186,6 +188,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
           {answerChart ? <Chart spec={answerChart} /> : null}
           <ProbabilityDiagrams question={question} />
           {answerDrawnAlready ? null : physics.answer.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
+          {lifeSci.answer.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
           {!isMcq && onResult ? (
             selfMark === null ? (

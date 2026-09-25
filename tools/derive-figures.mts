@@ -67,11 +67,19 @@ const RULES: [FigureId, RegExp][] = [
   ['leaf-section', /\bstomat|guard cell|mesophyll|palisade|spongy|cuticle|epidermis of the leaf|leaf cross/i],
   ['eye', /\bretina|cornea\b|\biris\b|\bpupil\b|optic nerve|rods and cones|accommodation of the eye|yellow spot|blind spot/i],
   ['ear', /\bcochlea|eardrum|tympanic|ossicl|semicircular canal|auditory (canal|nerve)|eustachian|oval window|\bpinna\b/i],
-  ['reflex-arc', /\breflex arc|sensory neuron|motor neuron|interneuron|spinal cord|\bsynap|\baxon\b|\bdendrit|\bmyelin|effector\b/i],
+  ['reflex-arc', /\breflex arc|sensory neuron|motor neuron|interneuron|spinal cord|\bsynap|\baxon\b|\bdendrit|\bmyelin|effector\b|\bneurons?\b|nervous tissue/i],
   ['dna-structure', /\bdouble helix|base pair|complementary base|hydrogen bond|nucleotide|deoxyribose|adenine|thymine|cytosine|guanine|DNA replicat/i],
   ['energy-pyramid', /\bfood (chain|web)|trophic level|pyramid of (energy|numbers|biomass)|energy flow|\bproducer|\bdecompos|primary consumer/i],
   ['plant-transport', /\bxylem|phloem|root hair|transpiration|cohesion|adhesion|translocat/i],
   ['flower-structure', /\banther|stigma|\bstyle\b|\bovule|pollen|\bcarpel|\bstamen|\bsepal|\bpetal|pollinat/i],
+  // Added after the first eleven, and so after them in the order: a question
+  // they already caught keeps its diagram.
+  ['plant-cell', /\bchloroplast|\bcell wall|central vacuole|\bplant cell|\bgrana\b|\bstroma\b|plasmodesmat/i],
+  ['animal-cell', /\bnucle(us|ar envelope|ar pore|olus)\b|chromatin|endoplasmic reticulum|lysosome|golgi|cell membrane|fluid mosaic|\banimal cell|centriole/i],
+  ['epithelial-tissue', /\bepitheli|squamous|cuboidal|columnar/i],
+  ['muscle-tissue', /\b(skeletal|smooth|cardiac) muscle|striated|muscle tissue|intercalated/i],
+  ['blood-vessels', /\bartery|arteries|arteriole|\bveins?\b|venule|capillar(y|ies)/i],
+  ['bone-joint', /\blong bone|diaphysis|epiphys|compact bone|spongy bone|osteon|haversian|synovial|cartilage|\bligament|\btendon|bone marrow/i],
 ]
 
 /**

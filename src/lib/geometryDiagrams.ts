@@ -757,6 +757,145 @@ function readPlan(t: string): SceneSpec | null {
 
 /* ------------------------------------------------------------------ */
 
+
+/* ------------------------------------------------------------------ */
+/* The Cartesian plane                                                 */
+/* ------------------------------------------------------------------ */
+
+const COORD = '\\(\\s?(−?-?\\d+(?:\\.\\d+)?)\\s?;\\s?(−?-?\\d+(?:\\.\\d+)?)\\s?\\)'
+const cnum = (s: string) => Number(s.replace('−', '-'))
+const coord = (x: number, y: number) => `(${show(x).replace('-', '−')} ; ${show(y).replace('-', '−')})`
+
+/** Axes through the origin, wide enough for everything on the plane. */
+function plane(xs: number[], ys: number[]): { points: ScenePoint[]; segments: NonNullable<SceneSpec['segments']>; texts: NonNullable<SceneSpec['texts']> } {
+  const pad = 1.5
+  const x0 = Math.min(0, ...xs) - pad
+  const x1 = Math.max(0, ...xs) + pad
+  const y0 = Math.min(0, ...ys) - pad
+  const y1 = Math.max(0, ...ys) + pad
+  return {
+    points: [pt('ax0', x0, 0), pt('ax1', x1, 0), pt('ay0', 0, y0), pt('ay1', 0, y1)],
+    segments: [
+      { a: 'ax0', b: 'ax1', arrow: true },
+      { a: 'ay0', b: 'ay1', arrow: true },
+    ],
+    texts: [
+      { x: x1, y: -0.7, text: 'x', size: 11 },
+      { x: 0.5, y: y1, text: 'y', size: 11 },
+      { x: -0.5, y: -0.7, text: 'O', size: 10 },
+    ],
+  }
+}
+
+function readCartesian(t: string, prompt: string): SceneSpec | null {
+  // A circle: centre and radius, centre and a point on it, or its equation.
+  let cx: number | undefined, cy: number | undefined, r: number | undefined
+  const cr = t.match(new RegExp(`centre (?:[A-Z])?${COORD} and radius (\\d+(?:\\.\\d+)?)`))
+  const eq = t.match(/\(x ([−+-]) (\d+(?:\.\d+)?)\)² \+ \(y ([−+-]) (\d+(?:\.\d+)?)\)² = (\d+(?:\.\d+)?)/)
+  const origin = t.match(/x² \+ y² = (\d+(?:\.\d+)?)/)
+  if (cr) [cx, cy, r] = [cnum(cr[1]), cnum(cr[2]), Number(cr[3])]
+  else if (eq) {
+    cx = (eq[1] === '+' ? -1 : 1) * Number(eq[2])
+    cy = (eq[3] === '+' ? -1 : 1) * Number(eq[4])
+    r = Math.sqrt(Number(eq[5]))
+  } else if (origin) [cx, cy, r] = [0, 0, Math.sqrt(Number(origin[1]))]
+
+  const named = [...t.matchAll(new RegExp(`\\b([A-Z])\\s?${COORD}`, 'g'))].map((m) => ({ id: m[1], x: cnum(m[2]), y: cnum(m[3]) }))
+  const bare = [...t.matchAll(new RegExp(`(?:the point|point)\\s${COORD}`, 'g'))].map((m, i) => ({ id: `P${i}`, x: cnum(m[1]), y: cnum(m[2]) }))
+  const seenId = new Set<string>()
+  const pts = [...named, ...bare].filter((p) => (seenId.has(p.id) ? false : (seenId.add(p.id), true)))
+
+  if (cx === undefined) {
+    // A centre named with a point on the circle: the radius is the distance between them.
+    const c = t.match(new RegExp(`centre (?:([A-Z]))?${COORD}`))
+    if (c && pts.length) {
+      cx = cnum(c[2])
+      cy = cnum(c[3])
+      const other = pts.find((p) => p.x !== cx || p.y !== cy)
+      if (other) r = Math.hypot(other.x - cx, other.y - cy)
+    }
+  }
+  const hasCircle = cx !== undefined && cy !== undefined && r !== undefined && r > 0
+  if (!hasCircle && pts.length < 2) return null
+  // An image under a transformation is the answer: draw only the point given.
+  if (/image of/i.test(prompt) && !hasCircle) return null
+
+  const xs = pts.map((p) => p.x)
+  const ys = pts.map((p) => p.y)
+  if (hasCircle) xs.push(cx! - r!, cx! + r!), ys.push(cy! - r!, cy! + r!)
+  const base = plane(xs, ys)
+  const points: ScenePoint[] = [...base.points, ...pts.map((p) => ({ id: p.id, x: p.x, y: p.y, label: p.id.startsWith('P') && p.id.length > 1 ? coord(p.x, p.y) : `${p.id}${coord(p.x, p.y)}`, dot: true }))]
+  const segments = [...base.segments]
+  const polygon = t.match(/(?:Triangle|Quadrilateral|triangle|quadrilateral) ([A-Z]{3,4})\b/)
+  if (polygon && polygon[1].split('').every((c) => pts.some((p) => p.id === c))) {
+    const ids = polygon[1].split('')
+    ids.forEach((id, i) => segments.push({ a: id, b: ids[(i + 1) % ids.length] }))
+  } else if (/line (?:passing )?through ([A-Z]) ?\(/.test(t) && pts.length === 2) segments.push({ a: pts[0].id, b: pts[1].id })
+  let circles: SceneSpec['circles']
+  if (hasCircle) {
+    const centreId = pts.find((p) => p.x === cx && p.y === cy)?.id
+    if (!centreId) points.push({ id: 'centre', x: cx!, y: cy!, label: coord(cx!, cy!), dot: true })
+    circles = [{ c: centreId ?? 'centre', r: r! }]
+    if (/tangent/i.test(t)) {
+      const T = pts.find((p) => p.id !== centreId && Math.abs(Math.hypot(p.x - cx!, p.y - cy!) - r!) < 1e-6)
+      if (T) {
+        // The tangent at T, perpendicular to the radius -- its equation is what is asked, so it is dashed.
+        const ux = -(T.y - cy!) / r!
+        const uy = (T.x - cx!) / r!
+        points.push(pt('t0', T.x - ux * r! * 0.8, T.y - uy * r! * 0.8), pt('t1', T.x + ux * r! * 0.8, T.y + uy * r! * 0.8))
+        segments.push({ a: 't0', b: 't1', dashed: true }, { a: centreId ?? 'centre', b: T.id })
+      }
+    }
+  }
+  return {
+    title: hasCircle ? 'The circle on the Cartesian plane' : polygon ? `${polygon[1]} on the Cartesian plane` : 'The points on the Cartesian plane',
+    points,
+    segments,
+    circles,
+    texts: base.texts,
+    toScale: true,
+  }
+}
+
+/** A parabola fixed by what the question gives: its x-intercepts (a = 1), or its turning point. */
+function readParabola(t: string): SceneSpec | null {
+  let f: ((x: number) => number) | null = null
+  let marks: ScenePoint[] = []
+  let xs: number[] = []
+  const roots = t.match(/y = x² \+ bx \+ c has x-intercepts at (−?\d+(?:\.\d+)?) and (−?\d+(?:\.\d+)?)/)
+  if (roots) {
+    const [a, b] = [cnum(roots[1]), cnum(roots[2])]
+    f = (x) => (x - a) * (x - b)
+    marks = [{ id: 'r0', x: a, y: 0, label: show(a).replace('-', '−'), dot: true }, { id: 'r1', x: b, y: 0, label: show(b).replace('-', '−'), dot: true }]
+    xs = [a, b]
+  }
+  const tp = t.match(new RegExp(`parabola opening (upward|downward), with a (?:minimum|maximum) turning point at ${COORD}`))
+  if (tp) {
+    const [p, q] = [cnum(tp[2]), cnum(tp[3])]
+    const sgn = tp[1] === 'upward' ? 1 : -1
+    f = (x) => sgn * (x - p) ** 2 + q
+    marks = [{ id: 'tp', x: p, y: q, label: coord(p, q), dot: true }]
+    xs = [p - 3, p + 3]
+  }
+  if (!f) return null
+  const lo = Math.min(...xs) - 1.2
+  const hi = Math.max(...xs) + 1.2
+  const pts: [number, number][] = Array.from({ length: 60 }, (_, i) => {
+    const x = lo + ((hi - lo) * i) / 59
+    return [x, f!(x)]
+  })
+  const base = plane([lo, hi], pts.map(([, y]) => y))
+  return {
+    title: roots ? 'The parabola through its x-intercepts' : 'The parabola and its turning point',
+    points: [...base.points, ...marks],
+    segments: base.segments,
+    curves: [{ points: pts, accent: true }],
+    texts: base.texts,
+    notes: tp ? ['Sketch: the shape of the parabola is not given, only its turning point.'] : undefined,
+    toScale: false,
+  }
+}
+
 /**
  * The standard figure for a theorem the learner is asked to prove. An exam
  * prints one: the proof is about the general case, but it is written about
@@ -812,7 +951,7 @@ function proofFigure(t: string): SceneSpec | null {
   return null
 }
 
-const GEOMETRY_TOPICS = new Set(['math-euclidean-geometry', 'math-trigonometry', 'maps-plans', 'measurement'])
+const GEOMETRY_TOPICS = new Set(['math-euclidean-geometry', 'math-trigonometry', 'maps-plans', 'measurement', 'math-analytical-geometry', 'math-functions'])
 
 /** The sketch to show with a question, or null. */
 export function geometryDiagramFor(q: Q): SceneSpec | null {
@@ -821,5 +960,7 @@ export function geometryDiagramFor(q: Q): SceneSpec | null {
   const proof = /\bProve\b/.test(q.prompt) ? proofFigure(t) : null
   if (proof) return proof
   if (q.topicId === 'maps-plans' || q.topicId === 'measurement') return readSolid(t, q.prompt) ?? readPlan(t)
+  if (q.topicId === 'math-analytical-geometry') return readCartesian(t, q.prompt)
+  if (q.topicId === 'math-functions') return readParabola(t)
   return readCircle(t, q.prompt) ?? readProportion(t, q.prompt) ?? readHeights(t) ?? readRatio(t) ?? readSolid(t, q.prompt) ?? readPolygon(t) ?? readTriangle(t, q.prompt)
 }

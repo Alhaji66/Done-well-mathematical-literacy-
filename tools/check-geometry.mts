@@ -21,11 +21,12 @@ import { questions } from '../src/data/questions'
 import { papersForSubject } from '../src/data/papers'
 import { geometryDiagramFor } from '../src/lib/geometryDiagrams'
 import { physicsDiagramsFor } from '../src/lib/physicsDiagrams'
+import { lifeSciDiagramsFor } from '../src/lib/lifeSciDiagrams'
 import type { Question, SceneSpec } from '../src/types'
 
 const items: Question[] = [...questions]
 const seen = new Set(items.map((q) => q.id))
-for (const s of ['mat-lit', 'mathematics', 'physical-sciences'] as const)
+for (const s of ['mat-lit', 'mathematics', 'physical-sciences', 'life-sciences'] as const)
   for (const p of await papersForSubject(s)) for (const sec of p.sections) for (const it of sec.items) if (!seen.has(it.id)) (seen.add(it.id), items.push(it))
 
 const problems: string[] = []
@@ -90,6 +91,9 @@ for (const q of items) {
     check(q.id, text, s)
   }
   const phys = physicsDiagramsFor(q)
+  const ls = lifeSciDiagramsFor(q)
+  phys.prompt.push(...ls.prompt)
+  phys.answer.push(...ls.answer)
   for (const p of phys.prompt) {
     drawn++
     check(q.id, text, p)

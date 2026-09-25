@@ -18,6 +18,7 @@ import { MarkingMemo } from '@/components/practise/MarkingMemo'
 import { MathText } from '@/components/practise/MathText'
 import { QuestionText } from '@/components/practise/QuestionText'
 import { Figure } from '@/components/practise/Figure'
+import { ProbabilityDiagrams } from '@/components/practise/ProbabilityDiagrams'
 import { ClipboardIcon, CheckCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import type { Question } from '@/types'
@@ -232,6 +233,7 @@ export function LearnerWeeklyTests() {
                     <Figure id={q.answerFigure} />
                   </div>
                 ) : null}
+                <ProbabilityDiagrams question={q} />
               </div>
 
               {q.memo ? (

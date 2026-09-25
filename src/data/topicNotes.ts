@@ -1,4 +1,5 @@
-import type { Grade } from '@/types'
+import type { Grade, TreeSpec, VennSpec } from '@/types'
+import { bagTree, countsVenn, repeatTree } from '@/lib/probabilityDiagrams'
 
 export interface WorkedExample {
   problem: string
@@ -34,6 +35,9 @@ export interface SubtopicNote {
    * strength of the words "balance owing".
    */
   grades?: Grade[]
+  /** A model tree or Venn diagram drawn under the points, for the sub-topics that are about drawing one. */
+  tree?: TreeSpec
+  venn?: VennSpec
 }
 
 export interface TopicNote {
@@ -293,7 +297,13 @@ export const topicNotes: TopicNote[] = [
           'The more trials are run, the closer relative frequency tends to get to theoretical probability.',
           'P(not A) = 1 − P(A).',
           'A two-way table or a tree diagram organises two-stage situations. Read the total you need from the correct row, column or branch.',
+          'On a tree, multiply along a path to get the chance of that whole path, then add the paths that fit what you are asked.',
         ],
+        tree: {
+          ...repeatTree('A fair coin tossed twice', ['1st toss', '2nd toss'], { label: 'H', name: 'heads' }, { label: 'T', name: 'tails' }, [1, 2]),
+          highlight: ['HT', 'TH'],
+          highlightName: 'exactly one head',
+        },
       },
     ],
     formulae: [
@@ -1425,6 +1435,12 @@ export const topicNotes: TopicNote[] = [
           'Anything outside both circles still belongs to the sample space and must be counted.',
           'Check that all the regions add up to the total given in the question before answering.',
         ],
+        // 30 learners: 18 play soccer, 12 play netball, 5 play both.
+        venn: {
+          ...countsVenn('Venn diagram: 30 learners, soccer and netball', ['soccer', 'netball'], ['S', 'N'], 'count', 30, 18, 12, 5)!,
+          highlight: ['neither'],
+          highlightName: 'neither',
+        },
       },
       {
         name: 'Mutually exclusive and complementary events',
@@ -1463,6 +1479,8 @@ export const topicNotes: TopicNote[] = [
           'Without replacement, the denominator drops by one at the second stage — and the numerator too, if the same kind was taken.',
           'A two-way table suits two categorical variables; read the row total, column total or grand total that the question needs.',
         ],
+        // 4 red and 6 blue marbles, two drawn without replacement.
+        tree: { ...bagTree(4, 6, 'marble', false), highlight: ['RR', 'BB'], highlightName: 'same colour' },
       },
       {
         name: 'The fundamental counting principle',

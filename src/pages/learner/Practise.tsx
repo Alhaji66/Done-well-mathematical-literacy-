@@ -328,6 +328,8 @@ export function LearnerPractise() {
               key={group.name}
               name={group.name}
               points={group.points}
+              tree={group.tree}
+              venn={group.venn}
               count={group.questions.length}
               index={subtopic === 'All' ? groupIndex : groups.findIndex((g) => g.name === group.name)}
             >

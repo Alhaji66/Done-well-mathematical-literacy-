@@ -293,5 +293,99 @@ insert into results
          school_id is null
   from public.profiles where id = '00000000-0000-0000-0000-0000000000e1';
 
+-- ===========================================================================
+-- AUDIT LOG (STEP 13)
+-- ===========================================================================
+
+-- 14. The approval and the role correction above were both recorded.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '14. teacher sees the approval of the new teacher in the log',
+         count(*)::text || ' staff.approved entr(ies)',
+         count(*) >= 1
+  from public.audit_log
+  where action = 'staff.approved' and target_id = '00000000-0000-0000-0000-0000000000c1';
+insert into results
+  select '14b. ...and the colleague whose role was corrected',
+         coalesce(string_agg(details->>'from' || '->' || (details->>'to'), ', '), 'none'),
+         bool_or(details->>'from' = 'learner' and details->>'to' = 'teacher') is true
+  from public.audit_log
+  where action = 'profile.role_changed' and target_id = '00000000-0000-0000-0000-0000000000d1';
+insert into results
+  select '14c. ...and who was turned away',
+         count(*)::text || ' declined entr(ies)',
+         count(*) >= 1
+  from public.audit_log
+  where action = 'profile.school_changed' and target_id = '00000000-0000-0000-0000-0000000000e1'
+    and (details->>'staff_request_declined')::boolean;
+reset role;
+
+-- 15. Nobody in the app can rewrite history.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+create temp table before_count as select count(*) as n from public.audit_log;
+grant select on before_count to authenticated;
+set role authenticated;
+do $$ begin
+  begin delete from public.audit_log; exception when others then null; end;
+  begin update public.audit_log set action = 'nothing'; exception when others then null; end;
+  begin insert into public.audit_log (action, target_table) values ('forged', 'profiles'); exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '15. staff try to delete, edit and forge log entries',
+         (select count(*) from public.audit_log)::text || ' entries (were ' || (select n from before_count) || '), '
+           || (select count(*) from public.audit_log where action in ('nothing', 'forged'))::text || ' altered',
+         (select count(*) from public.audit_log) = (select n from before_count)
+           and not exists (select 1 from public.audit_log where action in ('nothing', 'forged'));
+
+-- 16. A learner sees nothing about anyone else.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '16. learner reads log entries about other people',
+         count(*)::text || ' entr(ies) visible',
+         count(*) = 0
+  from public.audit_log
+  where coalesce(actor_id::text, '') <> '00000000-0000-0000-0000-0000000000b1'
+    and coalesce(target_id, '') <> '00000000-0000-0000-0000-0000000000b1';
+reset role;
+
+-- 17. The log holds no names: it identifies people only by account id.
+insert into results
+  select '17. no person''s name appears anywhere in the log',
+         count(*)::text || ' entr(ies) containing a name',
+         count(*) = 0
+  from public.audit_log a
+  join public.profiles p on a.details::text ilike '%' || p.full_name || '%';
+
+-- 18. The log is only readable by staff at the school it concerns.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000f1');
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+create temp table other as select * from public.create_school('Another High');
+insert into public.profiles (id, role, full_name, school_id, subject_id)
+  select '00000000-0000-0000-0000-0000000000f1', 'teacher', 'Teacher F', school_id, 'mat-lit' from other;
+insert into results
+  select '18. a teacher at another school reads this school''s log',
+         count(*)::text || ' entr(ies) visible',
+         count(*) = 0
+  from public.audit_log where school_id = (select school_id from s);
+reset role;
+
+-- 19. Setting and removing a weekly test is recorded.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Finance test', 'mat-lit', 12, array['finance'], 10, now() + interval '7 days'
+  from s;
+delete from public.weekly_tests where title = 'Finance test';
+insert into results
+  select '19. setting and removing a weekly test is logged',
+         string_agg(action, ', ' order by id),
+         count(*) filter (where action = 'weekly_test.set') = 1 and count(*) filter (where action = 'weekly_test.removed') = 1
+  from public.audit_log where target_table = 'weekly_tests';
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

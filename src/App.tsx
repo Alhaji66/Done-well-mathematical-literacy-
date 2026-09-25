@@ -52,6 +52,9 @@ const AccountParentDashboard = lazy(() =>
 const AccountParentResources = lazy(() =>
   import('@/pages/account/parent/ParentResources').then((m) => ({ default: m.ParentResources })),
 )
+const AccountActivityLog = lazy(() =>
+  import('@/pages/account/ActivityLog').then((m) => ({ default: m.ActivityLog })),
+)
 const AccountHodDashboard = lazy(() =>
   import('@/pages/account/hod/HodDashboard').then((m) => ({ default: m.HodDashboard })),
 )
@@ -178,6 +181,7 @@ export default function App() {
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
@@ -212,6 +216,7 @@ export default function App() {
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
@@ -227,6 +232,7 @@ export default function App() {
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
+                <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>

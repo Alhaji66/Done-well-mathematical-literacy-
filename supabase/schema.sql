@@ -1078,3 +1078,235 @@ create policy "Everyone can see the staff at their school"
 --   from public.profiles p join public.schools s on s.id = p.school_id
 --   where p.role::text in ('teacher', 'school', 'hod')
 --   order by s.name, p.created_at;
+
+-- ============================================================================
+-- STEP 13: AN AUDIT LOG
+-- ============================================================================
+--
+-- WHY. Section 28 of the commercial spec lists audit logs as required before
+-- any real school is onboarded, and the incident-response plan depends on
+-- them: after a security problem, the first question is "who changed what,
+-- and when", and until now nothing recorded the answer. STEP 12 made staff
+-- access something a colleague grants; this makes every grant visible.
+--
+-- WHAT IS RECORDED. Changes that decide who can see what -- roles, staff
+-- approval, which school someone belongs to, parent links, consent -- and
+-- changes to weekly tests. Not learners' practice or answers: that is
+-- learning activity, not an access decision, and logging it here would copy
+-- children's results into a second place for no security benefit.
+--
+-- WHAT IS NOT STORED IN IT. Names, emails, marks or any free text a person
+-- typed. An entry names people only by account id, and the app looks the name
+-- up when it shows the log -- so when an account is deleted, the log keeps
+-- that "an account" did something, without keeping who they were.
+--
+-- APPEND-ONLY. Nobody writes to this table directly: there are no insert,
+-- update or delete policies, and the privileges are revoked as well. Entries
+-- are written only by the triggers below, which run as the table's owner. An
+-- operator can remove entries past the retention period with
+-- purge_audit_log(); nothing in the app can.
+
+create table if not exists public.audit_log (
+  id bigint generated always as identity primary key,
+  at timestamptz not null default now(),
+  -- Who did it: the signed-in account, or null for an operator working in the
+  -- SQL editor or the service role.
+  actor_id uuid,
+  actor_role text,
+  -- The school the change concerns, which is what decides who may read it.
+  school_id uuid,
+  action text not null,
+  target_table text not null,
+  target_id text,
+  details jsonb not null default '{}'::jsonb
+);
+
+create index if not exists audit_log_school_at_idx on public.audit_log (school_id, at desc);
+
+alter table public.audit_log enable row level security;
+revoke insert, update, delete, truncate on public.audit_log from authenticated, anon;
+
+drop policy if exists "Approved staff can read their school's audit log" on public.audit_log;
+create policy "Approved staff can read their school's audit log"
+  on public.audit_log for select
+  using (school_id is not null and school_id = public.current_school_id()
+         and public.is_school_staff(school_id));
+
+-- A person may see what was done to or by their own account: part of the
+-- right of access under POPIA section 23.
+drop policy if exists "Users can read entries about themselves" on public.audit_log;
+create policy "Users can read entries about themselves"
+  on public.audit_log for select
+  using (actor_id = auth.uid() or target_id = auth.uid()::text);
+
+-- One writer, used by every trigger below.
+create or replace function public.write_audit(
+  p_school uuid, p_action text, p_table text, p_target text, p_details jsonb default '{}'::jsonb
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_actor uuid := auth.uid();
+begin
+  insert into public.audit_log (actor_id, actor_role, school_id, action, target_table, target_id, details)
+  values (
+    v_actor,
+    coalesce((select role::text from public.profiles where id = v_actor), case when v_actor is null then 'operator' end),
+    p_school, p_action, p_table, p_target, coalesce(p_details, '{}'::jsonb)
+  );
+end;
+$$;
+-- Only the triggers call it; it is not an endpoint the app may use.
+revoke execute on function public.write_audit(uuid, text, text, text, jsonb) from public, authenticated, anon;
+
+-- profiles --------------------------------------------------------------------
+create or replace function public.audit_profiles()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_fields text[] := '{}';
+begin
+  if tg_op = 'INSERT' then
+    perform public.write_audit(new.school_id, 'profile.created', 'profiles', new.id::text,
+      jsonb_build_object('role', new.role::text, 'pending_staff',
+        new.role::text in ('teacher', 'school', 'hod') and new.staff_approved_at is null and new.school_id is not null));
+    return new;
+  end if;
+
+  if tg_op = 'DELETE' then
+    perform public.write_audit(old.school_id, 'profile.deleted', 'profiles', old.id::text,
+      jsonb_build_object('role', old.role::text));
+    return old;
+  end if;
+
+  if new.role is distinct from old.role then
+    perform public.write_audit(old.school_id, 'profile.role_changed', 'profiles', new.id::text,
+      jsonb_build_object('from', old.role::text, 'to', new.role::text));
+  end if;
+
+  if old.staff_approved_at is null and new.staff_approved_at is not null and new.role = old.role then
+    perform public.write_audit(new.school_id, 'staff.approved', 'profiles', new.id::text,
+      jsonb_build_object('role', new.role::text));
+  end if;
+
+  if new.school_id is distinct from old.school_id then
+    -- Recorded against the school being left, so that school can see who
+    -- went; and against the school being joined, if there is one.
+    perform public.write_audit(old.school_id, 'profile.school_changed', 'profiles', new.id::text,
+      jsonb_build_object('direction', 'left', 'staff_request_declined',
+        old.role::text in ('teacher', 'school', 'hod') and old.staff_approved_at is null and new.school_id is null));
+    if new.school_id is not null then
+      perform public.write_audit(new.school_id, 'profile.school_changed', 'profiles', new.id::text,
+        jsonb_build_object('direction', 'joined'));
+    end if;
+  end if;
+
+  -- Other corrections: which fields, never their values. array_append rather
+  -- than ||, which Postgres cannot tell apart from joining two arrays when the
+  -- right-hand side is a bare string -- and that error would have failed every
+  -- grade correction a teacher made, not just its log entry.
+  if new.full_name is distinct from old.full_name then v_fields := array_append(v_fields, 'full_name'); end if;
+  if new.grade is distinct from old.grade then v_fields := array_append(v_fields, 'grade'); end if;
+  if new.subject_id is distinct from old.subject_id then v_fields := array_append(v_fields, 'subject'); end if;
+  if array_length(v_fields, 1) > 0 then
+    perform public.write_audit(new.school_id, 'profile.updated', 'profiles', new.id::text,
+      jsonb_build_object('fields', to_jsonb(v_fields)));
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists audit_profiles on public.profiles;
+create trigger audit_profiles
+  after insert or update or delete on public.profiles
+  for each row execute function public.audit_profiles();
+
+-- weekly tests ------------------------------------------------------------------
+create or replace function public.audit_weekly_tests()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.weekly_tests := case when tg_op = 'DELETE' then old else new end;
+begin
+  perform public.write_audit(r.school_id,
+    'weekly_test.' || case tg_op when 'INSERT' then 'set' when 'UPDATE' then 'changed' else 'removed' end,
+    'weekly_tests', r.id::text,
+    jsonb_build_object('subject', r.subject_id, 'grade', r.grade, 'due_at', r.due_at));
+  return r;
+end;
+$$;
+
+drop trigger if exists audit_weekly_tests on public.weekly_tests;
+create trigger audit_weekly_tests
+  after insert or update or delete on public.weekly_tests
+  for each row execute function public.audit_weekly_tests();
+
+-- consent -------------------------------------------------------------------------
+create or replace function public.audit_consents()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    perform public.write_audit((select school_id from public.profiles where id = new.profile_id),
+      'consent.granted', 'consents', new.profile_id::text,
+      jsonb_build_object('kind', new.kind, 'notice_version', new.notice_version));
+  elsif old.withdrawn_at is null and new.withdrawn_at is not null then
+    perform public.write_audit((select school_id from public.profiles where id = new.profile_id),
+      'consent.withdrawn', 'consents', new.profile_id::text, jsonb_build_object('kind', new.kind));
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists audit_consents on public.consents;
+create trigger audit_consents
+  after insert or update on public.consents
+  for each row execute function public.audit_consents();
+
+-- parent links ---------------------------------------------------------------------
+create or replace function public.audit_parent_links()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.parent_learner_links := case when tg_op = 'DELETE' then old else new end;
+begin
+  perform public.write_audit((select school_id from public.profiles where id = r.learner_id),
+    case when tg_op = 'INSERT' then 'parent_link.created' else 'parent_link.removed' end,
+    'parent_learner_links', r.learner_id::text,
+    jsonb_build_object('parent_id', r.parent_id));
+  return r;
+end;
+$$;
+
+drop trigger if exists audit_parent_links on public.parent_learner_links;
+create trigger audit_parent_links
+  after insert or delete on public.parent_learner_links
+  for each row execute function public.audit_parent_links();
+
+-- Retention: an operator removes entries older than the agreed period (the
+-- School Data Processing Agreement proposes 12 months). Not granted to the app.
+create or replace function public.purge_audit_log(p_older_than interval)
+returns bigint
+language sql
+security definer
+set search_path = public
+as $$
+  with gone as (delete from public.audit_log where at < now() - p_older_than returning 1)
+  select count(*) from gone;
+$$;
+revoke execute on function public.purge_audit_log(interval) from public, authenticated, anon;

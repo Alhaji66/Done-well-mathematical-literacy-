@@ -271,6 +271,61 @@ export interface VennSpec {
   highlightName?: string
 }
 
+/**
+ * A geometry sketch: points, the lines between them, circles, and the angle and
+ * length marks an exam diagram carries. Coordinates are in the problem's own
+ * units with y upwards; the renderer fits them to the page. Built from the
+ * question's words by src/lib/geometryDiagrams.ts -- givens are labelled with
+ * their values, and what the question asks for is labelled "?".
+ */
+export interface ScenePoint {
+  id: string
+  x: number
+  y: number
+  /** Drawn beside the point; absent means the point is not named. */
+  label?: string
+  dot?: boolean
+}
+
+export interface SceneSpec {
+  title: string
+  points: ScenePoint[]
+  segments?: {
+    a: string
+    b: string
+    label?: string
+    dashed?: boolean
+    /** Equal-length ticks, 1 or 2. */
+    ticks?: number
+    /** Parallel arrows, 1 or 2. */
+    arrows?: number
+    /** A wall or the ground: drawn heavier. */
+    thick?: boolean
+    /** An arrowhead at `b`: a force, a velocity, a ray of light. */
+    arrow?: boolean
+    /** Drawn in the accent colour -- the resultant, the refracted ray. */
+    accent?: boolean
+  }[]
+  /** Smooth curves through many points: a wave, a graph, an energy profile. */
+  curves?: { points: [number, number][]; dashed?: boolean; accent?: boolean }[]
+  /** Free-standing text, placed exactly: "air (n = 1,00)", axis names, "Ea". */
+  texts?: { x: number; y: number; text: string; anchor?: 'start' | 'middle' | 'end'; size?: number; accent?: boolean }[]
+  /** Small spheres with a sign or charge written on them. */
+  discs?: { x: number; y: number; r: number; text?: string; fill?: 'accent' | 'ink' | 'none' }[]
+  circles?: { c: string; r: number }[]
+  /** Ellipses for the round ends of a cylinder; `dashedTop` draws the far half dashed. */
+  ellipses?: { cx: number; cy: number; rx: number; ry: number; dashedTop?: boolean }[]
+  angles?: { at: string; a: string; b: string; label?: string; right?: boolean }[]
+  /** Lines of text under the drawing: "Scale 1 : 400". */
+  notes?: string[]
+  /**
+   * True when lengths and angles are drawn to the sizes on their labels, which
+   * check:geometry then measures. Sketches -- a solid in oblique projection, two
+   * similar triangles -- are false.
+   */
+  toScale: boolean
+}
+
 /** Figures live in src/components/practise/Figure.tsx. */
 export type FigureId =
   | 'cast-diagram'
@@ -293,6 +348,12 @@ export type FigureId =
   | 'energy-pyramid'
   | 'plant-transport'
   | 'flower-structure'
+  | 'plant-cell'
+  | 'animal-cell'
+  | 'epithelial-tissue'
+  | 'muscle-tissue'
+  | 'blood-vessels'
+  | 'bone-joint'
 
 /**
  * A curve on a set of axes, given by its family and coefficients.

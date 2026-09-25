@@ -271,6 +271,51 @@ export interface VennSpec {
   highlightName?: string
 }
 
+/**
+ * A geometry sketch: points, the lines between them, circles, and the angle and
+ * length marks an exam diagram carries. Coordinates are in the problem's own
+ * units with y upwards; the renderer fits them to the page. Built from the
+ * question's words by src/lib/geometryDiagrams.ts -- givens are labelled with
+ * their values, and what the question asks for is labelled "?".
+ */
+export interface ScenePoint {
+  id: string
+  x: number
+  y: number
+  /** Drawn beside the point; absent means the point is not named. */
+  label?: string
+  dot?: boolean
+}
+
+export interface SceneSpec {
+  title: string
+  points: ScenePoint[]
+  segments?: {
+    a: string
+    b: string
+    label?: string
+    dashed?: boolean
+    /** Equal-length ticks, 1 or 2. */
+    ticks?: number
+    /** Parallel arrows, 1 or 2. */
+    arrows?: number
+    /** A wall or the ground: drawn heavier. */
+    thick?: boolean
+  }[]
+  circles?: { c: string; r: number }[]
+  /** Ellipses for the round ends of a cylinder; `dashedTop` draws the far half dashed. */
+  ellipses?: { cx: number; cy: number; rx: number; ry: number; dashedTop?: boolean }[]
+  angles?: { at: string; a: string; b: string; label?: string; right?: boolean }[]
+  /** Lines of text under the drawing: "Scale 1 : 400". */
+  notes?: string[]
+  /**
+   * True when lengths and angles are drawn to the sizes on their labels, which
+   * check:geometry then measures. Sketches -- a solid in oblique projection, two
+   * similar triangles -- are false.
+   */
+  toScale: boolean
+}
+
 /** Figures live in src/components/practise/Figure.tsx. */
 export type FigureId =
   | 'cast-diagram'

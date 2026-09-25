@@ -19,6 +19,8 @@ import { MathText } from '@/components/practise/MathText'
 import { QuestionText } from '@/components/practise/QuestionText'
 import { Figure } from '@/components/practise/Figure'
 import { ProbabilityDiagrams } from '@/components/practise/ProbabilityDiagrams'
+import { GeometryDiagram } from '@/components/practise/GeometryDiagram'
+import { geometryDiagramFor } from '@/lib/geometryDiagrams'
 import { ClipboardIcon, CheckCircleIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import type { Question } from '@/types'
@@ -156,6 +158,7 @@ export function LearnerWeeklyTests() {
               <Figure id={q.figure} />
             </div>
           ) : null}
+          {!q.figure && geometryDiagramFor(q) ? <GeometryDiagram spec={geometryDiagramFor(q)!} /> : null}
           <p className="mt-3 text-base leading-relaxed text-navy-900">
             <MathText>{q.prompt}</MathText>
           </p>

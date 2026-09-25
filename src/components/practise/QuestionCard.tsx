@@ -11,6 +11,8 @@ import { Graph } from '@/components/practise/Graph'
 import { Circuit } from '@/components/practise/Circuit'
 import { Chart } from '@/components/practise/Chart'
 import { ProbabilityDiagrams } from '@/components/practise/ProbabilityDiagrams'
+import { GeometryDiagram } from '@/components/practise/GeometryDiagram'
+import { geometryDiagramFor } from '@/lib/geometryDiagrams'
 import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
 import { derivedFigures, derivedAnswerFigures } from '@/data/derivedFigures'
 import { derivedCircuits, derivedAnswerCircuits } from '@/data/derivedCircuits'
@@ -51,6 +53,8 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
   const answerCircuit = question.answerCircuit ?? derivedAnswerCircuits[question.id]
   const promptChart = question.chart ?? chartSpecs[question.id]?.chart
   const answerChart = question.answerChart ?? chartSpecs[question.id]?.answerChart
+  // A sketch read off the question's words, when nothing else is drawn for it.
+  const promptSketch = promptFigure || promptGraph || promptCircuit || promptChart ? null : geometryDiagramFor(question)
 
   const isMcq = Boolean(question.options && question.correctOptionId)
   const hasAttempted = isMcq ? selectedOption !== null : attemptedText.trim().length > 0 || revealed
@@ -85,6 +89,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
       {promptGraph ? <Graph spec={promptGraph} /> : null}
       {promptCircuit ? <Circuit spec={promptCircuit} /> : null}
       {promptChart ? <Chart spec={promptChart} /> : null}
+      {promptSketch ? <GeometryDiagram spec={promptSketch} /> : null}
 
       {isMcq ? (
         <div className="mt-4 space-y-2">

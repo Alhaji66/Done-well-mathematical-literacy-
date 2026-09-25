@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
+import { fetchMyClassIds } from '@/lib/classes'
 import type { Grade, Question } from '@/types'
 
 /**
@@ -30,6 +31,11 @@ export interface WeeklyTest {
   question_count: number
   due_at: string
   created_at: string
+  /**
+   * The class the test is for, or null for everyone in the grade and subject.
+   * Absent on a database without classes (STEP 14 not run).
+   */
+  class_id?: string | null
 }
 
 export interface PerQuestionMark {
@@ -82,14 +88,29 @@ export async function fetchTestsForSchool(schoolId: string): Promise<WeeklyTest[
   return (data ?? []) as WeeklyTest[]
 }
 
-/** The tests a particular learner is expected to sit: their subject and grade. */
+/**
+ * The tests a particular learner is expected to sit: those for their subject
+ * and grade, and -- where a test was set for one class -- only if they are in
+ * that class. A class test is still visible to the rest of the grade in the
+ * database (a test's topic list is not personal information); keeping it off
+ * their list is so that nobody is told to sit a test that was not set for them.
+ */
 export async function fetchTestsForLearner(
   schoolId: string,
   subjectId: string | null,
   grade: Grade | null,
+  learnerId?: string,
 ): Promise<WeeklyTest[]> {
-  const all = await fetchTestsForSchool(schoolId)
-  return all.filter((t) => (!subjectId || t.subject_id === subjectId) && (!grade || t.grade === grade))
+  const [all, myClasses] = await Promise.all([
+    fetchTestsForSchool(schoolId),
+    learnerId ? fetchMyClassIds(learnerId) : Promise.resolve([] as string[]),
+  ])
+  return all.filter(
+    (t) =>
+      (!subjectId || t.subject_id === subjectId) &&
+      (!grade || t.grade === grade) &&
+      (!t.class_id || myClasses.includes(t.class_id)),
+  )
 }
 
 export async function fetchMyAttempts(learnerId: string): Promise<TestAttempt[]> {
@@ -125,6 +146,8 @@ export async function createTest(input: {
   subtopics?: string[]
   questionCount: number
   dueAt: string
+  /** One class, or null/undefined for the whole grade. */
+  classId?: string | null
 }): Promise<{ test?: WeeklyTest; error?: string }> {
   if (!supabase) return { error: 'Real accounts are not set up on this deployment.' }
   const { data, error } = await supabase
@@ -139,6 +162,9 @@ export async function createTest(input: {
       subtopics: input.subtopics?.length ? input.subtopics : null,
       question_count: input.questionCount,
       due_at: input.dueAt,
+      // Only sent when a class was chosen, so a database without STEP 14 still
+      // accepts whole-grade tests.
+      ...(input.classId ? { class_id: input.classId } : {}),
     })
     .select('*')
     .single()

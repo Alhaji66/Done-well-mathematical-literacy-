@@ -67,6 +67,27 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
       return `A parent was linked to ${target}.`
     case 'parent_link.removed':
       return `A parent was unlinked from ${target}.`
+    case 'class.created':
+    case 'class.changed':
+    case 'class.removed': {
+      const subject = subjects.find((s) => s.id === d.subject)?.name ?? String(d.subject ?? '')
+      const cls = names.get(e.target_id ?? '')
+      const label = cls ? `the class ${cls}` : `a Grade ${String(d.grade)} ${subject} class`
+      if (e.action === 'class.created') return `${actor} created ${label}.`
+      if (e.action === 'class.removed') return `${actor} deleted a Grade ${String(d.grade)} ${subject} class.`
+      if ('previous_teacher_id' in d) {
+        return `${actor} handed ${label} to ${d.teacher_id ? whom(String(d.teacher_id)) : 'no class teacher'}.`
+      }
+      return `${actor} changed ${label}.`
+    }
+    case 'class_member.added':
+    case 'class_member.removed': {
+      const cls = names.get(String(d.class_id ?? ''))
+      const where = cls ? `the class ${cls}` : 'a class'
+      return e.action === 'class_member.added'
+        ? `${actor} added ${target} to ${where}.`
+        : `${actor} removed ${target} from ${where}.`
+    }
     default:
       return `${actor}: ${e.action}.`
   }

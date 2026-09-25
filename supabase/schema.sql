@@ -1310,3 +1310,293 @@ as $$
   select count(*) from gone;
 $$;
 revoke execute on function public.purge_audit_log(interval) from public, authenticated, anon;
+
+-- ============================================================================
+-- STEP 14: CLASSES
+-- ============================================================================
+--
+-- WHY. Until now a teacher's view was "every learner at the school in my
+-- subject, narrowed by the grades I ticked". A school does not work like that:
+-- two Grade 12 Mat Lit teachers each teach their own class, and each was being
+-- shown the other's learners and the other's average. The spec's school
+-- drill-down (school -> grade -> class) and class analysis both need a class to
+-- exist, and so does setting a weekly test for one class rather than a grade.
+--
+-- WHO CAN DO WHAT.
+--   * Approved staff see every class at their school. A learner sees only the
+--     classes they are in, and only their OWN membership -- never a class list.
+--   * A teacher creates and runs their own classes. The school account and an
+--     HOD can manage any class at the school, e.g. to hand one over when a
+--     teacher leaves.
+--   * Only learners at the same school can be put in a class. Leaving the school
+--     (or stopping being a learner) takes them out of its classes.
+--   * A class that still has weekly tests cannot be deleted: its tests hold
+--     learners' results, and deleting the class would either lose them or turn
+--     a one-class test into a whole-grade one. Remove the tests first.
+--
+-- The helpers below are security definer because classes and class_members
+-- each need to look at the other to decide access, and two policies that read
+-- each other's tables recurse forever.
+
+create table if not exists public.classes (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  name text not null check (length(btrim(name)) between 1 and 60),
+  grade smallint not null check (grade in (10, 11, 12)),
+  subject_id text not null,
+  -- The class teacher. Null when the teacher's account has been deleted, until
+  -- the school hands the class to someone else.
+  teacher_id uuid references public.profiles (id) on delete set null,
+  created_at timestamptz not null default now(),
+  unique (school_id, name)
+);
+
+create index if not exists classes_school_idx on public.classes (school_id, grade);
+
+create table if not exists public.class_members (
+  class_id uuid not null references public.classes (id) on delete cascade,
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  added_at timestamptz not null default now(),
+  primary key (class_id, learner_id)
+);
+
+create index if not exists class_members_learner_idx on public.class_members (learner_id);
+
+-- A weekly test may be set for one class. Null means the whole grade, as before.
+alter table public.weekly_tests
+  add column if not exists class_id uuid references public.classes (id) on delete restrict;
+
+alter table public.classes enable row level security;
+alter table public.class_members enable row level security;
+
+create or replace function public.class_school(p_class uuid)
+returns uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select school_id from public.classes where id = p_class;
+$$;
+
+create or replace function public.is_class_member(p_class uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (select 1 from public.class_members where class_id = p_class and learner_id = auth.uid());
+$$;
+
+-- May the signed-in user manage a class at this school taught by this teacher?
+create or replace function public.can_manage_class(p_school uuid, p_teacher uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select public.is_school_staff(p_school)
+     and (public.approved_role_at(p_school) in ('school', 'hod') or p_teacher = auth.uid());
+$$;
+
+create or replace function public.can_manage_class_id(p_class uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select coalesce((select public.can_manage_class(school_id, teacher_id) from public.classes where id = p_class), false);
+$$;
+
+-- Is this person an approved staff member at this school? (A class teacher must be.)
+create or replace function public.is_staff_member_at(p_profile uuid, p_school uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = p_profile and school_id = p_school
+      and role::text in ('teacher', 'school', 'hod') and staff_approved_at is not null
+  );
+$$;
+
+create or replace function public.is_learner_at(p_profile uuid, p_school uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = p_profile and school_id = p_school and role::text = 'learner'
+  );
+$$;
+
+-- classes -------------------------------------------------------------------
+
+drop policy if exists "Staff can view the classes at their school" on public.classes;
+create policy "Staff can view the classes at their school"
+  on public.classes for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Learners can view the classes they are in" on public.classes;
+create policy "Learners can view the classes they are in"
+  on public.classes for select
+  using (public.is_class_member(id));
+
+drop policy if exists "Staff can create a class" on public.classes;
+create policy "Staff can create a class"
+  on public.classes for insert
+  with check (
+    school_id = public.current_school_id()
+    and public.can_manage_class(school_id, teacher_id)
+    and (teacher_id is null or public.is_staff_member_at(teacher_id, school_id))
+  );
+
+drop policy if exists "Class teachers and school leaders can change a class" on public.classes;
+create policy "Class teachers and school leaders can change a class"
+  on public.classes for update
+  using (public.can_manage_class(school_id, teacher_id))
+  with check (
+    school_id = public.current_school_id()
+    and public.can_manage_class(school_id, teacher_id)
+    and (teacher_id is null or public.is_staff_member_at(teacher_id, school_id))
+  );
+
+drop policy if exists "Class teachers and school leaders can remove a class" on public.classes;
+create policy "Class teachers and school leaders can remove a class"
+  on public.classes for delete
+  using (public.can_manage_class(school_id, teacher_id));
+
+-- class_members -------------------------------------------------------------
+
+drop policy if exists "Staff can view class lists at their school" on public.class_members;
+create policy "Staff can view class lists at their school"
+  on public.class_members for select
+  using (public.is_school_staff(public.class_school(class_id)));
+
+drop policy if exists "Learners can view their own class membership" on public.class_members;
+create policy "Learners can view their own class membership"
+  on public.class_members for select
+  using (learner_id = auth.uid());
+
+drop policy if exists "Linked parents can view their child's classes" on public.class_members;
+create policy "Linked parents can view their child's classes"
+  on public.class_members for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = class_members.learner_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+drop policy if exists "Class managers can add learners from their school" on public.class_members;
+create policy "Class managers can add learners from their school"
+  on public.class_members for insert
+  with check (
+    public.can_manage_class_id(class_id)
+    and public.is_learner_at(learner_id, public.class_school(class_id))
+  );
+
+drop policy if exists "Class managers can remove learners" on public.class_members;
+create policy "Class managers can remove learners"
+  on public.class_members for delete
+  using (public.can_manage_class_id(class_id));
+
+-- A test set for a class must be for a class at the same school.
+drop policy if exists "Staff can set a test for their school" on public.weekly_tests;
+create policy "Staff can set a test for their school"
+  on public.weekly_tests for insert
+  with check (
+    created_by = auth.uid() and public.is_school_staff(school_id)
+    and (class_id is null or public.class_school(class_id) = school_id)
+  );
+
+drop policy if exists "Staff can change a test at their school" on public.weekly_tests;
+create policy "Staff can change a test at their school"
+  on public.weekly_tests for update
+  using (public.is_school_staff(school_id))
+  with check (
+    public.is_school_staff(school_id)
+    and (class_id is null or public.class_school(class_id) = school_id)
+  );
+
+-- Leaving the school, or no longer being a learner, takes a person out of its
+-- classes. Runs as owner: the person leaving has no right to edit class lists.
+create or replace function public.tidy_class_members()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.school_id is distinct from old.school_id or new.role::text <> 'learner' then
+    delete from public.class_members m
+    using public.classes c
+    where m.class_id = c.id and m.learner_id = new.id
+      and (c.school_id is distinct from new.school_id or new.role::text <> 'learner');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists tidy_class_members on public.profiles;
+create trigger tidy_class_members
+  after update of school_id, role on public.profiles
+  for each row execute function public.tidy_class_members();
+
+-- Audit (STEP 13): classes and class lists. The class name is not copied into
+-- the log -- it is typed text -- only its grade, subject and teacher.
+create or replace function public.audit_classes()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.classes := case when tg_op = 'DELETE' then old else new end;
+begin
+  perform public.write_audit(r.school_id,
+    'class.' || case tg_op when 'INSERT' then 'created' when 'UPDATE' then 'changed' else 'removed' end,
+    'classes', r.id::text,
+    jsonb_build_object('grade', r.grade, 'subject', r.subject_id, 'teacher_id', r.teacher_id)
+      || case when tg_op = 'UPDATE' and new.teacher_id is distinct from old.teacher_id
+              then jsonb_build_object('previous_teacher_id', old.teacher_id) else '{}'::jsonb end);
+  return r;
+end;
+$$;
+
+drop trigger if exists audit_classes on public.classes;
+create trigger audit_classes
+  after insert or update or delete on public.classes
+  for each row execute function public.audit_classes();
+
+create or replace function public.audit_class_members()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.class_members := case when tg_op = 'DELETE' then old else new end;
+begin
+  perform public.write_audit(public.class_school(r.class_id),
+    case when tg_op = 'INSERT' then 'class_member.added' else 'class_member.removed' end,
+    'class_members', r.learner_id::text,
+    jsonb_build_object('class_id', r.class_id));
+  return r;
+end;
+$$;
+
+drop trigger if exists audit_class_members on public.class_members;
+create trigger audit_class_members
+  after insert or delete on public.class_members
+  for each row execute function public.audit_class_members();

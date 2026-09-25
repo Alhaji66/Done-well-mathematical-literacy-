@@ -13,7 +13,7 @@ import type { AuditEntry } from '@/lib/auditLogText'
 
 export async function fetchAuditLog(schoolId: string, limit = 150): Promise<{ entries: AuditEntry[]; names: Map<string, string>; error?: string }> {
   if (!supabase) return { entries: [], names: new Map() }
-  const [{ data, error }, people] = await Promise.all([
+  const [{ data, error }, people, classes] = await Promise.all([
     supabase
       .from('audit_log')
       .select('id, at, actor_id, actor_role, action, target_table, target_id, details')
@@ -21,13 +21,19 @@ export async function fetchAuditLog(schoolId: string, limit = 150): Promise<{ en
       .order('at', { ascending: false })
       .limit(limit),
     supabase.from('profiles').select('id, full_name').eq('school_id', schoolId),
+    // Class names are looked up the same way, for the same reason. Before
+    // STEP 14 this errors and simply contributes no names.
+    supabase.from('classes').select('id, name').eq('school_id', schoolId),
   ])
   if (error) {
     // Before STEP 13 is run the table does not exist; say so rather than
     // showing an empty log that looks like nothing ever happened.
     return { entries: [], names: new Map(), error: error.message }
   }
-  const names = new Map<string, string>((people.data ?? []).map((p) => [p.id as string, p.full_name as string]))
+  const names = new Map<string, string>([
+    ...(people.data ?? []).map((p) => [p.id as string, p.full_name as string] as [string, string]),
+    ...(classes.data ?? []).map((c) => [c.id as string, c.name as string] as [string, string]),
+  ])
   return { entries: (data ?? []) as AuditEntry[], names }
 }
 

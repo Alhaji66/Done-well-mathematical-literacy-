@@ -7,6 +7,7 @@ import {
   ClipboardIcon,
   TrendingUpIcon,
   UsersIcon,
+  LayoutIcon,
   UserIcon,
   HeartHandshakeIcon,
   BarChartIcon,
@@ -76,6 +77,7 @@ export const accountLearnerNav: RoleNavItem[] = [
 // school's roster (no per-class data exists yet, so it's school-wide).
 export const accountTeacherNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/classes', label: 'Classes', icon: UsersIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
@@ -104,6 +106,7 @@ export const accountHodNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
   { to: '/learners', label: 'Learners', icon: UsersIcon },
+  { to: '/classes', label: 'Classes', icon: LayoutIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
@@ -116,6 +119,7 @@ export const accountHodNav: RoleNavItem[] = [
 export const accountSchoolNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learners', label: 'Learners', icon: UsersIcon },
+  { to: '/classes', label: 'Classes', icon: LayoutIcon },
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },

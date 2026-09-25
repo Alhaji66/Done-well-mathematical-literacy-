@@ -110,15 +110,15 @@ export function RoleShell({ role, basePath, navItems }: RoleShellProps) {
             end={item.end}
             className={({ isActive }) =>
               cn(
-                'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium text-navy-500',
+                'flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2.5 text-[11px] font-medium leading-tight text-navy-500',
                 isActive && 'text-navy-900',
               )
             }
           >
             {({ isActive }) => (
               <>
-                <item.icon className={cn('h-5 w-5', isActive ? 'text-gold-500' : 'text-navy-400')} />
-                {item.label}
+                <item.icon className={cn('h-5 w-5 shrink-0', isActive ? 'text-gold-500' : 'text-navy-400')} />
+                <span className="w-full truncate text-center">{item.shortLabel ?? item.label}</span>
               </>
             )}
           </NavLink>

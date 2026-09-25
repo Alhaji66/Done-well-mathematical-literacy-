@@ -8,6 +8,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon, SchoolIcon } from '@/components/ui/Icons'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
+import { PendingStaff } from '@/components/account/PendingStaff'
 
 /**
  * What a Head of Department is looking at, as opposed to a teacher or a
@@ -93,6 +94,8 @@ export function HodDashboard() {
       />
 
       <TeachingSubject profile={profile} variant="hod" />
+
+      <PendingStaff schoolId={profile?.school_id ?? null} />
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading your department…</p>

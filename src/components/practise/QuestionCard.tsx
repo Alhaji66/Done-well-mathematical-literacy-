@@ -10,6 +10,7 @@ import { Figure } from '@/components/practise/Figure'
 import { Graph } from '@/components/practise/Graph'
 import { Circuit } from '@/components/practise/Circuit'
 import { Chart } from '@/components/practise/Chart'
+import { ProbabilityDiagrams } from '@/components/practise/ProbabilityDiagrams'
 import { derivedGraphs, derivedAnswerGraphs } from '@/data/derivedGraphs'
 import { derivedFigures, derivedAnswerFigures } from '@/data/derivedFigures'
 import { derivedCircuits, derivedAnswerCircuits } from '@/data/derivedCircuits'
@@ -173,6 +174,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
           {answerGraph ? <Graph spec={answerGraph} /> : null}
           {answerCircuit ? <Circuit spec={answerCircuit} /> : null}
           {answerChart ? <Chart spec={answerChart} /> : null}
+          <ProbabilityDiagrams question={question} />
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
           {!isMcq && onResult ? (
             selfMark === null ? (

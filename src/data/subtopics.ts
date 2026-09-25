@@ -1,4 +1,4 @@
-import type { Question } from '@/types'
+import type { Question, TreeSpec, VennSpec } from '@/types'
 import { getTopicNote, type SubtopicNote } from '@/data/topicNotes'
 
 /**
@@ -1073,6 +1073,9 @@ export interface SubtopicGroup {
   name: string
   /** The explanation for this sub-topic, from the topic's note. Absent for UNSORTED. */
   points?: string[]
+  /** The note's model tree or Venn diagram, drawn under the points. */
+  tree?: TreeSpec
+  venn?: VennSpec
   questions: Question[]
 }
 
@@ -1098,7 +1101,7 @@ export function groupBySubtopic(topicId: string, questions: Question[]): Subtopi
   const groups: SubtopicGroup[] = []
   for (const sub of subs) {
     const qs = buckets.get(sub.name) ?? []
-    if (qs.length) groups.push({ name: sub.name, points: sub.points, questions: qs })
+    if (qs.length) groups.push({ name: sub.name, points: sub.points, tree: sub.tree, venn: sub.venn, questions: qs })
   }
   if (unsorted.length) groups.push({ name: UNSORTED, questions: unsorted })
   return groups

@@ -215,6 +215,62 @@ export type ChartSpec =
       points?: { age: number; bmi: number; label: string }[]
     }
 
+/**
+ * A probability, as a memo writes it: a fraction kept unsimplified -- a tree
+ * shows 4/10 then 3/9, because the drop from 10 to 9 IS the lesson -- or a
+ * decimal when the question gives one.
+ */
+export type Prob = [numerator: number, denominator: number] | number
+
+/** One branch of a probability tree, and the branches that grow from it. */
+export interface TreeBranch {
+  /** Drawn at the node, so it is short: 'R', 'H'. */
+  label: string
+  /** Read out in the figure's description: 'red', 'heads'. */
+  name: string
+  p: Prob
+  next?: TreeBranch[]
+}
+
+/**
+ * A two-stage probability tree. Described by its branches, like a chart by its
+ * data -- see src/lib/probabilityDiagrams.ts, which builds these from the
+ * question's own words.
+ */
+export interface TreeSpec {
+  title: string
+  /** What each stage is, left to right: ['1st counter', '2nd counter']. */
+  stages: [string, string]
+  branches: TreeBranch[]
+  /** Complete paths to pick out, by their joined labels -- 'RB', 'BR'. */
+  highlight?: string[]
+  /** The event the highlighted paths make up, for the sum under the tree: 'different colours'. */
+  highlightName?: string
+}
+
+export type VennRegion = 'onlyA' | 'both' | 'onlyB' | 'neither'
+
+/**
+ * A two-set Venn diagram with every region filled in. `unit` says what the
+ * numbers are: learners, percentages of a group, or probabilities -- which
+ * decides what the regions must add up to (the total, 100 or 1).
+ */
+export interface VennSpec {
+  title: string
+  sets: [{ name: string; symbol: string }, { name: string; symbol: string }]
+  unit: 'count' | '%' | 'p'
+  /** n(S): the number in the group, 100 for percentages, 1 for probabilities. */
+  total: number
+  onlyA: number
+  both: number
+  onlyB: number
+  neither: number
+  /** Mutually exclusive events: the circles are drawn apart and `both` is 0. */
+  disjoint?: boolean
+  highlight?: VennRegion[]
+  highlightName?: string
+}
+
 /** Figures live in src/components/practise/Figure.tsx. */
 export type FigureId =
   | 'cast-diagram'

@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronRightIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { TreeDiagram, VennDiagram } from '@/components/practise/ProbabilityDiagrams'
+import type { TreeSpec, VennSpec } from '@/types'
 
 /**
  * One sub-topic: its name, its explanation, then its own questions.
@@ -17,12 +19,16 @@ import { cn } from '@/lib/utils'
 export function SubtopicSection({
   name,
   points,
+  tree,
+  venn,
   count,
   index,
   children,
 }: {
   name: string
   points?: string[]
+  tree?: TreeSpec
+  venn?: VennSpec
   count: number
   index: number
   children: ReactNode
@@ -68,6 +74,8 @@ export function SubtopicSection({
                 </li>
               ))}
             </ul>
+            {tree ? <TreeDiagram spec={tree} /> : null}
+            {venn ? <VennDiagram spec={venn} /> : null}
           </div>
         ) : null}
       </div>

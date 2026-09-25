@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getTopicNote } from '@/data/topicNotes'
 import { BookIcon, SparkleIcon, ChevronRightIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { TreeDiagram, VennDiagram } from '@/components/practise/ProbabilityDiagrams'
 
 /**
  * `showSubtopics` is off where the page renders each sub-topic's explanation
@@ -74,6 +75,8 @@ export function TopicNotes({
                         </li>
                       ))}
                     </ul>
+                    {sub.tree ? <TreeDiagram spec={sub.tree} /> : null}
+                    {sub.venn ? <VennDiagram spec={sub.venn} /> : null}
                   </div>
                 ))}
               </div>

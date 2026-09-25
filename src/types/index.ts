@@ -324,6 +324,8 @@ export interface SceneSpec {
    * similar triangles -- are false.
    */
   toScale: boolean
+  /** A diagram of a kind that has no scale -- a molecule, a textbook figure: no "not drawn to scale" line. */
+  schematic?: boolean
 }
 
 /** Figures live in src/components/practise/Figure.tsx. */

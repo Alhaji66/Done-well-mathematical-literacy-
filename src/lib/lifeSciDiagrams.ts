@@ -196,6 +196,7 @@ function pedigreeKey(): SceneSpec {
     ],
     notes: ['Square = male, circle = female, shaded = shows the trait. A horizontal line joins the parents; a vertical line leads down to their children.'],
     toScale: false,
+    schematic: true,
   }
 }
 
@@ -222,7 +223,170 @@ function transcription(t: string, answer: string): SceneSpec | null {
     texts: [...texts, { x: -1, y: 2, text: 'DNA', anchor: 'end', size: 10 }, { x: -1, y: 0, text: 'mRNA', anchor: 'end', size: 10, accent: true }],
     notes: ['Each base pairs with its partner: A–U, T–A, C–G, G–C. Every three mRNA bases form one codon.'],
     toScale: false,
+    schematic: true,
   }
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Biological molecules, with the answer                              */
+/* ------------------------------------------------------------------ */
+
+/** A hydrocarbon tail drawn as a zigzag, stepping down. */
+const zigzag = (x0: number, y0: number, n: number, step = 0.5, dx = 0.28): [number, number][] =>
+  Array.from({ length: n + 1 }, (_, i) => [x0 + (i % 2 ? dx : 0), y0 - i * step] as [number, number])
+
+function phospholipid(): SceneSpec {
+  const tails = (x: number, y: number, kink = false): NonNullable<SceneSpec['curves']> => [
+    { points: zigzag(x - 0.35, y, 7) },
+    { points: kink ? [...zigzag(x + 0.35, y, 3), [x + 0.9, y - 2.1], [x + 1.1, y - 2.6], [x + 0.85, y - 3.1]] : zigzag(x + 0.35, y, 7) },
+  ]
+  const bilayer: NonNullable<SceneSpec['discs']> = []
+  const bl: NonNullable<SceneSpec['curves']> = []
+  for (let i = 0; i < 6; i++) {
+    const x = 6.5 + i * 0.8
+    bilayer.push({ x, y: 0.2, r: 0.3, fill: 'accent' }, { x, y: -4.2, r: 0.3, fill: 'accent' })
+    bl.push({ points: [[x - 0.1, -0.1], [x - 0.1, -1.9]] }, { points: [[x + 0.1, -0.1], [x + 0.1, -1.9]] })
+    bl.push({ points: [[x - 0.1, -2.3], [x - 0.1, -3.9]] }, { points: [[x + 0.1, -2.3], [x + 0.1, -3.9]] })
+  }
+  return {
+    title: 'A phospholipid, and the bilayer phospholipids form',
+    points: [pt('a', 0, 0)],
+    discs: [{ x: 0, y: 0.4, r: 0.55, fill: 'accent' }, ...bilayer],
+    curves: [...tails(0, -0.3), ...bl],
+    texts: [
+      { x: 0.8, y: 0.9, text: 'phosphate head: hydrophilic', anchor: 'start', size: 9 },
+      { x: 0.9, y: -2, text: 'two fatty acid tails:', anchor: 'start', size: 9 },
+      { x: 0.9, y: -2.5, text: 'hydrophobic', anchor: 'start', size: 9 },
+      { x: 8.5, y: 1.2, text: 'water outside', size: 9 },
+      { x: 8.5, y: -5.1, text: 'water inside the cell', size: 9 },
+    ],
+    notes: ['The heads face the water on both sides; the tails hide from it in the middle -- the bilayer of the cell membrane.'],
+    toScale: false,
+    schematic: true,
+  }
+}
+
+function fattyAcids(): SceneSpec {
+  const straight: [number, number][] = Array.from({ length: 11 }, (_, i) => [i * 0.6, i % 2 ? 0.3 : 0])
+  // Unsaturated: the same zigzag, bent where the C=C double bond sits.
+  const kinked: [number, number][] = [
+    ...Array.from({ length: 6 }, (_, i) => [i * 0.6, -2.4 + (i % 2 ? 0.3 : 0)] as [number, number]),
+    [3.4, -2.9],
+    [3.7, -3.5],
+    [4.25, -3.7],
+    [4.55, -4.3],
+    [5.1, -4.5],
+  ]
+  return {
+    title: 'Saturated and unsaturated fatty acids',
+    points: [pt('d0', 3.0, -2.4), pt('d1', 3.4, -2.9)],
+    segments: [{ a: 'd0', b: 'd1', accent: true }],
+    curves: [{ points: straight }, { points: kinked }],
+    texts: [
+      { x: 0, y: -0.8, text: 'saturated: single bonds only, a straight chain', anchor: 'start', size: 9 },
+      { x: 0, y: -5.3, text: 'unsaturated: a C=C double bond kinks the chain', anchor: 'start', size: 9, accent: true },
+    ],
+    notes: ['Straight chains pack tightly, so saturated fats are solid at room temperature; kinked chains cannot, so unsaturated fats are liquid (oils).'],
+    toScale: false,
+    schematic: true,
+  }
+}
+
+function proteinLevels(): SceneSpec {
+  // Four panels in a 2 x 2 grid, so the labels have room at phone width.
+  const beads: NonNullable<SceneSpec['discs']> = Array.from({ length: 7 }, (_, i) => ({ x: i * 0.55, y: 3.2, r: 0.22, fill: i % 2 ? 'none' : 'accent' }) as const)
+  const helix: [number, number][] = Array.from({ length: 60 }, (_, i) => [5.4 + i * 0.05, 3.2 + 0.4 * Math.sin(i / 3)])
+  const fold: [number, number][] = Array.from({ length: 90 }, (_, i) => {
+    const a = (i / 90) * Math.PI * 4
+    return [1.65 + 0.9 * Math.cos(a) + 0.3 * Math.cos(3 * a), 0.9 * Math.sin(a) * Math.cos(a / 2)]
+  })
+  const blob = (cx: number): [number, number][] => Array.from({ length: 40 }, (_, i) => {
+    const a = (i / 39) * Math.PI * 2
+    return [cx + 0.7 * Math.cos(a), 0.7 * Math.sin(a)]
+  })
+  const label = (x: number, y: number, name: string, a: string, b: string): NonNullable<SceneSpec['texts']> => [
+    { x, y, text: name, size: 11 },
+    { x, y: y - 0.5, text: a, size: 9 },
+    { x, y: y - 0.95, text: b, size: 9 },
+  ]
+  return {
+    title: 'The four levels of protein structure',
+    points: [pt('a', 0, 0)],
+    discs: [...beads],
+    curves: [{ points: helix, accent: true }, { points: fold }, { points: blob(6.3), accent: true }, { points: blob(7.6) }],
+    texts: [
+      ...label(1.65, 2.2, 'primary', 'amino acid sequence,', 'peptide bonds'),
+      ...label(6.9, 2.2, 'secondary', 'helix or sheet,', 'hydrogen bonds'),
+      ...label(1.65, -1.4, 'tertiary', 'whole folded shape,', 'bonds between R-groups'),
+      ...label(6.9, -1.4, 'quaternary', 'several chains', 'held together'),
+    ],
+    notes: ['The sequence (primary) decides where the chain folds, so one changed amino acid can change the final shape -- and the function.'],
+    toScale: false,
+    schematic: true,
+  }
+}
+
+function polysaccharide(): SceneSpec {
+  const hex = (cx: number): [number, number][] => Array.from({ length: 7 }, (_, i) => [cx + 0.5 * Math.cos((Math.PI / 3) * i), 0.5 * Math.sin((Math.PI / 3) * i)])
+  const pts: ScenePoint[] = []
+  const segments: NonNullable<SceneSpec['segments']> = []
+  for (let i = 0; i < 4; i++) {
+    pts.push(pt(`g${i}a`, i * 1.6 + 0.5, 0), pt(`g${i}b`, i * 1.6 + 1.1, 0))
+    if (i < 3) segments.push({ a: `g${i}a`, b: `g${i}b` })
+  }
+  return {
+    title: 'A polysaccharide: a chain of glucose units',
+    points: pts,
+    segments,
+    curves: [0, 1.6, 3.2, 4.8].map((c) => ({ points: hex(c) })),
+    texts: [
+      { x: 0, y: 0, text: 'G', size: 10 },
+      { x: 1.6, y: 0, text: 'G', size: 10 },
+      { x: 3.2, y: 0, text: 'G', size: 10 },
+      { x: 4.8, y: 0, text: 'G', size: 10 },
+      { x: 5.6, y: 0, text: '…', anchor: 'start', size: 12 },
+      { x: 0.8, y: -0.85, text: 'glycosidic bond', size: 8, accent: true },
+    ],
+    notes: ['G = a glucose monomer. Condensation joins each pair and releases a water molecule. Starch and cellulose are both glucose chains; the way the units are joined differs.'],
+    toScale: false,
+    schematic: true,
+  }
+}
+
+function nucleotide(): SceneSpec {
+  const pent: [number, number][] = Array.from({ length: 6 }, (_, i) => [2.2 + 0.6 * Math.cos((2 * Math.PI * i) / 5 + Math.PI / 2), 0.6 * Math.sin((2 * Math.PI * i) / 5 + Math.PI / 2)])
+  return {
+    title: 'A nucleotide',
+    points: [pt('p', 0.45, 0), pt('s0', 1.6, 0), pt('s1', 2.8, 0), pt('b0', 3.7, 0), pt('r0', 3.7, 0.5), pt('r1', 5.1, 0.5), pt('r2', 5.1, -0.5), pt('r3', 3.7, -0.5)],
+    segments: [
+      { a: 'p', b: 's0' },
+      { a: 's1', b: 'b0' },
+      { a: 'r0', b: 'r1' },
+      { a: 'r1', b: 'r2' },
+      { a: 'r2', b: 'r3' },
+      { a: 'r3', b: 'r0' },
+    ],
+    discs: [{ x: 0, y: 0, r: 0.45, fill: 'accent' }],
+    curves: [{ points: pent }],
+    texts: [
+      { x: 0, y: -1, text: 'phosphate', size: 9 },
+      { x: 2.2, y: -1, text: 'sugar', size: 9 },
+      { x: 4.4, y: -1, text: 'nitrogenous base', size: 9 },
+    ],
+    notes: ['DNA: deoxyribose sugar, bases A, T, C, G. RNA: ribose sugar, bases A, U, C, G.'],
+    toScale: false,
+    schematic: true,
+  }
+}
+
+function biomolecules(t: string): SceneSpec[] {
+  if (/phospholipid/i.test(t)) return [phospholipid()]
+  if (/saturated|fatty acid|triglyceride/i.test(t)) return [fattyAcids()]
+  if (/(primary|secondary|tertiary|quaternary) (level|structure)|levels of protein|protein structure/i.test(t)) return [proteinLevels()]
+  if (/nucleotide/i.test(t)) return [nucleotide()]
+  if (/polysaccharide|structure of (starch|cellulose|glycogen)|cellulose and starch/i.test(t)) return [polysaccharide()]
+  return []
 }
 
 /** Sketches for a Life Sciences question: beside it, and with its answer. */
@@ -234,5 +398,6 @@ export function lifeSciDiagramsFor(q: Q): { prompt: SceneSpec[]; answer: SceneSp
   if (/\bpedigree\b/i.test(t)) answer.push(pedigreeKey())
   const tr = transcription(t, q.answer)
   if (tr) answer.push(tr)
+  if (q.topicId === 'life-sci-chemistry-of-life') answer.push(...biomolecules(t))
   return { prompt: prompt ? [prompt] : [], answer }
 }

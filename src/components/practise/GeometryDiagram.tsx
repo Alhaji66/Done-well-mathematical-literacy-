@@ -227,7 +227,7 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
             <circle
               cx={sx(d.x)}
               cy={sy(d.y)}
-              r={Math.max(d.r * s, 9)}
+              r={d.text ? Math.max(d.r * s, 9) : Math.max(d.r * s, 1.8)}
               fill={d.fill === 'accent' ? ACCENT : d.fill === 'ink' ? INK : 'white'}
               stroke={d.fill === 'accent' ? ACCENT : INK}
               strokeWidth="1.5"
@@ -279,7 +279,7 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
             {n}
           </span>
         ))}
-        {spec.toScale ? null : <span className="mt-0.5 block text-[11px] italic">Not drawn to scale</span>}
+        {spec.toScale || spec.schematic ? null : <span className="mt-0.5 block text-[11px] italic">Not drawn to scale</span>}
       </figcaption>
     </figure>
   )

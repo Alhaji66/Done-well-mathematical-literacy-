@@ -24,6 +24,7 @@
     "check:charts": "tsx tools/check-charts.mts",
     "check:probability": "tsx tools/check-probability.mts",
     "check:geometry": "tsx tools/check-geometry.mts",
+    "check:chemistry": "tsx tools/check-chemistry.mts",
     "circuits:write": "tsx tools/derive-circuits.mts --write",
     "check:graphs-fresh": "tsx tools/derive-graphs.mts",
     "graphs:write": "tsx tools/derive-graphs.mts --write",

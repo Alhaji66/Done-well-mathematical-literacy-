@@ -5,6 +5,7 @@ import { topicsForSubject, getTopic } from '@/data/topics'
 import { filterSubjectQuestions, questionsForSubject } from '@/data/questionBank'
 import { subjects } from '@/data/subjects'
 import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
+import { recordAnswer } from '@/lib/mistakes'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
@@ -337,7 +338,13 @@ export function LearnerPractise() {
               index={subtopic === 'All' ? groupIndex : groups.findIndex((g) => g.name === group.name)}
             >
               {group.questions.map((q, i) => (
-                <QuestionCard key={q.id} question={q} index={i} onAttempt={handleAttempt} />
+                <QuestionCard
+                  key={q.id}
+                  question={q}
+                  index={i}
+                  onAttempt={handleAttempt}
+                  onResult={(correct) => recordAnswer(q.id, q.topicId, 'practice', correct)}
+                />
               ))}
             </SubtopicSection>
           ))}

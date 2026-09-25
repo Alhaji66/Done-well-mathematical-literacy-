@@ -1,4 +1,5 @@
 import { subjects } from '@/data/subjects'
+import { getTopic } from '@/data/topics'
 
 /**
  * Audit log entries as sentences. Kept apart from the database client so it can
@@ -88,6 +89,23 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
         ? `${actor} added ${target} to ${where}.`
         : `${actor} removed ${target} from ${where}.`
     }
+    case 'intervention.started':
+    case 'intervention.active':
+    case 'intervention.completed':
+    case 'intervention.cancelled': {
+      const topic = getTopic(String(d.topic ?? ''))?.name ?? 'a topic'
+      const verb = {
+        'intervention.started': 'started',
+        'intervention.active': 'reopened',
+        'intervention.completed': 'completed',
+        'intervention.cancelled': 'cancelled',
+      }[e.action]
+      return `${actor} ${verb} a Grade ${String(d.grade)} catch-up group on ${topic}.`
+    }
+    case 'intervention_learner.added':
+      return `${actor} added ${target} to a catch-up group.`
+    case 'intervention_learner.removed':
+      return `${actor} removed ${target} from a catch-up group.`
     default:
       return `${actor}: ${e.action}.`
   }

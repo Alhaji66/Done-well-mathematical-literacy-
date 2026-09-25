@@ -49,7 +49,7 @@ export function ActivityLog() {
       <SectionHeading
         eyebrow="Security"
         title="Activity log"
-        description="Every change to who can see what at your school — staff approvals, role changes, people joining or leaving, classes, parent links, consent and weekly tests. Nobody can edit or delete these entries."
+        description="Every change to who can see what at your school — staff approvals, role changes, people joining or leaving, classes, catch-up groups, parent links, consent and weekly tests. Nobody can edit or delete these entries."
       />
       {loading ? (
         <p className="text-sm text-navy-500">Loading activity…</p>

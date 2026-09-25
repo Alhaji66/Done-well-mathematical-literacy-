@@ -9,6 +9,8 @@ interface PaperRunnerProps {
   onAttempt?: (topicId: string, correct: boolean | null) => void
   /** Omit for a read-only review -- called once per question item the learner attempts, for the local per-paper progress indicator. */
   onItemAnswered?: (itemId: string) => void
+  /** Omit for a read-only review -- whether the learner got an item right, for My Mistakes. */
+  onResult?: (itemId: string, topicId: string, correct: boolean) => void
 }
 
 /**
@@ -17,7 +19,7 @@ interface PaperRunnerProps {
  * and a countdown on their screen would only be noise.
  */
 
-export function PaperRunner({ paper, onAttempt, onItemAnswered }: PaperRunnerProps) {
+export function PaperRunner({ paper, onAttempt, onItemAnswered, onResult }: PaperRunnerProps) {
   let itemIndex = 0
 
   return (
@@ -50,6 +52,7 @@ export function PaperRunner({ paper, onAttempt, onItemAnswered }: PaperRunnerPro
                       }
                     : undefined
                 }
+                onResult={onResult ? (correct) => onResult(item.id, item.topicId, correct) : undefined}
               />
             )
           })}

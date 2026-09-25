@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabaseClient'
 import { fetchMyClassIds } from '@/lib/classes'
+import { fetchMyInterventionIds } from '@/lib/interventions'
 import type { Grade, Question } from '@/types'
 
 /**
@@ -36,6 +37,11 @@ export interface WeeklyTest {
    * Absent on a database without classes (STEP 14 not run).
    */
   class_id?: string | null
+  /**
+   * Set when this is a reassessment for one catch-up group: only the learners
+   * in that group sit it. Absent on a database without STEP 15.
+   */
+  intervention_id?: string | null
 }
 
 export interface PerQuestionMark {
@@ -101,16 +107,22 @@ export async function fetchTestsForLearner(
   grade: Grade | null,
   learnerId?: string,
 ): Promise<WeeklyTest[]> {
-  const [all, myClasses] = await Promise.all([
+  const none = Promise.resolve([] as string[])
+  const [all, myClasses, myGroups] = await Promise.all([
     fetchTestsForSchool(schoolId),
-    learnerId ? fetchMyClassIds(learnerId) : Promise.resolve([] as string[]),
+    learnerId ? fetchMyClassIds(learnerId) : none,
+    learnerId ? fetchMyInterventionIds(learnerId) : none,
   ])
-  return all.filter(
-    (t) =>
+  return all.filter((t) => {
+    // A reassessment is for its catch-up group alone, whatever grade the
+    // learner is registered in.
+    if (t.intervention_id) return myGroups.includes(t.intervention_id)
+    return (
       (!subjectId || t.subject_id === subjectId) &&
       (!grade || t.grade === grade) &&
-      (!t.class_id || myClasses.includes(t.class_id)),
-  )
+      (!t.class_id || myClasses.includes(t.class_id))
+    )
+  })
 }
 
 export async function fetchMyAttempts(learnerId: string): Promise<TestAttempt[]> {
@@ -148,6 +160,8 @@ export async function createTest(input: {
   dueAt: string
   /** One class, or null/undefined for the whole grade. */
   classId?: string | null
+  /** A catch-up group, when this is its reassessment. */
+  interventionId?: string | null
 }): Promise<{ test?: WeeklyTest; error?: string }> {
   if (!supabase) return { error: 'Real accounts are not set up on this deployment.' }
   const { data, error } = await supabase
@@ -165,6 +179,7 @@ export async function createTest(input: {
       // Only sent when a class was chosen, so a database without STEP 14 still
       // accepts whole-grade tests.
       ...(input.classId ? { class_id: input.classId } : {}),
+      ...(input.interventionId ? { intervention_id: input.interventionId } : {}),
     })
     .select('*')
     .single()

@@ -3,6 +3,7 @@ import { useParams, Navigate, Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { getPaper, type Paper } from '@/data/papers'
 import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
+import { recordAnswer } from '@/lib/mistakes'
 import { getAnsweredItemIds, markItemAnswered, countPaperItems } from '@/lib/paperProgress'
 import { PaperRunner } from '@/components/assessments/PaperRunner'
 import { RouteLoading } from '@/components/layout/RouteLoading'
@@ -116,7 +117,12 @@ export function PaperPage() {
         </div>
       ) : null}
 
-      <PaperRunner paper={paper} onAttempt={handleAttempt} onItemAnswered={handleItemAnswered} />
+      <PaperRunner
+        paper={paper}
+        onAttempt={handleAttempt}
+        onItemAnswered={handleItemAnswered}
+        onResult={isLearner ? (itemId, topicId, correct) => recordAnswer(itemId, topicId, 'paper', correct) : undefined}
+      />
     </div>
   )
 }

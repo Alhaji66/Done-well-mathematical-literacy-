@@ -586,5 +586,186 @@ insert into results
            and not bool_or(details::text ilike '%12A%')
   from public.audit_log where target_table in ('classes', 'class_members');
 
+-- ===========================================================================
+-- MY MISTAKES AND INTERVENTIONS (STEP 15)
+-- ===========================================================================
+
+-- A parent linked to Learner One.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000a1');
+insert into public.profiles (id, role, full_name) values ('00000000-0000-0000-0000-0000000000a1', 'parent', 'Parent One');
+insert into public.parent_learner_links (parent_id, learner_id)
+  values ('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000b1');
+
+-- 30. A learner's wrong answers are kept, counted, and cleared when right.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+select public.record_answer('q-finance-1', 'finance', 'practice', false);
+select public.record_answer('q-finance-1', 'finance', 'practice', false);
+select public.record_answer('q-finance-2', 'finance', 'weekly_test', false);
+insert into results
+  select '30. two wrong answers to one question are counted',
+         'wrong ' || times_wrong::text || ' time(s)',
+         times_wrong = 2 and resolved_at is null
+  from public.learner_mistakes where question_id = 'q-finance-1';
+select public.record_answer('q-finance-1', 'finance', 'practice', true);
+insert into results
+  select '30b. ...and cleared when the learner gets it right',
+         case when resolved_at is null then 'still open' else 'resolved' end,
+         resolved_at is not null
+  from public.learner_mistakes where question_id = 'q-finance-1';
+
+-- 31. A learner cannot write into somebody else's mistakes.
+do $$ begin
+  begin
+    insert into public.learner_mistakes (learner_id, question_id, topic_id, source)
+      values ('00000000-0000-0000-0000-0000000000b3', 'q-planted', 'finance', 'practice');
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '31. learner plants a mistake in a classmate''s record',
+         count(*)::text || ' planted',
+         count(*) = 0
+  from public.learner_mistakes where question_id = 'q-planted';
+
+-- 32. Who can read a learner's mistakes.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b3');
+set role authenticated;
+insert into results
+  select '32. a classmate reads another learner''s mistakes',
+         count(*)::text || ' visible', count(*) = 0
+  from public.learner_mistakes;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '32b. their teacher reads them',
+         count(*)::text || ' visible', count(*) = 2
+  from public.learner_mistakes;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+insert into results
+  select '32c. a teacher at another school reads them',
+         count(*)::text || ' visible', count(*) = 0
+  from public.learner_mistakes;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results
+  select '32d. the learner''s linked parent reads them',
+         count(*)::text || ' visible', count(*) = 2
+  from public.learner_mistakes;
+reset role;
+
+-- 33. A teacher starts an intervention and adds a learner with a starting point.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.interventions (school_id, class_id, subject_id, grade, topic_id, plan, created_by)
+  select s.school_id, c.id, 'mat-lit', 12, 'finance', 'Two lunchtime sessions on payslips', '00000000-0000-0000-0000-00000000000a'
+  from s, public.classes c where c.name = '12A Mat Lit';
+insert into public.intervention_learners (intervention_id, learner_id, baseline_percent)
+  select id, '00000000-0000-0000-0000-0000000000b1', 40 from public.interventions;
+do $$ begin
+  begin
+    insert into public.intervention_learners (intervention_id, learner_id)
+      select id, '00000000-0000-0000-0000-0000000000d1' from public.interventions;
+  exception when others then null; end;
+  begin
+    insert into public.intervention_learners (intervention_id, learner_id)
+      select id, '00000000-0000-0000-0000-0000000000f1' from public.interventions;
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '33. intervention started; only a learner at the school can be added',
+         string_agg(learner_id::text, ', '),
+         count(*) = 1 and bool_and(learner_id = '00000000-0000-0000-0000-0000000000b1')
+  from public.intervention_learners;
+create temp table iv as select id from public.interventions;
+grant select on iv to authenticated;
+
+-- 34. The learner and their parent can see it; a classmate cannot.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '34. learner in the group sees the intervention and its plan',
+         count(*)::text || ' visible', count(*) = 1 and bool_and(plan <> '')
+  from public.interventions;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results
+  select '34b. their linked parent sees it',
+         count(*)::text || ' visible', count(*) = 1
+  from public.interventions;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b3');
+set role authenticated;
+insert into results
+  select '34c. a learner not in the group sees it or who is in it',
+         (select count(*) from public.interventions)::text || ' intervention(s), '
+           || (select count(*) from public.intervention_learners)::text || ' member(s)',
+         (select count(*) from public.interventions) = 0 and (select count(*) from public.intervention_learners) = 0;
+reset role;
+
+-- 35. A colleague can see it but not close it or change who is in it; nobody deletes one.
+select pg_temp.act('00000000-0000-0000-0000-0000000000c1');
+set role authenticated;
+do $$ begin
+  begin update public.interventions set status = 'cancelled'; exception when others then null; end;
+  begin delete from public.intervention_learners; exception when others then null; end;
+  begin
+    insert into public.intervention_learners (intervention_id, learner_id)
+      select id, '00000000-0000-0000-0000-0000000000b3' from iv;
+  exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin delete from public.interventions; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '35. colleague closes or edits the group; creator deletes it',
+         (select status from public.interventions) || ', '
+           || (select count(*) from public.intervention_learners)::text || ' member(s)',
+         (select status from public.interventions) = 'active'
+           and (select count(*) from public.intervention_learners) = 1;
+
+-- 36. A reassessment test for the group; another school cannot borrow the group.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at, intervention_id)
+  select s.school_id, '00000000-0000-0000-0000-00000000000a', 'Reassessment: finance', 'mat-lit', 12, array['finance'], 6,
+         now() + interval '7 days', iv.id
+  from s, iv;
+update public.interventions set status = 'completed', closed_at = now();
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at, intervention_id)
+      select o.school_id, auth.uid(), 'Borrowed group', 'mat-lit', 12, array['finance'], 6, now(), iv.id from other o, iv;
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '36. reassessment set for the group; another school''s attempt refused; group closed by its teacher',
+         string_agg(title, ', ') || '; ' || (select status from public.interventions),
+         bool_or(title = 'Reassessment: finance') and not bool_or(title = 'Borrowed group')
+           and (select status from public.interventions) = 'completed'
+  from public.weekly_tests where intervention_id is not null;
+
+-- 37. Logged, without the plan's words.
+insert into results
+  select '37. intervention started, learner added and completion are logged',
+         string_agg(distinct action, ', '),
+         bool_or(action = 'intervention.started') and bool_or(action = 'intervention_learner.added')
+           and bool_or(action = 'intervention.completed') and not bool_or(details::text ilike '%payslip%')
+  from public.audit_log where target_table in ('interventions', 'intervention_learners');
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

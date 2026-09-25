@@ -55,6 +55,15 @@ const AccountParentResources = lazy(() =>
 const AccountActivityLog = lazy(() =>
   import('@/pages/account/ActivityLog').then((m) => ({ default: m.ActivityLog })),
 )
+const AccountParentSupport = lazy(() =>
+  import('@/pages/account/parent/ParentSupportAccount').then((m) => ({ default: m.ParentSupportAccount })),
+)
+const AccountInterventions = lazy(() =>
+  import('@/pages/account/Interventions').then((m) => ({ default: m.Interventions })),
+)
+const AccountMyMistakes = lazy(() =>
+  import('@/pages/account/learner/MyMistakes').then((m) => ({ default: m.MyMistakes })),
+)
 const AccountClasses = lazy(() => import('@/pages/account/Classes').then((m) => ({ default: m.Classes })))
 const AccountClassDetail = lazy(() =>
   import('@/pages/account/ClassDetail').then((m) => ({ default: m.ClassDetail })),
@@ -170,6 +179,7 @@ export default function App() {
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="tests" element={<LearnerWeeklyTests />} />
                 <Route path="progress" element={<AccountLearnerProgress />} />
+                <Route path="mistakes" element={<AccountMyMistakes />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
@@ -187,6 +197,7 @@ export default function App() {
                 <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="classes" element={<AccountClasses />} />
                 <Route path="classes/:classId" element={<AccountClassDetail />} />
+                <Route path="interventions" element={<AccountInterventions />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -197,7 +208,7 @@ export default function App() {
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<AccountParentDashboard />} />
                 <Route path="resources" element={<AccountParentResources />} />
-                <Route path="support" element={<ParentSupport />} />
+                <Route path="support" element={<AccountParentSupport />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
@@ -224,6 +235,7 @@ export default function App() {
                 <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="classes" element={<AccountClasses />} />
                 <Route path="classes/:classId" element={<AccountClassDetail />} />
+                <Route path="interventions" element={<AccountInterventions />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -242,6 +254,7 @@ export default function App() {
                 <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="classes" element={<AccountClasses />} />
                 <Route path="classes/:classId" element={<AccountClassDetail />} />
+                <Route path="interventions" element={<AccountInterventions />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>

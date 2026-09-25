@@ -10,6 +10,7 @@ import {
   type TestAttempt,
   type WeeklyTest,
 } from '@/lib/weeklyTests'
+import { recordAnswer } from '@/lib/mistakes'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { MarkingMemo } from '@/components/practise/MarkingMemo'
@@ -108,6 +109,10 @@ export function LearnerWeeklyTests() {
       return
     }
     setFinished(true)
+    // Anything short of full marks goes to My Mistakes; full marks clears an
+    // earlier miss on the same question. Not awaited in sequence -- it must not
+    // hold up the learner seeing that their test was handed in.
+    void Promise.all(questions.map((q) => recordAnswer(q.id, q.topicId, 'weekly_test', (marks[q.id] ?? 0) >= q.marks)))
     setAttempts(await fetchMyAttempts(profile.id))
   }
 

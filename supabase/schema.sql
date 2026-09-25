@@ -1600,3 +1600,353 @@ drop trigger if exists audit_class_members on public.class_members;
 create trigger audit_class_members
   after insert or delete on public.class_members
   for each row execute function public.audit_class_members();
+
+-- ============================================================================
+-- STEP 15: MY MISTAKES, AND THE DIAGNOSE -> INTERVENE -> REASSESS LOOP
+-- ============================================================================
+--
+-- WHY. Section 34 of the spec describes an assessment cycle -- practise,
+-- assess, analyse, diagnose, intervene, reassess, track -- and the app stopped
+-- at "analyse". A teacher could see that half the class is below 50% on
+-- financial documents and then had nowhere in the app to act on it.
+--
+-- MY MISTAKES. Every question a learner gets wrong is kept, with how many
+-- times, until they get it right. It is the learner's own record: they write
+-- it, their teachers and linked parents can read it, nobody else can.
+--
+-- INTERVENTIONS ("catch-up groups" in the app). A teacher picks a topic and the
+-- learners who need help with it, writes a short plan, and records each
+-- learner's starting point (their score on the test that showed the problem,
+-- or their practice mastery). A reassessment is a weekly test set for the
+-- group alone; comparing it with the starting point is the "did it work".
+--
+-- Who sees an intervention: approved staff at the school, the learners in it,
+-- and those learners' linked parents -- the plan is written for all three, and
+-- the app says so where it is typed. An intervention is never deleted, only
+-- completed or cancelled, so its before-and-after survives.
+
+create table if not exists public.learner_mistakes (
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  -- Question ids from the bundled curriculum, like topic ids.
+  question_id text not null,
+  topic_id text not null,
+  source text not null check (source in ('practice', 'paper', 'weekly_test')),
+  times_wrong integer not null default 1,
+  first_wrong_at timestamptz not null default now(),
+  last_wrong_at timestamptz not null default now(),
+  -- Set when the learner later gets it right; cleared if they get it wrong again.
+  resolved_at timestamptz,
+  primary key (learner_id, question_id)
+);
+
+create index if not exists learner_mistakes_open_idx on public.learner_mistakes (learner_id) where resolved_at is null;
+
+alter table public.learner_mistakes enable row level security;
+
+drop policy if exists "Learners can view their own mistakes" on public.learner_mistakes;
+create policy "Learners can view their own mistakes"
+  on public.learner_mistakes for select
+  using (learner_id = auth.uid());
+
+drop policy if exists "Learners can record their own mistakes" on public.learner_mistakes;
+create policy "Learners can record their own mistakes"
+  on public.learner_mistakes for insert
+  with check (learner_id = auth.uid());
+
+drop policy if exists "Learners can update their own mistakes" on public.learner_mistakes;
+create policy "Learners can update their own mistakes"
+  on public.learner_mistakes for update
+  using (learner_id = auth.uid())
+  with check (learner_id = auth.uid());
+
+drop policy if exists "Learners can clear their own mistakes" on public.learner_mistakes;
+create policy "Learners can clear their own mistakes"
+  on public.learner_mistakes for delete
+  using (learner_id = auth.uid());
+
+drop policy if exists "Staff can view mistakes within their school" on public.learner_mistakes;
+create policy "Staff can view mistakes within their school"
+  on public.learner_mistakes for select
+  using (
+    exists (
+      select 1 from public.profiles
+      where profiles.id = learner_mistakes.learner_id
+        and profiles.school_id = public.current_school_id()
+    )
+    and public.is_school_staff(public.current_school_id())
+  );
+
+drop policy if exists "Linked parents can view their child's mistakes" on public.learner_mistakes;
+create policy "Linked parents can view their child's mistakes"
+  on public.learner_mistakes for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = learner_mistakes.learner_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+-- One call per answer. SECURITY INVOKER, so the policies above still apply:
+-- it can only ever touch the caller's own rows.
+create or replace function public.record_answer(p_question text, p_topic text, p_source text, p_correct boolean)
+returns void
+language plpgsql
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    raise exception 'Not signed in.';
+  end if;
+  if p_correct then
+    update public.learner_mistakes set resolved_at = now()
+      where learner_id = auth.uid() and question_id = p_question and resolved_at is null;
+  else
+    insert into public.learner_mistakes (learner_id, question_id, topic_id, source)
+      values (auth.uid(), p_question, p_topic, p_source)
+    on conflict (learner_id, question_id) do update
+      set times_wrong = public.learner_mistakes.times_wrong + 1,
+          last_wrong_at = now(),
+          resolved_at = null,
+          source = excluded.source;
+  end if;
+end;
+$$;
+
+grant execute on function public.record_answer(text, text, text, boolean) to authenticated;
+
+-- A learner's account deletion takes their mistakes with it (on delete cascade).
+
+-- Interventions ---------------------------------------------------------------
+
+create table if not exists public.interventions (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  class_id uuid references public.classes (id) on delete set null,
+  subject_id text not null,
+  grade smallint not null check (grade in (10, 11, 12)),
+  topic_id text not null,
+  -- 'topicId::name' when narrowed to one sub-topic.
+  subtopic text,
+  plan text not null default '' check (length(plan) <= 2000),
+  -- Where the starting points came from: a weekly test, or practice mastery.
+  diagnostic_test_id uuid references public.weekly_tests (id) on delete set null,
+  status text not null default 'active' check (status in ('active', 'completed', 'cancelled')),
+  created_by uuid references public.profiles (id) on delete set null,
+  created_at timestamptz not null default now(),
+  closed_at timestamptz
+);
+
+create index if not exists interventions_school_idx on public.interventions (school_id, status);
+
+create table if not exists public.intervention_learners (
+  intervention_id uuid not null references public.interventions (id) on delete cascade,
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  -- The learner's starting point, 0-100, captured when they were added.
+  baseline_percent smallint check (baseline_percent between 0 and 100),
+  added_at timestamptz not null default now(),
+  primary key (intervention_id, learner_id)
+);
+
+create index if not exists intervention_learners_learner_idx on public.intervention_learners (learner_id);
+
+-- A reassessment is a weekly test set for one intervention's learners.
+alter table public.weekly_tests
+  add column if not exists intervention_id uuid references public.interventions (id) on delete restrict;
+
+alter table public.interventions enable row level security;
+alter table public.intervention_learners enable row level security;
+-- Interventions are closed, not deleted, so nobody in the app may delete one.
+revoke delete, truncate on public.interventions from authenticated, anon;
+
+create or replace function public.intervention_school(p_intervention uuid)
+returns uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select school_id from public.interventions where id = p_intervention;
+$$;
+
+create or replace function public.in_intervention(p_intervention uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.intervention_learners il
+    where il.intervention_id = p_intervention
+      and (il.learner_id = auth.uid()
+           or exists (select 1 from public.parent_learner_links pl
+                      where pl.learner_id = il.learner_id and pl.parent_id = auth.uid()))
+  );
+$$;
+
+-- The person who started it, or a school leader, runs an intervention.
+create or replace function public.can_manage_intervention(p_intervention uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select coalesce(
+    (select public.can_manage_class(school_id, created_by) from public.interventions where id = p_intervention),
+    false);
+$$;
+
+drop policy if exists "Staff can view interventions at their school" on public.interventions;
+create policy "Staff can view interventions at their school"
+  on public.interventions for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Learners and parents can view interventions they are part of" on public.interventions;
+create policy "Learners and parents can view interventions they are part of"
+  on public.interventions for select
+  using (public.in_intervention(id));
+
+drop policy if exists "Staff can start an intervention" on public.interventions;
+create policy "Staff can start an intervention"
+  on public.interventions for insert
+  with check (
+    created_by = auth.uid()
+    and school_id = public.current_school_id()
+    and public.is_school_staff(school_id)
+    and (class_id is null or public.class_school(class_id) = school_id)
+  );
+
+drop policy if exists "The teacher who started it or a school leader can update an intervention" on public.interventions;
+create policy "The teacher who started it or a school leader can update an intervention"
+  on public.interventions for update
+  using (public.can_manage_class(school_id, created_by))
+  with check (
+    school_id = public.current_school_id()
+    and public.can_manage_class(school_id, created_by)
+    and (class_id is null or public.class_school(class_id) = school_id)
+  );
+
+drop policy if exists "Staff can view intervention groups at their school" on public.intervention_learners;
+create policy "Staff can view intervention groups at their school"
+  on public.intervention_learners for select
+  using (public.is_school_staff(public.intervention_school(intervention_id)));
+
+drop policy if exists "Learners can view their own place in an intervention" on public.intervention_learners;
+create policy "Learners can view their own place in an intervention"
+  on public.intervention_learners for select
+  using (learner_id = auth.uid());
+
+drop policy if exists "Linked parents can view their child's place in an intervention" on public.intervention_learners;
+create policy "Linked parents can view their child's place in an intervention"
+  on public.intervention_learners for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = intervention_learners.learner_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+drop policy if exists "Intervention managers can add learners from their school" on public.intervention_learners;
+create policy "Intervention managers can add learners from their school"
+  on public.intervention_learners for insert
+  with check (
+    public.can_manage_intervention(intervention_id)
+    and public.is_learner_at(learner_id, public.intervention_school(intervention_id))
+  );
+
+drop policy if exists "Intervention managers can remove learners" on public.intervention_learners;
+create policy "Intervention managers can remove learners"
+  on public.intervention_learners for delete
+  using (public.can_manage_intervention(intervention_id));
+
+-- Tests: a class or intervention must belong to the test's own school.
+drop policy if exists "Staff can set a test for their school" on public.weekly_tests;
+create policy "Staff can set a test for their school"
+  on public.weekly_tests for insert
+  with check (
+    created_by = auth.uid() and public.is_school_staff(school_id)
+    and (class_id is null or public.class_school(class_id) = school_id)
+    and (intervention_id is null or public.intervention_school(intervention_id) = school_id)
+  );
+
+drop policy if exists "Staff can change a test at their school" on public.weekly_tests;
+create policy "Staff can change a test at their school"
+  on public.weekly_tests for update
+  using (public.is_school_staff(school_id))
+  with check (
+    public.is_school_staff(school_id)
+    and (class_id is null or public.class_school(class_id) = school_id)
+    and (intervention_id is null or public.intervention_school(intervention_id) = school_id)
+  );
+
+-- Leaving the school takes a learner out of its interventions, as with classes.
+create or replace function public.tidy_intervention_learners()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.school_id is distinct from old.school_id or new.role::text <> 'learner' then
+    delete from public.intervention_learners il
+    using public.interventions i
+    where il.intervention_id = i.id and il.learner_id = new.id
+      and (i.school_id is distinct from new.school_id or new.role::text <> 'learner');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists tidy_intervention_learners on public.profiles;
+create trigger tidy_intervention_learners
+  after update of school_id, role on public.profiles
+  for each row execute function public.tidy_intervention_learners();
+
+-- Audit (STEP 13). The plan is typed text and is not copied into the log.
+create or replace function public.audit_interventions()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    perform public.write_audit(new.school_id, 'intervention.started', 'interventions', new.id::text,
+      jsonb_build_object('topic', new.topic_id, 'grade', new.grade, 'subject', new.subject_id));
+  elsif new.status is distinct from old.status then
+    perform public.write_audit(new.school_id, 'intervention.' || new.status, 'interventions', new.id::text,
+      jsonb_build_object('topic', new.topic_id, 'grade', new.grade, 'subject', new.subject_id));
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists audit_interventions on public.interventions;
+create trigger audit_interventions
+  after insert or update on public.interventions
+  for each row execute function public.audit_interventions();
+
+create or replace function public.audit_intervention_learners()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.intervention_learners := case when tg_op = 'DELETE' then old else new end;
+begin
+  perform public.write_audit(public.intervention_school(r.intervention_id),
+    case when tg_op = 'INSERT' then 'intervention_learner.added' else 'intervention_learner.removed' end,
+    'intervention_learners', r.learner_id::text,
+    jsonb_build_object('intervention_id', r.intervention_id));
+  return r;
+end;
+$$;
+
+drop trigger if exists audit_intervention_learners on public.intervention_learners;
+create trigger audit_intervention_learners
+  after insert or delete on public.intervention_learners
+  for each row execute function public.audit_intervention_learners();

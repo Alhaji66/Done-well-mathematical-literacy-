@@ -22,12 +22,20 @@ interface QuestionCardProps {
   /** Optional: overrides the "Question {index+1}" badge text -- used for exam-style
    * sub-question numbering (e.g. "1.1") when this card is part of a Paper section. */
   label?: string
+  /**
+   * Optional: whether the learner got it right, for My Mistakes. Multiple
+   * choice reports itself; an open question is answered by the learner marking
+   * themselves against the memo, so it is only reported once they say how it
+   * went -- never guessed from the fact that they looked at the answer.
+   */
+  onResult?: (correct: boolean) => void
 }
 
-export function QuestionCard({ question, index, onAttempt, label }: QuestionCardProps) {
+export function QuestionCard({ question, index, onAttempt, label, onResult }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [attemptedText, setAttemptedText] = useState('')
   const [revealed, setRevealed] = useState(false)
+  const [selfMark, setSelfMark] = useState<boolean | null>(null)
 
   // A figure or graph written on the question always wins; otherwise one
   // derived from the question's own words. See src/data/graphSpecs.ts and
@@ -47,6 +55,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
     setSelectedOption(null)
     setAttemptedText('')
     setRevealed(false)
+    setSelfMark(null)
   }
 
   return (
@@ -85,6 +94,7 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
                 onClick={() => {
                   setSelectedOption(opt.id)
                   onAttempt?.(opt.id === question.correctOptionId)
+                  onResult?.(opt.id === question.correctOptionId)
                 }}
                 className={cn(
                   'flex w-full items-center justify-between rounded-lg border px-4 py-3 text-left text-sm transition-colors disabled:cursor-default',
@@ -158,6 +168,37 @@ export function QuestionCard({ question, index, onAttempt, label }: QuestionCard
           {answerGraph ? <Graph spec={answerGraph} /> : null}
           {answerCircuit ? <Circuit spec={answerCircuit} /> : null}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
+          {!isMcq && onResult ? (
+            selfMark === null ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-navy-200 pt-3">
+                <span className="text-xs font-medium text-navy-600">How did you do?</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelfMark(true)
+                    onResult(true)
+                  }}
+                  className="btn-outline btn-sm"
+                >
+                  I got it right
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelfMark(false)
+                    onResult(false)
+                  }}
+                  className="btn-outline btn-sm"
+                >
+                  Not yet — save to My Mistakes
+                </button>
+              </div>
+            ) : (
+              <p className="mt-3 border-t border-navy-200 pt-3 text-xs text-navy-500">
+                {selfMark ? 'Marked as right.' : 'Saved to My Mistakes, so you can come back to it.'}
+              </p>
+            )
+          ) : null}
         </div>
       )}
 

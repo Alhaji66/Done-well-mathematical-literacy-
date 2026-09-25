@@ -245,6 +245,18 @@ export function ClassDetail() {
                   </p>
                   <p className="text-xs text-navy-500">
                     {learners} of {members.length} learner{members.length === 1 ? '' : 's'} practised
+                    {manage && mean !== null && mean < ATTENTION ? (
+                      <>
+                        {' · '}
+                        <Link
+                          to={`../../interventions?class=${cls.id}&topic=${topic.id}`}
+                          relative="path"
+                          className="font-semibold text-gold-700 underline"
+                        >
+                          Start a catch-up group
+                        </Link>
+                      </>
+                    ) : null}
                   </p>
                 </div>
                 <div className="w-full sm:w-48">

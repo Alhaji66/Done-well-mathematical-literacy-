@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { subjects } from '@/data/subjects'
 import { topicsForSubject } from '@/data/topics'
@@ -12,6 +13,7 @@ import {
 } from '@/lib/weeklyTests'
 import { fetchSchoolLearners, type RosterLearner } from '@/lib/teacherRoster'
 import { classesInView, fetchClassMembers, fetchClasses, type ClassMember, type SchoolClass } from '@/lib/classes'
+import { fetchInterventionLearners, type InterventionLearner } from '@/lib/interventions'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ProgressBar } from '@/components/ui/ProgressBar'
@@ -43,6 +45,7 @@ export function WeeklyTests() {
   const [showForm, setShowForm] = useState(false)
   const [classes, setClasses] = useState<SchoolClass[]>([])
   const [classMembers, setClassMembers] = useState<ClassMember[]>([])
+  const [groupMembers, setGroupMembers] = useState<InterventionLearner[]>([])
   /** '' means the whole grade. */
   const [classId, setClassId] = useState('')
 
@@ -84,6 +87,8 @@ export function WeeklyTests() {
       if (!active) return
       setClasses(found)
       setClassMembers(await fetchClassMembers(found.map((c) => c.id)))
+      const groups = [...new Set(rows.map((t) => t.intervention_id).filter((x): x is string => Boolean(x)))]
+      setGroupMembers(await fetchInterventionLearners(groups))
       const byTest: Record<string, TestAttempt[]> = {}
       for (const t of rows) byTest[t.id] = await fetchAttemptsForTest(t.id)
       if (active) {
@@ -526,9 +531,13 @@ export function WeeklyTests() {
           {tests.map((test) => {
             const rows = (attempts[test.id] ?? []).filter((a) => a.submitted_at)
             // A class test is sat by that class; any other by the whole grade.
-            const inClass = test.class_id
-              ? new Set(classMembers.filter((m) => m.class_id === test.class_id).map((m) => m.learner_id))
-              : null
+            // A reassessment is sat by its catch-up group; a class test by the
+            // class; any other by the whole grade.
+            const inClass = test.intervention_id
+              ? new Set(groupMembers.filter((m) => m.intervention_id === test.intervention_id).map((m) => m.learner_id))
+              : test.class_id
+                ? new Set(classMembers.filter((m) => m.class_id === test.class_id).map((m) => m.learner_id))
+                : null
             const forGrade = inClass
               ? learners.filter((l) => inClass.has(l.id))
               : expected.filter((l) => l.grade === test.grade && l.subject_id === test.subject_id)
@@ -549,7 +558,12 @@ export function WeeklyTests() {
                   <div className="min-w-0">
                     <h3 className="text-base font-bold text-navy-900">{test.title}</h3>
                     <p className="mt-0.5 text-xs text-navy-500">
-                      {test.class_id ? `${className(test.class_id) ?? 'One class'}` : `Grade ${test.grade}`} ·{' '}
+                      {test.intervention_id
+                        ? 'Catch-up group'
+                        : test.class_id
+                          ? `${className(test.class_id) ?? 'One class'}`
+                          : `Grade ${test.grade}`}{' '}
+                      ·{' '}
                       {test.question_count} questions ·{' '}
                       {test.subtopics?.length
                         ? `${test.subtopics.length} sub-topic${test.subtopics.length === 1 ? '' : 's'}`
@@ -580,6 +594,14 @@ export function WeeklyTests() {
                     </dd>
                   </div>
                 </dl>
+
+                {rows.length > 0 && !test.intervention_id ? (
+                  <p className="mt-3 text-xs">
+                    <Link to={`../interventions?test=${test.id}`} relative="path" className="font-semibold text-gold-700 underline">
+                      Start a catch-up group from these results
+                    </Link>
+                  </p>
+                ) : null}
 
                 {rows.length > 0 ? (
                   <ul className="mt-4 space-y-2 border-t border-navy-100 pt-4">

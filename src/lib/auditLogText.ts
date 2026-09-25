@@ -106,6 +106,18 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
       return `${actor} added ${target} to a catch-up group.`
     case 'intervention_learner.removed':
       return `${actor} removed ${target} from a catch-up group.`
+    case 'school.suspended':
+      return 'DONE WELL paused the school’s access. Staff cannot see learner data until it is reactivated.'
+    case 'school.reactivated':
+      return 'DONE WELL reactivated the school’s access.'
+    case 'subscription.created':
+    case 'subscription.changed':
+    case 'subscription.removed': {
+      const plan = { pilot: 'pilot', school: 'school licence', sponsored: 'sponsored programme place' }[String(d.plan)] ?? 'licence'
+      const verb = e.action.endsWith('created') ? 'recorded' : e.action.endsWith('changed') ? 'updated' : 'removed'
+      const seats = d.seats != null ? ` for ${String(d.seats)} learners` : ''
+      return `DONE WELL ${verb} the school’s ${plan}${seats}.`
+    }
     default:
       return `${actor}: ${e.action}.`
   }

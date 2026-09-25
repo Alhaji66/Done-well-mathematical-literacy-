@@ -3,8 +3,10 @@ import { useAccountAuth } from '@/context/AccountAuthContext'
 
 interface AccountGateProps {
   /** 'session': must be signed in (used by onboarding -- and redirects away if already onboarded).
-   *  'profile': must be signed in AND have completed onboarding (used by the dashboard). */
-  require: 'session' | 'profile'
+   *  'profile': must be signed in AND have completed onboarding (used by the dashboard).
+   *  'signed-in': must be signed in; a profile is optional (the platform console and a sponsor's
+   *  dashboard, whose people are not members of any school). */
+  require: 'session' | 'profile' | 'signed-in'
 }
 
 export function AccountGate({ require }: AccountGateProps) {

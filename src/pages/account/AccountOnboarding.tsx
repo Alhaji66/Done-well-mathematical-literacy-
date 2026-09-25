@@ -6,6 +6,7 @@ import { UserIcon, HeartHandshakeIcon, BookIcon, SchoolIcon, CheckCircleIcon } f
 import { recordConsent } from '@/lib/privacy'
 import { createSchool, joinSchool, normaliseJoinCode } from '@/lib/schools'
 import { cn } from '@/lib/utils'
+import { usePlatformAccess } from '@/lib/platform'
 import type { Grade } from '@/types'
 
 const roleOptions: { role: AccountRole; label: string; desc: string; icon: (p: { className?: string }) => JSX.Element }[] = [
@@ -28,6 +29,9 @@ const grades: Grade[] = [10, 11, 12]
 export function AccountOnboarding() {
   const { session, refreshProfile } = useAccountAuth()
   const navigate = useNavigate()
+  // DONE WELL administrators and sponsors are not members of a school and
+  // need not create a profile; offer them their own page instead.
+  const platform = usePlatformAccess(session?.user.id)
 
   const [role, setRole] = useState<AccountRole>('learner')
   const [fullName, setFullName] = useState('')
@@ -203,6 +207,29 @@ export function AccountOnboarding() {
         <div className="card p-6 sm:p-8">
           <h1 className="text-xl font-bold text-navy-900">Complete your profile</h1>
           <p className="mt-1.5 text-sm text-navy-600">One-time setup -- tell us who you are.</p>
+
+          {platform.admin || platform.sponsor ? (
+            <div className="mt-4 rounded-lg border border-gold-200 bg-gold-50 p-3 text-sm text-navy-800">
+              {platform.admin ? (
+                <p>
+                  You are a DONE WELL administrator.{' '}
+                  <Link to="/account/admin" className="font-semibold underline">
+                    Open the platform console
+                  </Link>{' '}
+                  — you do not need a school profile for it.
+                </p>
+              ) : null}
+              {platform.sponsor ? (
+                <p className={platform.admin ? 'mt-1' : ''}>
+                  Your organisation sponsors DONE WELL in schools.{' '}
+                  <Link to="/account/sponsor" className="font-semibold underline">
+                    Open your sponsor dashboard
+                  </Link>
+                  .
+                </p>
+              ) : null}
+            </div>
+          ) : null}
 
           <form onSubmit={submit} className="mt-6 space-y-5">
             <div>

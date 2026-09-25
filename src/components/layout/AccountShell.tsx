@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import type { RoleNavItem } from '@/components/layout/RoleShell'
 import { NotificationBell } from '@/components/account/NotificationBell'
 import { logSignedIn } from '@/lib/activity'
+import { usePlatformAccess } from '@/lib/platform'
 
 const roleLabels: Record<AccountRole, string> = {
   learner: 'Learner',
@@ -22,6 +23,7 @@ interface AccountShellProps {
 
 export function AccountShell({ basePath, navItems }: AccountShellProps) {
   const { profile, signOut } = useAccountAuth()
+  const platform = usePlatformAccess(profile?.id)
 
   // One "signed in" event a day, for the school's active-learner count.
   useEffect(() => {
@@ -52,6 +54,16 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
               <p className="text-sm font-semibold text-navy-900">{profile?.full_name}</p>
               <p className="text-xs text-navy-500">{profile ? roleLabels[profile.role] : ''}</p>
             </div>
+            {platform.admin ? (
+              <Link to="/account/admin" className="hidden text-sm font-medium text-gold-700 hover:text-navy-900 sm:inline">
+                Platform console
+              </Link>
+            ) : null}
+            {platform.sponsor ? (
+              <Link to="/account/sponsor" className="hidden text-sm font-medium text-gold-700 hover:text-navy-900 sm:inline">
+                Sponsor dashboard
+              </Link>
+            ) : null}
             <NotificationBell basePath={basePath} />
             <button type="button" onClick={signOut} className="btn-ghost btn-sm !px-2.5" title="Sign out">
               <LogOutIcon className="h-4 w-4" />

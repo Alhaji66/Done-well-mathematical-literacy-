@@ -2221,3 +2221,404 @@ drop trigger if exists notify_parent_link on public.parent_learner_links;
 create trigger notify_parent_link
   after insert on public.parent_learner_links
   for each row execute function public.notify_parent_link();
+
+-- ============================================================================
+-- STEP 17: PLATFORM ADMINISTRATION, SUBSCRIPTIONS, PILOTS AND SPONSORS
+-- ============================================================================
+--
+-- WHO RUNS THE PLATFORM. A platform administrator is DONE WELL staff, not
+-- school staff. There is deliberately no way to become one from the app: an
+-- operator adds a row to platform_admins in the SQL editor --
+--
+--   insert into public.platform_admins (user_id)
+--   select id from auth.users where email = 'someone@example.com';
+--
+-- An administrator sees every school's TOTALS -- how many learners, how many
+-- active, which plan -- and can pause a school and manage its subscription.
+-- They do NOT get learners' names, answers or marks through any of this: the
+-- overview is counts, computed inside the database.
+--
+-- PAUSING A SCHOOL. A paused (suspended) school's staff stop being staff as far
+-- as the access rules are concerned, so they see no learner data until it is
+-- reactivated. Learners keep their own account and progress.
+--
+-- SUBSCRIPTIONS. One row per licence period: a pilot, a school licence, or a
+-- place in a sponsored programme, with a number of learner seats. Seats are
+-- shown against the school's learner count; going over does NOT lock children
+-- out -- it is flagged for the school and the administrator to sort out.
+--
+-- SPONSORS. A sponsor funds a programme of schools and sees how that programme
+-- is doing -- in TOTALS ONLY, per school, never a learner. Where a school has
+-- fewer than five learners its figures are withheld, because an average over
+-- two or three children is close to a statement about each of them.
+
+create table if not exists public.platform_admins (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  added_at timestamptz not null default now()
+);
+
+alter table public.platform_admins enable row level security;
+revoke insert, update, delete, truncate on public.platform_admins from authenticated, anon;
+
+create or replace function public.is_platform_admin()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (select 1 from public.platform_admins where user_id = auth.uid());
+$$;
+grant execute on function public.is_platform_admin() to authenticated;
+
+drop policy if exists "Administrators can see who the administrators are" on public.platform_admins;
+create policy "Administrators can see who the administrators are"
+  on public.platform_admins for select
+  using (public.is_platform_admin());
+
+alter table public.schools add column if not exists suspended_at timestamptz;
+
+-- Staff of a paused school are not staff, as far as reading learner data goes.
+create or replace function public.is_school_staff(p_school_id uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles p
+    join public.schools s on s.id = p.school_id
+    where p.id = auth.uid()
+      and p.school_id = p_school_id
+      and p.role::text in ('teacher', 'school', 'hod')
+      and p.staff_approved_at is not null
+      and s.suspended_at is null
+  );
+$$;
+
+create or replace function public.set_school_suspended(p_school uuid, p_suspend boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a platform administrator can pause or reactivate a school.';
+  end if;
+  update public.schools set suspended_at = case when p_suspend then now() else null end where id = p_school;
+  perform public.write_audit(p_school, case when p_suspend then 'school.suspended' else 'school.reactivated' end,
+    'schools', p_school::text, '{}'::jsonb);
+end;
+$$;
+grant execute on function public.set_school_suspended(uuid, boolean) to authenticated;
+
+-- Sponsors and programmes ----------------------------------------------------
+
+create table if not exists public.sponsors (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique check (length(btrim(name)) between 1 and 120),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.programmes (
+  id uuid primary key default gen_random_uuid(),
+  sponsor_id uuid not null references public.sponsors (id) on delete restrict,
+  name text not null check (length(btrim(name)) between 1 and 120),
+  starts_on date,
+  ends_on date,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.programme_schools (
+  programme_id uuid not null references public.programmes (id) on delete cascade,
+  school_id uuid not null references public.schools (id) on delete cascade,
+  primary key (programme_id, school_id)
+);
+
+create table if not exists public.sponsor_members (
+  sponsor_id uuid not null references public.sponsors (id) on delete cascade,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  primary key (sponsor_id, user_id)
+);
+
+create or replace function public.is_sponsor_member(p_sponsor uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (select 1 from public.sponsor_members where sponsor_id = p_sponsor and user_id = auth.uid());
+$$;
+
+create or replace function public.my_sponsor_ids()
+returns setof uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select sponsor_id from public.sponsor_members where user_id = auth.uid();
+$$;
+grant execute on function public.my_sponsor_ids() to authenticated;
+
+-- Helpers for the policies below. Programmes and their schools each need to
+-- look at the other to decide access, and two policies that read each other's
+-- tables recurse forever -- so the lookups run as the owner instead.
+create or replace function public.programme_sponsor(p_programme uuid)
+returns uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select sponsor_id from public.programmes where id = p_programme;
+$$;
+
+create or replace function public.staff_in_programme(p_programme uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (select 1 from public.programme_schools ps
+                 where ps.programme_id = p_programme and public.is_school_staff(ps.school_id));
+$$;
+
+create or replace function public.staff_sponsored_by(p_sponsor uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (select 1 from public.programmes p join public.programme_schools ps on ps.programme_id = p.id
+                 where p.sponsor_id = p_sponsor and public.is_school_staff(ps.school_id));
+$$;
+
+alter table public.sponsors enable row level security;
+alter table public.programmes enable row level security;
+alter table public.programme_schools enable row level security;
+alter table public.sponsor_members enable row level security;
+
+-- Administrators manage all of it.
+drop policy if exists "Administrators manage sponsors" on public.sponsors;
+create policy "Administrators manage sponsors" on public.sponsors for all
+  using (public.is_platform_admin()) with check (public.is_platform_admin());
+drop policy if exists "Administrators manage programmes" on public.programmes;
+create policy "Administrators manage programmes" on public.programmes for all
+  using (public.is_platform_admin()) with check (public.is_platform_admin());
+drop policy if exists "Administrators manage programme schools" on public.programme_schools;
+create policy "Administrators manage programme schools" on public.programme_schools for all
+  using (public.is_platform_admin()) with check (public.is_platform_admin());
+drop policy if exists "Administrators manage sponsor members" on public.sponsor_members;
+create policy "Administrators manage sponsor members" on public.sponsor_members for all
+  using (public.is_platform_admin()) with check (public.is_platform_admin());
+
+-- A sponsor's own people see their sponsor and its programmes.
+drop policy if exists "Sponsor members see their sponsor" on public.sponsors;
+create policy "Sponsor members see their sponsor" on public.sponsors for select
+  using (public.is_sponsor_member(id));
+drop policy if exists "Sponsor members see their programmes" on public.programmes;
+create policy "Sponsor members see their programmes" on public.programmes for select
+  using (public.is_sponsor_member(sponsor_id));
+drop policy if exists "Sponsor members see their programmes' schools" on public.programme_schools;
+create policy "Sponsor members see their programmes' schools" on public.programme_schools for select
+  using (public.is_sponsor_member(public.programme_sponsor(programme_id)));
+drop policy if exists "Sponsor members see their own membership" on public.sponsor_members;
+create policy "Sponsor members see their own membership" on public.sponsor_members for select
+  using (user_id = auth.uid());
+
+-- A school can see which programmes it is in, and who sponsors them.
+drop policy if exists "Staff see their school's programmes" on public.programme_schools;
+create policy "Staff see their school's programmes" on public.programme_schools for select
+  using (public.is_school_staff(school_id));
+drop policy if exists "Staff see programmes their school is in" on public.programmes;
+create policy "Staff see programmes their school is in" on public.programmes for select
+  using (public.staff_in_programme(id));
+drop policy if exists "Staff see sponsors of their school's programmes" on public.sponsors;
+create policy "Staff see sponsors of their school's programmes" on public.sponsors for select
+  using (public.staff_sponsored_by(id));
+
+-- Subscriptions -----------------------------------------------------------------
+
+create table if not exists public.subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  plan text not null check (plan in ('pilot', 'school', 'sponsored')),
+  status text not null default 'active' check (status in ('active', 'past_due', 'cancelled', 'expired')),
+  learner_seats integer check (learner_seats is null or learner_seats >= 0),
+  starts_on date not null default current_date,
+  ends_on date,
+  programme_id uuid references public.programmes (id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists subscriptions_school_idx on public.subscriptions (school_id, starts_on desc);
+
+alter table public.subscriptions enable row level security;
+
+drop policy if exists "Administrators manage subscriptions" on public.subscriptions;
+create policy "Administrators manage subscriptions" on public.subscriptions for all
+  using (public.is_platform_admin()) with check (public.is_platform_admin());
+
+drop policy if exists "Staff can see their school's subscription" on public.subscriptions;
+create policy "Staff can see their school's subscription" on public.subscriptions for select
+  using (public.is_school_staff(school_id));
+
+create or replace function public.audit_subscriptions()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.subscriptions := case when tg_op = 'DELETE' then old else new end;
+begin
+  perform public.write_audit(r.school_id,
+    'subscription.' || case tg_op when 'INSERT' then 'created' when 'UPDATE' then 'changed' else 'removed' end,
+    'subscriptions', r.id::text,
+    jsonb_build_object('plan', r.plan, 'status', r.status, 'seats', r.learner_seats, 'ends_on', r.ends_on));
+  return r;
+end;
+$$;
+
+create or replace function public.touch_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists touch_subscriptions on public.subscriptions;
+create trigger touch_subscriptions
+  before update on public.subscriptions
+  for each row execute function public.touch_updated_at();
+
+drop trigger if exists audit_subscriptions on public.subscriptions;
+create trigger audit_subscriptions
+  after insert or update or delete on public.subscriptions
+  for each row execute function public.audit_subscriptions();
+
+-- Administrator overview: every school, in counts only. -----------------------
+
+create or replace function public.admin_school_overview()
+returns table (
+  school_id uuid, name text, created_at timestamptz, suspended_at timestamptz,
+  learners bigint, staff bigint, pending_staff bigint, active_7d bigint,
+  plan text, status text, learner_seats integer, ends_on date
+)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a platform administrator can see every school.';
+  end if;
+  return query
+  select s.id, s.name, s.created_at, s.suspended_at,
+    (select count(*) from public.profiles p where p.school_id = s.id and p.role::text = 'learner'),
+    (select count(*) from public.profiles p where p.school_id = s.id and p.role::text in ('teacher', 'school', 'hod') and p.staff_approved_at is not null),
+    (select count(*) from public.profiles p where p.school_id = s.id and p.role::text in ('teacher', 'school', 'hod') and p.staff_approved_at is null),
+    (select count(distinct e.actor_id) from public.activity_events e
+       join public.profiles p on p.id = e.actor_id and p.role::text = 'learner'
+       where e.school_id = s.id and e.at > now() - interval '7 days'),
+    sub.plan, sub.status, sub.learner_seats, sub.ends_on
+  from public.schools s
+  left join lateral (
+    select * from public.subscriptions x where x.school_id = s.id order by x.starts_on desc, x.created_at desc limit 1
+  ) sub on true
+  order by s.name;
+end;
+$$;
+grant execute on function public.admin_school_overview() to authenticated;
+
+-- Programme totals: what a sponsor sees. -----------------------------------------
+
+create or replace function public.programme_totals(p_programme uuid)
+returns table (
+  school_id uuid, school_name text, withheld boolean,
+  learners bigint, active_7d bigint, answers_7d bigint, average_mastery integer,
+  tests_handed_in bigint, reassessed bigint, improved bigint
+)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+declare
+  v_sponsor uuid := (select sponsor_id from public.programmes where id = p_programme);
+begin
+  if v_sponsor is null then
+    raise exception 'That programme was not found.';
+  end if;
+  if not (public.is_platform_admin() or public.is_sponsor_member(v_sponsor)) then
+    raise exception 'Only the programme''s sponsor or a platform administrator can see its figures.';
+  end if;
+  return query
+  with sch as (
+    select s.id, s.name,
+      (select count(*) from public.profiles p where p.school_id = s.id and p.role::text = 'learner') as n
+    from public.programme_schools ps join public.schools s on s.id = ps.school_id
+    where ps.programme_id = p_programme
+  ),
+  outcomes as (
+    select i.school_id, il.learner_id, il.baseline_percent,
+      (select round(100.0 * a.marks_awarded / nullif(a.marks_total, 0))
+         from public.weekly_test_attempts a join public.weekly_tests t on t.id = a.test_id
+         where t.intervention_id = i.id and a.learner_id = il.learner_id and a.submitted_at is not null
+         order by t.due_at desc limit 1) as latest
+    from public.interventions i join public.intervention_learners il on il.intervention_id = i.id
+    where i.school_id in (select id from sch)
+  )
+  select sch.id, sch.name, sch.n < 5,
+    case when sch.n < 5 then null else sch.n end,
+    case when sch.n < 5 then null else (select count(distinct e.actor_id) from public.activity_events e
+       join public.profiles p on p.id = e.actor_id and p.role::text = 'learner'
+       where e.school_id = sch.id and e.at > now() - interval '7 days') end,
+    case when sch.n < 5 then null else (select count(*) from public.activity_events e
+       where e.school_id = sch.id and e.at > now() - interval '7 days' and e.kind in ('practice_answer', 'paper_answer')) end,
+    case when sch.n < 5 then null else (select round(avg(lp.mastery_percent))::integer from public.learner_progress lp
+       join public.profiles p on p.id = lp.learner_id where p.school_id = sch.id and p.role::text = 'learner') end,
+    case when sch.n < 5 then null else (select count(*) from public.weekly_test_attempts a
+       join public.weekly_tests t on t.id = a.test_id where t.school_id = sch.id and a.submitted_at is not null) end,
+    case when sch.n < 5 then null else (select count(*) from outcomes o where o.school_id = sch.id and o.latest is not null and o.baseline_percent is not null) end,
+    case when sch.n < 5 then null else (select count(*) from outcomes o where o.school_id = sch.id and o.latest > o.baseline_percent) end
+  from sch
+  order by sch.name;
+end;
+$$;
+grant execute on function public.programme_totals(uuid) to authenticated;
+
+-- Adding a sponsor's person by email. Administrators only; the email is looked
+-- up, never stored in a DONE WELL table.
+create or replace function public.add_sponsor_member(p_sponsor uuid, p_email text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user uuid;
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a platform administrator can add people to a sponsor.';
+  end if;
+  select id into v_user from auth.users where lower(email) = lower(btrim(p_email)) limit 1;
+  if v_user is null then
+    return false;
+  end if;
+  insert into public.sponsor_members (sponsor_id, user_id) values (p_sponsor, v_user) on conflict do nothing;
+  return true;
+end;
+$$;
+grant execute on function public.add_sponsor_member(uuid, text) to authenticated;

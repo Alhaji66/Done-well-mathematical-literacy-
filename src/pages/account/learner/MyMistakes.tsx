@@ -5,6 +5,7 @@ import { getTopic } from '@/data/topics'
 import { subjects } from '@/data/subjects'
 import { questionsById } from '@/data/questionBank'
 import { clearMistake, fetchMistakes, recordAnswer, type Mistake } from '@/lib/mistakes'
+import { logActivity } from '@/lib/activity'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { CatchUpGroups } from '@/components/account/CatchUpGroups'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -75,6 +76,7 @@ export function MyMistakes() {
 
   const answer = async (m: Mistake, correct: boolean) => {
     await recordAnswer(m.question_id, m.topic_id, m.source, correct)
+    void logActivity(profile.id, correct ? 'mistake_fixed' : 'practice_answer', m.topic_id)
     setJustFixed((prev) => {
       const next = new Set(prev)
       if (correct) next.add(m.question_id)

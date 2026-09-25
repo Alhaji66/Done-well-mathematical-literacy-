@@ -5,6 +5,7 @@ import { fetchDepartmentTeachers, type SchoolTeacher } from '@/lib/schoolStaff'
 import { learnersInScope, scopeSubjectFor } from '@/lib/teacherScope'
 import { subjects } from '@/data/subjects'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { ParticipationPanel } from '@/components/account/ParticipationPanel'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon, SchoolIcon } from '@/components/ui/Icons'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
@@ -133,6 +134,8 @@ export function HodDashboard() {
               </p>
             </div>
           </div>
+
+          <ParticipationPanel learners={learners} title="Participation in your department" byGrade />
 
           <div className="card p-5">
             <p className="text-sm font-semibold text-navy-900">Learners by grade</p>

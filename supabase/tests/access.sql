@@ -767,5 +767,141 @@ insert into results
            and bool_or(action = 'intervention.completed') and not bool_or(details::text ilike '%payslip%')
   from public.audit_log where target_table in ('interventions', 'intervention_learners');
 
+-- ===========================================================================
+-- PARTICIPATION AND NOTIFICATIONS (STEP 16)
+-- ===========================================================================
+
+-- 38. An event is stamped by the database: it cannot be back-dated or filed
+--     against another school.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into public.activity_events (actor_id, school_id, kind, topic_id, at)
+  select '00000000-0000-0000-0000-0000000000b1', o.school_id, 'practice_answer', 'finance', '2020-01-01'
+  from other o;
+insert into public.activity_events (actor_id, kind) values ('00000000-0000-0000-0000-0000000000b1', 'signed_in');
+do $$ begin
+  begin update public.activity_events set at = '2020-01-01'; exception when others then null; end;
+  begin delete from public.activity_events; exception when others then null; end;
+  begin
+    insert into public.activity_events (actor_id, kind) values ('00000000-0000-0000-0000-0000000000b3', 'signed_in');
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '38. forged school, back-dated time, edits and events for others are refused',
+         count(*)::text || ' event(s); schools ok: ' || bool_and(school_id = (select school_id from s))::text
+           || '; recent: ' || bool_and(at > now() - interval '1 minute')::text,
+         count(*) = 2 and bool_and(school_id = (select school_id from s)) and bool_and(at > now() - interval '1 minute')
+           and bool_and(actor_id = '00000000-0000-0000-0000-0000000000b1')
+  from public.activity_events;
+
+-- 39. Participation is visible to the school's staff and the learner's parent only.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '39. teacher sees the learner''s participation',
+         coalesce(string_agg(active_days::text || ' day, ' || events::text || ' events', '; '), 'nothing'),
+         count(*) = 1 and bool_and(events = 2 and answers = 1)
+  from public.participation(7);
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b3');
+set role authenticated;
+insert into results
+  select '39b. a classmate sees it', count(*)::text || ' row(s)', count(*) = 0 from public.participation(7);
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+insert into results
+  select '39c. another school''s teacher sees it', count(*)::text || ' row(s)', count(*) = 0 from public.participation(7);
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results
+  select '39d. the linked parent sees it', count(*)::text || ' row(s)', count(*) = 1 from public.participation(7);
+reset role;
+
+-- 40. Setting a weekly test tells the learners who sit it, not the teacher.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Grade 12 measurement', 'mat-lit', 12, array['measurement'], 8,
+         now() + interval '5 days'
+  from s;
+reset role;
+insert into results
+  select '40. a grade test notifies the grade''s learners and not its setter',
+         string_agg(p.full_name, ', ' order by p.full_name),
+         bool_or(n.recipient_id = '00000000-0000-0000-0000-0000000000b1')
+           and bool_or(n.recipient_id = '00000000-0000-0000-0000-0000000000b3')
+           and not bool_or(n.recipient_id = '00000000-0000-0000-0000-00000000000a')
+  from public.notifications n join public.profiles p on p.id = n.recipient_id
+  where n.kind = 'weekly_test.set' and n.data->>'title' = 'Grade 12 measurement';
+
+-- 41. Notifications are private, and read-only apart from "read".
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '41. a learner reads only their own notifications',
+         count(*) filter (where recipient_id <> auth.uid())::text || ' of someone else''s',
+         count(*) filter (where recipient_id <> auth.uid()) = 0 and count(*) > 0
+  from public.notifications;
+update public.notifications set read_at = now();
+do $$ begin
+  begin update public.notifications set kind = 'forged'; exception when others then null; end;
+  begin
+    insert into public.notifications (recipient_id, kind) values ('00000000-0000-0000-0000-0000000000b3', 'forged');
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '41b. they can mark theirs read, but not rewrite or send one',
+         (select count(*) from public.notifications where recipient_id = '00000000-0000-0000-0000-0000000000b1' and read_at is null)::text
+           || ' unread, ' || (select count(*) from public.notifications where kind = 'forged')::text || ' forged',
+         not exists (select 1 from public.notifications where recipient_id = '00000000-0000-0000-0000-0000000000b1' and read_at is null)
+           and not exists (select 1 from public.notifications where kind = 'forged');
+
+-- 42. A parent linking to a learner tells the learner.
+insert into results
+  select '42. the learner was told a parent linked to them',
+         count(*)::text || ' notification(s)', count(*) = 1
+  from public.notifications where recipient_id = '00000000-0000-0000-0000-0000000000b1' and kind = 'parent_link.created';
+
+-- 43. Joining a catch-up group tells the learner.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.intervention_learners (intervention_id, learner_id, baseline_percent)
+  select id, '00000000-0000-0000-0000-0000000000b3', 35 from iv;
+reset role;
+insert into results
+  select '43. a learner added to a catch-up group is told, with the topic',
+         coalesce(string_agg(data->>'topic', ', '), 'nothing'),
+         count(*) = 1 and bool_and(data->>'topic' = 'finance')
+  from public.notifications where recipient_id = '00000000-0000-0000-0000-0000000000b3' and kind = 'intervention.joined';
+
+-- 44. Someone signing up as staff: approved staff are told; then they are told they are approved.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000a9');
+do $$
+declare v_school uuid := (select school_id from s);
+begin
+  perform pg_temp.act('00000000-0000-0000-0000-0000000000a9');
+  execute 'set role authenticated';
+  insert into public.profiles (id, role, full_name, school_id, subject_id)
+    values ('00000000-0000-0000-0000-0000000000a9', 'teacher', 'New Teacher', v_school, 'mat-lit');
+  execute 'reset role';
+end $$;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.approve_staff('00000000-0000-0000-0000-0000000000a9', true);
+reset role;
+insert into results
+  select '44. staff are told someone is waiting; the new teacher is told they are approved',
+         (select count(*) from public.notifications where kind = 'staff.pending' and data->>'profile_id' = '00000000-0000-0000-0000-0000000000a9')::text
+           || ' told, approved notice: '
+           || (select count(*) from public.notifications where kind = 'staff.approved' and recipient_id = '00000000-0000-0000-0000-0000000000a9')::text,
+         (select count(*) from public.notifications where kind = 'staff.pending' and data->>'profile_id' = '00000000-0000-0000-0000-0000000000a9') >= 1
+           and not exists (select 1 from public.notifications n join public.profiles p on p.id = n.recipient_id
+                           where n.kind = 'staff.pending' and (p.role::text = 'learner' or p.school_id <> (select school_id from s)))
+           and (select count(*) from public.notifications where kind = 'staff.approved' and recipient_id = '00000000-0000-0000-0000-0000000000a9') = 1;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

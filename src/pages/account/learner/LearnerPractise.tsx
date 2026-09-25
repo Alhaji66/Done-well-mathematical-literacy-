@@ -6,6 +6,7 @@ import { filterSubjectQuestions, questionsForSubject } from '@/data/questionBank
 import { subjects } from '@/data/subjects'
 import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
 import { recordAnswer } from '@/lib/mistakes'
+import { logActivity } from '@/lib/activity'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
 import { TopicNotes } from '@/components/practise/TopicNotes'
@@ -142,6 +143,7 @@ export function LearnerPractise() {
 
   const handleAttempt = async (correct: boolean | null) => {
     if (!profile || !topicId) return
+    void logActivity(profile.id, 'practice_answer', topicId)
     const existing = progress.find((p) => p.topic_id === topicId)
     const updated = await recordAttempt(profile.id, topicId, correct, existing)
     if (updated) {

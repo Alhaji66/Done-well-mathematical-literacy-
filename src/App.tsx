@@ -58,6 +58,7 @@ const AccountActivityLog = lazy(() =>
 const AccountParentSupport = lazy(() =>
   import('@/pages/account/parent/ParentSupportAccount').then((m) => ({ default: m.ParentSupportAccount })),
 )
+const AccountReports = lazy(() => import('@/pages/account/Reports').then((m) => ({ default: m.Reports })))
 const AccountInterventions = lazy(() =>
   import('@/pages/account/Interventions').then((m) => ({ default: m.Interventions })),
 )
@@ -198,6 +199,7 @@ export default function App() {
                 <Route path="classes" element={<AccountClasses />} />
                 <Route path="classes/:classId" element={<AccountClassDetail />} />
                 <Route path="interventions" element={<AccountInterventions />} />
+                <Route path="reports" element={<AccountReports />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -236,6 +238,7 @@ export default function App() {
                 <Route path="classes" element={<AccountClasses />} />
                 <Route path="classes/:classId" element={<AccountClassDetail />} />
                 <Route path="interventions" element={<AccountInterventions />} />
+                <Route path="reports" element={<AccountReports />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -255,6 +258,7 @@ export default function App() {
                 <Route path="classes" element={<AccountClasses />} />
                 <Route path="classes/:classId" element={<AccountClassDetail />} />
                 <Route path="interventions" element={<AccountInterventions />} />
+                <Route path="reports" element={<AccountReports />} />
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>

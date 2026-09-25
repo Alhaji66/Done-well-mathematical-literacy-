@@ -1950,3 +1950,274 @@ drop trigger if exists audit_intervention_learners on public.intervention_learne
 create trigger audit_intervention_learners
   after insert or delete on public.intervention_learners
   for each row execute function public.audit_intervention_learners();
+
+-- ============================================================================
+-- STEP 16: PARTICIPATION EVENTS AND IN-APP NOTIFICATIONS
+-- ============================================================================
+--
+-- PARTICIPATION. The spec's school dashboard asks for active learners and
+-- participation, and until now the app could only say how well learners were
+-- doing, never whether they were using it at all. activity_events records a
+-- short, fixed list of things a person did -- signed in, answered a question,
+-- handed in a test, fixed a mistake, opened a resource -- with a time and at
+-- most a topic id. No answers, no free text, no device or location data.
+--
+-- The school and time are stamped by the database, not taken from the app, so
+-- an event cannot be back-dated or filed against another school. Nobody can
+-- edit or delete an event from the app; an operator removes old ones with
+-- purge_activity_events() under the retention period in the school agreement.
+--
+-- NOTIFICATIONS. Written only by the triggers below, one row per recipient.
+-- A notification stores what happened (kind) and ids, and the app writes the
+-- sentence -- the same approach as the audit log -- except where the only
+-- useful words are the teacher's own (a weekly test's title). A person can read
+-- their own notifications, mark them read and delete them, and nothing else.
+--
+-- This is in-app only. Email and SMS need a sending service and each person's
+-- consent to be contacted that way; they are deliberately not part of this step.
+
+create table if not exists public.activity_events (
+  id bigint generated always as identity primary key,
+  actor_id uuid not null references public.profiles (id) on delete cascade,
+  school_id uuid references public.schools (id) on delete set null,
+  kind text not null check (kind in
+    ('signed_in', 'practice_answer', 'paper_answer', 'test_submitted', 'mistake_fixed', 'resource_opened')),
+  topic_id text,
+  at timestamptz not null default now()
+);
+
+create index if not exists activity_events_school_at_idx on public.activity_events (school_id, at desc);
+create index if not exists activity_events_actor_at_idx on public.activity_events (actor_id, at desc);
+
+alter table public.activity_events enable row level security;
+revoke update, delete, truncate on public.activity_events from authenticated, anon;
+
+create or replace function public.stamp_activity_event()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  new.school_id := (select school_id from public.profiles where id = new.actor_id);
+  new.at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_activity_event on public.activity_events;
+create trigger stamp_activity_event
+  before insert on public.activity_events
+  for each row execute function public.stamp_activity_event();
+
+drop policy if exists "People can record their own activity" on public.activity_events;
+create policy "People can record their own activity"
+  on public.activity_events for insert
+  with check (actor_id = auth.uid());
+
+drop policy if exists "People can view their own activity" on public.activity_events;
+create policy "People can view their own activity"
+  on public.activity_events for select
+  using (actor_id = auth.uid());
+
+drop policy if exists "Staff can view activity at their school" on public.activity_events;
+create policy "Staff can view activity at their school"
+  on public.activity_events for select
+  using (school_id is not null and public.is_school_staff(school_id));
+
+drop policy if exists "Linked parents can view their child's activity" on public.activity_events;
+create policy "Linked parents can view their child's activity"
+  on public.activity_events for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = activity_events.actor_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+-- Participation per person over the last p_days: how many days they were
+-- active, how many things they did, and when they were last seen. SECURITY
+-- INVOKER, so each caller gets only the rows the policies above allow them.
+create or replace function public.participation(p_days integer default 7)
+returns table (actor_id uuid, active_days bigint, events bigint, answers bigint, last_active timestamptz)
+language sql
+stable
+set search_path = public
+as $$
+  select e.actor_id,
+         count(distinct (e.at at time zone 'Africa/Johannesburg')::date),
+         count(*),
+         count(*) filter (where e.kind in ('practice_answer', 'paper_answer')),
+         max(e.at)
+  from public.activity_events e
+  where e.at > now() - make_interval(days => greatest(1, least(p_days, 366)))
+  group by e.actor_id;
+$$;
+
+grant execute on function public.participation(integer) to authenticated;
+
+create or replace function public.purge_activity_events(p_older_than interval)
+returns bigint
+language sql
+security definer
+set search_path = public
+as $$
+  with gone as (delete from public.activity_events where at < now() - p_older_than returning 1)
+  select count(*) from gone;
+$$;
+revoke execute on function public.purge_activity_events(interval) from public, authenticated, anon;
+
+-- Notifications ----------------------------------------------------------------
+
+create table if not exists public.notifications (
+  id bigint generated always as identity primary key,
+  recipient_id uuid not null references public.profiles (id) on delete cascade,
+  kind text not null,
+  data jsonb not null default '{}'::jsonb,
+  -- Where in the app it leads, relative to the recipient's own area.
+  link text,
+  created_at timestamptz not null default now(),
+  read_at timestamptz
+);
+
+create index if not exists notifications_recipient_idx on public.notifications (recipient_id, created_at desc);
+
+alter table public.notifications enable row level security;
+revoke insert, update, truncate on public.notifications from authenticated, anon;
+-- Marking as read is the only change a recipient can make.
+grant update (read_at) on public.notifications to authenticated;
+
+drop policy if exists "People can read their own notifications" on public.notifications;
+create policy "People can read their own notifications"
+  on public.notifications for select
+  using (recipient_id = auth.uid());
+
+drop policy if exists "People can mark their own notifications read" on public.notifications;
+create policy "People can mark their own notifications read"
+  on public.notifications for update
+  using (recipient_id = auth.uid())
+  with check (recipient_id = auth.uid());
+
+drop policy if exists "People can delete their own notifications" on public.notifications;
+create policy "People can delete their own notifications"
+  on public.notifications for delete
+  using (recipient_id = auth.uid());
+
+create or replace function public.notify(p_recipients uuid[], p_kind text, p_data jsonb, p_link text)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  insert into public.notifications (recipient_id, kind, data, link)
+  select distinct r, p_kind, coalesce(p_data, '{}'::jsonb), p_link
+  from unnest(p_recipients) r
+  -- Never notify someone of their own action.
+  where r is not null and r is distinct from auth.uid();
+$$;
+revoke execute on function public.notify(uuid[], text, jsonb, text) from public, authenticated, anon;
+
+-- A weekly test is set: tell the learners who are to sit it.
+create or replace function public.notify_weekly_test()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_learners uuid[];
+begin
+  if new.intervention_id is not null then
+    select array_agg(learner_id) into v_learners from public.intervention_learners where intervention_id = new.intervention_id;
+  elsif new.class_id is not null then
+    select array_agg(learner_id) into v_learners from public.class_members where class_id = new.class_id;
+  else
+    select array_agg(id) into v_learners from public.profiles
+      where school_id = new.school_id and role::text = 'learner' and grade = new.grade
+        and (subject_id is null or subject_id = new.subject_id);
+  end if;
+  perform public.notify(v_learners, 'weekly_test.set',
+    jsonb_build_object('test_id', new.id, 'title', new.title, 'due_at', new.due_at,
+                       'catch_up', new.intervention_id is not null),
+    'tests');
+  return new;
+end;
+$$;
+
+drop trigger if exists notify_weekly_test on public.weekly_tests;
+create trigger notify_weekly_test
+  after insert on public.weekly_tests
+  for each row execute function public.notify_weekly_test();
+
+-- Added to a catch-up group: tell the learner and their linked parents.
+create or replace function public.notify_intervention_learner()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_topic text := (select topic_id from public.interventions where id = new.intervention_id);
+begin
+  perform public.notify(array[new.learner_id], 'intervention.joined',
+    jsonb_build_object('topic', v_topic), 'mistakes');
+  perform public.notify(
+    (select array_agg(parent_id) from public.parent_learner_links where learner_id = new.learner_id),
+    'intervention.child_joined',
+    jsonb_build_object('topic', v_topic, 'learner_id', new.learner_id), 'support');
+  return new;
+end;
+$$;
+
+drop trigger if exists notify_intervention_learner on public.intervention_learners;
+create trigger notify_intervention_learner
+  after insert on public.intervention_learners
+  for each row execute function public.notify_intervention_learner();
+
+-- Staff approval: tell approved staff someone is waiting, and tell the person
+-- when they have been approved.
+create or replace function public.notify_staff_approval()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.role::text in ('teacher', 'school', 'hod') and new.school_id is not null and new.staff_approved_at is null
+     and (tg_op = 'INSERT' or old.school_id is distinct from new.school_id or old.role is distinct from new.role) then
+    perform public.notify(
+      (select array_agg(id) from public.profiles
+        where school_id = new.school_id and role::text in ('teacher', 'school', 'hod') and staff_approved_at is not null),
+      'staff.pending', jsonb_build_object('profile_id', new.id, 'role', new.role::text), 'dashboard');
+  end if;
+  if tg_op = 'UPDATE' and old.staff_approved_at is null and new.staff_approved_at is not null then
+    perform public.notify(array[new.id], 'staff.approved', jsonb_build_object('role', new.role::text), 'dashboard');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists notify_staff_approval on public.profiles;
+create trigger notify_staff_approval
+  after insert or update on public.profiles
+  for each row execute function public.notify_staff_approval();
+
+-- A parent links to a learner: tell the learner, so nobody is followed silently.
+create or replace function public.notify_parent_link()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  perform public.notify(array[new.learner_id], 'parent_link.created',
+    jsonb_build_object('parent_id', new.parent_id), 'privacy');
+  return new;
+end;
+$$;
+
+drop trigger if exists notify_parent_link on public.parent_learner_links;
+create trigger notify_parent_link
+  after insert on public.parent_learner_links
+  for each row execute function public.notify_parent_link();

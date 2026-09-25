@@ -4,6 +4,7 @@ import { useAccountAuth } from '@/context/AccountAuthContext'
 import { getPaper, type Paper } from '@/data/papers'
 import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
 import { recordAnswer } from '@/lib/mistakes'
+import { logActivity } from '@/lib/activity'
 import { getAnsweredItemIds, markItemAnswered, countPaperItems } from '@/lib/paperProgress'
 import { PaperRunner } from '@/components/assessments/PaperRunner'
 import { RouteLoading } from '@/components/layout/RouteLoading'
@@ -63,6 +64,7 @@ export function PaperPage() {
 
   const handleAttempt = isLearner
     ? async (topicId: string, correct: boolean | null) => {
+        void logActivity(profile.id, 'paper_answer', topicId)
         const existing = progress.find((p) => p.topic_id === topicId)
         const updated = await recordAttempt(profile.id, topicId, correct, existing)
         if (updated) {

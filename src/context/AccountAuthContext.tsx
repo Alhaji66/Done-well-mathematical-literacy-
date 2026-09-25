@@ -12,6 +12,12 @@ export interface AccountProfile {
   school_id: string | null
   grade: Grade | null
   subject_id: string | null
+  /**
+   * When a colleague approved this person as staff. `null` for a staff account
+   * still waiting; absent entirely on a database without STEP 12 of the schema.
+   * See src/lib/staffApproval.ts.
+   */
+  staff_approved_at?: string | null
 }
 
 interface AccountAuthValue {

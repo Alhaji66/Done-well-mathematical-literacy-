@@ -7,6 +7,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
 import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
+import { PendingStaff } from '@/components/account/PendingStaff'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
 import { TeachingGrades } from '@/components/account/TeachingGrades'
 import {
@@ -123,6 +124,7 @@ export function TeacherDashboard() {
         description={schoolName ?? 'Your school'}
       />
 
+      <PendingStaff schoolId={profile.school_id} />
       <SchoolJoinCode schoolId={profile.school_id} />
 
       <TeachingSubject profile={profile} />

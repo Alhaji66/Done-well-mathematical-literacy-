@@ -11,6 +11,7 @@ import {
 import { fetchSchoolTeachers, type SchoolTeacher } from '@/lib/schoolStaff'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
+import { PendingStaff } from '@/components/account/PendingStaff'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
@@ -88,6 +89,7 @@ export function SchoolDashboard() {
     <div className="space-y-6">
       <SectionHeading eyebrow="Dashboard" title={schoolName ?? 'Your school'} description="A whole-school snapshot of participation and performance." />
 
+      <PendingStaff schoolId={profile?.school_id ?? null} />
       <SchoolJoinCode schoolId={profile?.school_id ?? null} />
 
       {loading ? (

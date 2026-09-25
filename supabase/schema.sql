@@ -846,3 +846,235 @@ $$;
 -- same progress rows a teacher at that school already sees. The only thing
 -- that widens is WHICH learners in their subject, from "the ones I teach" to
 -- "all of them".
+
+-- ============================================================================
+-- STEP 12: STAFF ACCESS IS GRANTED, NOT CLAIMED
+-- ============================================================================
+--
+-- WHAT WAS WRONG. Two ways for a learner to see every learner's results at
+-- their school, both reproduced against this schema in supabase/tests/access.sql
+-- before this step was written:
+--
+--   1. "Users can update their own profile" checked WHOSE row was changing but
+--      not WHICH COLUMNS. A signed-in learner could run, from their own browser,
+--        supabase.from('profiles').update({ role: 'school' }).eq('id', me)
+--      and is_school_staff() -- which decides who reads learner_progress and
+--      weekly_test_attempts -- then said yes.
+--
+--   2. A staff role was chosen on the sign-up screen and took effect at once.
+--      Every learner is given the school's join code, so any of them could open
+--      a second account, tap "Teacher", enter the code, and be staff.
+--
+-- And a smaller one: "Users can view profiles at their own school" let every
+-- learner list every other learner. The app never needed that, and POPIA's
+-- minimality principle says a child's name should not be visible to people
+-- with no reason to see it.
+--
+-- THE FIX, in three parts.
+--
+--   A staff role now needs APPROVAL. The first staff member at a school -- the
+--   person who just created it -- is approved automatically, because there is
+--   nobody else to ask. Everyone after them is PENDING until an approved
+--   colleague approves them through approve_staff(), and is_school_staff() only
+--   counts approved staff. A learner who signs up as "Teacher" with the code now
+--   gets a waiting screen, not a class list.
+--
+--   A trigger now decides which columns may change. Nobody changes their own
+--   role or school, and nobody sets approval by writing to the column. Work done
+--   inside the database's own functions, or by an operator in the SQL editor,
+--   is not restricted: those do not run as a signed-in user.
+--
+--   Learners and parents see staff at their school, not each other.
+--
+-- EXISTING STAFF are approved as of their sign-up date, ONCE, when the column
+-- is first added -- re-running this file does not approve anyone new. Before
+-- relying on that, run the review query at the end of this step and check the
+-- staff list at each school is who it should be: anyone who used the hole above
+-- before today is on it.
+
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'profiles' and column_name = 'staff_approved_at'
+  ) then
+    alter table public.profiles add column staff_approved_at timestamptz;
+    update public.profiles set staff_approved_at = created_at
+      where role::text in ('teacher', 'school', 'hod');
+  end if;
+end $$;
+
+-- Only APPROVED staff are staff.
+create or replace function public.is_school_staff(p_school_id uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and school_id = p_school_id
+      and role::text in ('teacher', 'school', 'hod')
+      and staff_approved_at is not null
+  );
+$$;
+
+-- Helpers the trigger needs, which must see past RLS: a person signing up has
+-- no profile yet, so under their own permissions they can see nobody at the
+-- school, and "is there already approved staff here?" would always say no.
+create or replace function public.school_has_approved_staff(p_school_id uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where school_id = p_school_id
+      and role::text in ('teacher', 'school', 'hod')
+      and staff_approved_at is not null
+  );
+$$;
+
+create or replace function public.approved_role_at(p_school_id uuid)
+returns text
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select role::text from public.profiles
+  where id = auth.uid() and school_id = p_school_id and staff_approved_at is not null
+    and role::text in ('teacher', 'school', 'hod');
+$$;
+
+-- The column rules. SECURITY INVOKER on purpose: `current_user` must be the
+-- caller, so that the database's own security-definer functions (which run as
+-- their owner) and the SQL editor pass through, while a request from the app
+-- (which runs as `authenticated`) is held to the rules.
+create or replace function public.guard_profile()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_staff constant text[] := array['teacher', 'school', 'hod'];
+  v_caller text;
+begin
+  if current_user not in ('authenticated', 'anon') then
+    return new;
+  end if;
+
+  if tg_op = 'INSERT' then
+    -- Approval is never taken from what the client sent.
+    new.staff_approved_at := null;
+    if new.role::text = any (v_staff) and new.school_id is not null
+       and not public.school_has_approved_staff(new.school_id) then
+      -- The first staff member at a school: the person who created it.
+      new.staff_approved_at := now();
+    end if;
+    return new;
+  end if;
+
+  if new.staff_approved_at is distinct from old.staff_approved_at then
+    raise exception 'Staff approval is given by a colleague, through approve_staff().';
+  end if;
+
+  if new.id = v_uid then
+    if new.role is distinct from old.role then
+      raise exception 'You cannot change your own role. Ask your school to correct it.';
+    end if;
+    if new.school_id is distinct from old.school_id then
+      raise exception 'You cannot move your own account to another school.';
+    end if;
+    return new;
+  end if;
+
+  -- Someone else's row. "Staff can correct profiles at their school" already
+  -- limits WHO may get here; this limits WHAT they may do to a role.
+  if new.role is distinct from old.role then
+    v_caller := public.approved_role_at(old.school_id);
+    if v_caller is null then
+      raise exception 'Only approved staff at this school can change a role.';
+    end if;
+    if (new.role::text = 'school' or old.role::text = 'school') and v_caller <> 'school' then
+      raise exception 'Only the school account can give or remove the school role.';
+    end if;
+    -- A colleague who makes someone staff is vouching for them, so the new
+    -- role is approved; making someone NOT staff clears it.
+    new.staff_approved_at := case when new.role::text = any (v_staff) then now() else null end;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists guard_profile on public.profiles;
+create trigger guard_profile
+  before insert or update on public.profiles
+  for each row execute function public.guard_profile();
+
+-- Approving -- or turning away -- someone who signed up as staff.
+create or replace function public.approve_staff(p_profile uuid, p_approve boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_target public.profiles;
+begin
+  select * into v_target from public.profiles where id = p_profile;
+  if v_target.id is null or v_target.school_id is null then
+    raise exception 'That person was not found at your school.';
+  end if;
+  if not public.is_school_staff(v_target.school_id) then
+    raise exception 'Only approved staff at this school can approve staff.';
+  end if;
+  if v_target.role::text not in ('teacher', 'school', 'hod') or v_target.staff_approved_at is not null then
+    raise exception 'That person is not waiting for staff approval.';
+  end if;
+
+  if p_approve then
+    update public.profiles set staff_approved_at = now() where id = p_profile;
+  else
+    -- Turned away: they keep their account but leave the school, so they see
+    -- nothing of it. They can join again with a code if it was a mistake.
+    update public.profiles set school_id = null where id = p_profile;
+  end if;
+end;
+$$;
+
+grant execute on function public.approve_staff(uuid, boolean) to authenticated;
+
+-- Who may see whose profile.
+drop policy if exists "Users can view profiles at their own school" on public.profiles;
+drop policy if exists "Staff can view everyone at their school" on public.profiles;
+create policy "Staff can view everyone at their school"
+  on public.profiles for select
+  using (
+    school_id is not null
+    and school_id = public.current_school_id()
+    and public.is_school_staff(school_id)
+  );
+
+drop policy if exists "Everyone can see the staff at their school" on public.profiles;
+create policy "Everyone can see the staff at their school"
+  on public.profiles for select
+  using (
+    school_id is not null
+    and school_id = public.current_school_id()
+    and role::text in ('teacher', 'school', 'hod')
+  );
+
+-- REVIEW QUERY -- run this on its own after the step, and check each school's
+-- staff list is who it should be. Anyone who used the hole above before this
+-- fix was approved along with everyone else, and will show here as staff.
+--
+--   select s.name as school, p.full_name, p.role, p.created_at, p.staff_approved_at
+--   from public.profiles p join public.schools s on s.id = p.school_id
+--   where p.role::text in ('teacher', 'school', 'hod')
+--   order by s.name, p.created_at;

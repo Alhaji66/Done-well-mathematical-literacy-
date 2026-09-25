@@ -1,5 +1,6 @@
 import type { RoleNavItem } from '@/components/layout/RoleShell'
 import {
+  ClockIcon,
   HomeIcon,
   BookIcon,
   PencilIcon,
@@ -81,6 +82,7 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/activity', label: 'Activity log', shortLabel: 'Activity', icon: ClockIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
 
@@ -107,6 +109,7 @@ export const accountHodNav: RoleNavItem[] = [
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/activity', label: 'Activity log', shortLabel: 'Activity', icon: ClockIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
 
@@ -118,5 +121,6 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/activity', label: 'Activity log', shortLabel: 'Activity', icon: ClockIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]

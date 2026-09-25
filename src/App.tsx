@@ -49,9 +49,6 @@ const AccountTeacherDashboard = lazy(() =>
 const AccountParentDashboard = lazy(() =>
   import('@/pages/account/parent/ParentDashboard').then((m) => ({ default: m.ParentDashboard })),
 )
-const AccountParentResources = lazy(() =>
-  import('@/pages/account/parent/ParentResources').then((m) => ({ default: m.ParentResources })),
-)
 const AccountActivityLog = lazy(() =>
   import('@/pages/account/ActivityLog').then((m) => ({ default: m.ActivityLog })),
 )
@@ -64,6 +61,19 @@ const AccountAdminConsole = lazy(() =>
 )
 const AccountSponsorDashboard = lazy(() =>
   import('@/pages/account/sponsor/SponsorDashboard').then((m) => ({ default: m.SponsorDashboard })),
+)
+const AccountResourceCentre = lazy(() =>
+  import('@/pages/account/resources/ResourceCentre').then((m) => ({ default: m.ResourceCentre })),
+)
+const AccountResourceItem = lazy(() =>
+  import('@/pages/account/resources/ResourceItem').then((m) => ({ default: m.ResourceItem })),
+)
+const AccountTopicGuide = lazy(() =>
+  import('@/pages/account/resources/TopicGuide').then((m) => ({ default: m.TopicGuide })),
+)
+const AccountSearch = lazy(() => import('@/pages/account/Search').then((m) => ({ default: m.Search })))
+const AccountContentStudio = lazy(() =>
+  import('@/pages/account/content/ContentStudio').then((m) => ({ default: m.ContentStudio })),
 )
 const AccountInterventions = lazy(() =>
   import('@/pages/account/Interventions').then((m) => ({ default: m.Interventions })),
@@ -178,6 +188,7 @@ export default function App() {
           <Route element={<AccountGate require="signed-in" />}>
             <Route path="admin" element={<AccountAdminConsole />} />
             <Route path="sponsor" element={<AccountSponsorDashboard />} />
+            <Route path="content" element={<AccountContentStudio />} />
           </Route>
           <Route element={<AccountGate require="profile" />}>
             <Route index element={<AccountIndexRedirect />} />
@@ -192,6 +203,10 @@ export default function App() {
                 <Route path="tests" element={<LearnerWeeklyTests />} />
                 <Route path="progress" element={<AccountLearnerProgress />} />
                 <Route path="mistakes" element={<AccountMyMistakes />} />
+                <Route path="resources" element={<AccountResourceCentre />} />
+                <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
+                <Route path="search" element={<AccountSearch />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
@@ -200,7 +215,10 @@ export default function App() {
               <Route path="teacher" element={<AccountShell basePath="/account/teacher" navItems={accountTeacherNav} />}>
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<AccountTeacherDashboard />} />
-                <Route path="resources" element={<TeacherResources />} />
+                <Route path="resources" element={<AccountResourceCentre />} />
+                <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
+                <Route path="search" element={<AccountSearch />} />
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
@@ -220,7 +238,10 @@ export default function App() {
               <Route path="parent" element={<AccountShell basePath="/account/parent" navItems={accountParentNav} />}>
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<AccountParentDashboard />} />
-                <Route path="resources" element={<AccountParentResources />} />
+                <Route path="resources" element={<AccountResourceCentre />} />
+                <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
+                <Route path="search" element={<AccountSearch />} />
                 <Route path="support" element={<AccountParentSupport />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
@@ -251,6 +272,10 @@ export default function App() {
                 <Route path="interventions" element={<AccountInterventions />} />
                 <Route path="reports" element={<AccountReports />} />
                 <Route path="activity" element={<AccountActivityLog />} />
+                <Route path="resources" element={<AccountResourceCentre />} />
+                <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
+                <Route path="search" element={<AccountSearch />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>
@@ -271,6 +296,10 @@ export default function App() {
                 <Route path="interventions" element={<AccountInterventions />} />
                 <Route path="reports" element={<AccountReports />} />
                 <Route path="activity" element={<AccountActivityLog />} />
+                <Route path="resources" element={<AccountResourceCentre />} />
+                <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
+                <Route path="search" element={<AccountSearch />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
               </Route>
             </Route>

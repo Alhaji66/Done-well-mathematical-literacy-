@@ -7,6 +7,7 @@ import { recordConsent } from '@/lib/privacy'
 import { createSchool, joinSchool, normaliseJoinCode } from '@/lib/schools'
 import { cn } from '@/lib/utils'
 import { usePlatformAccess } from '@/lib/platform'
+import { useContentAccess } from '@/lib/content'
 import type { Grade } from '@/types'
 
 const roleOptions: { role: AccountRole; label: string; desc: string; icon: (p: { className?: string }) => JSX.Element }[] = [
@@ -32,6 +33,7 @@ export function AccountOnboarding() {
   // DONE WELL administrators and sponsors are not members of a school and
   // need not create a profile; offer them their own page instead.
   const platform = usePlatformAccess(session?.user.id)
+  const content = useContentAccess(session?.user.id)
 
   const [role, setRole] = useState<AccountRole>('learner')
   const [fullName, setFullName] = useState('')
@@ -208,7 +210,7 @@ export function AccountOnboarding() {
           <h1 className="text-xl font-bold text-navy-900">Complete your profile</h1>
           <p className="mt-1.5 text-sm text-navy-600">One-time setup -- tell us who you are.</p>
 
-          {platform.admin || platform.sponsor ? (
+          {platform.admin || platform.sponsor || content.editor ? (
             <div className="mt-4 rounded-lg border border-gold-200 bg-gold-50 p-3 text-sm text-navy-800">
               {platform.admin ? (
                 <p>
@@ -217,6 +219,15 @@ export function AccountOnboarding() {
                     Open the platform console
                   </Link>{' '}
                   — you do not need a school profile for it.
+                </p>
+              ) : null}
+              {content.editor && !platform.admin ? (
+                <p>
+                  You are a DONE WELL content editor.{' '}
+                  <Link to="/account/content" className="font-semibold underline">
+                    Open the content studio
+                  </Link>
+                  .
                 </p>
               ) : null}
               {platform.sponsor ? (

@@ -4,6 +4,7 @@ import { useAccountAuth } from '@/context/AccountAuthContext'
 import { ConsoleShell } from '@/components/layout/ConsoleShell'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { cn } from '@/lib/utils'
+import { addContentEditor } from '@/lib/content'
 import {
   PLAN_LABEL,
   STATUS_LABEL,
@@ -123,6 +124,8 @@ export function AdminConsole() {
   const [progName, setProgName] = useState('')
   const [progStart, setProgStart] = useState('')
   const [progEnd, setProgEnd] = useState('')
+  const [editorEmail, setEditorEmail] = useState('')
+  const [editorReviews, setEditorReviews] = useState(false)
   const [memberSponsor, setMemberSponsor] = useState('')
   const [memberEmail, setMemberEmail] = useState('')
 
@@ -328,6 +331,49 @@ export function AdminConsole() {
               </tbody>
             </table>
           </div>
+        </section>
+
+        <section className="space-y-4">
+          <SectionHeading
+            eyebrow="Content"
+            title="Content editors"
+            description="Editors write lessons, worksheets, videos and questions in the content studio. A reviewer can approve and publish — but never their own work."
+            action={
+              <Link to="/account/content" className="btn-outline btn-sm">
+                Open the content studio
+              </Link>
+            }
+          />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              setBusy(true)
+              setError('')
+              setNotice('')
+              addContentEditor(editorEmail, editorReviews).then((r) => {
+                setBusy(false)
+                if (r.error) setError(r.error)
+                else if (!r.found) setError('Nobody has signed in to DONE WELL with that email yet. Ask them to sign in once, then add them.')
+                else {
+                  setNotice(`${editorEmail} is now a content ${editorReviews ? 'reviewer' : 'editor'}.`)
+                  setEditorEmail('')
+                }
+              })
+            }}
+            className="card flex flex-wrap items-end gap-3 p-5"
+          >
+            <label className="flex-1 text-xs font-medium text-navy-500">
+              Their sign-in email
+              <input type="email" required className="input mt-1" value={editorEmail} onChange={(e) => setEditorEmail(e.target.value)} />
+            </label>
+            <label className="flex items-center gap-2 pb-2 text-sm text-navy-700">
+              <input type="checkbox" checked={editorReviews} onChange={(e) => setEditorReviews(e.target.checked)} className="h-4 w-4 rounded border-navy-300" />
+              Can review and publish
+            </label>
+            <button type="submit" disabled={busy} className="btn-primary">
+              Add editor
+            </button>
+          </form>
         </section>
 
         <section className="space-y-4">

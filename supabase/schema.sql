@@ -2622,3 +2622,262 @@ begin
 end;
 $$;
 grant execute on function public.add_sponsor_member(uuid, text) to authenticated;
+
+-- ============================================================================
+-- STEP 18: CONTENT MANAGEMENT, FOR THE RESOURCE CENTRE AND SEARCH
+-- ============================================================================
+--
+-- WHY. Every question, paper and note in DONE WELL lives in the code and is
+-- reviewed through GitHub and its automated checks. That is a good home for the
+-- core curriculum and a poor one for a lesson video link or a worksheet a
+-- subject advisor wants to add on a Tuesday. The spec asks for an in-app
+-- workflow -- Draft -> Review -> Approved -> Published -> Archived -- so that
+-- nothing unreviewed ever reaches a learner.
+--
+-- WHO. Content editors are DONE WELL people, added by a platform administrator.
+-- An editor can write and submit; an editor who may REVIEW can approve and
+-- publish -- but never their own work. Administrators can do everything except
+-- approve their own work: two people see every item before it goes out.
+--
+-- WHAT LEARNERS SEE. Only PUBLISHED items, and only those for everyone.
+-- Items marked for teachers are shown to approved school staff only. Drafts
+-- and archived items are visible to editors alone.
+--
+-- HOW STATUS CHANGES. Only through content_transition(), which checks the
+-- step is allowed and who is taking it, and records it in content_events. A
+-- published item cannot be edited in place: send it back to draft first, which
+-- takes it off the resource centre until it is approved again.
+
+create table if not exists public.content_editors (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  can_review boolean not null default false,
+  added_at timestamptz not null default now()
+);
+
+alter table public.content_editors enable row level security;
+revoke insert, update, delete, truncate on public.content_editors from authenticated, anon;
+
+create or replace function public.is_content_editor()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select public.is_platform_admin() or exists (select 1 from public.content_editors where user_id = auth.uid());
+$$;
+grant execute on function public.is_content_editor() to authenticated;
+
+create or replace function public.is_content_reviewer()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select public.is_platform_admin()
+      or exists (select 1 from public.content_editors where user_id = auth.uid() and can_review);
+$$;
+grant execute on function public.is_content_reviewer() to authenticated;
+
+drop policy if exists "Editors can see the editors" on public.content_editors;
+create policy "Editors can see the editors" on public.content_editors for select
+  using (public.is_content_editor());
+
+-- Approved staff at any school that is not paused.
+create or replace function public.is_any_staff()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles p join public.schools s on s.id = p.school_id
+    where p.id = auth.uid() and p.role::text in ('teacher', 'school', 'hod')
+      and p.staff_approved_at is not null and s.suspended_at is null
+  );
+$$;
+
+create table if not exists public.content_items (
+  id uuid primary key default gen_random_uuid(),
+  kind text not null check (kind in
+    ('lesson', 'video', 'worksheet', 'practice', 'assessment', 'memo', 'study_guide', 'revision', 'teacher_resource', 'question')),
+  title text not null check (length(btrim(title)) between 1 and 200),
+  summary text not null default '' check (length(summary) <= 600),
+  body text not null default '' check (length(body) <= 50000),
+  -- A link for a video or a document kept elsewhere. https only.
+  url text check (url is null or url ~ '^https://'),
+  subject_id text,
+  grade smallint check (grade is null or grade in (10, 11, 12)),
+  topic_id text,
+  difficulty text check (difficulty is null or difficulty in ('Easy', 'Moderate', 'Challenge')),
+  -- For a question: its answer and marks.
+  answer text check (answer is null or length(answer) <= 5000),
+  marks smallint check (marks is null or marks between 1 and 50),
+  audience text not null default 'everyone' check (audience in ('everyone', 'teachers')),
+  status text not null default 'draft' check (status in ('draft', 'review', 'approved', 'published', 'archived')),
+  created_by uuid references auth.users (id) on delete set null,
+  approved_by uuid references auth.users (id) on delete set null,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists content_items_status_idx on public.content_items (status, kind);
+
+create table if not exists public.content_events (
+  id bigint generated always as identity primary key,
+  content_id uuid not null references public.content_items (id) on delete cascade,
+  from_status text,
+  to_status text not null,
+  actor_id uuid,
+  note text check (note is null or length(note) <= 1000),
+  at timestamptz not null default now()
+);
+
+alter table public.content_items enable row level security;
+alter table public.content_events enable row level security;
+revoke delete, truncate on public.content_items from authenticated, anon;
+revoke insert, update, delete, truncate on public.content_events from authenticated, anon;
+
+drop policy if exists "Everyone signed in can read published content for everyone" on public.content_items;
+create policy "Everyone signed in can read published content for everyone" on public.content_items for select
+  using (status = 'published' and audience = 'everyone' and auth.uid() is not null);
+
+drop policy if exists "School staff can read published teacher content" on public.content_items;
+create policy "School staff can read published teacher content" on public.content_items for select
+  using (status = 'published' and audience = 'teachers' and public.is_any_staff());
+
+drop policy if exists "Editors can read all content" on public.content_items;
+create policy "Editors can read all content" on public.content_items for select
+  using (public.is_content_editor());
+
+drop policy if exists "Editors can create drafts" on public.content_items;
+create policy "Editors can create drafts" on public.content_items for insert
+  with check (public.is_content_editor() and created_by = auth.uid() and status = 'draft');
+
+drop policy if exists "Editors can edit drafts" on public.content_items;
+create policy "Editors can edit drafts" on public.content_items for update
+  using (public.is_content_editor() and status = 'draft')
+  with check (public.is_content_editor());
+
+drop policy if exists "Editors can read the history" on public.content_events;
+create policy "Editors can read the history" on public.content_events for select
+  using (public.is_content_editor());
+
+-- Status and approval are never set by writing to the row.
+create or replace function public.guard_content_item()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  if current_user not in ('authenticated', 'anon') then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.status := 'draft';
+    new.approved_by := null;
+    new.published_at := null;
+    new.created_by := auth.uid();
+    return new;
+  end if;
+  if new.status is distinct from old.status or new.approved_by is distinct from old.approved_by
+     or new.published_at is distinct from old.published_at or new.created_by is distinct from old.created_by then
+    raise exception 'Status changes go through content_transition().';
+  end if;
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists guard_content_item on public.content_items;
+create trigger guard_content_item
+  before insert or update on public.content_items
+  for each row execute function public.guard_content_item();
+
+create or replace function public.content_transition(p_id uuid, p_to text, p_note text default null)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v public.content_items;
+  v_ok boolean := false;
+begin
+  select * into v from public.content_items where id = p_id;
+  if v.id is null then
+    raise exception 'That item was not found.';
+  end if;
+  if not public.is_content_editor() then
+    raise exception 'Only content editors can change an item''s status.';
+  end if;
+
+  -- The allowed steps, and who may take each.
+  if v.status = 'draft' and p_to = 'review' then
+    v_ok := true;
+  elsif v.status = 'review' and p_to = 'draft' then
+    v_ok := true;  -- sent back, by its author or a reviewer
+  elsif v.status = 'review' and p_to = 'approved' then
+    if not public.is_content_reviewer() then
+      raise exception 'Only a reviewer can approve an item.';
+    end if;
+    if v.created_by = auth.uid() then
+      raise exception 'You cannot approve your own work. Another reviewer has to.';
+    end if;
+    v_ok := true;
+  elsif v.status = 'approved' and p_to in ('published', 'draft') then
+    if not public.is_content_reviewer() then
+      raise exception 'Only a reviewer can publish an item.';
+    end if;
+    v_ok := true;
+  elsif v.status = 'published' and p_to in ('archived', 'draft') then
+    if not public.is_content_reviewer() then
+      raise exception 'Only a reviewer can take a published item down.';
+    end if;
+    v_ok := true;
+  elsif v.status = 'archived' and p_to = 'draft' then
+    v_ok := true;
+  end if;
+  if not v_ok then
+    raise exception 'An item cannot go from % to %.', v.status, p_to;
+  end if;
+
+  update public.content_items set
+    status = p_to,
+    approved_by = case when p_to = 'approved' then auth.uid() when p_to in ('draft', 'review') then null else approved_by end,
+    published_at = case when p_to = 'published' then now() when p_to = 'draft' then null else published_at end,
+    updated_at = now()
+  where id = p_id;
+
+  insert into public.content_events (content_id, from_status, to_status, actor_id, note)
+  values (p_id, v.status, p_to, auth.uid(), nullif(btrim(coalesce(p_note, '')), ''));
+end;
+$$;
+grant execute on function public.content_transition(uuid, text, text) to authenticated;
+
+-- Adding an editor by the email they sign in with. Administrators only.
+create or replace function public.add_content_editor(p_email text, p_can_review boolean)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user uuid;
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a platform administrator can add content editors.';
+  end if;
+  select id into v_user from auth.users where lower(email) = lower(btrim(p_email)) limit 1;
+  if v_user is null then
+    return false;
+  end if;
+  insert into public.content_editors (user_id, can_review) values (v_user, p_can_review)
+  on conflict (user_id) do update set can_review = excluded.can_review;
+  return true;
+end;
+$$;
+grant execute on function public.add_content_editor(text, boolean) to authenticated;

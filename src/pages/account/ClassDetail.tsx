@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { ArrowLeftIcon, UsersIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { ParticipationPanel } from '@/components/account/ParticipationPanel'
 import {
   addLearnersToClass,
   canManageClass,
@@ -224,6 +225,8 @@ export function ClassDetail() {
           <p className="mt-1 text-2xl font-extrabold tabular-nums text-navy-900">{members.length - withData.length}</p>
         </div>
       </div>
+
+      <ParticipationPanel learners={members.map((m) => m.learner)} title="Participation in this class" />
 
       {/* Topic analysis ----------------------------------------------------- */}
       <section className="space-y-3">

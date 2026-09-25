@@ -4,6 +4,7 @@ import { fetchLinkedChildren, linkChild, type LinkedChild } from '@/lib/parentLi
 import { fetchLearnerProgress, type ProgressRow } from '@/lib/learnerProgress'
 import { getTopic } from '@/data/topics'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { ChildActivity } from '@/components/account/ParticipationPanel'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { HeartHandshakeIcon } from '@/components/ui/Icons'
@@ -55,6 +56,9 @@ function ChildCard({ child }: { child: LinkedChild }) {
         <span className="text-lg font-bold text-navy-900">{loading ? '—' : `${overallMastery}%`}</span>
       </div>
       <ProgressBar percent={overallMastery} className="mt-3" label={`${child.full_name} overall mastery`} />
+      <div className="mt-3">
+        <ChildActivity childId={child.id} name={child.full_name} />
+      </div>
 
       {!loading && progress.length === 0 ? (
         <p className="mt-3 text-xs text-navy-400">No practice recorded yet.</p>

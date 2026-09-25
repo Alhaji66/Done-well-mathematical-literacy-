@@ -15,6 +15,7 @@ import { PendingStaff } from '@/components/account/PendingStaff'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
+import { ParticipationPanel } from '@/components/account/ParticipationPanel'
 
 const grades = [10, 11, 12] as const
 
@@ -117,6 +118,8 @@ export function SchoolDashboard() {
               <ProgressBar percent={schoolAverage} className="mt-2" size="sm" label="School average mastery" />
             </div>
           </div>
+
+          <ParticipationPanel learners={learners} title="Participation across the school" byGrade />
 
           {gradeBreakdown.length > 0 ? (
             <div className="card p-5">

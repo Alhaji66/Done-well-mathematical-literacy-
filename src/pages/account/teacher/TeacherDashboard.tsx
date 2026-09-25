@@ -10,6 +10,7 @@ import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
 import { PendingStaff } from '@/components/account/PendingStaff'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
 import { TeachingGrades } from '@/components/account/TeachingGrades'
+import { ParticipationPanel } from '@/components/account/ParticipationPanel'
 import {
   ALL_GRADES,
   scopeSubjectFor,
@@ -158,6 +159,8 @@ export function TeacherDashboard() {
               <ProgressBar percent={classAverage} className="mt-2" size="sm" label="Class average mastery" />
             </div>
           </div>
+
+          <ParticipationPanel learners={visible} title="Participation" byGrade />
 
           <div className="space-y-3">
             <h3 className="font-bold text-navy-900">Learners</h3>

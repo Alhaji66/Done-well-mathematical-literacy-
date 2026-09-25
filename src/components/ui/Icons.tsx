@@ -241,3 +241,18 @@ export const LogOutIcon = (p: IconProps) => (
     <path d="M16 17l5-5-5-5M21 12H9" />
   </svg>
 )
+
+export const BellIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15L6 16Z" />
+    <path d="M10 20.5a2.2 2.2 0 0 0 4 0" />
+  </svg>
+)
+
+export const PrinterIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M7 9V4h10v5" />
+    <rect x="4" y="9" width="16" height="7" rx="1.5" />
+    <path d="M7 14h10v6H7z" />
+  </svg>
+)

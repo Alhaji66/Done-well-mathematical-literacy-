@@ -100,6 +100,35 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
             </button>
           </div>
         </div>
+
+        {/*
+          On a phone there is no room for these in the header row, and hiding
+          them left an administrator with no way in except typing the address.
+          They get a slim bar of their own instead -- shown only to people who
+          have one of these roles, so learners and teachers never see it.
+        */}
+        {content.editor || platform.admin || platform.sponsor ? (
+          <nav
+            aria-label="DONE WELL tools"
+            className="flex gap-4 overflow-x-auto border-t border-navy-100 bg-gold-50 px-4 py-2 text-sm font-medium sm:hidden"
+          >
+            {platform.admin ? (
+              <Link to="/account/admin" className="shrink-0 text-gold-800 underline-offset-2 hover:underline">
+                Platform console
+              </Link>
+            ) : null}
+            {content.editor ? (
+              <Link to="/account/content" className="shrink-0 text-gold-800 underline-offset-2 hover:underline">
+                Content studio
+              </Link>
+            ) : null}
+            {platform.sponsor ? (
+              <Link to="/account/sponsor" className="shrink-0 text-gold-800 underline-offset-2 hover:underline">
+                Sponsor dashboard
+              </Link>
+            ) : null}
+          </nav>
+        ) : null}
       </header>
 
       <div className="container-page flex gap-6 py-6">

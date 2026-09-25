@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/Icons'
 
 export const learnerNav: RoleNavItem[] = [
-  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/dashboard', label: 'Dashboard', shortLabel: 'Home', icon: HomeIcon },
   { to: '/learn', label: 'Learn', icon: BookIcon },
   { to: '/practise', label: 'Practise', icon: PencilIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },

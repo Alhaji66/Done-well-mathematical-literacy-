@@ -7,6 +7,7 @@ import { similarityG12 } from '@/data/similarityG12'
 import { mathSubtopicGaps } from '@/data/mathSubtopicGaps'
 import { mathGraphGaps } from '@/data/mathGraphGaps'
 import { matlitGraphGaps } from '@/data/matlitGraphGaps'
+import { matlitChartGaps } from '@/data/matlitChartGaps'
 
 /*
  * Taxation and compound-interest items live in taxQuestions.ts, and the Grade
@@ -22,6 +23,7 @@ export const questions: Question[] = [
   ...mathSubtopicGaps,
   ...mathGraphGaps,
   ...matlitGraphGaps,
+  ...matlitChartGaps,
   // Finance
   {
     id: 'fin-e1',

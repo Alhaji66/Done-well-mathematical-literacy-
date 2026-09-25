@@ -106,7 +106,7 @@ const matLitG11: Atp = {
       subtopics: [
         'Collecting and organising data',
         'Mean, median and mode',
-        'Spread: range, quartiles and box-and-whisker',
+        'Spread: range, quartiles, percentiles and box-and-whisker',
         'Representing data in tables and graphs',
         'Interpreting and comparing graphs',
       ],
@@ -287,7 +287,7 @@ const matLitG12: Atp = {
       subtopics: [
         'Collecting and organising data',
         'Mean, median and mode',
-        'Spread: range, quartiles and box-and-whisker',
+        'Spread: range, quartiles, percentiles and box-and-whisker',
         'Representing data in tables and graphs',
         'Interpreting and comparing graphs',
       ],

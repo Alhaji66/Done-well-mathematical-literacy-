@@ -133,7 +133,87 @@ export interface Question {
    * diagram beside the prompt answers it.
    */
   answerCircuit?: CircuitSpec
+  /** A data chart -- bar, histogram, pie, box-and-whisker or BMI-for-age. */
+  chart?: ChartSpec
+  /**
+   * A chart shown only with the answer: "calculate the sector angle for Rent"
+   * is answered by a pie chart with its angles on it, and "determine the
+   * five-number summary" by the finished box-and-whisker diagram.
+   */
+  answerChart?: ChartSpec
 }
+
+/**
+ * A data chart, as a Mathematical Literacy paper prints one.
+ *
+ * Described by its data rather than drawn, for the same reason as a graph or a
+ * circuit: every value on it is already written in the question, and a chart
+ * typed in a second place could disagree with the first. `npm run check:charts`
+ * fails if any value on a chart is not one the question itself states.
+ * Charts live in src/components/practise/Chart.tsx.
+ */
+export type ChartSpec =
+  | {
+      kind: 'bar'
+      title: string
+      categories: string[]
+      values: number[]
+      yLabel: string
+      /** Units written after each value label, e.g. '%'. */
+      unit?: string
+      /**
+       * Where the vertical axis starts. Absent means zero. Set it only for a
+       * question ABOUT a truncated axis -- a misleading graph has to be drawn
+       * misleadingly, or the learner has nothing to spot.
+       */
+      yFrom?: number
+      yTo?: number
+      yStep?: number
+    }
+  | {
+      kind: 'histogram'
+      title: string
+      /** Class boundaries, one more than there are bars. */
+      edges: number[]
+      counts: number[]
+      xLabel: string
+      yLabel: string
+    }
+  | {
+      kind: 'pie'
+      title: string
+      /** One or more pies side by side -- "two pie charts compare ...". */
+      pies: {
+        label?: string
+        slices: {
+          label: string
+          value: number
+          /** Worked out as 100 minus the others, not stated by the question. */
+          remainder?: boolean
+        }[]
+      }[]
+      /** '%' when the values are percentages; otherwise raw counts. */
+      unit?: '%'
+      /** Written before each value, e.g. 'R' for amounts of money. */
+      prefix?: string
+      /** Print each slice's angle as well as its value -- for answer-side pies. */
+      showAngles?: boolean
+    }
+  | {
+      kind: 'boxplot'
+      title: string
+      axis: [number, number]
+      step: number
+      xLabel: string
+      boxes: { label?: string; min: number; q1: number; median: number; q3: number; max: number }[]
+    }
+  | {
+      kind: 'bmi-for-age'
+      title: string
+      sex: 'girl' | 'boy'
+      /** Plotted children, for the answer side: where each one lands. */
+      points?: { age: number; bmi: number; label: string }[]
+    }
 
 /** Figures live in src/components/practise/Figure.tsx. */
 export type FigureId =

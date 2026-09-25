@@ -80,8 +80,12 @@ const rules: Record<string, SubtopicRule[]> = {
       match: /\b(mislead\w*|distort\w*|biased|valid(ity)?|representative|does not start at zero|justify (the|this) conclusion)\b/i,
     },
     {
-      name: 'Spread: range, quartiles and box-and-whisker',
-      match: /\b(range|quartile|q1|q3|interquartile|iqr|box[- ]and[- ]whisker|five[- ]number|spread|outlier)\b/i,
+      name: 'Spread: range, quartiles, percentiles and box-and-whisker',
+      // "percentile" is here because the Grade 12 ATP teaches it alongside the
+      // quartiles, which are themselves the 25th and 75th percentiles -- and a
+      // BMI-for-age chart is read by percentile. With no stem for it, those
+      // questions fell through to Reading values off tables and graphs.
+      match: /\b(range|quartile|q1|q3|interquartile|iqr|box[- ]and[- ]whisker|five[- ]number|spread|outlier|percentile\w*)\b/i,
     },
     {
       name: 'Representing data in tables and graphs',
@@ -180,7 +184,10 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Mass, rates and practical calculations',
-      match: /\b(rate|per (litre|kg|hour|minute)|consumption|flow|recipe|dosage|dose|fuel)\b|ℓ\/100/i,
+      // BMI is here because the formula is a mass divided by a squared length,
+      // a practical calculation of exactly this kind, and the Grade 12 ATP
+      // lists it under Measurement.
+      match: /\b(rate|per (litre|kg|hour|minute)|consumption|flow|recipe|dosage|dose|fuel|BMI|body mass index)\b|ℓ\/100/i,
     },
     {
       name: 'Surface area',

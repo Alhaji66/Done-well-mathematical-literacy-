@@ -75,6 +75,9 @@ const AccountSearch = lazy(() => import('@/pages/account/Search').then((m) => ({
 const AccountContentStudio = lazy(() =>
   import('@/pages/account/content/ContentStudio').then((m) => ({ default: m.ContentStudio })),
 )
+const DemoLearnerWeeklyTests = lazy(() =>
+  import('@/pages/learner/WeeklyTests').then((m) => ({ default: m.LearnerWeeklyTests })),
+)
 const AccountInterventions = lazy(() =>
   import('@/pages/account/Interventions').then((m) => ({ default: m.Interventions })),
 )
@@ -322,6 +325,7 @@ export default function App() {
           <Route path="assessments" element={<LearnerAssessments />} />
           <Route path="assessments/:paperId" element={<LearnerAssessmentPaper />} />
           <Route path="progress" element={<LearnerProgress />} />
+          <Route path="tests" element={<DemoLearnerWeeklyTests />} />
         </Route>
 
         <Route

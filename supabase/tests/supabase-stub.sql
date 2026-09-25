@@ -5,7 +5,7 @@
 -- behind the real API.
 -- A stand-in for the parts of Supabase the schema relies on.
 create schema auth;
-create table auth.users (id uuid primary key);
+create table auth.users (id uuid primary key, email text);
 create function auth.uid() returns uuid language sql stable as
   $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
 create role authenticated nologin;

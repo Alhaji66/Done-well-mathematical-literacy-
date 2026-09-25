@@ -903,5 +903,157 @@ insert into results
                            where n.kind = 'staff.pending' and (p.role::text = 'learner' or p.school_id <> (select school_id from s)))
            and (select count(*) from public.notifications where kind = 'staff.approved' and recipient_id = '00000000-0000-0000-0000-0000000000a9') = 1;
 
+-- ===========================================================================
+-- PLATFORM ADMINISTRATION, SUBSCRIPTIONS AND SPONSORS (STEP 17)
+-- ===========================================================================
+
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000000e9', 'admin@example.org'),
+  ('00000000-0000-0000-0000-0000000000e8', 'sponsor@example.org');
+create temp table refused (what text, was_refused boolean);
+grant all on refused to authenticated;
+
+-- 45. School staff cannot make themselves platform administrators or see every school.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin insert into public.platform_admins (user_id) values (auth.uid()); exception when others then null; end;
+  begin
+    perform * from public.admin_school_overview();
+    insert into refused values ('overview', false);
+  exception when others then insert into refused values ('overview', true); end;
+  begin
+    perform public.set_school_suspended((select school_id from s), true);
+    insert into refused values ('suspend', false);
+  exception when others then insert into refused values ('suspend', true); end;
+end $$;
+reset role;
+insert into results
+  select '45. a teacher makes themselves admin, lists every school, or pauses a school',
+         (select count(*) from public.platform_admins)::text || ' admin(s); refused: '
+           || (select string_agg(what, ', ') from refused where was_refused),
+         (select count(*) from public.platform_admins) = 0
+           and (select bool_and(was_refused) from refused) and (select count(*) from refused) = 2;
+
+-- 46. An administrator added by the operator sees every school, in counts.
+insert into public.platform_admins (user_id) values ('00000000-0000-0000-0000-0000000000e9');
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+insert into results
+  select '46. the administrator sees each school''s totals',
+         string_agg(name || ': ' || learners || ' learners, ' || staff || ' staff', '; ' order by name),
+         bool_or(name = 'Gojela High' and learners = 2 and staff >= 4) and count(*) = 2
+  from public.admin_school_overview();
+
+-- 47. Pausing a school stops its staff reading learner data; reactivating restores it.
+select public.set_school_suspended((select school_id from s), true);
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+create temp table paused_view as select (select count(*) from public.classes) + (select count(*) from public.learner_mistakes) as n;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+select public.set_school_suspended((select school_id from s), false);
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '47. a paused school''s teacher sees no classes or mistakes; after reactivation they do',
+         (select n from paused_view)::text || ' row(s) while paused, ' || x.n::text || ' after',
+         (select n from paused_view) = 0 and x.n >= 2
+  from (select (select count(*) from public.classes) + (select count(*) from public.learner_mistakes) as n) x;
+reset role;
+
+-- 48. Subscriptions: set by the administrator, visible to the school, not editable by it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+insert into public.subscriptions (school_id, plan, learner_seats, ends_on)
+  select school_id, 'school', 300, current_date + 365 from s;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin update public.subscriptions set learner_seats = 100000; exception when others then null; end;
+  begin
+    insert into public.subscriptions (school_id, plan, learner_seats) select school_id, 'school', 5000 from s;
+  exception when others then null; end;
+end $$;
+insert into results
+  select '48. the school sees its licence but cannot change or add one',
+         count(*)::text || ' subscription(s), seats ' || string_agg(learner_seats::text, ','),
+         count(*) = 1 and bool_and(learner_seats = 300)
+  from public.subscriptions;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+insert into results
+  select '48b. another school sees it', count(*)::text || ' visible', count(*) = 0 from public.subscriptions;
+reset role;
+
+-- 49. A sponsor sees its programme in totals only, with small schools withheld.
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+insert into public.sponsors (name) values ('Acme Foundation');
+insert into public.programmes (sponsor_id, name) select id, 'Acme Maths 2027' from public.sponsors;
+insert into public.programme_schools (programme_id, school_id)
+  select p.id, x.school_id from public.programmes p, (select school_id from s union all select school_id from other) x;
+insert into refused select 'add member', not public.add_sponsor_member((select id from public.sponsors), 'Sponsor@Example.org');
+reset role;
+create temp table prog as select id from public.programmes;
+grant select on prog to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000e8');
+set role authenticated;
+insert into results
+  select '49. sponsor sees its schools; ones under five learners are withheld',
+         string_agg(school_name || case when withheld then ' (withheld)' else ': ' || learners end, '; ' order by school_name),
+         count(*) = 2 and bool_and(withheld) and bool_and(learners is null and average_mastery is null)
+  from public.programme_totals((select id from prog));
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin
+    perform * from public.programme_totals((select id from prog));
+    insert into refused values ('teacher totals', false);
+  exception when others then insert into refused values ('teacher totals', true); end;
+end $$;
+insert into results
+  select '49b. the school sees its programme and sponsor, but not the programme''s figures',
+         (select count(*) from public.programmes)::text || ' programme(s), '
+           || coalesce((select string_agg(name, ',') from public.sponsors), 'no sponsor'),
+         (select count(*) from public.programmes) = 1 and (select count(*) from public.sponsors) = 1
+           and (select was_refused from refused where what = 'teacher totals');
+reset role;
+
+-- 50. With five learners the school's totals appear -- and still name no one.
+insert into auth.users (id) values
+  ('00000000-0000-0000-0000-0000000000c5'), ('00000000-0000-0000-0000-0000000000c6'), ('00000000-0000-0000-0000-0000000000c7');
+insert into public.profiles (id, role, full_name, school_id, grade, subject_id)
+  select v.id::uuid, 'learner', v.n, s.school_id, 12, 'mat-lit'
+  from s, (values ('00000000-0000-0000-0000-0000000000c5', 'Learner Five'),
+                  ('00000000-0000-0000-0000-0000000000c6', 'Learner Six'),
+                  ('00000000-0000-0000-0000-0000000000c7', 'Learner Seven')) v(id, n);
+select pg_temp.act('00000000-0000-0000-0000-0000000000e8');
+set role authenticated;
+create temp table totals as select * from public.programme_totals((select id from prog));
+reset role;
+insert into results
+  select '50. five learners: Gojela High''s totals shown, no name anywhere in them',
+         string_agg(school_name || ': ' || coalesce(learners::text, 'withheld') || ' learners, ' || coalesce(active_7d::text, '-') || ' active', '; '),
+         bool_or(school_name = 'Gojela High' and not withheld and learners = 5)
+           and not exists (select 1 from totals t, public.profiles p where row_to_json(t)::text ilike '%' || p.full_name || '%')
+  from totals;
+
+-- 51. The school can see in its own log that it was paused and licensed.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '51. pausing, reactivating and the licence are in the school''s activity log',
+         string_agg(distinct action, ', '),
+         bool_or(action = 'school.suspended') and bool_or(action = 'school.reactivated') and bool_or(action = 'subscription.created')
+  from public.audit_log where action like 'school.%' or action like 'subscription.%';
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

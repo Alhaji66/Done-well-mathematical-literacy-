@@ -16,6 +16,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
 import { ParticipationPanel } from '@/components/account/ParticipationPanel'
+import { SchoolLicence } from '@/components/account/SchoolLicence'
 
 const grades = [10, 11, 12] as const
 
@@ -120,6 +121,8 @@ export function SchoolDashboard() {
           </div>
 
           <ParticipationPanel learners={learners} title="Participation across the school" byGrade />
+
+          <SchoolLicence schoolId={profile.school_id} learners={learners.length} />
 
           {gradeBreakdown.length > 0 ? (
             <div className="card p-5">

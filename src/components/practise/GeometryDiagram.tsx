@@ -25,6 +25,11 @@ const SIDE = 46
 // that, with its labels round it, it is shown at close to full size there --
 // a 12-unit label reads as about 11 px, not 8.
 const MAX_W = 240
+// The frame round the drawing and its labels is kept to the width of a chart's
+// canvas. Coordinate labels such as "A(−2 ; −6)" stick out past the drawing,
+// and a frame wider than this would shrink every label on a phone to under
+// 8 px; the drawing is made smaller instead, so the labels keep their size.
+const MAX_FRAME_W = 320
 const MAX_H = 200
 /** The smallest text a phone can read comfortably, in viewBox units. */
 const MIN_FONT = 11
@@ -71,7 +76,7 @@ function crosses(p: XY, q: XY, box: Box) {
   return true
 }
 
-export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
+function draw(spec: SceneSpec, maxW: number) {
   const byId = new Map(spec.points.map((p) => [p.id, p]))
   const P = (id: string) => byId.get(id)!
 
@@ -108,7 +113,7 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
   const maxX = Math.max(...xs)
   const minY = Math.min(...ys)
   const maxY = Math.max(...ys)
-  const s = Math.min(MAX_W / (maxX - minX || 1), MAX_H / (maxY - minY || 1))
+  const s = Math.min(maxW / (maxX - minX || 1), MAX_H / (maxY - minY || 1))
   const sx = (x: number) => SIDE + (x - minX) * s
   const sy = (y: number) => PAD + (maxY - y) * s
   const at = (id: string): XY => ({ x: sx(P(id).x), y: sy(P(id).y) })
@@ -402,7 +407,7 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
     ...(spec.notes ?? []),
   ].join(' ')
 
-  return (
+  const figure = (
     <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       {/* Never blown up past 1.3 times: a tall, narrow sketch would otherwise fill the screen. */}
       <svg
@@ -500,4 +505,18 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
       </figcaption>
     </figure>
   )
+  return { W, figure }
+}
+
+export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
+  // Labels are placed after the drawing is scaled, so the frame's width is
+  // only known once it has been drawn: take off whatever it overhangs by and
+  // draw again, a few times at most.
+  let maxW = MAX_W
+  let drawn = draw(spec, maxW)
+  for (let k = 0; k < 3 && drawn.W > MAX_FRAME_W + 0.5 && maxW > 160; k++) {
+    maxW = Math.max(160, maxW - (drawn.W - MAX_FRAME_W))
+    drawn = draw(spec, maxW)
+  }
+  return drawn.figure
 }

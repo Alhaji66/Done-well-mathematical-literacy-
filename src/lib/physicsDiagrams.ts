@@ -34,6 +34,25 @@ function norm(s: string) {
 }
 /** An index of refraction keeps its written places: n = 1,00, not n = 1. */
 const nIdx = (raw: string) => raw.replace('.', ',')
+
+/**
+ * A medium's name and index, e.g. "Glass (n = 1,50)", as free text. A long name
+ * -- "Transparent plastic block" -- is set on two lines, the index under it, so
+ * that it stays in its own quarter of the figure instead of running across the
+ * normal and the rays.
+ */
+function medium(name: string, n: string, x: number, y: number, anchor: 'start' | 'end'): { x: number; y: number; text: string; anchor: 'start' | 'end' }[] {
+  const full = `${name} (n = ${nIdx(n)})`
+  if (full.length <= 17) return [{ x, y, text: full, anchor }]
+  const rows: string[] = []
+  for (const word of name.split(' ')) {
+    const last = rows.length - 1
+    if (last >= 0 && `${rows[last]} ${word}`.length <= 13) rows[last] += ` ${word}`
+    else rows.push(word)
+  }
+  rows.push(`(n = ${nIdx(n)})`)
+  return rows.map((text, i) => ({ x, y: y + 0.25 - i * 0.55, text, anchor }))
+}
 const show = (n: number, unit?: string) => `${String(Math.round(n * 1000) / 1000).replace('.', ',')}${unit ? ` ${unit}` : ''}`
 const pt = (id: string, x: number, y: number, label?: string): ScenePoint => ({ id, x, y, label })
 const SPEED = 'm·s⁻¹'
@@ -227,8 +246,9 @@ function ray(t: string, prompt: string): SceneSpec | null {
         { at: 'O', a: 'N2', b: 'Q', label: '?' },
       ],
       texts: [
-        { x: 3.3, y: 1.6, text: `${cap(a)} (n = ${nIdx(n1)})`, anchor: 'end' },
-        { x: 3.3, y: -1.6, text: `${cap(b)} (n = ${nIdx(n2)})`, anchor: 'end' },
+        ...medium(cap(a), n1, 3.3, 1.6, 'end'),
+        // The refracted ray runs down to the right, so the second medium is named on the left.
+        ...medium(cap(b), n2, -3.3, -1.6, 'start'),
         { x: 0.15, y: 3.35, text: 'normal', anchor: 'start', size: 9 },
       ],
       toScale: true,
@@ -252,9 +272,9 @@ function ray(t: string, prompt: string): SceneSpec | null {
       ],
       angles: [{ at: 'O', a: 'N2', b: 'P', label: 'θc = ?' }],
       texts: [
-        { x: -3.3, y: 1.4, text: `${cap(b)} (n = ${nIdx(n2)})`, anchor: 'start' },
-        { x: 3.3, y: -2.2, text: `${cap(a)} (n = ${nIdx(n1)})`, anchor: 'end' },
-        { x: 1.9, y: 0.6, text: 'refracted along the boundary', size: 9, accent: true },
+        ...medium(cap(b), n2, -3.3, 1.4, 'start'),
+        ...medium(cap(a), n1, 3.3, -2.2, 'end'),
+        { x: 0.3, y: 0.5, text: 'along the boundary', anchor: 'start', size: 9, accent: true },
       ],
       toScale: false,
     }
@@ -279,7 +299,7 @@ function ray(t: string, prompt: string): SceneSpec | null {
       texts: [
         { x: -3.3, y: 1.2, text: 'Air', anchor: 'start' },
         { x: 3.3, y: -2.2, text: `n = ${nIdx(n1)}`, anchor: 'end' },
-        { x: 1.6, y: 1.3, text: 'reflected or refracted?', size: 9, accent: true },
+        { x: 0.3, y: 1.3, text: 'reflected or refracted?', anchor: 'start', size: 9, accent: true },
       ],
       toScale: true,
     }
@@ -462,7 +482,7 @@ function labelledTransverse(): SceneSpec {
     texts: [
       { x: 1, y: 1.5, text: 'crest', accent: true },
       { x: 3, y: -1.7, text: 'trough', accent: true },
-      { x: 8.1, y: 0.3, text: 'rest position', anchor: 'end', size: 9 },
+      { x: 8.2, y: 0, text: 'rest position', anchor: 'start', size: 9 },
     ],
     notes: ['One wavelength is the distance from a crest to the next crest, or a trough to the next trough.'],
     toScale: false,
@@ -502,15 +522,15 @@ function energyProfile(kind: 'exo' | 'endo', catalysed = false): SceneSpec {
       kind === 'exo'
         ? 'Exothermic: the products have less energy than the reactants, so ΔH is negative.'
         : 'Endothermic: the products have more energy than the reactants, so ΔH is positive.',
-      ...(catalysed ? ['A catalyst lowers Ea; the reactants, products and ΔH stay the same.'] : []),
+      ...(catalysed ? ['The dashed curve is with a catalyst: it lowers Ea, and the reactants, products and ΔH stay the same.'] : []),
     ],
     texts: [
-      { x: 0.2, y: r + 0.5, text: 'reactants', anchor: 'start', size: 10 },
+      // Under the reactants' level: above it, the Ea arrow and the rising curve run through the word.
+      { x: 0.2, y: r - 0.7, text: 'reactants', anchor: 'start', size: 10 },
       { x: 10, y: p + (kind === 'exo' ? -0.5 : 0.5), text: 'products', anchor: 'end', size: 10 },
       { x: 5, y: peak + 0.6, text: 'activated complex', size: 10 },
       { x: 0.3, y: 8.9, text: 'potential energy', anchor: 'start', size: 10 },
       { x: 10.5, y: -0.6, text: 'course of reaction', anchor: 'end', size: 10 },
-      ...(catalysed ? [{ x: 5, y: 4.9, text: 'with catalyst', size: 9, accent: true }] : []),
     ],
     toScale: false,
     schematic: true,
@@ -526,7 +546,7 @@ function gasVolume(kind: 'catalyst' | 'temperature' | 'single'): SceneSpec {
   ]
   if (kind !== 'single') {
     curves.push({ points: curve(0.9), accent: true })
-    texts.push({ x: 2.4, y: 6.4, text: kind === 'catalyst' ? 'with catalyst' : 'higher temperature (T₂)', size: 9, accent: true }, { x: 6.5, y: 4.4, text: kind === 'catalyst' ? 'without catalyst' : 'lower temperature (T₁)', size: 9 })
+    texts.push({ x: 1.6, y: 6.7, text: kind === 'catalyst' ? 'with catalyst' : 'higher temperature (T₂)', anchor: 'start', size: 9, accent: true }, { x: 6.5, y: 4.4, text: kind === 'catalyst' ? 'without catalyst' : 'lower temperature (T₁)', size: 9 })
   }
   return {
     title: kind === 'single' ? 'Volume of gas produced against time' : 'Same final volume, reached sooner by the faster reaction',

@@ -47,7 +47,7 @@ const FILL = '#f1f5f9'
 
 function Frame({ title, desc, viewBox, children }: { title: string; desc: string; viewBox: string; children: ReactNode }) {
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
       <svg viewBox={viewBox} role="img" aria-label={title} className="mx-auto block h-auto w-full max-w-sm">
         <title>{title}</title>
         <desc>{desc}</desc>
@@ -88,10 +88,10 @@ function CastDiagram() {
           </text>
         </g>
       ))}
-      <text x="178" y="87" fontSize="9" fill={MUTED}>
+      <text x="178" y="87" fontSize="10" fill={MUTED}>
         0°
       </text>
-      <text x="94" y="16" fontSize="9" fill={MUTED}>
+      <text x="94" y="16" fontSize="10" fill={MUTED}>
         90°
       </text>
     </Frame>
@@ -128,7 +128,7 @@ function SurdNumberLine() {
       <text x={x(50)} y="80" textAnchor="middle" fontSize="10" fontWeight="700" fill={ACCENT}>
         50
       </text>
-      <text x="100" y="16" textAnchor="middle" fontSize="9" fill={MUTED}>
+      <text x="100" y="16" textAnchor="middle" fontSize="10" fill={MUTED}>
         1 unit from 49, but 14 from 64
       </text>
     </Frame>
@@ -140,11 +140,11 @@ function ChargesOnALine() {
     <Frame
       title="Three charges on a straight line"
       desc="A horizontal x-axis. A positive 3 microcoulomb charge sits at x equals 0, a negative 2 microcoulomb charge at x equals 0,20 metres, and a positive 4 microcoulomb charge at x equals 0,50 metres. Because the charges lie on one line, each force is either to the left or to the right, so the contributions can be added with signs rather than as vectors in two dimensions."
-      viewBox="0 0 220 90"
+      viewBox="0 0 222 90"
     >
       <line x1="15" y1="50" x2="205" y2="50" stroke={INK} strokeWidth="1.5" />
       <polygon points="205,50 198,46 198,54" fill={INK} />
-      <text x="200" y="68" fontSize="9" fill={MUTED}>
+      <text x="209" y="54" fontSize="10" fill={MUTED}>
         x
       </text>
       {[
@@ -157,12 +157,12 @@ function ChargesOnALine() {
           <text x={cx as number} y="32" textAnchor="middle" fontSize="10" fontWeight="700" fill={INK}>
             {q}
           </text>
-          <text x={cx as number} y="72" textAnchor="middle" fontSize="9" fill={MUTED}>
+          <text x={cx as number} y="72" textAnchor="middle" fontSize="10" fill={MUTED}>
             {pos}
           </text>
         </g>
       ))}
-      <text x="110" y="16" textAnchor="middle" fontSize="9" fill={MUTED}>
+      <text x="110" y="16" textAnchor="middle" fontSize="10" fill={MUTED}>
         one line, so every force is left or right
       </text>
     </Frame>
@@ -185,7 +185,7 @@ function ChargesOnALine() {
  */
 
 /** One labelled force arrow from (x, y), in the direction (dx, dy). */
-function Force({ x, y, dx, dy, label, at }: { x: number; y: number; dx: number; dy: number; label: string; at: 'start' | 'middle' | 'end' }) {
+function Force({ x, y, dx, dy, label, at, lift = 0 }: { x: number; y: number; dx: number; dy: number; label: string; at: 'start' | 'middle' | 'end'; lift?: number }) {
   const tipX = x + dx
   const tipY = y + dy
   const len = Math.hypot(dx, dy)
@@ -197,7 +197,7 @@ function Force({ x, y, dx, dy, label, at }: { x: number; y: number; dx: number; 
     <g>
       <line x1={x} y1={y} x2={tipX} y2={tipY} stroke={ACCENT} strokeWidth="2" />
       <polygon points={head} fill={ACCENT} />
-      <text x={tipX + ux * 6} y={tipY + uy * 6 + 3} textAnchor={at} fontSize="10" fontWeight="700" fill={INK}>
+      <text x={tipX + ux * 6} y={tipY + uy * 6 + 3 - lift} textAnchor={at} fontSize="10" fontWeight="700" fill={INK}>
         {label}
       </text>
     </g>
@@ -230,20 +230,23 @@ function FbdLift() {
     <Frame
       title="Forces on a person in a lift accelerating upwards"
       desc="A person stands in a lift that is accelerating upwards. Two forces act on the person, each drawn from the person outwards. The normal force, N, from the floor acts vertically upwards. Weight, w, acts vertically downwards. The upward arrow is drawn longer than the downward one, because an upward acceleration requires the normal force to exceed the weight; the difference between them is the net force producing the acceleration."
-      viewBox="0 0 200 180"
+      viewBox="0 0 200 190"
     >
-      <rect x="55" y="18" width="90" height="144" fill={FILL} stroke={INK} strokeWidth="1.5" />
+      <rect x="55" y="18" width="90" height="160" fill={FILL} stroke={INK} strokeWidth="1.5" />
       <line x1="55" y1="146" x2="145" y2="146" stroke={INK} strokeWidth="1.5" />
       <rect x="88" y="118" width="24" height="28" fill={INK} opacity="0.85" />
       <Force x={100} y={132} dx={0} dy={-58} label="N" at="middle" />
       <Force x={100} y={132} dx={0} dy={26} label="w" at="middle" />
       <circle cx="100" cy="132" r="2.5" fill="#fff" />
-      <text x="152" y="60" fontSize="9" fill={MUTED}>a ↑</text>
+      <text x="152" y="60" fontSize="10" fill={MUTED}>a ↑</text>
     </Frame>
   )
 }
 
 function FbdConnected() {
+  // Tension is drawn along the string, with its label above it; friction runs
+  // along the bottom of each block, where it acts, so the two leftward forces
+  // on B are told apart.
   return (
     <Frame
       title="Forces on two blocks joined by a light string"
@@ -251,70 +254,76 @@ function FbdConnected() {
       viewBox="0 0 300 150"
     >
       <line x1="10" y1="104" x2="290" y2="104" stroke={INK} strokeWidth="2" />
-      <rect x="52" y="80" width="34" height="24" fill={INK} opacity="0.85" />
-      <rect x="182" y="80" width="34" height="24" fill={INK} opacity="0.85" />
-      <text x="69" y="97" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">A</text>
-      <text x="199" y="97" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">B</text>
-      <line x1="86" y1="92" x2="182" y2="92" stroke={INK} strokeWidth="1.5" strokeDasharray="3 3" />
-      <Force x={69} y={92} dx={0} dy={-42} label="N" at="middle" />
-      <Force x={69} y={92} dx={0} dy={34} label="w" at="middle" />
-      <Force x={69} y={92} dx={40} dy={0} label="T" at="start" />
-      <Force x={69} y={92} dx={-40} dy={0} label="f" at="end" />
-      <Force x={199} y={92} dx={0} dy={-42} label="N" at="middle" />
-      <Force x={199} y={92} dx={0} dy={34} label="w" at="middle" />
-      <Force x={199} y={92} dx={52} dy={0} label="F" at="start" />
-      <Force x={199} y={92} dx={-40} dy={0} label="T" at="end" />
-      <circle cx="69" cy="92" r="2.5" fill="#fff" />
-      <circle cx="199" cy="92" r="2.5" fill="#fff" />
-      <text x="150" y="134" textAnchor="middle" fontSize="9" fill={MUTED}>friction also acts on B, drawn with T</text>
+      <rect x="52" y="74" width="34" height="30" fill={INK} opacity="0.85" />
+      <rect x="182" y="74" width="34" height="30" fill={INK} opacity="0.85" />
+      <text x="48" y="72" textAnchor="end" fontSize="12" fontWeight="700" fill={INK}>A</text>
+      <text x="178" y="72" textAnchor="end" fontSize="12" fontWeight="700" fill={INK}>B</text>
+      <line x1="86" y1="84" x2="182" y2="84" stroke={INK} strokeWidth="1.5" strokeDasharray="3 3" />
+      <Force x={69} y={84} dx={0} dy={-38} label="N" at="middle" />
+      <Force x={69} y={84} dx={0} dy={42} label="w" at="middle" />
+      <Force x={69} y={84} dx={38} dy={0} label="T" at="middle" lift={9} />
+      <Force x={69} y={99} dx={-40} dy={0} label="f" at="end" />
+      <Force x={199} y={84} dx={0} dy={-38} label="N" at="middle" />
+      <Force x={199} y={84} dx={0} dy={42} label="w" at="middle" />
+      <Force x={199} y={84} dx={56} dy={0} label="F" at="start" />
+      <Force x={199} y={84} dx={-38} dy={0} label="T" at="middle" lift={9} />
+      <Force x={199} y={99} dx={-40} dy={0} label="f" at="middle" lift={-10} />
+      <circle cx="69" cy="84" r="2.5" fill="#fff" />
+      <circle cx="199" cy="84" r="2.5" fill="#fff" />
     </Frame>
   )
 }
 
 function CircuitMeters() {
-  // Cell and switch on the left rail; R1 in series along the top; R2 and R3 in
-  // parallel on the right. Ammeter IN SERIES in the main line, voltmeter ACROSS
-  // the parallel combination -- the placement is what the question is about.
+  // Cell and switch on the left and bottom; the ammeter and R1 in series along
+  // the top; R2 and R3 in parallel between the nodes P and Q; the voltmeter
+  // across P and Q. The placement is what the question is about, so every lead
+  // meets the circuit at a node, never part-way along a resistor.
+  const P = 180
+  const Q = 260
   return (
     <Frame
       title="Ammeter in series, voltmeter in parallel"
-      desc="A circuit with a cell and an open switch on the left. From the cell the current passes through an ammeter, marked A in a circle, connected in series in the main line. It then passes through resistor R1, also in series. The circuit then divides into two parallel branches containing R2 and R3, before rejoining and returning to the cell. A voltmeter, marked V in a circle, is connected across the parallel combination, in parallel with it, with its two leads joining the circuit at the points where the branches divide and rejoin. The ammeter is in the main line so the whole current passes through it; the voltmeter is across the components so it measures the potential difference between two points without the current passing through it."
-      viewBox="0 0 300 180"
+      desc="A circuit with a cell and an open switch. From the cell the current passes through an ammeter, marked A in a circle, connected in series in the main line. It then passes through resistor R1, also in series. The circuit then divides into two parallel branches containing R2 and R3, before rejoining and returning to the cell. A voltmeter, marked V in a circle, is connected across the parallel combination, in parallel with it, with its two leads joining the circuit at the points where the branches divide and rejoin. The ammeter is in the main line so the whole current passes through it; the voltmeter is across the components so it measures the potential difference between two points without the current passing through it."
+      viewBox="0 0 300 170"
     >
-      {/* Outer loop */}
-      <polyline points="40,40 260,40 260,140 40,140 40,40" fill="none" stroke={INK} strokeWidth="1.6" />
+      {/* Main line: from P back along the top, down the left, along the bottom and up to Q. */}
+      <path d={`M${P} 40 H40 V140 H${Q} V40 H${P} V80 H${Q}`} fill="none" stroke={INK} strokeWidth="1.6" />
       {/* Cell on the left rail: long plate positive, short plate negative */}
       <line x1="30" y1="82" x2="50" y2="82" stroke={INK} strokeWidth="2.5" />
       <line x1="34" y1="92" x2="46" y2="92" stroke={INK} strokeWidth="1.2" />
-      <rect x="28" y="74" width="24" height="26" fill="#fff" opacity="0" />
-      <text x="16" y="92" fontSize="9" fill={MUTED}>cell</text>
+      <rect x="37" y="84" width="6" height="6" fill="#fff" />
+      <text x="24" y="90" textAnchor="end" fontSize="10" fill={MUTED}>cell</text>
       {/* Switch on the bottom rail */}
+      <rect x="121" y="136" width="24" height="8" fill="#fff" />
       <circle cx="120" cy="140" r="2.5" fill={INK} />
       <circle cx="146" cy="140" r="2.5" fill={INK} />
       <line x1="120" y1="140" x2="144" y2="130" stroke={INK} strokeWidth="1.6" />
-      <text x="122" y="156" fontSize="9" fill={MUTED}>switch</text>
+      <text x="133" y="157" textAnchor="middle" fontSize="10" fill={MUTED}>switch</text>
       {/* Ammeter in series on the top rail */}
-      <circle cx="96" cy="40" r="11" fill="#fff" stroke={ACCENT} strokeWidth="1.8" />
-      <text x="96" y="44" textAnchor="middle" fontSize="11" fontWeight="700" fill={ACCENT}>A</text>
+      <circle cx="80" cy="40" r="11" fill="#fff" stroke={ACCENT} strokeWidth="1.8" />
+      <text x="80" y="44" textAnchor="middle" fontSize="11" fontWeight="700" fill={ACCENT}>A</text>
       {/* R1 in series */}
-      <rect x="140" y="31" width="34" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
-      <text x="157" y="44" textAnchor="middle" fontSize="10" fill={INK}>R₁</text>
-      {/* Parallel pair on the right */}
-      <line x1="214" y1="40" x2="214" y2="140" stroke={INK} strokeWidth="1.6" />
-      <line x1="214" y1="66" x2="260" y2="66" stroke={INK} strokeWidth="1.6" />
-      <line x1="214" y1="114" x2="260" y2="114" stroke={INK} strokeWidth="1.6" />
-      <rect x="226" y="57" width="30" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
-      <text x="241" y="70" textAnchor="middle" fontSize="10" fill={INK}>R₂</text>
-      <rect x="226" y="105" width="30" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
-      <text x="241" y="118" textAnchor="middle" fontSize="10" fill={INK}>R₃</text>
-      {/* Voltmeter ACROSS the parallel combination */}
-      <line x1="214" y1="90" x2="189" y2="90" stroke={ACCENT} strokeWidth="1.6" />
-      <circle cx="178" cy="90" r="11" fill="#fff" stroke={ACCENT} strokeWidth="1.8" />
-      <text x="178" y="94" textAnchor="middle" fontSize="11" fontWeight="700" fill={ACCENT}>V</text>
-      <line x1="167" y1="90" x2="150" y2="90" stroke={ACCENT} strokeWidth="1.6" />
-      <line x1="150" y1="90" x2="150" y2="40" stroke={ACCENT} strokeWidth="1.6" />
-      <circle cx="150" cy="40" r="2.5" fill={ACCENT} />
-      <circle cx="214" cy="90" r="2.5" fill={ACCENT} />
+      <rect x="112" y="31" width="34" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
+      <text x="129" y="44" textAnchor="middle" fontSize="10" fill={INK}>R₁</text>
+      {/* R2 and R3 in parallel between P and Q */}
+      <rect x="204" y="31" width="32" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
+      <text x="220" y="44" textAnchor="middle" fontSize="10" fill={INK}>R₂</text>
+      <rect x="204" y="71" width="32" height="18" fill="#fff" stroke={INK} strokeWidth="1.5" />
+      <text x="220" y="84" textAnchor="middle" fontSize="10" fill={INK}>R₃</text>
+      {/* Voltmeter across P and Q */}
+      <path d={`M${P} 80 V112 H209 M231 112 H${Q}`} fill="none" stroke={ACCENT} strokeWidth="1.6" />
+      <circle cx="220" cy="112" r="11" fill="#fff" stroke={ACCENT} strokeWidth="1.8" />
+      <text x="220" y="116" textAnchor="middle" fontSize="11" fontWeight="700" fill={ACCENT}>V</text>
+      {[
+        [P, 40],
+        [P, 80],
+        [Q, 40],
+        [Q, 80],
+        [Q, 112],
+      ].map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="2.5" fill={INK} />
+      ))}
     </Frame>
   )
 }
@@ -345,22 +354,22 @@ function TitrationCurve() {
       {[0, 7, 14].map((ph) => (
         <g key={ph}>
           <line x1={x0 - 4} y1={py(ph)} x2={x0} y2={py(ph)} stroke={INK} strokeWidth="1.2" />
-          <text x={x0 - 7} y={py(ph) + 3} textAnchor="end" fontSize="9" fill={MUTED}>{ph}</text>
+          <text x={x0 - 7} y={py(ph) + 3} textAnchor="end" fontSize="10" fill={MUTED}>{ph}</text>
         </g>
       ))}
       {[0, 25, 50].map((v) => (
         <g key={v}>
           <line x1={px(v)} y1={y0} x2={px(v)} y2={y0 + 4} stroke={INK} strokeWidth="1.2" />
-          <text x={px(v)} y={y0 + 15} textAnchor="middle" fontSize="9" fill={MUTED}>{v}</text>
+          <text x={px(v)} y={y0 + 15} textAnchor="middle" fontSize="10" fill={MUTED}>{v}</text>
         </g>
       ))}
       <polyline points={pts.join(' ')} fill="none" stroke={INK} strokeWidth="2" />
       <line x1={x0} y1={py(7)} x2={px(25)} y2={py(7)} stroke={ACCENT} strokeWidth="1.2" strokeDasharray="4 3" />
       <line x1={px(25)} y1={y0} x2={px(25)} y2={py(7)} stroke={ACCENT} strokeWidth="1.2" strokeDasharray="4 3" />
       <circle cx={px(25)} cy={py(7)} r="3.5" fill={ACCENT} />
-      <text x={px(25) + 8} y={py(7) - 5} fontSize="9" fontWeight="700" fill={ACCENT}>equivalence</text>
-      <text x={x0 - 30} y={y0 - h / 2} fontSize="9" fill={MUTED} transform={`rotate(-90 ${x0 - 30} ${y0 - h / 2})`}>pH</text>
-      <text x={x0 + w / 2} y={y0 + 30} textAnchor="middle" fontSize="9" fill={MUTED}>volume of NaOH added (mℓ)</text>
+      <text x={px(25) + 8} y={py(7) - 5} fontSize="10" fontWeight="700" fill={ACCENT}>equivalence</text>
+      <text x={x0 - 30} y={y0 - h / 2} fontSize="10" fill={MUTED} transform={`rotate(-90 ${x0 - 30} ${y0 - h / 2})`}>pH</text>
+      <text x={x0 + w / 2} y={y0 + 30} textAnchor="middle" fontSize="10" fill={MUTED}>volume of NaOH added (mℓ)</text>
     </Frame>
   )
 }

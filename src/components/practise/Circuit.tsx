@@ -260,7 +260,7 @@ export function Circuit({ spec }: CircuitProps) {
   const ammeterX = (left + right) / 2
 
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
       <svg
         viewBox={`0 0 ${VIEW_W} ${viewH}`}
         role="img"
@@ -308,7 +308,7 @@ export function Circuit({ spec }: CircuitProps) {
                 {ohms(spec.emf as number)} V
               </text>
               {spec.internalResistance !== undefined ? (
-                <text x={left + 16} y={CELL.y + 15} fontSize="8.5" fill={MUTED}>
+                <text x={left + 16} y={CELL.y + 15} fontSize="9.5" fill={MUTED}>
                   r = {ohms(spec.internalResistance)} Ω
                 </text>
               ) : null}
@@ -347,7 +347,7 @@ export function Circuit({ spec }: CircuitProps) {
         ) : null}
 
         {hasJunctions ? (
-          <text x={12} y={viewH - 6} fontSize="7.5" fill={MUTED}>
+          <text x={12} y={viewH - 6} fontSize="9" fill={MUTED}>
             A dot marks a junction. Resistors sharing both junctions are in parallel.
           </text>
         ) : null}

@@ -270,7 +270,7 @@ export function Graph({ spec }: GraphProps) {
   })()
 
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
       <svg
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         role="img"
@@ -324,7 +324,7 @@ export function Graph({ spec }: GraphProps) {
           <g key={`tx${t}`}>
             <line x1={sx(t)} y1={axisY - 3} x2={sx(t)} y2={axisY + 3} stroke={INK} strokeWidth="1.2" />
             {t === 0 && y0 <= 0 && y1 >= 0 ? null : (
-              <text x={sx(t)} y={BOX.bottom + 13} textAnchor="middle" fontSize="9" fill={MUTED}>
+              <text x={sx(t)} y={BOX.bottom + 13} textAnchor="middle" fontSize="10" fill={MUTED}>
                 {num(t)}
               </text>
             )}
@@ -334,7 +334,7 @@ export function Graph({ spec }: GraphProps) {
           <g key={`ty${t}`}>
             <line x1={axisX - 3} y1={sy(t)} x2={axisX + 3} y2={sy(t)} stroke={INK} strokeWidth="1.2" />
             {t === 0 && x0 <= 0 && x1 >= 0 ? null : (
-              <text x={BOX.left - 6} y={sy(t) + 3} textAnchor="end" fontSize="9" fill={MUTED}>
+              <text x={BOX.left - 6} y={sy(t) + 3} textAnchor="end" fontSize="10" fill={MUTED}>
                 {num(t)}
               </text>
             )}

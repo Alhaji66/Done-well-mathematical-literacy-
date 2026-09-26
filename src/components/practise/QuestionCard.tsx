@@ -74,7 +74,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
   }
 
   return (
-    <div className="card p-5">
+    <div className="card p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-2">
         <span className="badge-navy">{label ?? `Question ${index + 1}`}</span>
         <DifficultyBadge difficulty={question.difficulty} />
@@ -162,7 +162,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult }: Qu
       {(revealed || (isMcq && hasAttempted)) && (
         <div
           className={cn(
-            'mt-4 rounded-lg border p-4',
+            'mt-4 rounded-lg border p-3 sm:p-4',
             isMcq
               ? isCorrectMcq
                 ? 'border-emerald-200 bg-emerald-50'

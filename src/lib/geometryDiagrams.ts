@@ -646,6 +646,9 @@ function prism(l: number, w: number, h: number, labels: { l?: string; w?: string
 
 function cylinder(r: number, h: number, labels: { r?: string; d?: string; h?: string }, title: string): SceneSpec {
   const ry = r * 0.3
+  // The radius or diameter is written above the top ellipse, over the middle
+  // of the dashed line it names: written on the line, it sits on the curved rim.
+  const gap = Math.max(2 * r, h + 2 * ry) * 0.07
   return {
     title,
     points: [pt('l0', -r, 0), pt('r0', r, 0), pt('l1', -r, h), pt('r1', r, h), pt('o', 0, h, undefined, true)],
@@ -656,8 +659,9 @@ function cylinder(r: number, h: number, labels: { r?: string; d?: string; h?: st
     segments: [
       { a: 'l0', b: 'l1' },
       { a: 'r0', b: 'r1', label: labels.h },
-      labels.d ? { a: 'l1', b: 'r1', label: labels.d, dashed: true } : { a: 'o', b: 'r1', label: labels.r, dashed: true },
+      labels.d ? { a: 'l1', b: 'r1', dashed: true } : { a: 'o', b: 'r1', dashed: true },
     ],
+    texts: [{ x: labels.d ? 0 : r / 2, y: h + ry + gap, text: (labels.d ?? labels.r)!, size: 12 }],
     toScale: false,
   }
 }

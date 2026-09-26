@@ -278,9 +278,18 @@ function Pies({ spec }: { spec: Extract<ChartSpec, { kind: 'pie' }> }) {
               const [x2, y2] = point(cx, cy, r, end)
               const large = sweep > 180 ? 1 : 0
               const mid = start + sweep / 2
-              const [lx, ly] = point(cx, cy, r * 0.62, mid)
               start = end
               const text = spec.showAngles ? `${fmt(Math.round(sweep))}°` : valueText(s.value)
+              // The value sits in its slice, moved outward to where a narrow
+              // slice is wide enough for it; one too narrow anywhere is left
+              // to the legend, which names every value, rather than spilling
+              // over the next slice's edge.
+              const size = n === 1 ? TEXT_BOLD : TEXT
+              const need = text.length * size * 0.7 + 4
+              // Measured at the text's inner edge, where the slice is narrowest.
+              const across = (k: number) => 2 * (r * k - size / 2) * Math.sin((Math.min(sweep, 180) * Math.PI) / 360)
+              const k = [0.62, 0.66, 0.7, 0.74, 0.78].find((f) => across(f) >= need)
+              const [lx, ly] = point(cx, cy, r * (k ?? 0.62), mid)
               return (
                 <g key={i}>
                   <path
@@ -293,12 +302,12 @@ function Pies({ spec }: { spec: Extract<ChartSpec, { kind: 'pie' }> }) {
                     stroke="#fff"
                     strokeWidth="2"
                   />
-                  {sweep >= 24 ? (
+                  {k !== undefined ? (
                     <text
                       x={lx}
                       y={ly + 3.5}
                       textAnchor="middle"
-                      fontSize={n === 1 ? TEXT_BOLD : TEXT}
+                      fontSize={size}
                       fontWeight="700"
                       fill="#fff"
                       stroke="rgba(15,23,42,0.55)"

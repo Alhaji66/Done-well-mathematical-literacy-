@@ -383,7 +383,13 @@ function draw(spec: SceneSpec, maxW: number) {
             [0, 1, 2, 3, 4, 5, 6, 7].map((k) => ({ x: o.x + Math.cos((k * Math.PI) / 4) * r, y: o.y + Math.sin((k * Math.PI) / 4) * r, anchor: 'middle' as const })),
           ),
         ].map((c) => ({ ...c, y: c.y + 4 }))
-    const box = (c: Spot) => textBox(c.x, c.y, p.label!, size, c.anchor)
+    // A point's name is set in italic, which leans past the upright width
+    // textBox estimates; without the allowance "6" at an x-intercept can
+    // run into the axis's "x" beside it.
+    const box = (c: Spot) => {
+      const b = textBox(c.x, c.y, p.label!, size, c.anchor)
+      return { ...b, r: b.r + size * 0.15 }
+    }
     const spot = spots.find((c) => clear(box(c), taken)) ?? spots[0]
     taken.push(box(spot))
     return { p, o, spot, size, long }

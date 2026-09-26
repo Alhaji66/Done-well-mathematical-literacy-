@@ -364,8 +364,13 @@ export function Graph({ spec }: GraphProps) {
           // far end is where the axis name sits and where two trig curves both
           // flatten towards the axis, so labels put there collide with each
           // other and with the "x".
-          for (let s = 0; s < 40; s += 1) {
-            const x = x0 + (x1 - x0) * (0.8 - s / 100)
+          // Tried from four-fifths along, then further left, then right; a
+          // spot where the name would sit on the x-axis, the y-axis or an
+          // asymptote -- as it does where a curve crosses one -- is passed over.
+          const fractions = [...Array.from({ length: 60 }, (_, k) => 0.8 - k / 100), 0.85, 0.9]
+          let fallback: JSX.Element | null = null
+          for (const f of fractions) {
+            const x = x0 + (x1 - x0) * f
             const y = evaluate(curve, x)
             if (y === null || !Number.isFinite(y) || y < y0 || y > y1) continue
             const w = textWidth(curve.label, 11)
@@ -375,21 +380,24 @@ export function Graph({ spec }: GraphProps) {
             const ahead = evaluate(curve, x + (x1 - x0) / 100)
             const climbs = ahead !== null && Number.isFinite(ahead) && ahead > y
             const flip = climbs ? sx(x) - 6 - w > BOX.left : sx(x) + 6 + w > BOX.right
-            return (
-              <text
-                key={`l${i}`}
-                x={flip ? sx(x) - 6 : sx(x) + 6}
-                y={Math.max(sy(y) - 6, BOX.top + 9)}
-                textAnchor={flip ? 'end' : 'start'}
-                fontSize="11"
-                fontWeight="700"
-                fill={i === 0 ? CURVE : ACCENT}
-              >
+            const lx = flip ? sx(x) - 6 : sx(x) + 6
+            const ly = Math.max(sy(y) - 6, BOX.top + 9)
+            const [l, r] = flip ? [lx - w, lx] : [lx, lx + w]
+            const onLevel = (py: number) => py > ly - 15 && py < ly + 5
+            const onUpright = (px: number) => px > l - 3 && px < r + 3
+            const blocked =
+              onLevel(axisY) ||
+              onUpright(axisX) ||
+              asymptotes.some((a) => (a.x !== undefined ? onUpright(sx(a.x)) : a.y !== undefined ? onLevel(sy(a.y)) : false))
+            const text = (
+              <text key={`l${i}`} x={lx} y={ly} textAnchor={flip ? 'end' : 'start'} fontSize="11" fontWeight="700" fill={i === 0 ? CURVE : ACCENT}>
                 {curve.label}
               </text>
             )
+            if (!blocked) return text
+            fallback ??= text
           }
-          return null
+          return fallback
         })}
 
         {/* Axis names. A Mathematics graph names its axes x and y at the ends,

@@ -54,6 +54,66 @@ export const SARS_2025_26: TaxTable = {
   thresholds: { under65: 95_750, from65: 148_217, from75: 165_689 },
 }
 
+/*
+ * Earlier years, for the past papers set in them. A November 2022 paper taxed
+ * a 2022/2023 income, and the brackets then were lower, so printing today's
+ * table above it would make the paper's own figures wrong. Each table is
+ * checked by check:matlit-method the same way as the current one: every row's
+ * base follows from the row before, and every threshold reconciles with the
+ * rebates.
+ */
+
+/** 2022/2023 year of assessment (1 March 2022 to 28 February 2023). */
+export const SARS_2022_23: TaxTable = {
+  taxYear: '2022/2023',
+  brackets: [
+    { from: 1, to: 226_000, base: 0, rate: 18 },
+    { from: 226_001, to: 353_100, base: 40_680, rate: 26 },
+    { from: 353_101, to: 488_700, base: 73_726, rate: 31 },
+    { from: 488_701, to: 641_400, base: 115_762, rate: 36 },
+    { from: 641_401, to: 817_600, base: 170_734, rate: 39 },
+    { from: 817_601, to: 1_731_600, base: 239_452, rate: 41 },
+    { from: 1_731_601, to: null, base: 614_192, rate: 45 },
+  ],
+  rebates: { primary: 16_425, secondary: 9_000, tertiary: 2_997 },
+  thresholds: { under65: 91_250, from65: 141_250, from75: 157_900 },
+}
+
+/** 2021/2022 year of assessment (1 March 2021 to 28 February 2022). */
+export const SARS_2021_22: TaxTable = {
+  taxYear: '2021/2022',
+  brackets: [
+    { from: 1, to: 216_200, base: 0, rate: 18 },
+    { from: 216_201, to: 337_800, base: 38_916, rate: 26 },
+    { from: 337_801, to: 467_500, base: 70_532, rate: 31 },
+    { from: 467_501, to: 613_600, base: 110_739, rate: 36 },
+    { from: 613_601, to: 782_200, base: 163_335, rate: 39 },
+    { from: 782_201, to: 1_656_600, base: 229_089, rate: 41 },
+    { from: 1_656_601, to: null, base: 587_593, rate: 45 },
+  ],
+  rebates: { primary: 15_714, secondary: 8_613, tertiary: 2_871 },
+  thresholds: { under65: 87_300, from65: 135_150, from75: 151_100 },
+}
+
+/** 2020/2021 year of assessment (1 March 2020 to 28 February 2021). */
+export const SARS_2020_21: TaxTable = {
+  taxYear: '2020/2021',
+  brackets: [
+    { from: 1, to: 205_900, base: 0, rate: 18 },
+    { from: 205_901, to: 321_600, base: 37_062, rate: 26 },
+    { from: 321_601, to: 445_100, base: 67_144, rate: 31 },
+    { from: 445_101, to: 584_200, base: 105_429, rate: 36 },
+    { from: 584_201, to: 744_800, base: 155_505, rate: 39 },
+    { from: 744_801, to: 1_577_300, base: 218_139, rate: 41 },
+    { from: 1_577_301, to: null, base: 559_464, rate: 45 },
+  ],
+  rebates: { primary: 14_958, secondary: 8_199, tertiary: 2_736 },
+  thresholds: { under65: 83_100, from65: 128_650, from75: 143_850 },
+}
+
+/** Every table held here, newest first -- what check:matlit-method verifies. */
+export const SARS_TABLES: TaxTable[] = [SARS_2025_26, SARS_2022_23, SARS_2021_22, SARS_2020_21]
+
 /** Rands the way a South African paper prints them: R1 234 567. */
 export const rand = (n: number): string =>
   'R' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')

@@ -63,14 +63,14 @@ function Frame({
     return cloneElement(child as ReactElement<LabelProps>, { n: key.length })
   })
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       <svg viewBox={viewBox} role="img" aria-label={title} className="mx-auto block h-auto w-full max-w-md">
         <title>{title}</title>
         <desc>{desc}</desc>
         {drawn}
       </svg>
       {key.length ? (
-        <ol className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-left text-[12px] leading-snug sm:hidden">
+        <ol className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 px-1 text-left text-[12px] leading-snug sm:hidden">
           {key.map((k) => (
             <li key={k.n} className="flex gap-1.5">
               <span
@@ -114,7 +114,7 @@ function Label({ x, y, to, text, anchor = 'start', colour = INK, n }: LabelProps
   const x1 = to[0] >= right ? right + 1 : to[0] <= left ? left - 1 : x
   const y1 = to[0] > left && to[0] < right ? (to[1] > y ? y + 2 : y - 9) : y - 3
   // The phone's numbered marker sits where the text begins.
-  const R = 7.5
+  const R = 8
   const mx = anchor === 'start' ? x + R : anchor === 'end' ? x - R : x
   const my = y - 3
   const d = Math.hypot(to[0] - mx, to[1] - my) || 1
@@ -133,7 +133,7 @@ function Label({ x, y, to, text, anchor = 'start', colour = INK, n }: LabelProps
           <line x1={mx + ((to[0] - mx) / d) * R} y1={my + ((to[1] - my) / d) * R} x2={to[0]} y2={to[1]} stroke={MUTED} strokeWidth="0.9" />
           <circle cx={to[0]} cy={to[1]} r="1.8" fill={MUTED} />
           <circle cx={mx} cy={my} r={R} fill={fill} />
-          <text x={mx} y={my + 3.4} textAnchor="middle" fontSize="10" fontWeight="700" fill="white">
+          <text x={mx} y={my + 4} textAnchor="middle" fontSize="11.5" fontWeight="700" fill="white">
             {n}
           </text>
         </g>
@@ -151,11 +151,11 @@ function Label({ x, y, to, text, anchor = 'start', colour = INK, n }: LabelProps
 function Column({ x, y, name, lines }: { x: number; y: number; name: string; lines: string[] }) {
   return (
     <g>
-      <text x={x} y={y} textAnchor="middle" fontSize="10" fontWeight="700" fill={INK}>
+      <text x={x} y={y} textAnchor="middle" fontSize="12" fontWeight="700" fill={INK}>
         {name}
       </text>
       {lines.map((l, i) => (
-        <text key={l} x={x} y={y + 12 + i * 11} textAnchor="middle" fontSize="9" fill={MUTED}>
+        <text key={l} x={x} y={y + 14 + i * 12.5} textAnchor="middle" fontSize="11" fill={MUTED}>
           {l}
         </text>
       ))}
@@ -414,7 +414,7 @@ export function Eye() {
       <Label x={306} y={146} to={[230, 116]} text="blind spot" anchor="end" />
       <Label x={306} y={164} to={[262, 118]} text="optic nerve" anchor="end" colour={ACCENT} />
       <Label x={196} y={186} to={[172, 164]} text="choroid · sclera" anchor="middle" />
-      <text x={8} y={100} fontSize="9" fill={MUTED}>
+      <text x={8} y={100} fontSize="11" fill={MUTED}>
         light
       </text>
     </Frame>
@@ -551,12 +551,17 @@ export function DnaStructure() {
         return (
           <g key={k}>
             <line x1={160 + dx} y1={y} x2={160 - dx} y2={y} stroke={MUTED} strokeWidth={bonds === 3 ? 1.8 : 1.1} />
-            <text x={160 + dx * 0.55} y={y + 3} textAnchor="middle" fontSize="9" fontWeight="700" fill={BLUE} stroke="white" strokeWidth="2.5" paintOrder="stroke">
-              {pair[0]}
-            </text>
-            <text x={160 - dx * 0.55} y={y + 3} textAnchor="middle" fontSize="9" fontWeight="700" fill={ACCENT} stroke="white" strokeWidth="2.5" paintOrder="stroke">
-              {pair[1]}
-            </text>
+            {/* Near a crossover the pair's two letters would sit on top of each other, so that rung is left unlettered. */}
+            {Math.abs(dx) < 15 ? null : (
+              <>
+                <text x={160 + dx * 0.55} y={y + 3} textAnchor="middle" fontSize="11" fontWeight="700" fill={BLUE} stroke="white" strokeWidth="2.5" paintOrder="stroke">
+                  {pair[0]}
+                </text>
+                <text x={160 - dx * 0.55} y={y + 3} textAnchor="middle" fontSize="11" fontWeight="700" fill={ACCENT} stroke="white" strokeWidth="2.5" paintOrder="stroke">
+                  {pair[1]}
+                </text>
+              </>
+            )}
           </g>
         )
       })}
@@ -581,23 +586,25 @@ export function EnergyPyramid() {
         ['Secondary consumers', 'frogs · 1 000 kJ', '#fed7aa', RED],
         ['Tertiary consumers', 'snakes · 100 kJ', '#fecaca', RED],
       ].map(([name, detail, fill, stroke], l) => {
-        const w = 250 - l * 48
-        const x = 130 - w / 2
+        // Narrowed less at each level than it once was, so the top tier is
+        // still wide enough for "Tertiary consumers" at a size a phone can read.
+        const w = 244 - l * 38
+        const x = 128 - w / 2
         const y = 118 - l * 34
         return (
           <g key={name}>
             <rect x={x} y={y} width={w} height="30" fill={fill} stroke={stroke} strokeWidth="1.4" />
-            <text x={130} y={y + 13} textAnchor="middle" fontSize="10" fontWeight="700" fill={INK}>
+            <text x={128} y={y + 13} textAnchor="middle" fontSize="11.5" fontWeight="700" fill={INK}>
               {name}
             </text>
-            <text x={130} y={y + 25} textAnchor="middle" fontSize="9.5" fill={INK}>
+            <text x={128} y={y + 26} textAnchor="middle" fontSize="11" fill={INK}>
               {detail}
             </text>
             {l < 3 ? (
               <g>
                 <path d={`M${x + w + 4} ${y + 15} l12 0`} stroke={MUTED} strokeWidth="1.2" />
                 <path d={`M${x + w + 16} ${y + 15} l-5-3 l0 6 z`} fill={MUTED} />
-                <text x={x + w + 19} y={y + 18} fontSize="9.5" fill={MUTED}>
+                <text x={x + w + 19} y={y + 18} fontSize="11" fill={MUTED}>
                   90% lost
                 </text>
               </g>
@@ -829,7 +836,7 @@ export function MuscleTissue() {
     <Frame
       title="The three types of muscle tissue"
       desc="Skeletal muscle: long cylindrical fibres with many nuclei at the edge and cross-striations; voluntary. Smooth muscle: spindle-shaped cells, one central nucleus each, no striations; involuntary, in the walls of the gut and blood vessels. Cardiac muscle: branched, striated cells with one or two central nuclei, joined end to end by intercalated discs; involuntary, found only in the heart, and does not fatigue."
-      viewBox="0 0 320 160"
+      viewBox="0 0 320 168"
       note="Cardiac muscle is joined by intercalated discs so the heart contracts as one, and it does not tire."
     >
       {/* Skeletal */}
@@ -878,7 +885,7 @@ export function BloodVessels() {
     <Frame
       title="Artery, vein and capillary in cross-section"
       desc="An artery has a thick wall of muscle and elastic tissue around a narrow lumen, to withstand and maintain the high pressure of blood leaving the heart. A vein has a thin wall and a wide lumen, and valves along its length to stop blood flowing backwards at low pressure. A capillary's wall is a single layer of squamous cells around a lumen just wide enough for red blood cells in single file, so substances diffuse across it quickly."
-      viewBox="0 0 320 166"
+      viewBox="0 0 320 176"
       note="Not to scale: a capillary is far narrower than an artery or vein."
     >
       {vessel(60, 20, 10, RED)}

@@ -47,7 +47,7 @@ const FILL = '#f1f5f9'
 
 function Frame({ title, desc, viewBox, children }: { title: string; desc: string; viewBox: string; children: ReactNode }) {
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       <svg viewBox={viewBox} role="img" aria-label={title} className="mx-auto block h-auto w-full max-w-sm">
         <title>{title}</title>
         <desc>{desc}</desc>

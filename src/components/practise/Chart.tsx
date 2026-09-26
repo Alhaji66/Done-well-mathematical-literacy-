@@ -42,6 +42,11 @@ const SLICE = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100']
 
 const VIEW_W = 320
 
+// A 320-unit chart is shown about 244 px wide on a 320 px phone, so 11 units
+// reads as about 8.5 px there and 10 px on most phones. Nothing is set smaller.
+const TEXT = 11
+const TEXT_BOLD = 12
+
 /** A number as a Mat Lit paper prints it: comma decimal, spaces in thousands. */
 function fmt(v: number): string {
   const r = Math.round(v * 100) / 100
@@ -113,7 +118,7 @@ export function describeChart(spec: ChartSpec): string {
 /* Bar graph and histogram                                             */
 /* ------------------------------------------------------------------ */
 
-const PLOT = { left: 46, right: 306, top: 22, bottom: 178 }
+const PLOT = { left: 50, right: 306, top: 22, bottom: 178 }
 
 function Bars({ spec }: { spec: Extract<ChartSpec, { kind: 'bar' }> }) {
   const from = spec.yFrom ?? 0
@@ -128,7 +133,7 @@ function Bars({ spec }: { spec: Extract<ChartSpec, { kind: 'bar' }> }) {
       {ticks(from, to, step).map((t) => (
         <g key={t}>
           <line x1={PLOT.left} x2={PLOT.right} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth="1" />
-          <text x={PLOT.left - 5} y={y(t) + 3} textAnchor="end" fontSize="9.5" fill={MUTED}>
+          <text x={PLOT.left - 5} y={y(t) + 3} textAnchor="end" fontSize={TEXT} fill={MUTED}>
             {fmt(t)}
             {spec.unit ?? ''}
           </text>
@@ -140,11 +145,11 @@ function Bars({ spec }: { spec: Extract<ChartSpec, { kind: 'bar' }> }) {
         return (
           <g key={i}>
             <path d={barPath(cx - w / 2, PLOT.bottom - h, w, h)} fill={BAR} />
-            <text x={cx} y={PLOT.bottom - h - 4} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>
+            <text x={cx} y={PLOT.bottom - h - 4} textAnchor="middle" fontSize={TEXT} fontWeight="700" fill={INK}>
               {fmt(v)}
               {spec.unit ?? ''}
             </text>
-            <text x={cx} y={PLOT.bottom + 13} textAnchor="middle" fontSize="9" fill={INK}>
+            <text x={cx} y={PLOT.bottom + 13} textAnchor="middle" fontSize={TEXT} fill={INK}>
               {spec.categories[i]}
             </text>
           </g>
@@ -155,7 +160,7 @@ function Bars({ spec }: { spec: Extract<ChartSpec, { kind: 'bar' }> }) {
       <text
         transform={`translate(11 ${(PLOT.top + PLOT.bottom) / 2}) rotate(-90)`}
         textAnchor="middle"
-        fontSize="9.5"
+        fontSize={TEXT}
         fill={MUTED}
       >
         {spec.yLabel}
@@ -177,7 +182,7 @@ function Histogram({ spec }: { spec: Extract<ChartSpec, { kind: 'histogram' }> }
       {ticks(0, to, step).map((t) => (
         <g key={t}>
           <line x1={PLOT.left} x2={PLOT.right} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth="1" />
-          <text x={PLOT.left - 5} y={y(t) + 3} textAnchor="end" fontSize="9.5" fill={MUTED}>
+          <text x={PLOT.left - 5} y={y(t) + 3} textAnchor="end" fontSize={TEXT} fill={MUTED}>
             {fmt(t)}
           </text>
         </g>
@@ -200,7 +205,7 @@ function Histogram({ spec }: { spec: Extract<ChartSpec, { kind: 'histogram' }> }
             x={(x(spec.edges[i]) + x(spec.edges[i + 1])) / 2}
             y={y(c) - 4}
             textAnchor="middle"
-            fontSize="9"
+            fontSize={TEXT}
             fontWeight="700"
             fill={INK}
           >
@@ -209,19 +214,19 @@ function Histogram({ spec }: { spec: Extract<ChartSpec, { kind: 'histogram' }> }
         </g>
       ))}
       {spec.edges.map((e) => (
-        <text key={e} x={x(e)} y={PLOT.bottom + 12} textAnchor="middle" fontSize="9.5" fill={INK}>
+        <text key={e} x={x(e)} y={PLOT.bottom + 12} textAnchor="middle" fontSize={TEXT} fill={INK}>
           {fmt(e)}
         </text>
       ))}
       <line x1={PLOT.left} x2={PLOT.right} y1={PLOT.bottom} y2={PLOT.bottom} stroke={AXIS} strokeWidth="1.2" />
       <line x1={PLOT.left} x2={PLOT.left} y1={PLOT.top} y2={PLOT.bottom} stroke={AXIS} strokeWidth="1.2" />
-      <text x={(PLOT.left + PLOT.right) / 2} y={PLOT.bottom + 26} textAnchor="middle" fontSize="9.5" fill={MUTED}>
+      <text x={(PLOT.left + PLOT.right) / 2} y={PLOT.bottom + 26} textAnchor="middle" fontSize={TEXT} fill={MUTED}>
         {spec.xLabel}
       </text>
       <text
         transform={`translate(11 ${(PLOT.top + PLOT.bottom) / 2}) rotate(-90)`}
         textAnchor="middle"
-        fontSize="9.5"
+        fontSize={TEXT}
         fill={MUTED}
       >
         {spec.yLabel}
@@ -262,7 +267,7 @@ function Pies({ spec }: { spec: Extract<ChartSpec, { kind: 'pie' }> }) {
         return (
           <g key={p}>
             {pie.label ? (
-              <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize="10" fontWeight="700" fill={INK}>
+              <text x={cx} y={cy - r - 8} textAnchor="middle" fontSize={TEXT_BOLD} fontWeight="700" fill={INK}>
                 {pie.label}
               </text>
             ) : null}
@@ -293,7 +298,7 @@ function Pies({ spec }: { spec: Extract<ChartSpec, { kind: 'pie' }> }) {
                       x={lx}
                       y={ly + 3.5}
                       textAnchor="middle"
-                      fontSize={n === 1 ? 10 : 9}
+                      fontSize={n === 1 ? TEXT_BOLD : TEXT}
                       fontWeight="700"
                       fill="#fff"
                       stroke="rgba(15,23,42,0.55)"
@@ -323,7 +328,7 @@ function Pies({ spec }: { spec: Extract<ChartSpec, { kind: 'pie' }> }) {
         return (
           <g key={i}>
             <rect x={x} y={y - 8} width="10" height="10" rx="2" fill={SLICE[i % SLICE.length]} />
-            <text x={x + 15} y={y} fontSize="9" fill={INK}>
+            <text x={x + 15} y={y} fontSize={TEXT} fill={INK}>
               <tspan fontWeight="700">{s.label}</tspan>
               <tspan fill={MUTED}>{`  ${n === 1 ? values[0] + angle : ''}`}</tspan>
             </text>
@@ -359,13 +364,13 @@ function Boxes({ spec }: { spec: Extract<ChartSpec, { kind: 'boxplot' }> }) {
       {ticks(lo, hi, spec.step).map((t) => (
         <g key={t}>
           <line x1={x(t)} x2={x(t)} y1={18} y2={axisY} stroke={GRID} strokeWidth="1" />
-          <text x={x(t)} y={axisY + 12} textAnchor="middle" fontSize="9.5" fill={INK}>
+          <text x={x(t)} y={axisY + 12} textAnchor="middle" fontSize={TEXT} fill={INK}>
             {fmt(t)}
           </text>
         </g>
       ))}
       <line x1={BOX_LEFT} x2={BOX_RIGHT} y1={axisY} y2={axisY} stroke={AXIS} strokeWidth="1.2" />
-      <text x={(BOX_LEFT + BOX_RIGHT) / 2} y={axisY + 26} textAnchor="middle" fontSize="9.5" fill={MUTED}>
+      <text x={(BOX_LEFT + BOX_RIGHT) / 2} y={axisY + 26} textAnchor="middle" fontSize={TEXT} fill={MUTED}>
         {spec.xLabel}
       </text>
       {spec.boxes.map((b, i) => {
@@ -374,7 +379,7 @@ function Boxes({ spec }: { spec: Extract<ChartSpec, { kind: 'boxplot' }> }) {
         return (
           <g key={i}>
             {b.label ? (
-              <text x={BOX_LEFT - 8} y={cy + 3.5} textAnchor="end" fontSize="9.5" fontWeight="700" fill={INK}>
+              <text x={BOX_LEFT - 8} y={cy + 3.5} textAnchor="end" fontSize={TEXT} fontWeight="700" fill={INK}>
                 {b.label}
               </text>
             ) : null}
@@ -407,7 +412,7 @@ function Boxes({ spec }: { spec: Extract<ChartSpec, { kind: 'boxplot' }> }) {
                 x={x(v)}
                 y={above ? cy - h / 2 - 5 : cy + h / 2 + 11}
                 textAnchor="middle"
-                fontSize="9.5"
+                fontSize={TEXT}
                 fontWeight="700"
                 fill={INK}
               >
@@ -463,7 +468,7 @@ function BmiChart({ spec }: { spec: Extract<ChartSpec, { kind: 'bmi-for-age' }> 
   // stretch of ages where the band leaves it the most room. The healthy band is
   // measured from the 50th curve, so its name clears the curve through its
   // middle.
-  const NAME_SIZE = 9
+  const NAME_SIZE = TEXT
   const lowerOf = [() => b0, (a: number) => curveAt(spec.sex, 50, a), (a: number) => curveAt(spec.sex, 85, a), (a: number) => curveAt(spec.sex, 95, a)]
   const upperOf = [(a: number) => curveAt(spec.sex, 5, a), (a: number) => curveAt(spec.sex, 85, a), (a: number) => curveAt(spec.sex, 95, a), () => b1]
   const pxPerYear = (BMI_BOX.right - BMI_BOX.left) / (a1 - a0)
@@ -506,7 +511,7 @@ function BmiChart({ spec }: { spec: Extract<ChartSpec, { kind: 'bmi-for-age' }> 
         <g key={`a${t}`}>
           <line x1={x(t)} x2={x(t)} y1={BMI_BOX.top} y2={BMI_BOX.bottom} stroke="#ffffff" strokeWidth="0.8" strokeOpacity="0.9" />
           <line x1={x(t)} x2={x(t)} y1={BMI_BOX.top} y2={BMI_BOX.bottom} stroke={GRID} strokeWidth="0.6" />
-          <text x={x(t)} y={BMI_BOX.bottom + 11} textAnchor="middle" fontSize="9.5" fill={INK}>
+          <text x={x(t)} y={BMI_BOX.bottom + 11} textAnchor="middle" fontSize={TEXT} fill={INK}>
             {t}
           </text>
         </g>
@@ -514,7 +519,7 @@ function BmiChart({ spec }: { spec: Extract<ChartSpec, { kind: 'bmi-for-age' }> 
       {ticks(b0, b1, 2).map((t) => (
         <g key={`b${t}`}>
           <line x1={BMI_BOX.left} x2={BMI_BOX.right} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth="0.6" />
-          <text x={BMI_BOX.left - 4} y={y(t) + 3} textAnchor="end" fontSize="9.5" fill={INK}>
+          <text x={BMI_BOX.left - 4} y={y(t) + 3} textAnchor="end" fontSize={TEXT} fill={INK}>
             {t}
           </text>
         </g>
@@ -525,7 +530,7 @@ function BmiChart({ spec }: { spec: Extract<ChartSpec, { kind: 'bmi-for-age' }> 
         return (
           <g key={p}>
             <path d={line(pts)} fill="none" stroke={INK} strokeWidth={p === 50 ? 2 : 1.5} />
-            <text x={ex + 4} y={ey + 3} fontSize="9.5" fontWeight="700" fill={INK}>
+            <text x={ex + 4} y={ey + 3} fontSize={TEXT} fontWeight="700" fill={INK}>
               {p}th
             </text>
           </g>
@@ -564,23 +569,23 @@ function BmiChart({ spec }: { spec: Extract<ChartSpec, { kind: 'bmi-for-age' }> 
             strokeDasharray="3 2"
           />
           <circle cx={x(pt.age)} cy={y(pt.bmi)} r="4.5" fill={ACCENT} stroke="#fff" strokeWidth="2" />
-          <text x={x(pt.age) + 7} y={y(pt.bmi) - 5} fontSize="10" fontWeight="700" fill={INK}>
+          <text x={x(pt.age) + 7} y={y(pt.bmi) - 5} fontSize={TEXT_BOLD} fontWeight="700" fill={INK}>
             {pt.label}
           </text>
         </g>
       ))}
-      <text x={(BMI_BOX.left + BMI_BOX.right) / 2} y={BMI_BOX.bottom + 24} textAnchor="middle" fontSize="9.5" fill={MUTED}>
+      <text x={(BMI_BOX.left + BMI_BOX.right) / 2} y={BMI_BOX.bottom + 24} textAnchor="middle" fontSize={TEXT} fill={MUTED}>
         Age (years)
       </text>
       <text
         transform={`translate(10 ${(BMI_BOX.top + BMI_BOX.bottom) / 2}) rotate(-90)`}
         textAnchor="middle"
-        fontSize="9.5"
+        fontSize={TEXT}
         fill={MUTED}
       >
         BMI (kg/m²)
       </text>
-      <text x={VIEW_W / 2} y={BMI_BOX.bottom + 38} textAnchor="middle" fontSize="9" fill={MUTED}>
+      <text x={VIEW_W / 2} y={BMI_BOX.bottom + 38} textAnchor="middle" fontSize={TEXT} fill={MUTED}>
         Simplified chart for exam practice — not for medical use.
       </text>
     </>
@@ -606,7 +611,7 @@ function heightOf(spec: ChartSpec): number {
 
 export function Chart({ spec }: { spec: ChartSpec }) {
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       <svg
         viewBox={`0 0 ${VIEW_W} ${heightOf(spec)}`}
         role="img"

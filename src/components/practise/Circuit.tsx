@@ -41,6 +41,8 @@ const ACCENT = '#b8860b'
 const WIRE = '#334155'
 
 const VIEW_W = 320
+/** Shown about 244 px wide on a 320 px phone: 11 units reads as about 8.5 px there. */
+const TEXT = 11
 /** The loop the current runs round, when there is a cell to drive it. */
 const LOOP = { left: 34, right: 292, top: 56, bottom: 148 }
 /** The single wire an open network hangs on. */
@@ -146,7 +148,7 @@ function Resistor({ x, y, label, below }: { x: number; y: number; label: string;
         x={x}
         y={below ? y + h / 2 + 11 : y - h / 2 - 5}
         textAnchor="middle"
-        fontSize="9"
+        fontSize={TEXT}
         fontWeight="700"
         fill={INK}
       >
@@ -163,7 +165,7 @@ function Meter({ x, y, letter, title }: { x: number; y: number; letter: string; 
   return (
     <g>
       <circle cx={x} cy={y} r="10" fill="#fff" stroke={ACCENT} strokeWidth="1.8" />
-      <text x={x} y={y + 3.5} textAnchor="middle" fontSize="10" fontWeight="700" fill={ACCENT}>
+      <text x={x} y={y + 3.5} textAnchor="middle" fontSize={TEXT} fontWeight="700" fill={ACCENT}>
         {letter}
       </text>
       <title>{title}</title>
@@ -260,7 +262,7 @@ export function Circuit({ spec }: CircuitProps) {
   const ammeterX = (left + right) / 2
 
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       <svg
         viewBox={`0 0 ${VIEW_W} ${viewH}`}
         role="img"
@@ -276,10 +278,10 @@ export function Circuit({ spec }: CircuitProps) {
             <line x1={left} y1={wireY} x2={right} y2={wireY} stroke={WIRE} strokeWidth="1.8" />
             <circle cx={left} cy={wireY} r="3.4" fill="#fff" stroke={WIRE} strokeWidth="1.8" />
             <circle cx={right} cy={wireY} r="3.4" fill="#fff" stroke={WIRE} strokeWidth="1.8" />
-            <text x={left} y={wireY - 12} textAnchor="middle" fontSize="10" fontWeight="700" fill={MUTED}>
+            <text x={left} y={wireY - 12} textAnchor="middle" fontSize={TEXT} fontWeight="700" fill={MUTED}>
               A
             </text>
-            <text x={right} y={wireY - 12} textAnchor="middle" fontSize="10" fontWeight="700" fill={MUTED}>
+            <text x={right} y={wireY - 12} textAnchor="middle" fontSize={TEXT} fontWeight="700" fill={MUTED}>
               B
             </text>
           </g>
@@ -304,11 +306,11 @@ export function Circuit({ spec }: CircuitProps) {
               <line x1={left - 11} y1={CELL.y} x2={left + 11} y2={CELL.y} stroke={INK} strokeWidth="2.6" />
               <line x1={left - 6} y1={CELL.y + 10} x2={left + 6} y2={CELL.y + 10} stroke={INK} strokeWidth="5" />
               <rect x={left - 3} y={CELL.y} width="6" height="10" fill="#fff" stroke="none" />
-              <text x={left + 16} y={CELL.y + 1} fontSize="9.5" fontWeight="700" fill={INK}>
+              <text x={left + 16} y={CELL.y + 1} fontSize={TEXT} fontWeight="700" fill={INK}>
                 {ohms(spec.emf as number)} V
               </text>
               {spec.internalResistance !== undefined ? (
-                <text x={left + 16} y={CELL.y + 15} fontSize="9.5" fill={MUTED}>
+                <text x={left + 16} y={CELL.y + 15} fontSize={TEXT} fill={MUTED}>
                   r = {ohms(spec.internalResistance)} Ω
                 </text>
               ) : null}

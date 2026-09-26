@@ -27,7 +27,7 @@ const SIDE = 46
 const MAX_W = 240
 const MAX_H = 200
 /** The smallest text a phone can read comfortably, in viewBox units. */
-const MIN_FONT = 10.5
+const MIN_FONT = 11
 
 type XY = { x: number; y: number }
 
@@ -403,7 +403,7 @@ export function GeometryDiagram({ spec }: { spec: SceneSpec }) {
   ].join(' ')
 
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       {/* Never blown up past 1.3 times: a tall, narrow sketch would otherwise fill the screen. */}
       <svg
         viewBox={`${vx} ${vy} ${W} ${H}`}

@@ -3,7 +3,9 @@
  *
  * The 19 items below were labelled by reading the physics, before any rule
  * was written, and they are an even spread across Grade 12 Paper 1 rather
- * than a convenient selection. A formula-counting approach scored 7/19 --
+ * than a convenient selection. Items from papers since rebuilt in the NSC
+ * format are excluded below rather than relabelled -- the prompt a label
+ * described no longer exists -- so the sample shrinks as papers are rebuilt. A formula-counting approach scored 7/19 --
  * worse than labelling every calculation Level 3 unread, which scores 12/19.
  *
  * Keep this honest: if a future rule is tuned until it passes, add fresh
@@ -26,9 +28,12 @@ const TRUTH: Record<string, 2 | 3> = {
   'psci-p1-2022-1-3': 2,   // p = mv
   'psci-p1-2022-3-3': 2,   // standard free-fall result
   'psci-p1-2022-6-5': 3,   // terminal voltage then power
-  'psci-p1-2025-1-5': 3,   // inelastic collision, conservation applied
-  'psci-p1-2025-4-3': 2,   // one Doppler substitution
-  'psci-p1-2025-7-5': 2,   // Vmax = Vrms√2
+  // 'psci-p1-2025-1-5' was here, hand-labelled 3 (inelastic collision, conservation applied). EXCLUDED: the 2025
+  // papers were rebuilt in the NSC format, so the item it described is gone.
+  // 'psci-p1-2025-4-3' was here, hand-labelled 2 (one Doppler substitution). EXCLUDED: the 2025
+  // papers were rebuilt in the NSC format, so the item it described is gone.
+  // 'psci-p1-2025-7-5' was here, hand-labelled 2 (Vmax = Vrms√2). EXCLUDED: the 2025
+  // papers were rebuilt in the NSC format, so the item it described is gone.
   'psci-p1-2024-2-4': 3,   // upward from a tower, sign convention
   'psci-p1-2024-5-4': 3,   // net force at a midpoint, symmetry
   'psci-p1-b-1-2': 2,      // p = mv

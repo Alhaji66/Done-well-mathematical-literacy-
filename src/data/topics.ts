@@ -293,7 +293,7 @@ export const topics: Topic[] = [
     subjectId: 'physical-sciences',
     name: "Newton's Laws",
     description: "Newton's first, second and third laws of motion, and their application to forces, friction and objects on inclined planes.",
-    grades: [11],
+    grades: [11, 12],
     strand: 'Physics',
   },
   {

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { MathText } from '@/components/practise/MathText'
 import { cn } from '@/lib/utils'
+import { softHyphenate } from '@/lib/softHyphen'
 
 /**
  * Render a question's `context` -- the block of information printed ABOVE the
@@ -151,6 +152,27 @@ export function parseContext(input: string): ContextBlock[] {
   return blocks
 }
 
+/**
+ * A cell's text as the table shows it. In a table of four or more columns,
+ * long words also get a soft hyphen, so a heading like "Bloemfontein" can break
+ * instead of pushing the last column off a phone screen. See lib/softHyphen.ts.
+ */
+function tableCell(cell: string, columns: number): string {
+  const glued = glueNumbers(cell)
+  return columns >= 4 && !cell.includes('$') ? softHyphenate(glued) : glued
+}
+
+/**
+ * Horizontal cell padding. Six or more columns get the tightest: a row of five
+ * rand amounts (a hire cost for 1, 2, 4, 6 and 8 days) is almost all padding
+ * at the four-column setting, and that padding alone pushed the last column
+ * off a 360 px phone.
+ */
+function cellPadding(block: TableBlock): string {
+  const cols = columnsIn(block)
+  return cols >= 6 ? 'px-0.5' : cols >= 4 ? 'px-1' : 'px-2'
+}
+
 /** The widest row in a table, which decides how tight the layout has to be. */
 function columnsIn(block: TableBlock): number {
   return Math.max(block.head?.length ?? 0, ...block.rows.map((r) => r.length), 0)
@@ -210,10 +232,10 @@ export function QuestionText({ children, className }: QuestionTextProps) {
                         scope="col"
                         className={cn(
                           'border border-navy-200 bg-navy-100 py-1.5 align-top font-semibold text-navy-800',
-                          columnsIn(block) >= 4 ? 'px-1' : 'px-2',
+                          cellPadding(block),
                         )}
                       >
-                        <MathText>{glueNumbers(cell)}</MathText>
+                        <MathText>{tableCell(cell, columnsIn(block))}</MathText>
                       </th>
                     ))}
                   </tr>
@@ -233,20 +255,20 @@ export function QuestionText({ children, className }: QuestionTextProps) {
                           scope="row"
                           className={cn(
                             'border border-navy-200 py-1.5 text-left align-top font-medium text-navy-800',
-                            columnsIn(block) >= 4 ? 'px-1' : 'px-2',
+                            cellPadding(block),
                           )}
                         >
-                          <MathText>{glueNumbers(cell)}</MathText>
+                          <MathText>{tableCell(cell, columnsIn(block))}</MathText>
                         </th>
                       ) : (
                         <td
                           key={c}
                           className={cn(
                             'border border-navy-200 py-1.5 align-top text-navy-700',
-                            columnsIn(block) >= 4 ? 'px-1' : 'px-2',
+                            cellPadding(block),
                           )}
                         >
-                          <MathText>{glueNumbers(cell)}</MathText>
+                          <MathText>{tableCell(cell, columnsIn(block))}</MathText>
                         </td>
                       ),
                     )}

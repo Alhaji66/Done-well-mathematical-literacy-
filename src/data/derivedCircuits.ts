@@ -615,44 +615,6 @@ export const derivedCircuits: Record<string, CircuitSpec> = {
       }
     ]
   },
-  "psci-p1-2024-6-3": {
-    "title": "The circuit described in this question",
-    "elements": [
-      {
-        "kind": "parallel",
-        "of": [
-          {
-            "ohms": 5
-          },
-          {
-            "ohms": 20
-          }
-        ]
-      }
-    ]
-  },
-  "psci-p1-2024-6-4": {
-    "title": "The circuit described in this question",
-    "emf": 10,
-    "internalResistance": 0.2,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 4.8
-      }
-    ]
-  },
-  "psci-p1-2024-6-5": {
-    "title": "The circuit described in this question",
-    "emf": 10,
-    "internalResistance": 0.2,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 4.8
-      }
-    ]
-  },
   "psci-p1-25n-8-2": {
     "title": "The circuit described in this question",
     "emf": 12,

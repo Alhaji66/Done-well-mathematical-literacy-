@@ -34,8 +34,10 @@ const TRUTH: Record<string, 2 | 3> = {
   // papers were rebuilt in the NSC format, so the item it described is gone.
   // 'psci-p1-2025-7-5' was here, hand-labelled 2 (Vmax = Vrms√2). EXCLUDED: the 2025
   // papers were rebuilt in the NSC format, so the item it described is gone.
-  'psci-p1-2024-2-4': 3,   // upward from a tower, sign convention
-  'psci-p1-2024-5-4': 3,   // net force at a midpoint, symmetry
+  // 'psci-p1-2024-2-4' was here, hand-labelled 3 (upward from a tower, sign convention). EXCLUDED: the 2024
+  // papers were rebuilt in the NSC format, so the item it described is gone.
+  // 'psci-p1-2024-5-4' was here, hand-labelled 3 (net force at a midpoint, symmetry). EXCLUDED: the 2024
+  // papers were rebuilt in the NSC format, so the item it described is gone.
   'psci-p1-b-1-2': 2,      // p = mv
   'psci-p1-b-3-4': 3,      // Ek then P = W/Δt
   'psci-p1-b-6-5': 3,      // terminal voltage then power

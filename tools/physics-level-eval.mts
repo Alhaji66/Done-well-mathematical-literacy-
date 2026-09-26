@@ -22,7 +22,8 @@ import { proposePhysicsLevel, formulaCountLevel, countFormulas } from './physics
 // L3 = chains formulas, needs a sign convention or symmetry argument set up
 //      first, or must be modelled before it can be computed.
 const TRUTH: Record<string, 2 | 3> = {
-  'psci-p1-2020-8-2': 3,   // λ -> f -> E, two formulas
+  // 'psci-p1-2020-8-2' was here, hand-labelled 3 (λ -> f -> E, two formulas). EXCLUDED: the 2020
+  // papers were rebuilt in the NSC format, so the item it described is gone.
   // 'psci-p1-2023-2-5' was here, hand-labelled 3 (upward from a platform: displacement sign must be set). EXCLUDED: the 2023
   // papers were rebuilt in the NSC format, so the item it described is gone.
   // 'psci-p1-2023-5-4' was here, hand-labelled 3 (net field at a midpoint: vector/symmetry argument). EXCLUDED: the 2023

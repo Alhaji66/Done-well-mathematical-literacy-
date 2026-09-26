@@ -18,14 +18,15 @@
  * A NOTE ON DRIFT, because this eval has a failure mode worth knowing about.
  * The truth sets name items by id and read their prompts out of the LIVE
  * corpus, so rewriting a listed item silently changes what is being measured.
- * That has happened six times: one BUILT item was rewritten; two more BUILT
- * items and three HELD-OUT items went when the 2024 and 2025 papers were
+ * That has happened seven times: one BUILT item was rewritten; two more BUILT
+ * items and four HELD-OUT items went when the 2023, 2024 and 2025 papers were
  * rebuilt in the NSC format. Each is excluded below rather than relabelled,
  * because the prompt its label described no longer exists. Relabelling it
  * would have scored the rewrite instead of the rule. Anyone rewriting a listed
  * item should exclude it the same way. The 81% above was scored once, on all
- * 31, before any held-out item went; the same rule now scores 22/28 (79%) on
- * what is left.
+ * 31, before any held-out item went, and it is the number to quote. The same
+ * rule now scores 22/27 on what is left -- also 81%, but only because one of
+ * the dropped items was one it got wrong, not because it improved.
  *
  *   npm run check:matlit-judgement
  */
@@ -99,7 +100,10 @@ const HELD_OUT: Record<string, boolean> = {
   'ml-g11-p2-b-4-6': false, // how many fewer walls
   'ml-p1-20-2-3': true, // why the family should still keep fewer
   'ml-p1-22-1-3': true, // what the result means for an unexpected expense
-  'ml-p1-23-3-2': false, // why the kitchen appears larger at 1:100 -- how scale works
+  // 'ml-p1-23-3-2' was here, hand-labelled false ("why the kitchen appears larger
+  // at 1:100 -- how scale works"). EXCLUDED: the 2023 Paper 1 was rebuilt in the
+  // NSC format. The rule got this one WRONG, so dropping it raises the score --
+  // which is exactly why nothing is ever dropped for being inconvenient.
   // 'ml-p1-25-4-10' was here, hand-labelled true ("why it differs from R250"). It
   // is EXCLUDED rather than relabelled: the whole 2025 Paper 1 it belonged to was
   // rebuilt in the NSC format, so the prompt this label described is gone.

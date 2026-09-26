@@ -243,11 +243,11 @@ export function Circuit({ spec }: CircuitProps) {
   // simple ones or dropped the bottom branch of the busy ones onto the caption.
   const extents = spec.elements.map(extentOf)
   const reachesBelow = Math.max(...extents.map((e) => e.below), 0)
-  const FOOTNOTE = 16
-  const viewH = open ? wireY + reachesBelow + FOOTNOTE + 6 : LOOP.bottom + FOOTNOTE + 10
+  const viewH = open ? wireY + reachesBelow + 12 : LOOP.bottom + 14
 
   // The footnote explains the junction dots, so it is only worth its line when
-  // there are dots to explain.
+  // there are dots to explain. It is set in the caption, where it wraps: drawn
+  // in the figure, it ran off the edge of a phone-sized canvas.
   const hasJunctions = spec.elements.some((el) => el.kind === 'parallel')
 
   const n = spec.elements.length
@@ -346,13 +346,13 @@ export function Circuit({ spec }: CircuitProps) {
           })()
         ) : null}
 
-        {hasJunctions ? (
-          <text x={12} y={viewH - 6} fontSize="9" fill={MUTED}>
-            A dot marks a junction. Resistors sharing both junctions are in parallel.
-          </text>
-        ) : null}
       </svg>
-      <figcaption className="mt-2 text-center text-xs text-navy-500">{spec.title}</figcaption>
+      <figcaption className="mt-2 text-center text-xs text-navy-500">
+        {spec.title}
+        {hasJunctions ? (
+          <span className="mt-0.5 block text-[12px] text-navy-600">A dot marks a junction. Resistors sharing both junctions are in parallel.</span>
+        ) : null}
+      </figcaption>
     </figure>
   )
 }

@@ -369,7 +369,12 @@ export function Graph({ spec }: GraphProps) {
             const y = evaluate(curve, x)
             if (y === null || !Number.isFinite(y) || y < y0 || y > y1) continue
             const w = textWidth(curve.label, 11)
-            const flip = sx(x) + 6 + w > BOX.right
+            // Above the curve on the side it is not heading to: up and left of
+            // a curve that climbs to the right, up and right of one that falls.
+            // Put on the other side, a climbing line runs straight through it.
+            const ahead = evaluate(curve, x + (x1 - x0) / 100)
+            const climbs = ahead !== null && Number.isFinite(ahead) && ahead > y
+            const flip = climbs ? sx(x) - 6 - w > BOX.left : sx(x) + 6 + w > BOX.right
             return (
               <text
                 key={`l${i}`}

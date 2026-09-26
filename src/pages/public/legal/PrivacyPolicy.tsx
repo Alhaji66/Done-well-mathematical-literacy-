@@ -43,6 +43,11 @@ export function PrivacyPolicy() {
           <li>To personalise practice and progress tracking for each learner.</li>
           <li>To share a learner's progress with their own parent/guardian and their own teacher or school.</li>
           <li>To improve the platform and its content.</li>
+          <li>
+            When a learner uses <strong>Check my working</strong>, to explain their mistakes: the question and any photo
+            they add are sent to an AI model, through an AI gateway, to be checked. We do not keep the question or the
+            photo. We keep only a note of when a check was made, for 30 days, to apply the daily limit.
+          </li>
         </ul>
         <p className="mt-2">
           We will not sell personal information, and we will not share it with third parties for marketing purposes.

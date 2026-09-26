@@ -1181,5 +1181,30 @@ insert into results
          string_agg(to_status, ',' order by id) = 'review,approved,published,archived'
   from public.content_events where content_id = (select id from items where title = 'Reading a payslip');
 
+-- 57. The tutor's daily-limit rows: only the tutor function writes them, and a
+--     learner reads only their own.
+reset role;
+insert into public.tutor_requests (user_id, subject_id) values
+  ('00000000-0000-0000-0000-0000000000b1', 'mat-lit'),
+  ('00000000-0000-0000-0000-0000000000b2', 'mat-lit'),
+  ('00000000-0000-0000-0000-0000000000b2', 'mathematics');
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin insert into public.tutor_requests (user_id, subject_id) values ('00000000-0000-0000-0000-0000000000b1', 'mat-lit'); exception when others then null; end;
+  begin delete from public.tutor_requests; exception when others then null; end;
+end $$;
+insert into results
+  select '57. a learner sees only their own tutor checks',
+         count(*)::text || ' row(s)',
+         count(*) = 1 and bool_and(user_id = '00000000-0000-0000-0000-0000000000b1')
+  from public.tutor_requests;
+reset role;
+insert into results
+  select '57b. a learner cannot add to or clear the tutor allowance',
+         count(*)::text || ' row(s) in total',
+         count(*) = 3
+  from public.tutor_requests;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

@@ -56,6 +56,28 @@ npm run build     # type-check and produce a production build
 npm run preview   # preview the production build
 ```
 
+## Check my working (the tutor)
+
+Learners can type a question or photograph their working and get their mistakes explained, with a practice
+question from the bank on the same topic. The model is reached through an AI gateway from a Supabase Edge
+Function, so the gateway key never reaches the browser. To switch it on:
+
+1. Run STEP 19 of `supabase/schema.sql` (the `tutor_requests` table the daily limit counts).
+2. Deploy the function: `supabase functions deploy tutor --no-verify-jwt`
+3. Set the key and the model: `supabase secrets set AI_GATEWAY_API_KEY=... TUTOR_MODEL=...` (any model on the
+   gateway that reads images, named the way the gateway lists it)
+
+Optional secrets: `AI_GATEWAY_URL` (default: Vercel AI Gateway; Cloudflare AI Gateway's `/compat` endpoint also
+works), `TUTOR_DAILY_LIMIT` (default 20 per learner),
+`TUTOR_ALLOW_DEMO=true` with `TUTOR_DEMO_DAILY_LIMIT` (default 3) to let the demo make live checks. Until the
+function is deployed, the demo shows a worked example and signed-in learners see "not switched on yet".
+
+## Offline
+
+The app installs as a PWA and works offline once installed. Each subject's questions are downloaded the first
+time they are opened, or when the learner taps **Save for offline** on Home. Answers given offline in an account
+are kept on the phone and saved when the signal returns (`src/lib/outbox.ts`).
+
 ## Structure
 
 - `src/types` — shared domain types (Grade, Subject, Topic, Resource, Question, Assessment, Progress)

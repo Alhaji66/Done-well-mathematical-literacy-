@@ -17,10 +17,10 @@
  * Lit taxonomy, WITH THE STORED LEVEL HIDDEN, for the obvious reason that a
  * label written after seeing the machine's answer measures nothing.
  *
- * One of the 24 has since gone: the 2024 Paper 1 it came from was rebuilt in
- * the NSC format. It is excluded below rather than relabelled or replaced, so
- * the score is on 23. The tool had that item right, which is why agreement
- * fell from 15/24 to 14/23 -- the tool did not get worse.
+ * Two of the 24 have since gone: the 2024 Papers 1 and 2 they came from were
+ * rebuilt in the NSC format. They are excluded below rather than relabelled or
+ * replaced, so the score is on 22. The tool had both of them right, which is
+ * why agreement fell from 15/24 to 13/22 -- the tool did not get worse.
  *
  * THE CAPS MAT LIT TAXONOMY, as applied here:
  *
@@ -73,7 +73,8 @@ const TRUTH: Record<string, { level: Level; why: string }> = {
   'ml-p1-a-3-1': { level: 2, why: 'scale conversion with a unit change' },
   'ml-p1-c-4-10': { level: 4, why: 'mean and median, then justify which represents a typical cost' },
   'ml-p2-22-1-2': { level: 4, why: 'why beating a target on average is not meeting it reliably' },
-  'ml-p2-24-2-2': { level: 3, why: 'speed, inverse time, then the gap -- several rate steps' },
+  // 'ml-p2-24-2-2' was here, hand-labelled L3 ('speed, inverse time, then the gap
+  // -- several rate steps'). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
   'ml-p2-a-3-4': { level: 1, why: 'classify a bank fee as an expense -- recall' },
 }
 

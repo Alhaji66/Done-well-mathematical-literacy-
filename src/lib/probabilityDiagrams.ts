@@ -131,20 +131,9 @@ export function treesFor(q: Pick<Question, 'id' | 'prompt' | 'context'>): TreeSp
 
 /** Questions whose tree cannot be read off a pattern, written out once. */
 const treeOverrides: Record<string, TreeSpec[]> = {
-  // Mat Lit: "a Grade 12 learner wins BOTH of two independent draws", 20 of 80 entries.
-  'ml-p2-24-1-11': [
-    {
-      ...repeatTree(
-        'Two independent lucky draws, 20 of 80 entries from Grade 12',
-        ['1st draw', '2nd draw'],
-        { label: 'G', name: 'a Grade 12 learner wins' },
-        { label: 'N', name: 'someone else wins' },
-        0.25,
-      ),
-      highlight: ['GG'],
-      highlightName: 'Grade 12 wins both',
-    },
-  ],
+  // Empty for now. Its one entry, 'ml-p2-24-1-11' (two independent lucky
+  // draws), went when the 2024 Paper 2 was rebuilt in the NSC format. Keep the
+  // map: it is where the next question whose tree has no pattern goes.
 }
 
 /* ------------------------------------------------------------------ */

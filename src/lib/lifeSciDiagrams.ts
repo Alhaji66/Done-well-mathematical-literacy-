@@ -81,15 +81,17 @@ function graphs(t: string): SceneSpec | null {
   ].filter((k) => new RegExp(`\\b${k.text}\\b`).test(t))
   const lines: NonNullable<SceneSpec['curves']> = []
   const labels: NonNullable<SceneSpec['texts']> = []
-  const add = (name: string, f: (d: number) => number, accent = false) => {
+  // Each curve is named over its peak -- or, when another curve peaks within a
+  // few days of it (oestrogen just before the LH surge), to the left of it.
+  const add = (name: string, f: (d: number) => number, accent = false, left = false) => {
     lines.push({ points: Array.from({ length: 113 }, (_, i) => [day(i / 4), f(i / 4)] as [number, number]), accent })
     const peakD = Array.from({ length: 113 }, (_, i) => i / 4).reduce((a, b) => (f(b) > f(a) ? b : a), 0)
-    labels.push({ x: day(peakD), y: f(peakD) + 0.5, text: name, size: 9, accent })
+    labels.push(left ? { x: day(peakD - 1.5), y: f(peakD) + 0.2, text: name, size: 9, accent, anchor: 'end' } : { x: day(peakD), y: f(peakD) + 0.5, text: name, size: 9, accent })
   }
   const spike = (at: number, w: number, h: number) => (d: number) => h * Math.exp(-(((d - at) / w) ** 2))
   if (/28-day menstrual cycle/i.test(t)) {
     if (/\bLH\b/.test(t)) add('LH', (d) => 0.6 + spike(14, 0.8, 5)(d), true)
-    if (/oestrogen/i.test(t)) add('oestrogen', (d) => 0.8 + spike(12.5, 2.5, 3.6)(d) + spike(21.5, 3.5, /smaller second/.test(t) ? 1.4 : 2.2)(d))
+    if (/oestrogen/i.test(t)) add('oestrogen', (d) => 0.8 + spike(12.5, 2.5, 3.6)(d) + spike(21.5, 3.5, /smaller second/.test(t) ? 1.4 : 2.2)(d), false, /\bLH\b/.test(t))
     if (/progesterone/i.test(t)) add('progesterone', (d) => 0.5 + spike(21.5, 3.6, 3.8)(d))
     if (/basal body temperature|\bBBT\b/i.test(t)) add('body temperature', (d) => (d < 14 ? 2.5 : d < 27 ? 3.8 : 2.5), true)
     if (/uterine lining|endometrium/i.test(t)) add('endometrium thickness', (d) => (d <= 5 ? 1 : d < 22 ? 1 + ((d - 5) / 17) * 4.2 : d < 27 ? 5.2 - (d - 22) * 0.1 : 1), true)

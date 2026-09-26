@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react'
 
 /**
  * The structures Life Sciences keeps asking about, drawn.
@@ -36,74 +36,75 @@ function Frame({
   desc,
   viewBox,
   children,
+  note,
 }: {
   title: string
   desc: string
   viewBox: string
   children: ReactNode
+  /** One line of explanation, set as text under the figure where it wraps and reads at full size. */
+  note?: string
 }) {
+  // On a phone the figure is about 290 px wide, and ten labels written beside
+  // the drawing cannot all fit there at a size that can be read. So on a small
+  // screen each label is drawn as a numbered marker and named in a key under
+  // the figure, the way an exam paper labels parts; on a wider screen the
+  // labels are written out. A label that only continues the one before it --
+  // "— most chloroplasts" -- joins that label's line in the key.
+  const key: { n: number; text: string; colour: string }[] = []
+  const drawn = Children.toArray(children).map((child) => {
+    if (!isValidElement(child) || child.type !== Label) return child
+    const props = child.props as LabelProps
+    if (/^[—(]/.test(props.text) && key.length) {
+      key[key.length - 1].text += ` ${props.text}`
+      return cloneElement(child as ReactElement<LabelProps>, { n: 0 })
+    }
+    key.push({ n: key.length + 1, text: props.text, colour: props.colour ?? INK })
+    return cloneElement(child as ReactElement<LabelProps>, { n: key.length })
+  })
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
       <svg viewBox={viewBox} role="img" aria-label={title} className="mx-auto block h-auto w-full max-w-md">
         <title>{title}</title>
         <desc>{desc}</desc>
-        {children}
+        {drawn}
       </svg>
-      <figcaption className="mt-2 text-center text-xs text-navy-500">{title}</figcaption>
+      {key.length ? (
+        <ol className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-left text-[12px] leading-snug sm:hidden">
+          {key.map((k) => (
+            <li key={k.n} className="flex gap-1.5">
+              <span
+                className="mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                style={{ background: k.colour === MUTED ? INK : k.colour }}
+              >
+                {k.n}
+              </span>
+              <span style={{ color: k.colour === MUTED ? INK : k.colour }}>{k.text}</span>
+            </li>
+          ))}
+        </ol>
+      ) : null}
+      <figcaption className="mt-2 text-center text-xs text-navy-500">
+        {title}
+        {note ? <span className="mt-1 block text-[13px] font-medium leading-snug text-navy-700">{note}</span> : null}
+      </figcaption>
     </figure>
   )
 }
 
-/**
- * The line of explanation under a diagram, wrapped to fit the canvas.
- *
- * SVG does not wrap text: a `<text>` longer than the viewBox simply runs off
- * the edge and is clipped. Every one of these notes was written as a single
- * line and half of them lost their last few words -- "...which is what makes
- * diffusion fa". Wrapping at a width measured from the font size is the only
- * way to keep writing them as sentences.
- */
-function Note({ y, lines, width = 300 }: { y: number; lines: string[]; width?: number }) {
-  const FONT = 7.5
-  const perLine = Math.floor(width / (FONT * 0.52))
-  const out: string[] = []
-  for (const line of lines) {
-    let current = ''
-    for (const word of line.split(' ')) {
-      if (current && (current + ' ' + word).length > perLine) {
-        out.push(current)
-        current = word
-      } else current = current ? `${current} ${word}` : word
-    }
-    if (current) out.push(current)
-  }
-  return (
-    <g>
-      {out.map((line, i) => (
-        <text key={i} x={14} y={y + i * 10} fontSize={FONT} fill={MUTED}>
-          {line}
-        </text>
-      ))}
-    </g>
-  )
-}
-
-/** A label with a leader line, so the text never sits on top of the drawing. */
-function Label({
-  x,
-  y,
-  to,
-  text,
-  anchor = 'start',
-  colour = INK,
-}: {
+type LabelProps = {
   x: number
   y: number
   to: [number, number]
   text: string
   anchor?: 'start' | 'end' | 'middle'
   colour?: string
-}) {
+  /** Set by Frame: this label's number in the key on a phone; 0 when it continues the label before it. */
+  n?: number
+}
+
+/** A label with a leader line, so the text never sits on top of the drawing. */
+function Label({ x, y, to, text, anchor = 'start', colour = INK, n }: LabelProps) {
   // The leader starts at whichever end of the text is nearer its target, so
   // it never runs back through the label it belongs to. The width is an
   // estimate from the character count at this font size.
@@ -112,13 +113,52 @@ function Label({
   const right = left + w
   const x1 = to[0] >= right ? right + 1 : to[0] <= left ? left - 1 : x
   const y1 = to[0] > left && to[0] < right ? (to[1] > y ? y + 2 : y - 9) : y - 3
+  // The phone's numbered marker sits where the text begins.
+  const R = 7.5
+  const mx = anchor === 'start' ? x + R : anchor === 'end' ? x - R : x
+  const my = y - 3
+  const d = Math.hypot(to[0] - mx, to[1] - my) || 1
+  const fill = colour === MUTED ? INK : colour
   return (
     <g>
-      <line x1={x1} y1={y1} x2={to[0]} y2={to[1]} stroke={MUTED} strokeWidth="0.8" />
-      <circle cx={to[0]} cy={to[1]} r="1.6" fill={MUTED} />
-      <text x={x} y={y} textAnchor={anchor} fontSize="8" fill={colour}>
-        {text}
+      <g className="hidden sm:inline">
+        <line x1={x1} y1={y1} x2={to[0]} y2={to[1]} stroke={MUTED} strokeWidth="0.8" />
+        <circle cx={to[0]} cy={to[1]} r="1.6" fill={MUTED} />
+        <text x={x} y={y} textAnchor={anchor} fontSize="8" fill={colour}>
+          {text}
+        </text>
+      </g>
+      {n ? (
+        <g className="sm:hidden">
+          <line x1={mx + ((to[0] - mx) / d) * R} y1={my + ((to[1] - my) / d) * R} x2={to[0]} y2={to[1]} stroke={MUTED} strokeWidth="0.9" />
+          <circle cx={to[0]} cy={to[1]} r="1.8" fill={MUTED} />
+          <circle cx={mx} cy={my} r={R} fill={fill} />
+          <text x={mx} y={my + 3.4} textAnchor="middle" fontSize="10" fontWeight="700" fill="white">
+            {n}
+          </text>
+        </g>
+      ) : null}
+    </g>
+  )
+}
+
+/**
+ * A column's caption under a three-part figure: a bold name, then short lines.
+ * Each column is about 100 units wide, so the detail is broken into lines that
+ * fit it at a size a phone can read, instead of one line that runs into the
+ * next column.
+ */
+function Column({ x, y, name, lines }: { x: number; y: number; name: string; lines: string[] }) {
+  return (
+    <g>
+      <text x={x} y={y} textAnchor="middle" fontSize="10" fontWeight="700" fill={INK}>
+        {name}
       </text>
+      {lines.map((l, i) => (
+        <text key={l} x={x} y={y + 12 + i * 11} textAnchor="middle" fontSize="9" fill={MUTED}>
+          {l}
+        </text>
+      ))}
     </g>
   )
 }
@@ -130,7 +170,8 @@ export function Nephron() {
     <Frame
       title="The nephron"
       desc="A nephron. Blood arrives through the afferent arteriole into the glomerulus, a knot of capillaries inside Bowman's capsule, where ultrafiltration forces water and small molecules out of the blood. The filtrate passes along the proximal convoluted tubule, where all the glucose and most of the water and salts are reabsorbed, down the descending limb of the loop of Henle, up the ascending limb, along the distal convoluted tubule, and into the collecting duct, where ADH controls how much further water is reabsorbed. What is left is urine."
-      viewBox="0 0 320 210"
+      viewBox="0 0 320 198"
+      note="Ultrafiltration at the capsule; selective reabsorption all along the tubule."
     >
       {/* Bowman's capsule and glomerulus */}
       <path d="M52 44 a20 20 0 1 1 22 26" fill={FILL} stroke={INK} strokeWidth="1.6" />
@@ -155,7 +196,7 @@ export function Nephron() {
 
       <Label x={16} y={30} to={[38, 37]} text="afferent arteriole" colour={RED} />
       <Label x={16} y={70} to={[38, 56]} text="efferent arteriole" colour={BLUE} />
-      <Label x={104} y={22} to={[68, 44]} text="glomerulus" colour={RED} />
+      <Label x={104} y={18} to={[68, 44]} text="glomerulus" colour={RED} />
       <Label x={104} y={36} to={[56, 62]} text="Bowman's capsule" />
       <Label x={112} y={54} to={[104, 78]} text="proximal convoluted tubule" anchor="middle" />
       <Label x={16} y={140} to={[86, 140]} text="loop of Henle" />
@@ -163,8 +204,6 @@ export function Nephron() {
       <Label x={306} y={54} to={[176, 80]} text="distal convoluted tubule" anchor="end" />
       <Label x={306} y={110} to={[192, 130]} text="collecting duct" anchor="end" />
       <Label x={306} y={176} to={[214, 194]} text="to ureter — urine" anchor="end" colour={ACCENT} />
-
-      <Note y={204} lines={["Ultrafiltration at the capsule; selective reabsorption all along the tubule."]} />
     </Frame>
   )
 }
@@ -174,7 +213,8 @@ export function Heart() {
     <Frame
       title="The human heart"
       desc="A section through the heart showing four chambers. Deoxygenated blood returns from the body through the vena cava into the right atrium, passes the tricuspid valve into the right ventricle, and leaves through the pulmonary artery to the lungs. Oxygenated blood returns from the lungs through the pulmonary vein into the left atrium, passes the bicuspid valve into the left ventricle, and leaves through the aorta to the body. The wall of the left ventricle is much thicker than the right, because it pumps blood to the whole body rather than only to the lungs."
-      viewBox="0 0 320 220"
+      viewBox="0 0 320 200"
+      note="The left ventricle wall is thicker: it pumps to the whole body, the right only to the lungs."
     >
       {/* Outline */}
       <path d="M96 28 q76-14 112 22 q26 44 2 112 q-22 44-78 42 q-52-2-60-54 q-6-68 24-122 z" fill={FILL} stroke={INK} strokeWidth="1.6" />
@@ -209,8 +249,6 @@ export function Heart() {
       <Label x={306} y={156} to={[208, 142]} text="left ventricle" anchor="end" colour={RED} />
       <Label x={14} y={100} to={[130, 92]} text="tricuspid valve" />
       <Label x={306} y={124} to={[196, 92]} text="bicuspid valve" anchor="end" />
-
-      <Note y={206} lines={["The left ventricle wall is thicker: it pumps to the whole body, the right only to the lungs."]} />
     </Frame>
   )
 }
@@ -220,7 +258,8 @@ export function Alveolus() {
     <Frame
       title="Gas exchange at an alveolus"
       desc="Air travels down the trachea, into the bronchi, along the bronchioles and into the alveoli. Each alveolus is a thin-walled air sac wrapped in a capillary. Oxygen diffuses from the alveolar air, where its concentration is high, across the one-cell-thick wall into the blood; carbon dioxide diffuses the other way. The surfaces are moist, thin and enormous in total area, which is what makes diffusion fast enough."
-      viewBox="0 0 320 200"
+      viewBox="0 0 320 170"
+      note="Thin wall, moist surface, huge total area, rich blood supply — all four make diffusion fast."
     >
       {/* Airway */}
       <path d="M22 14 l0 40 q0 10 14 14 l20 8" fill="none" stroke={INK} strokeWidth="7" strokeLinecap="round" />
@@ -261,13 +300,8 @@ export function Alveolus() {
       <Label x={80} y={158} to={[100, 96]} text="bronchiole" />
       <Label x={306} y={40} to={[190, 60]} text="alveolus (air sac)" anchor="end" />
       <Label x={306} y={148} to={[186, 124]} text="capillary" anchor="end" colour={RED} />
-      <text x={148} y={40} fontSize="8" fill={BLUE}>
-        O₂ into the blood
-      </text>
-      <text x={158} y={120} fontSize="8" fill={GREEN}>
-        CO₂ out of the blood
-      </text>
-      <Note y={176} lines={["Thin wall, moist surface, huge total area, rich blood supply — all four make diffusion fast."]} />
+      <Label x={150} y={14} to={[136, 46]} text="O₂ into the blood" colour={BLUE} />
+      <Label x={306} y={94} to={[152, 98]} text="CO₂ out of the blood" anchor="end" colour={GREEN} />
     </Frame>
   )
 }
@@ -283,7 +317,8 @@ export function LeafSection() {
     <Frame
       title="A leaf in cross-section"
       desc="A cross-section through a leaf. A waxy cuticle covers the upper epidermis and reduces water loss. Below it the palisade mesophyll cells are packed with chloroplasts and do most of the photosynthesis. The spongy mesophyll below has large air spaces that let carbon dioxide reach the cells. The vascular bundle carries xylem on the upper side, bringing water up, and phloem on the lower side, carrying sugars away. The lower epidermis contains stomata, each a pore between two guard cells, through which carbon dioxide enters and water vapour and oxygen leave."
-      viewBox="0 0 320 200"
+      viewBox="0 0 320 186"
+      note="CO₂ enters and O₂ and water vapour leave through the stomata."
     >
       <rect x={L} y="24" width={W} height="8" fill="#fef3c7" stroke={INK} strokeWidth="1" />
       <rect x={L} y="32" width={W} height="22" fill="#ecfccb" stroke={INK} strokeWidth="1" />
@@ -329,14 +364,12 @@ export function LeafSection() {
       <Label x={306} y={42} to={[R - 8, 43]} text="upper epidermis" anchor="end" />
       <Label x={306} y={66} to={[R - 8, 70]} text="palisade mesophyll" anchor="end" />
       <Label x={306} y={78} to={[R - 8, 82]} text="— most chloroplasts" anchor="end" colour={MUTED} />
-      <Label x={306} y={102} to={[R - 8, 104]} text="spongy mesophyll" anchor="end" />
-      <Label x={306} y={114} to={[R - 8, 116]} text="— air spaces" anchor="end" colour={MUTED} />
-      <Label x={306} y={134} to={[124, 112]} text="xylem — water up" anchor="end" colour={BLUE} />
-      <Label x={306} y={146} to={[124, 126]} text="phloem — sugars away" anchor="end" colour={ACCENT} />
-      <Label x={306} y={164} to={[R - 8, 154]} text="lower epidermis" anchor="end" />
-      <Label x={306} y={178} to={[74, 160]} text="stoma + two guard cells" anchor="end" colour={GREEN} />
-
-      <Note y={192} lines={["CO₂ enters and O₂ and water vapour leave through the stomata."]} />
+      <Label x={306} y={100} to={[R - 8, 104]} text="spongy mesophyll" anchor="end" />
+      <Label x={306} y={112} to={[R - 8, 116]} text="— air spaces" anchor="end" colour={MUTED} />
+      <Label x={306} y={128} to={[124, 112]} text="xylem — water up" anchor="end" colour={BLUE} />
+      <Label x={306} y={144} to={[124, 126]} text="phloem — sugars away" anchor="end" colour={ACCENT} />
+      <Label x={306} y={160} to={[R - 8, 154]} text="lower epidermis" anchor="end" />
+      <Label x={306} y={176} to={[74, 160]} text="stoma + two guard cells" anchor="end" colour={GREEN} />
     </Frame>
   )
 }
@@ -378,10 +411,10 @@ export function Eye() {
       <Label x={150} y={36} to={[116, 72]} text="ciliary muscle" anchor="middle" />
       <Label x={256} y={46} to={[222, 62]} text="retina — rods and cones" anchor="end" />
       <Label x={306} y={80} to={[228, 88]} text="yellow spot (fovea)" anchor="end" colour={RED} />
-      <Label x={306} y={150} to={[230, 116]} text="blind spot" anchor="end" />
+      <Label x={306} y={146} to={[230, 116]} text="blind spot" anchor="end" />
       <Label x={306} y={164} to={[262, 118]} text="optic nerve" anchor="end" colour={ACCENT} />
       <Label x={196} y={186} to={[172, 164]} text="choroid · sclera" anchor="middle" />
-      <text x={8} y={100} fontSize="8" fill={MUTED}>
+      <text x={8} y={100} fontSize="9" fill={MUTED}>
         light
       </text>
     </Frame>
@@ -442,7 +475,8 @@ export function ReflexArc() {
     <Frame
       title="The reflex arc"
       desc="A stimulus is detected by a receptor in the skin. The sensory neuron carries the impulse along its axon into the spinal cord through the dorsal root, where it passes across a synapse to an interneuron, and across a second synapse to a motor neuron. The motor neuron carries the impulse out through the ventral root to an effector, here a muscle, which contracts. The response happens before the brain is involved, which is why a reflex is fast and involuntary."
-      viewBox="0 0 320 190"
+      viewBox="0 0 320 174"
+      note="Two synapses and no brain: that is why a reflex is fast and involuntary."
     >
       {/* Spinal cord in section */}
       <ellipse cx="228" cy="92" rx="44" ry="40" fill={FILL} stroke={INK} strokeWidth="1.8" />
@@ -480,8 +514,6 @@ export function ReflexArc() {
       <Label x={272} y={130} to={[204, 106]} text="grey matter of the spinal cord" anchor="end" />
       <Label x={306} y={168} to={[150, 140]} text="motor neuron (ventral root)" anchor="end" colour={GREEN} />
       <Label x={14} y={158} to={[28, 140]} text="effector — muscle contracts" colour={GREEN} />
-
-      <Note y={180} lines={["Two synapses and no brain: that is why a reflex is fast and involuntary."]} />
     </Frame>
   )
 }
@@ -491,7 +523,8 @@ export function DnaStructure() {
     <Frame
       title="The structure of DNA"
       desc="DNA is a double helix. Each strand is a backbone of alternating deoxyribose sugar and phosphate groups, and the two strands run in opposite directions. The strands are held together by hydrogen bonds between complementary base pairs: adenine always pairs with thymine by two hydrogen bonds, and cytosine always pairs with guanine by three. Because the pairing is fixed, each strand carries the information needed to rebuild the other, which is what makes replication possible."
-      viewBox="0 0 320 210"
+      viewBox="0 0 320 186"
+      note="A pairs with T (two hydrogen bonds), C with G (three). The pairing is fixed, so each strand can rebuild the other: that is what replication uses."
     >
       {/* Two sine backbones */}
       {[0, 1].map((s) => (
@@ -518,10 +551,10 @@ export function DnaStructure() {
         return (
           <g key={k}>
             <line x1={160 + dx} y1={y} x2={160 - dx} y2={y} stroke={MUTED} strokeWidth={bonds === 3 ? 1.8 : 1.1} />
-            <text x={160 + dx * 0.55} y={y + 3} textAnchor="middle" fontSize="7.5" fontWeight="700" fill={BLUE}>
+            <text x={160 + dx * 0.55} y={y + 3} textAnchor="middle" fontSize="9" fontWeight="700" fill={BLUE} stroke="white" strokeWidth="2.5" paintOrder="stroke">
               {pair[0]}
             </text>
-            <text x={160 - dx * 0.55} y={y + 3} textAnchor="middle" fontSize="7.5" fontWeight="700" fill={ACCENT}>
+            <text x={160 - dx * 0.55} y={y + 3} textAnchor="middle" fontSize="9" fontWeight="700" fill={ACCENT} stroke="white" strokeWidth="2.5" paintOrder="stroke">
               {pair[1]}
             </text>
           </g>
@@ -530,10 +563,6 @@ export function DnaStructure() {
 
       <Label x={16} y={30} to={[120, 26]} text="sugar–phosphate backbone" colour={BLUE} />
       <Label x={306} y={64} to={[206, 60]} text="hydrogen bonds" anchor="end" />
-      <text x={16} y={190} fontSize="8" fill={INK}>
-        A pairs with T (2 hydrogen bonds) · C pairs with G (3)
-      </text>
-      <Note y={198} lines={["The pairing is fixed, so each strand can rebuild the other. That is what replication uses."]} />
     </Frame>
   )
 }
@@ -543,46 +572,39 @@ export function EnergyPyramid() {
     <Frame
       title="Energy flow through a food chain"
       desc="A pyramid of energy. Producers such as grass capture energy from sunlight. Only about a tenth of the energy at each level is passed on to the next: the rest is lost as heat in respiration, in movement, and in the parts that are not eaten. So a primary consumer receives about ten per cent of what the producers captured, a secondary consumer about one per cent, and a tertiary consumer about a tenth of one per cent. That is why food chains are short and why there are far fewer top predators than plants."
-      viewBox="0 0 320 200"
+      viewBox="0 0 320 152"
+      note="Only about 10% passes up to the next level; the other 90% is lost as heat, in movement and in uneaten parts. That is why food chains are short."
     >
       {[
-        ['Producers — grass', '100 000 kJ', 0, '#bbf7d0', GREEN],
-        ['Primary consumers — grasshoppers', '10 000 kJ', 1, '#fde68a', ACCENT],
-        ['Secondary consumers — frogs', '1 000 kJ', 2, '#fed7aa', RED],
-        ['Tertiary consumers — snakes', '100 kJ', 3, '#fecaca', RED],
-      ].map(([name, energy, level, fill, stroke], i) => {
-        const l = Number(level)
-        const w = 186 - l * 42
-        const x = 26 + l * 21
-        const y = 152 - l * 36
+        ['Producers', 'grass · 100 000 kJ', '#bbf7d0', GREEN],
+        ['Primary consumers', 'grasshoppers · 10 000 kJ', '#fde68a', ACCENT],
+        ['Secondary consumers', 'frogs · 1 000 kJ', '#fed7aa', RED],
+        ['Tertiary consumers', 'snakes · 100 kJ', '#fecaca', RED],
+      ].map(([name, detail, fill, stroke], l) => {
+        const w = 250 - l * 48
+        const x = 130 - w / 2
+        const y = 118 - l * 34
         return (
-          <g key={i}>
-            <rect x={x} y={y} width={w} height="30" fill={String(fill)} stroke={String(stroke)} strokeWidth="1.4" />
-            <text x={x + 6} y={y + 13} fontSize="8" fill={INK}>
+          <g key={name}>
+            <rect x={x} y={y} width={w} height="30" fill={fill} stroke={stroke} strokeWidth="1.4" />
+            <text x={130} y={y + 13} textAnchor="middle" fontSize="10" fontWeight="700" fill={INK}>
               {name}
             </text>
-            <text x={x + 6} y={y + 24} fontSize="8" fontWeight="700" fill={String(stroke)}>
-              {energy}
+            <text x={130} y={y + 25} textAnchor="middle" fontSize="9.5" fill={INK}>
+              {detail}
             </text>
             {l < 3 ? (
               <g>
-                <path d={`M${x + w + 6} ${y + 15} l16 0`} stroke={MUTED} strokeWidth="1.2" />
-                <path d={`M${x + w + 22} ${y + 15} l-5-3 l0 6 z`} fill={MUTED} />
-                <text x={x + w + 26} y={y + 6} fontSize="7" fill={MUTED}>
+                <path d={`M${x + w + 4} ${y + 15} l12 0`} stroke={MUTED} strokeWidth="1.2" />
+                <path d={`M${x + w + 16} ${y + 15} l-5-3 l0 6 z`} fill={MUTED} />
+                <text x={x + w + 19} y={y + 18} fontSize="9.5" fill={MUTED}>
                   90% lost
-                </text>
-                <text x={x + w + 26} y={y + 15} fontSize="7" fill={MUTED}>
-                  as heat, movement,
-                </text>
-                <text x={x + w + 26} y={y + 24} fontSize="7" fill={MUTED}>
-                  uneaten parts
                 </text>
               </g>
             ) : null}
           </g>
         )
       })}
-      <Note y={190} lines={["About 10% passes to the next level, which is why food chains are short."]} />
     </Frame>
   )
 }
@@ -592,7 +614,8 @@ export function PlantTransport() {
     <Frame
       title="Water transport through a plant"
       desc="Water enters through root hair cells by osmosis, because the soil solution is less concentrated than the cell sap. It crosses the root to the xylem, and is drawn up the xylem vessels as a continuous column: water evaporating from the leaves through the stomata pulls the column up, and the water molecules hold together by cohesion and to the vessel walls by adhesion. This is the transpiration pull. Phloem, alongside the xylem, carries dissolved sugars from the leaves to wherever the plant is growing or storing, in both directions."
-      viewBox="0 0 320 236"
+      viewBox="0 0 320 214"
+      note="Cohesion holds the column together, adhesion holds it to the vessel wall, and evaporation from the leaves pulls it up."
     >
       {/* Stem */}
       <rect x="140" y="52" width="26" height="118" fill="#ecfccb" stroke={INK} strokeWidth="1.4" />
@@ -633,7 +656,6 @@ export function PlantTransport() {
       <Label x={104} y={128} to={[147, 124]} text="xylem — water up only" anchor="end" colour={BLUE} />
       <Label x={306} y={140} to={[160, 132]} text="phloem — sugars, both ways" anchor="end" colour={ACCENT} />
       <Label x={14} y={190} to={[122, 202]} text="root hair cells — osmosis" colour={GREEN} />
-      <Note y={220} lines={["Cohesion holds the column together, adhesion holds it to the vessel wall, and evaporation from the leaves pulls it up."]} />
     </Frame>
   )
 }
@@ -643,7 +665,8 @@ export function FlowerStructure() {
     <Frame
       title="The structure of a flower"
       desc="A section through an insect-pollinated flower. The male parts are the stamens, each a filament carrying an anther in which pollen grains are made. The female parts make up the carpel: a sticky stigma that receives pollen, a style down which the pollen tube grows, and an ovary containing ovules. After pollination and fertilisation the ovule becomes a seed and the ovary becomes the fruit. Petals attract insects, sepals protected the bud, and the nectary produces the nectar the insect comes for."
-      viewBox="0 0 320 210"
+      viewBox="0 0 320 204"
+      note="Stamen = filament + anther (male). Carpel = stigma + style + ovary (female)."
     >
       {/* Receptacle and stalk */}
       <path d="M140 156 q20 14 40 0 l0 6 q-20 16-40 0 z" fill="#ecfccb" stroke={INK} strokeWidth="1.2" />
@@ -687,7 +710,6 @@ export function FlowerStructure() {
       <Label x={30} y={92} to={[76, 108]} text="petal" anchor="end" colour="#be185d" />
       <Label x={60} y={196} to={[104, 176]} text="sepal" anchor="end" colour={GREEN} />
       <Label x={240} y={196} to={[144, 152]} text="nectary" anchor="end" colour={RED} />
-      <Note y={202} lines={["Stamen = filament + anther (male). Carpel = stigma + style + ovary (female)."]} />
     </Frame>
   )
 }
@@ -702,7 +724,8 @@ export function PlantCell() {
     <Frame
       title="A plant cell"
       desc="A rectangular plant cell. Outermost is the rigid cellulose cell wall, with the cell membrane just inside it. A large central vacuole filled with cell sap takes up most of the cell and pushes the cytoplasm to the edges. The nucleus, surrounded by a nuclear envelope with pores, sits in the cytoplasm at one side. Oval chloroplasts, each containing stacks of thylakoids called grana in a fluid stroma, lie in the cytoplasm, along with mitochondria and endoplasmic reticulum."
-      viewBox="0 0 320 200"
+      viewBox="0 0 320 180"
+      note="Only plant cells have a cell wall, a large central vacuole and chloroplasts (grana stacked in a fluid stroma)."
     >
       <rect x="40" y="22" width="170" height="130" rx="4" fill="#f0fdf4" stroke={GREEN} strokeWidth="5" />
       <rect x="46" y="28" width="158" height="118" rx="3" fill="none" stroke={INK} strokeWidth="1" />
@@ -730,7 +753,6 @@ export function PlantCell() {
       <Label x={306} y={146} to={[206, 38]} text="chloroplast" anchor="end" colour={GREEN} />
       <Label x={14} y={14} to={[62, 50]} text="nucleus" />
       <Label x={14} y={170} to={[62, 86]} text="endoplasmic reticulum" />
-      <Note y={180} lines={['Only plant cells have a cell wall, a large central vacuole and chloroplasts (grana stacked in a fluid stroma).']} />
     </Frame>
   )
 }
@@ -740,7 +762,8 @@ export function AnimalCell() {
     <Frame
       title="An animal cell"
       desc="A rounded animal cell with no cell wall: the cell membrane, a phospholipid bilayer, is its outer boundary. The nucleus, containing chromatin and a nucleolus and surrounded by a double nuclear envelope with pores, is near the centre. Around it lie rough endoplasmic reticulum studded with ribosomes, smooth endoplasmic reticulum without them, a Golgi body of flattened sacs, mitochondria with folded inner membranes, small lysosomes containing digestive enzymes, and a pair of centrioles. The cell has only small vacuoles, if any."
-      viewBox="0 0 320 200"
+      viewBox="0 0 320 188"
+      note="The nuclear envelope is a double membrane with pores."
     >
       <ellipse cx="128" cy="92" rx="96" ry="70" fill="#fff7ed" stroke={INK} strokeWidth="1.8" />
       <circle cx="122" cy="90" r="24" fill={FILL} stroke={INK} strokeWidth="2" strokeDasharray="5 1.5" />
@@ -768,7 +791,6 @@ export function AnimalCell() {
       <Label x={14} y={14} to={[104, 52]} text="rough ER (with ribosomes)" colour={BLUE} />
       <Label x={14} y={178} to={[80, 132]} text="lysosome (digestive enzymes)" colour="#6d28d9" />
       <Label x={14} y={72} to={[64, 62]} text="smooth ER" />
-      <Note y={194} lines={['The nuclear envelope is a double membrane with pores.']} />
     </Frame>
   )
 }
@@ -785,7 +807,8 @@ export function EpithelialTissue() {
     <Frame
       title="Types of simple epithelium"
       desc="Three kinds of simple epithelium, each one cell layer thick on a basement membrane. Squamous cells are flat and thin with flattened nuclei, lining the alveoli and blood capillaries where diffusion must be fast. Cuboidal cells are cube-shaped with round central nuclei, lining kidney tubules and glands. Columnar cells are tall and narrow with nuclei near their base, lining the stomach and intestine, where they secrete and absorb."
-      viewBox="0 0 320 170"
+      viewBox="0 0 320 152"
+      note={'One layer thick is "simple"; several layers, as in the skin, is "stratified".'}
     >
       {cells(14, 22, 8, 4)}
       {cells(118, 21, 21, 4)}
@@ -793,14 +816,10 @@ export function EpithelialTissue() {
       {[14, 118, 222].map((x) => (
         <line key={x} x1={x - 2} y1={102} x2={x + 88} y2={102} stroke={ACCENT} strokeWidth="2.2" />
       ))}
-      <text x={58} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>squamous</text>
-      <text x={160} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>cuboidal</text>
-      <text x={264} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>columnar</text>
-      <text x={58} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>flat: alveoli, capillaries</text>
-      <text x={160} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>cube: kidney tubules</text>
-      <text x={264} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>tall: stomach, intestine</text>
+      <Column x={58} y={120} name="squamous" lines={['flat: alveoli,', 'capillaries']} />
+      <Column x={160} y={120} name="cuboidal" lines={['cube: kidney', 'tubules']} />
+      <Column x={264} y={120} name="columnar" lines={['tall: stomach,', 'intestine']} />
       <Label x={14} y={30} to={[30, 100]} text="basement membrane" colour={ACCENT} />
-      <Note y={154} lines={['One layer thick is "simple"; several layers, as in the skin, is "stratified".']} />
     </Frame>
   )
 }
@@ -810,7 +829,8 @@ export function MuscleTissue() {
     <Frame
       title="The three types of muscle tissue"
       desc="Skeletal muscle: long cylindrical fibres with many nuclei at the edge and cross-striations; voluntary. Smooth muscle: spindle-shaped cells, one central nucleus each, no striations; involuntary, in the walls of the gut and blood vessels. Cardiac muscle: branched, striated cells with one or two central nuclei, joined end to end by intercalated discs; involuntary, found only in the heart, and does not fatigue."
-      viewBox="0 0 320 180"
+      viewBox="0 0 320 160"
+      note="Cardiac muscle is joined by intercalated discs so the heart contracts as one, and it does not tire."
     >
       {/* Skeletal */}
       <rect x="14" y="30" width="84" height="22" rx="10" fill="#fee2e2" stroke={RED} strokeWidth="1.2" />
@@ -839,17 +859,10 @@ export function MuscleTissue() {
       {[230, 270, 296].map((x) => (
         <ellipse key={x} cx={x} cy={62} rx="4" ry="2" fill={INK} />
       ))}
-      <text x={56} y={108} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>skeletal</text>
-      <text x={160} y={108} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>smooth</text>
-      <text x={260} y={108} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>cardiac</text>
-      <text x={56} y={120} textAnchor="middle" fontSize="7.5" fill={MUTED}>striated, many nuclei</text>
-      <text x={56} y={130} textAnchor="middle" fontSize="7.5" fill={MUTED}>voluntary</text>
-      <text x={160} y={120} textAnchor="middle" fontSize="7.5" fill={MUTED}>no striations, one nucleus</text>
-      <text x={160} y={130} textAnchor="middle" fontSize="7.5" fill={MUTED}>involuntary: gut, vessels</text>
-      <text x={260} y={120} textAnchor="middle" fontSize="7.5" fill={MUTED}>striated, branched</text>
-      <text x={260} y={130} textAnchor="middle" fontSize="7.5" fill={MUTED}>involuntary: heart only</text>
+      <Column x={56} y={108} name="skeletal" lines={['striated,', 'many nuclei,', 'voluntary']} />
+      <Column x={160} y={108} name="smooth" lines={['no striations,', 'one nucleus,', 'involuntary:', 'gut, vessels']} />
+      <Column x={260} y={108} name="cardiac" lines={['striated,', 'branched,', 'involuntary:', 'heart only']} />
       <Label x={306} y={18} to={[284, 30]} text="intercalated disc" anchor="end" />
-      <Note y={156} lines={['Cardiac muscle is joined by intercalated discs so the heart contracts as one, and it does not tire.']} />
     </Frame>
   )
 }
@@ -865,24 +878,18 @@ export function BloodVessels() {
     <Frame
       title="Artery, vein and capillary in cross-section"
       desc="An artery has a thick wall of muscle and elastic tissue around a narrow lumen, to withstand and maintain the high pressure of blood leaving the heart. A vein has a thin wall and a wide lumen, and valves along its length to stop blood flowing backwards at low pressure. A capillary's wall is a single layer of squamous cells around a lumen just wide enough for red blood cells in single file, so substances diffuse across it quickly."
-      viewBox="0 0 320 170"
+      viewBox="0 0 320 166"
+      note="Not to scale: a capillary is far narrower than an artery or vein."
     >
       {vessel(60, 20, 10, RED)}
       {vessel(170, 7, 26, BLUE)}
       <circle cx={262} cy={70} r={9} fill="white" stroke={RED} strokeWidth="1.2" />
       <path d="M156 46 q14 12 28 0" fill="none" stroke={BLUE} strokeWidth="1.6" />
-      <text x={60} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>artery</text>
-      <text x={170} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>vein</text>
-      <text x={262} y={122} textAnchor="middle" fontSize="9" fontWeight="700" fill={INK}>capillary</text>
-      <text x={60} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>thick muscular, elastic wall</text>
-      <text x={60} y={144} textAnchor="middle" fontSize="7.5" fill={MUTED}>narrow lumen, high pressure</text>
-      <text x={170} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>thin wall, wide lumen</text>
-      <text x={170} y={144} textAnchor="middle" fontSize="7.5" fill={MUTED}>valves, low pressure</text>
-      <text x={262} y={134} textAnchor="middle" fontSize="7.5" fill={MUTED}>wall one cell thick</text>
-      <text x={262} y={144} textAnchor="middle" fontSize="7.5" fill={MUTED}>exchange by diffusion</text>
+      <Column x={60} y={118} name="artery" lines={['thick muscular,', 'elastic wall;', 'narrow lumen,', 'high pressure']} />
+      <Column x={170} y={118} name="vein" lines={['thin wall,', 'wide lumen;', 'valves, low', 'pressure']} />
+      <Column x={266} y={118} name="capillary" lines={['wall one', 'cell thick;', 'exchange by', 'diffusion']} />
       <Label x={14} y={14} to={[48, 58]} text="lumen" />
       <Label x={306} y={20} to={[182, 48]} text="valve" anchor="end" colour={BLUE} />
-      <Note y={162} lines={['Not to scale: a capillary is far narrower than an artery or vein.']} />
     </Frame>
   )
 }
@@ -892,7 +899,8 @@ export function BoneAndJoint() {
     <Frame
       title="A long bone and a synovial joint"
       desc="Left: a long bone. The shaft is the diaphysis, a tube of compact bone around a marrow cavity containing yellow marrow. Each end is an epiphysis of spongy bone containing red marrow, capped with hyaline cartilage. Compact bone is built of osteons, each with a central Haversian canal carrying blood vessels, surrounded by rings of lamellae. Right: a synovial joint. Two bone ends covered with cartilage meet inside a joint capsule lined by the synovial membrane, which secretes synovial fluid that lubricates the joint. Ligaments hold bone to bone; tendons join muscle to bone."
-      viewBox="0 0 320 200"
+      viewBox="0 0 320 186"
+      note="Ligaments join bone to bone; tendons join muscle to bone."
     >
       {/* Long bone */}
       <path d="M40 30 q-14 -14 4 -18 q16 -2 24 8 q8 -10 22 -6 q14 8 0 20 v110 q14 12 0 20 q-14 4 -22 -6 q-8 10 -24 8 q-18 -4 -4 -18 z" fill={FILL} stroke={INK} strokeWidth="1.6" />
@@ -911,7 +919,6 @@ export function BoneAndJoint() {
       <Label x={306} y={172} to={[266, 100]} text="synovial fluid" anchor="end" colour={BLUE} />
       <Label x={306} y={154} to={[274, 112]} text="synovial membrane" anchor="end" colour={GREEN} />
       <Label x={306} y={14} to={[278, 80]} text="ligament" anchor="end" colour={ACCENT} />
-      <Note y={192} lines={['Ligaments join bone to bone; tendons join muscle to bone.']} />
     </Frame>
   )
 }

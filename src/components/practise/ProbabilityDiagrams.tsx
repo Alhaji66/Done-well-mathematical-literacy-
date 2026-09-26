@@ -40,7 +40,7 @@ function product(a: Prob, b: Prob): Prob {
 
 function Frame({ title, desc, viewBox, children, note }: { title: string; desc: string; viewBox: string; children: ReactNode; note?: string }) {
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
       <svg viewBox={viewBox} role="img" aria-label={title} className="mx-auto block h-auto w-full max-w-md">
         <title>{title}</title>
         <desc>{desc}</desc>
@@ -57,11 +57,13 @@ function Frame({ title, desc, viewBox, children, note }: { title: string; desc: 
 /* ------------------------------------------------------------------ */
 
 export function TreeDiagram({ spec }: { spec: TreeSpec }) {
-  const GAP = 40
-  const TOP = 40
-  const X0 = 18
-  const X1 = 130
-  const X2 = 242
+  // Narrow enough to be shown near full size on a phone (about 290 px): each
+  // outcome's working goes on two short lines rather than one long one.
+  const GAP = 44
+  const TOP = 34
+  const X0 = 12
+  const X1 = 104
+  const X2 = 196
   const leaves = spec.branches.flatMap((b) => (b.next ?? []).map((n) => ({ first: b, second: n, path: b.label + n.label })))
   const height = TOP + leaves.length * GAP
   const leafY = (i: number) => TOP + GAP / 2 + i * GAP
@@ -82,15 +84,24 @@ export function TreeDiagram({ spec }: { spec: TreeSpec }) {
 
   /** A branch with its probability written above its middle. */
   const branch = (x1: number, y1: number, x2: number, y2: number, p: Prob, on: boolean, key: string) => {
-    const mx = x1 + (x2 - x1) * 0.5
-    const my = y1 + (y2 - y1) * 0.5
     // Above a branch that climbs, below one that falls: two branches leave
     // each node, and their labels would otherwise land on top of each other.
-    const ly = y2 > y1 + 1 ? my + 15 : my - 7
+    // The label is pushed off the branch along its perpendicular, far enough
+    // that no corner of the label's box reaches the line.
+    const len = Math.hypot(x2 - x1, y2 - y1) || 1
+    const ux = (x2 - x1) / len
+    const uy = (y2 - y1) / len
+    const falls = y2 > y1 + 1
+    const nx = falls ? -uy : uy
+    const ny = falls ? ux : -ux
+    const halfW = showProb(p).length * 3.7
+    const d = halfW * Math.abs(uy) + 6 * Math.abs(ux) + 4
+    const mx = x1 + (x2 - x1) * 0.5 + nx * d
+    const ly = y1 + (y2 - y1) * 0.5 + ny * d + 4
     return (
       <g key={key}>
         <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={on ? ACCENT : LINE} strokeWidth={on ? 2.5 : 1.5} />
-        <text x={mx} y={ly} textAnchor="middle" fontSize="11" fontWeight="600" fill={on ? ACCENT : INK}>
+        <text x={mx} y={ly} textAnchor="middle" fontSize="12" fontWeight="600" fill={on ? ACCENT : INK}>
           {showProb(p)}
         </text>
       </g>
@@ -99,8 +110,8 @@ export function TreeDiagram({ spec }: { spec: TreeSpec }) {
 
   const node = (x: number, y: number, label: string, on: boolean, key: string) => (
     <g key={key}>
-      <circle cx={x} cy={y} r="10" fill="white" stroke={on ? ACCENT : INK} strokeWidth="1.5" />
-      <text x={x} y={y + 4} textAnchor="middle" fontSize="11" fontWeight="700" fill={on ? ACCENT : INK}>
+      <circle cx={x} cy={y} r="11" fill="white" stroke={on ? ACCENT : INK} strokeWidth="1.5" />
+      <text x={x} y={y + 4} textAnchor="middle" fontSize="12" fontWeight="700" fill={on ? ACCENT : INK}>
         {label}
       </text>
     </g>
@@ -130,13 +141,17 @@ export function TreeDiagram({ spec }: { spec: TreeSpec }) {
     note ? `${note}.` : '',
   ].join(' ')
 
+  // Wide enough for the longest line of working at the end of a path.
+  const widest = Math.max(
+    ...leaves.map((l) => Math.max(`${l.path} = ${showProb(product(l.first.p, l.second.p))}`.length * 7.6, `${showProb(l.first.p)} × ${showProb(l.second.p)}`.length * 6.4)),
+  )
   return (
-    <Frame title={spec.title} desc={desc} viewBox={`0 0 440 ${height + 8}`} note={note}>
+    <Frame title={spec.title} desc={desc} viewBox={`0 0 ${Math.ceil(X2 + 18 + widest + 6)} ${height + 8}`} note={note}>
       {[
         [X1, spec.stages[0]],
         [X2, spec.stages[1]],
       ].map(([x, label]) => (
-        <text key={String(label)} x={x} y="16" textAnchor="middle" fontSize="10" fill={MUTED}>
+        <text key={String(label)} x={x} y="16" textAnchor="middle" fontSize="12" fill={MUTED}>
           {label}
         </text>
       ))}
@@ -154,11 +169,11 @@ export function TreeDiagram({ spec }: { spec: TreeSpec }) {
               <g key={path}>
                 {branch(X1 + 10, y, X2 - 10, ly, n.p, on, `s-${path}`)}
                 {node(X2, ly, n.label, on, `n-${path}`)}
-                <text x="270" y={ly + 4} fontSize="11" fontWeight="700" fill={on ? ACCENT : INK}>
-                  {path}
+                <text x={X2 + 18} y={ly - 1} fontSize="13" fontWeight="700" fill={on ? ACCENT : INK}>
+                  {path} = {showProb(pr)}
                 </text>
-                <text x="298" y={ly + 4} fontSize="11" fontWeight={on ? 700 : 400} fill={on ? ACCENT : INK}>
-                  {showProb(b.p)} × {showProb(n.p)} = {showProb(pr)}
+                <text x={X2 + 18} y={ly + 13} fontSize="11" fontWeight={on ? 600 : 400} fill={on ? ACCENT : MUTED}>
+                  {showProb(b.p)} × {showProb(n.p)}
                 </text>
               </g>
             )
@@ -179,7 +194,7 @@ export function VennDiagram({ spec }: { spec: VennSpec }) {
   const A = { x: spec.disjoint ? 92 : 126, y: 116 }
   const B = { x: spec.disjoint ? 228 : 194, y: 116 }
   const lit = new Set<VennRegion>(spec.highlight ?? [])
-  const label = (s: { name: string; symbol: string }) => (s.name.length <= 14 ? `${s.name} (${s.symbol})` : s.symbol)
+  const label = (s: { name: string; symbol: string }) => (s.name === s.symbol || s.name.length > 14 ? s.symbol : `${s.name} (${s.symbol})`)
   const sLabel = spec.unit === 'p' ? 'S — the whole sample space, P(S) = 1' : spec.unit === '%' ? 'S — the whole group, 100%' : `S — all ${spec.total}`
 
   const regions: { key: VennRegion; x: number; y: number; anchor: 'middle' | 'end' }[] = [
@@ -232,7 +247,7 @@ export function VennDiagram({ spec }: { spec: VennSpec }) {
         </mask>
       </defs>
 
-      <text x="10" y="16" fontSize="10" fill={MUTED}>
+      <text x="10" y="16" fontSize="11" fill={MUTED}>
         {sLabel}
       </text>
       <rect x="8" y="24" width="304" height="182" rx="6" fill="white" stroke={INK} strokeWidth="1.5" />

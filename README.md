@@ -75,7 +75,8 @@ function is deployed, the demo shows a worked example and signed-in learners see
 ## Offline
 
 The app installs as a PWA and works offline once installed. Each subject's questions are downloaded the first
-time they are opened, or when the learner taps **Save for offline** on Home. Answers given offline in an account
+time they are opened, or ahead of time from the **Use DONE WELL offline** card on Home, which lists every
+subject with its download size and a Save button (or Save all). Answers given offline in an account
 are kept on the phone and saved when the signal returns (`src/lib/outbox.ts`).
 
 ## Structure

@@ -270,7 +270,7 @@ export function Graph({ spec }: GraphProps) {
   })()
 
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       <svg
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         role="img"
@@ -324,7 +324,7 @@ export function Graph({ spec }: GraphProps) {
           <g key={`tx${t}`}>
             <line x1={sx(t)} y1={axisY - 3} x2={sx(t)} y2={axisY + 3} stroke={INK} strokeWidth="1.2" />
             {t === 0 && y0 <= 0 && y1 >= 0 ? null : (
-              <text x={sx(t)} y={BOX.bottom + 13} textAnchor="middle" fontSize="10" fill={MUTED}>
+              <text x={sx(t)} y={BOX.bottom + 13} textAnchor="middle" fontSize="11" fill={MUTED}>
                 {num(t)}
               </text>
             )}
@@ -334,7 +334,7 @@ export function Graph({ spec }: GraphProps) {
           <g key={`ty${t}`}>
             <line x1={axisX - 3} y1={sy(t)} x2={axisX + 3} y2={sy(t)} stroke={INK} strokeWidth="1.2" />
             {t === 0 && x0 <= 0 && x1 >= 0 ? null : (
-              <text x={BOX.left - 6} y={sy(t) + 3} textAnchor="end" fontSize="10" fill={MUTED}>
+              <text x={BOX.left - 6} y={sy(t) + 3} textAnchor="end" fontSize="11" fill={MUTED}>
                 {num(t)}
               </text>
             )}
@@ -405,11 +405,11 @@ export function Graph({ spec }: GraphProps) {
             ("cost (R)"), which are far too long for the end of an axis, so
             those go outside the plot where a chart puts them. */}
         {spec.xLabel ? (
-          <text x={(BOX.left + BOX.right) / 2} y={VIEW_H - 8} textAnchor="middle" fontSize="10" fill={MUTED}>
+          <text x={(BOX.left + BOX.right) / 2} y={VIEW_H - 8} textAnchor="middle" fontSize="11" fill={MUTED}>
             {spec.xLabel}
           </text>
         ) : (
-          <text x={BOX.right + 4} y={axisY + 4} fontSize="10" fontStyle="italic" fill={INK}>
+          <text x={BOX.right + 4} y={axisY + 4} fontSize="11" fontStyle="italic" fill={INK}>
             x
           </text>
         )}
@@ -418,14 +418,14 @@ export function Graph({ spec }: GraphProps) {
             x={11}
             y={(BOX.top + BOX.bottom) / 2}
             textAnchor="middle"
-            fontSize="10"
+            fontSize="11"
             fill={MUTED}
             transform={`rotate(-90 11 ${(BOX.top + BOX.bottom) / 2})`}
           >
             {spec.yLabel}
           </text>
         ) : (
-          <text x={axisX + 5} y={BOX.top - 6} fontSize="10" fontStyle="italic" fill={INK}>
+          <text x={axisX + 5} y={BOX.top - 6} fontSize="11" fontStyle="italic" fill={INK}>
             y
           </text>
         )}
@@ -464,10 +464,10 @@ function PointMark({
         // otherwise carry it off the canvas -- "R285 for 20 kℓ" sits well
         // inside the box by its anchor and still runs off the edge.
         <text
-          x={cx + 6 + textWidth(point.label, 10) > BOX.right ? cx - 6 : cx + 6}
+          x={cx + 6 + textWidth(point.label, 11) > BOX.right ? cx - 6 : cx + 6}
           y={Math.max(cy - 6, BOX.top + 9)}
-          textAnchor={cx + 6 + textWidth(point.label, 10) > BOX.right ? 'end' : 'start'}
-          fontSize="10"
+          textAnchor={cx + 6 + textWidth(point.label, 11) > BOX.right ? 'end' : 'start'}
+          fontSize="11"
           fontWeight="700"
           fill={ACCENT}
         >

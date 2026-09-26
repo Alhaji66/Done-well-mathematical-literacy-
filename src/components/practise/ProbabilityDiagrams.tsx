@@ -40,7 +40,7 @@ function product(a: Prob, b: Prob): Prob {
 
 function Frame({ title, desc, viewBox, children, note }: { title: string; desc: string; viewBox: string; children: ReactNode; note?: string }) {
   return (
-    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white p-2 sm:p-3">
+    <figure className="mt-3 overflow-x-auto rounded-lg border border-navy-200 bg-white px-1 py-2 sm:p-3">
       <svg viewBox={viewBox} role="img" aria-label={title} className="mx-auto block h-auto w-full max-w-md">
         <title>{title}</title>
         <desc>{desc}</desc>

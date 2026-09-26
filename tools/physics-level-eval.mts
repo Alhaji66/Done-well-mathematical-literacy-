@@ -23,8 +23,10 @@ import { proposePhysicsLevel, formulaCountLevel, countFormulas } from './physics
 //      first, or must be modelled before it can be computed.
 const TRUTH: Record<string, 2 | 3> = {
   'psci-p1-2020-8-2': 3,   // λ -> f -> E, two formulas
-  'psci-p1-2023-2-5': 3,   // upward from a platform: displacement sign must be set
-  'psci-p1-2023-5-4': 3,   // net field at a midpoint: vector/symmetry argument
+  // 'psci-p1-2023-2-5' was here, hand-labelled 3 (upward from a platform: displacement sign must be set). EXCLUDED: the 2023
+  // papers were rebuilt in the NSC format, so the item it described is gone.
+  // 'psci-p1-2023-5-4' was here, hand-labelled 3 (net field at a midpoint: vector/symmetry argument). EXCLUDED: the 2023
+  // papers were rebuilt in the NSC format, so the item it described is gone.
   'psci-p1-2022-1-3': 2,   // p = mv
   'psci-p1-2022-3-3': 2,   // standard free-fall result
   'psci-p1-2022-6-5': 3,   // terminal voltage then power
@@ -34,8 +36,10 @@ const TRUTH: Record<string, 2 | 3> = {
   // papers were rebuilt in the NSC format, so the item it described is gone.
   // 'psci-p1-2025-7-5' was here, hand-labelled 2 (Vmax = Vrms√2). EXCLUDED: the 2025
   // papers were rebuilt in the NSC format, so the item it described is gone.
-  'psci-p1-2024-2-4': 3,   // upward from a tower, sign convention
-  'psci-p1-2024-5-4': 3,   // net force at a midpoint, symmetry
+  // 'psci-p1-2024-2-4' was here, hand-labelled 3 (upward from a tower, sign convention). EXCLUDED: the 2024
+  // papers were rebuilt in the NSC format, so the item it described is gone.
+  // 'psci-p1-2024-5-4' was here, hand-labelled 3 (net force at a midpoint, symmetry). EXCLUDED: the 2024
+  // papers were rebuilt in the NSC format, so the item it described is gone.
   'psci-p1-b-1-2': 2,      // p = mv
   'psci-p1-b-3-4': 3,      // Ek then P = W/Δt
   'psci-p1-b-6-5': 3,      // terminal voltage then power

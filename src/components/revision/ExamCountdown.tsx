@@ -285,40 +285,45 @@ function DayCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, day.date, day.topicId, day.subtopic, subjectId, grade])
 
+  // The questions sit below the day's card, not inside it: nested inside a
+  // second card, a diagram loses 34 px of width -- enough on a phone to make a
+  // chart's axis numbers noticeably smaller than on Practise.
   return (
-    <div className={`card p-4 ${done ? 'border-emerald-200 bg-emerald-50/50' : ''}`}>
-      <div className="flex items-start gap-3">
-        <button
-          type="button"
-          role="checkbox"
-          aria-checked={done}
-          aria-label={`Mark ${dayLabel(day.date)} done`}
-          onClick={() => toggle(day.date)}
-          className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 ${
-            done ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-navy-300 bg-white'
-          }`}
-        >
-          {done ? <CheckIcon className="h-4 w-4" /> : null}
-        </button>
-        <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1.5 text-xs font-medium text-navy-500">
-            <CalendarIcon className="h-3.5 w-3.5" /> {dayLabel(day.date)}
-          </p>
-          <p className="mt-0.5 font-semibold text-navy-900">{topicName(day.topicId)}</p>
-          <p className="text-sm text-navy-600">
-            {day.kind === 'mixed'
-              ? 'A question from each of your weakest topics, exam-style. Then go over My Mistakes.'
-              : `${day.subtopic ? `${day.subtopic} · ` : ''}session ${day.session} of ${day.sessions}`}
-          </p>
-          {!startOpen ? (
-            <button type="button" className="mt-2 text-sm font-semibold text-navy-700 underline" onClick={() => setOpen((o) => !o)}>
-              {open ? 'Hide questions' : 'Show 3 practice questions'}
-            </button>
-          ) : null}
+    <div className="space-y-3">
+      <div className={`card p-4 ${done ? 'border-emerald-200 bg-emerald-50/50' : ''}`}>
+        <div className="flex items-start gap-3">
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={done}
+            aria-label={`Mark ${dayLabel(day.date)} done`}
+            onClick={() => toggle(day.date)}
+            className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 ${
+              done ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-navy-300 bg-white'
+            }`}
+          >
+            {done ? <CheckIcon className="h-4 w-4" /> : null}
+          </button>
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-1.5 text-xs font-medium text-navy-500">
+              <CalendarIcon className="h-3.5 w-3.5" /> {dayLabel(day.date)}
+            </p>
+            <p className="mt-0.5 font-semibold text-navy-900">{topicName(day.topicId)}</p>
+            <p className="text-sm text-navy-600">
+              {day.kind === 'mixed'
+                ? 'A question from each of your weakest topics, exam-style. Then go over My Mistakes.'
+                : `${day.subtopic ? `${day.subtopic} · ` : ''}session ${day.session} of ${day.sessions}`}
+            </p>
+            {!startOpen ? (
+              <button type="button" className="mt-2 text-sm font-semibold text-navy-700 underline" onClick={() => setOpen((o) => !o)}>
+                {open ? 'Hide questions' : 'Show 3 practice questions'}
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
       {open ? (
-        <div className="mt-4 space-y-3">
+        <div className="space-y-3">
           {questions === null ? (
             <p className="text-sm text-navy-500">Loading questions…</p>
           ) : questions.length === 0 ? (

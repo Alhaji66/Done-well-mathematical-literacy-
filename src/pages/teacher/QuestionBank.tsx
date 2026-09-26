@@ -207,7 +207,7 @@ export function TeacherQuestionBank() {
       {atp ? (
         <div className="card p-4">
           <div className="flex flex-wrap items-end gap-3">
-            <div className="min-w-[18rem] flex-1">
+            <div className="min-w-[min(18rem,100%)] flex-1">
               <label className="text-xs font-medium text-navy-500" htmlFor="atp-week">
                 What are you teaching?
               </label>

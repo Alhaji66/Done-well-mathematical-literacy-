@@ -258,7 +258,7 @@ export function LearnerPractise() {
                 aria-pressed={difficulty === d}
                 onClick={() => setDifficulty(d)}
                 className={cn(
-                  'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm',
+                  'rounded-md px-2 py-1.5 text-xs font-semibold transition-colors sm:px-3 sm:text-sm',
                   difficulty === d ? 'bg-navy-900 text-white' : 'text-navy-600 hover:bg-navy-50',
                 )}
               >

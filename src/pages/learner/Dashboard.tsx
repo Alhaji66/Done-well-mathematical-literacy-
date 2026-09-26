@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { demoLearner } from '@/data/learner'
 import { getSubject } from '@/data/subjects'
@@ -9,12 +10,14 @@ import { BarChart } from '@/components/ui/BarChart'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { StatusBadge, TrendBadge } from '@/components/ui/Badges'
 import { formatDate } from '@/lib/utils'
+import { onDemoMistakesChange, openDemoMistakeCount } from '@/lib/demoMistakes'
 import {
   TrendingUpIcon,
   ClockIcon,
   ClipboardIcon,
   StarIcon,
   ChevronRightIcon,
+  AlertIcon,
 } from '@/components/ui/Icons'
 
 export function LearnerDashboard() {
@@ -23,6 +26,8 @@ export function LearnerDashboard() {
   const upcoming = assessments.find((a) => a.status === 'upcoming')
   const weakest = [...demoLearner.topicProgress].sort((a, b) => a.masteryPercent - b.masteryPercent)[0]
   const weakestTopic = getTopic(weakest.topicId)
+  const [mistakes, setMistakes] = useState(openDemoMistakeCount)
+  useEffect(() => onDemoMistakesChange(() => setMistakes(openDemoMistakeCount())), [])
 
   return (
     <div className="space-y-8">
@@ -34,7 +39,26 @@ export function LearnerDashboard() {
         <p className="mt-1 text-sm text-navy-600">Here's how your week is going and what to focus on next.</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {/* On a phone My Mistakes has no tab of its own -- the bottom bar is full -- so it is offered here, first. */}
+      <Link
+        to="/app/learner/mistakes"
+        className="card flex items-center gap-4 border-gold-200 bg-gold-50 p-4 transition-colors hover:bg-gold-100"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-gold-700">
+          <AlertIcon className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-semibold text-navy-900">My Mistakes</span>
+          <span className="block text-sm text-navy-600">
+            {mistakes === 0
+              ? 'Nothing to fix right now. Questions you get wrong will be saved here.'
+              : `${mistakes} question${mistakes === 1 ? '' : 's'} to try again`}
+          </span>
+        </span>
+        <ChevronRightIcon className="h-5 w-5 shrink-0 text-navy-400" />
+      </Link>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Overall mastery"
           value={`${demoLearner.overallMasteryPercent}%`}
@@ -63,7 +87,7 @@ export function LearnerDashboard() {
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="card p-5 lg:col-span-2">
           <SectionHeading title="Weekly activity" description="Minutes spent practising each day this week." />
           <BarChart className="mt-6" unit=" min" data={demoLearner.weeklyActivity.map((d) => ({ label: d.label, value: d.minutes }))} />
@@ -95,7 +119,7 @@ export function LearnerDashboard() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="card p-5">
           <SectionHeading
             title="Upcoming test"
@@ -106,14 +130,16 @@ export function LearnerDashboard() {
             }
           />
           {upcoming ? (
-            <div className="mt-4 flex items-center justify-between rounded-xl border border-navy-100 p-4">
-              <div>
+            <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-navy-100 p-4">
+              <div className="min-w-0">
                 <p className="font-semibold text-navy-900">{upcoming.title}</p>
                 <p className="mt-1 text-sm text-navy-500">
                   {formatDate(upcoming.date)} · {upcoming.totalMarks} marks · {upcoming.durationMinutes} min
                 </p>
               </div>
-              <StatusBadge status={upcoming.status} />
+              <span className="shrink-0">
+                <StatusBadge status={upcoming.status} />
+              </span>
             </div>
           ) : (
             <p className="mt-4 text-sm text-navy-500">No upcoming tests scheduled. Great time to revise!</p>

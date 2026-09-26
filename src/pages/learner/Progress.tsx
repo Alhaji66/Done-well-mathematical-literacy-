@@ -27,6 +27,14 @@ export function LearnerProgress() {
         <p className="mt-2 text-xs text-navy-500">Based on {demoLearner.topicProgress.reduce((s, t) => s + t.questionsAttempted, 0)} practice attempts across all topics.</p>
       </div>
 
+      <Link
+        to="/app/learner/mistakes"
+        className="card flex items-center justify-between gap-3 p-4 text-sm font-semibold text-navy-800 hover:bg-navy-50"
+      >
+        <span>My Mistakes: the questions to try again</span>
+        <span aria-hidden="true">→</span>
+      </Link>
+
       <div className="card border-gold-200 bg-gold-50 p-5">
         <div className="flex items-start gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gold-500 text-navy-900">

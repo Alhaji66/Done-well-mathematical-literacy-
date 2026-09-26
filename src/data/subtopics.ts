@@ -147,7 +147,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Route planning and travel time',
-      match: /\b(route|travel|journey|speed|km\/h|distance table|arrive|depart|petrol|fuel|trip|driving)\b/i,
+      match: /\b(route|travel|journey|speed|km\/h|distance table|arrive|depart\w*|petrol|fuel|trip|driving)\b/i,
     },
     {
       name: 'Distance, direction and bearings',

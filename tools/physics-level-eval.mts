@@ -27,9 +27,12 @@ const TRUTH: Record<string, 2 | 3> = {
   // papers were rebuilt in the NSC format, so the item it described is gone.
   // 'psci-p1-2023-5-4' was here, hand-labelled 3 (net field at a midpoint: vector/symmetry argument). EXCLUDED: the 2023
   // papers were rebuilt in the NSC format, so the item it described is gone.
-  'psci-p1-2022-1-3': 2,   // p = mv
-  'psci-p1-2022-3-3': 2,   // standard free-fall result
-  'psci-p1-2022-6-5': 3,   // terminal voltage then power
+  // 'psci-p1-2022-1-3' was here, hand-labelled 2 (p = mv). EXCLUDED: the 2022
+  // papers were rebuilt in the NSC format, so the item it described is gone.
+  // 'psci-p1-2022-3-3' was here, hand-labelled 2 (standard free-fall result). EXCLUDED: the 2022
+  // papers were rebuilt in the NSC format, so the item it described is gone.
+  // 'psci-p1-2022-6-5' was here, hand-labelled 3 (terminal voltage then power). EXCLUDED: the 2022
+  // papers were rebuilt in the NSC format, so the item it described is gone.
   // 'psci-p1-2025-1-5' was here, hand-labelled 3 (inelastic collision, conservation applied). EXCLUDED: the 2025
   // papers were rebuilt in the NSC format, so the item it described is gone.
   // 'psci-p1-2025-4-3' was here, hand-labelled 2 (one Doppler substitution). EXCLUDED: the 2025

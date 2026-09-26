@@ -72,13 +72,15 @@ const TRUTH: Record<string, { level: Level; why: string }> = {
   // 'ml-p1-24-2-3' was here, hand-labelled L4 ('which of two unit prices is the
   // right basis for comparing suppliers'). EXCLUDED rather than relabelled: the
   // 2024 Paper 1 it belonged to was rebuilt in the NSC format, so the prompt is gone.
-  'ml-p1-a-3-1': { level: 2, why: 'scale conversion with a unit change' },
+  // 'ml-p1-a-3-1' was here, hand-labelled L2 ('scale conversion with a unit
+  // change'). EXCLUDED: Predicted Set A was rebuilt in the NSC format.
   'ml-p1-c-4-10': { level: 4, why: 'mean and median, then justify which represents a typical cost' },
   // 'ml-p2-22-1-2' was here ('why beating a target on average is not meeting it reliably'). EXCLUDED: the 2022
   // papers were rebuilt in the NSC format.
   // 'ml-p2-24-2-2' was here, hand-labelled L3 ('speed, inverse time, then the gap
   // -- several rate steps'). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
-  'ml-p2-a-3-4': { level: 1, why: 'classify a bank fee as an expense -- recall' },
+  // 'ml-p2-a-3-4' was here, hand-labelled L1 ('classify a bank fee as an expense
+  // -- recall'). EXCLUDED: Predicted Set A was rebuilt in the NSC format.
 }
 
 const list: any[] = (await papersForSubject('mat-lit')) as any

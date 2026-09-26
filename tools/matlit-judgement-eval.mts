@@ -78,7 +78,8 @@ const BUILT: Record<string, boolean> = {
   // EXCLUDED: the 2022 papers were rebuilt in the NSC format.
   // 'ml-p2-24-4-5' was here, hand-labelled false ("the percentage increase in
   // marker spending"). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
-  'ml-p2-a-4-5': true, // whether turning the boxes the other way fits more
+  // 'ml-p2-a-4-5' was here, hand-labelled true ("whether turning the boxes the other way fits more").
+  // EXCLUDED: Predicted Set A was rebuilt in the NSC format.
   'ml-p2-c-1-7': true, // why the committee keeps the two apart
 }
 

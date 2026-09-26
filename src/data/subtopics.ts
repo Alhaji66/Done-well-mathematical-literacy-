@@ -539,7 +539,7 @@ const rules: Record<string, SubtopicRule[]> = {
     {
       name: 'Solid waste, plastic and what can be done',
       match:
-        /\b(solid waste|plastic\w*|microplastic\w*|landfill\w*|recycl\w*|reuse|reduce|litter|packaging|marine|single[- ]use|strateg\w*|dispos\w*)\b/i,
+        /\b(solid waste|plastic\w*|microplastic\w*|landfill\w*|recycl\w*|reuse\w*|reduce|litter|packaging|marine|single[- ]use|strateg\w*|dispos\w*)\b/i,
     },
     {
       name: 'Atmosphere',

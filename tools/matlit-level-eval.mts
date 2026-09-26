@@ -17,10 +17,11 @@
  * Lit taxonomy, WITH THE STORED LEVEL HIDDEN, for the obvious reason that a
  * label written after seeing the machine's answer measures nothing.
  *
- * Two of the 24 have since gone: the 2024 Papers 1 and 2 they came from were
+ * Four of the 24 have since gone: the 2022 and 2024 papers they came from were
  * rebuilt in the NSC format. They are excluded below rather than relabelled or
- * replaced, so the score is on 22. The tool had both of them right, which is
- * why agreement fell from 15/24 to 13/22 -- the tool did not get worse.
+ * replaced, so the score is on 20. The tool had all four of them right, which
+ * is why agreement fell from 15/24 to 11/20 -- the tool did not get worse. A
+ * sample this small is now worth redrawing before it is relied on again.
  *
  * THE CAPS MAT LIT TAXONOMY, as applied here:
  *
@@ -66,13 +67,15 @@ const TRUTH: Record<string, { level: Level; why: string }> = {
   'ml-g11-p2-24-1-4': { level: 3, why: 'percentage increase, then check it against a stated criterion' },
   'ml-g11-p2-a-2-6': { level: 4, why: 'two defensible chair counts, then which one the clinic should use' },
   'ml-g11-p2-c-4-4': { level: 1, why: 'metres to centimetres' },
-  'ml-p1-22-1-4': { level: 2, why: 'seedlings to whole packs, then cost' },
+  // 'ml-p1-22-1-4' was here ('seedlings to whole packs, then cost'). EXCLUDED: the 2022
+  // papers were rebuilt in the NSC format.
   // 'ml-p1-24-2-3' was here, hand-labelled L4 ('which of two unit prices is the
   // right basis for comparing suppliers'). EXCLUDED rather than relabelled: the
   // 2024 Paper 1 it belonged to was rebuilt in the NSC format, so the prompt is gone.
   'ml-p1-a-3-1': { level: 2, why: 'scale conversion with a unit change' },
   'ml-p1-c-4-10': { level: 4, why: 'mean and median, then justify which represents a typical cost' },
-  'ml-p2-22-1-2': { level: 4, why: 'why beating a target on average is not meeting it reliably' },
+  // 'ml-p2-22-1-2' was here ('why beating a target on average is not meeting it reliably'). EXCLUDED: the 2022
+  // papers were rebuilt in the NSC format.
   // 'ml-p2-24-2-2' was here, hand-labelled L3 ('speed, inverse time, then the gap
   // -- several rate steps'). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
   'ml-p2-a-3-4': { level: 1, why: 'classify a bank fee as an expense -- recall' },

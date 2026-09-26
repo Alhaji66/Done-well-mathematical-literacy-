@@ -24,11 +24,7 @@
 import { topics } from '../src/data/topics.ts'
 import { getTopicNote } from '../src/data/topicNotes.ts'
 import { filterSubjectQuestions } from '../src/data/questionBank.ts'
-import {
-  SARS_2025_26 as TABLE,
-  rebateFor,
-  taxBeforeRebates,
-} from '../src/data/taxTables.ts'
+import { SARS_TABLES, rebateFor, taxBeforeRebates } from '../src/data/taxTables.ts'
 
 /** The Mathematics compound/annuity formulae, in the spellings the corpus uses. */
 const MATHS_FORMULA = /A\s*=\s*P\s*\(1\s*\+\s*i\)\s*(ⁿ|\^n)|\(1\s*\+\s*i\)\s*(ⁿ|\^n)/i
@@ -74,31 +70,35 @@ for (const grade of [10, 11, 12] as const) {
 }
 
 // ------------------------------------------------------------- 2. tax table
-for (let i = 1; i < TABLE.brackets.length; i++) {
-  const prevTop = TABLE.brackets[i - 1].to!
-  const implied = taxBeforeRebates(prevTop, TABLE)
-  const stated = TABLE.brackets[i].base
-  if (Math.abs(implied - stated) >= 1) {
-    console.log(
-      `  FAIL  tax table row ${i + 1}: states ${stated} but the row above ends at ${implied.toFixed(2)}`,
-    )
-    failures++
+// Every year held, not just the current one: past papers print their own
+// year's table, and a mistyped old table teaches a wrong figure just as well.
+for (const TABLE of SARS_TABLES) {
+  for (let i = 1; i < TABLE.brackets.length; i++) {
+    const prevTop = TABLE.brackets[i - 1].to!
+    const implied = taxBeforeRebates(prevTop, TABLE)
+    const stated = TABLE.brackets[i].base
+    if (Math.abs(implied - stated) >= 1) {
+      console.log(
+        `  FAIL  ${TABLE.taxYear} row ${i + 1}: states ${stated} but the row above ends at ${implied.toFixed(2)}`,
+      )
+      failures++
+    }
   }
-}
 
-for (const [label, income, age] of [
-  ['under 65', TABLE.thresholds.under65, 30],
-  ['65 to 74', TABLE.thresholds.from65, 70],
-  ['75 and older', TABLE.thresholds.from75, 80],
-] as const) {
-  const tax = taxBeforeRebates(income, TABLE)
-  const rebate = rebateFor(age, TABLE)
-  if (Math.abs(tax - rebate) >= 2) {
-    console.log(
-      `  FAIL  the ${label} threshold of ${income} gives tax ${tax.toFixed(2)} against rebates ${rebate}` +
-        ' -- a threshold is the income where those are equal',
-    )
-    failures++
+  for (const [label, income, age] of [
+    ['under 65', TABLE.thresholds.under65, 30],
+    ['65 to 74', TABLE.thresholds.from65, 70],
+    ['75 and older', TABLE.thresholds.from75, 80],
+  ] as const) {
+    const tax = taxBeforeRebates(income, TABLE)
+    const rebate = rebateFor(age, TABLE)
+    if (Math.abs(tax - rebate) >= 2) {
+      console.log(
+        `  FAIL  ${TABLE.taxYear}: the ${label} threshold of ${income} gives tax ${tax.toFixed(2)} against rebates ${rebate}` +
+          ' -- a threshold is the income where those are equal',
+      )
+      failures++
+    }
   }
 }
 
@@ -107,7 +107,7 @@ if (failures) {
   process.exit(1)
 }
 console.log(
-  `Mathematical Literacy works compound interest year by year, and the SARS ${TABLE.taxYear} table\n` +
-    'is internally consistent: every bracket follows on from the one before, and all three\n' +
-    'thresholds reconcile exactly with the rebates.',
+  `Mathematical Literacy works compound interest year by year, and all ${SARS_TABLES.length} SARS tables\n` +
+    `(${SARS_TABLES.map((t) => t.taxYear).join(', ')}) are internally consistent: every bracket\n` +
+    'follows on from the one before, and all three thresholds reconcile exactly with the rebates.',
 )

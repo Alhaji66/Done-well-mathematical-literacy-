@@ -18,12 +18,13 @@
  * A NOTE ON DRIFT, because this eval has a failure mode worth knowing about.
  * The truth sets name items by id and read their prompts out of the LIVE
  * corpus, so rewriting a listed item silently changes what is being measured.
- * That has happened twice: two BUILT items were later rewritten or removed,
- * and each is excluded below rather than relabelled,
- * because the prompt its label described no longer exists. Relabelling it
- * would have scored the rewrite instead of the rule. Anyone rewriting a listed
- * item should exclude it the same way. No held-out item has been rewritten, so
- * the 81% stands on all 31 of them.
+ * That has happened three times: one BUILT item was rewritten, and two
+ * HELD-OUT items went when the 2025 Papers 1 and 2 were rebuilt in the NSC
+ * format. Each is excluded below rather than relabelled, because the prompt
+ * its label described no longer exists. Relabelling it would have scored the
+ * rewrite instead of the rule. Anyone rewriting a listed item should exclude
+ * it the same way. The 81% above was scored once, on all 31, before either
+ * held-out item went; the same rule now scores 23/29 (79%) on what is left.
  *
  *   npm run check:matlit-judgement
  */
@@ -101,7 +102,8 @@ const HELD_OUT: Record<string, boolean> = {
   'ml-p2-20-3-5': true, // what this means for how much of the grant arrived
   'ml-p2-22-1-8': true, // the risk in dropping carrot entirely
   'ml-p2-24-1-4': true, // why that projection is not credible
-  'ml-p2-25-4-5': false, // how much of the last section would be unused
+  // 'ml-p2-25-4-5' was here, hand-labelled false ("how much of the last section
+  // would be unused"). EXCLUDED for the same reason: 2025 Paper 2 was rebuilt too.
   'ml-p2-b-3-3': true, // whether the bakery could absorb that rise
   'ml-p2-c-4-5': true, // whether the per-metre price should stay the same
 }

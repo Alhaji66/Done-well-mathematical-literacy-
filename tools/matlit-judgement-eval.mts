@@ -18,8 +18,8 @@
  * A NOTE ON DRIFT, because this eval has a failure mode worth knowing about.
  * The truth sets name items by id and read their prompts out of the LIVE
  * corpus, so rewriting a listed item silently changes what is being measured.
- * That has already happened once: one BUILT item was later rewritten into a
- * genuine Level 4 question, and it is excluded below rather than relabelled,
+ * That has happened twice: two BUILT items were later rewritten or removed,
+ * and each is excluded below rather than relabelled,
  * because the prompt its label described no longer exists. Relabelling it
  * would have scored the rewrite instead of the rule. Anyone rewriting a listed
  * item should exclude it the same way. No held-out item has been rewritten, so
@@ -94,7 +94,9 @@ const HELD_OUT: Record<string, boolean> = {
   'ml-p1-20-2-3': true, // why the family should still keep fewer
   'ml-p1-22-1-3': true, // what the result means for an unexpected expense
   'ml-p1-23-3-2': false, // why the kitchen appears larger at 1:100 -- how scale works
-  'ml-p1-25-4-10': true, // why it differs from R250
+  // 'ml-p1-25-4-10' was here, hand-labelled true ("why it differs from R250"). It
+  // is EXCLUDED rather than relabelled: the whole 2025 Paper 1 it belonged to was
+  // rebuilt in the NSC format, so the prompt this label described is gone.
   'ml-p1-c-2-7': true, // why a tiler advises buying more boxes than this
   'ml-p2-20-3-5': true, // what this means for how much of the grant arrived
   'ml-p2-22-1-8': true, // the risk in dropping carrot entirely

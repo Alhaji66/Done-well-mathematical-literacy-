@@ -82,7 +82,7 @@ export function ExamCountdown({
       <div className="mt-1.5 flex flex-wrap gap-2">
         <input
           type="date"
-          className="input min-w-0 flex-1"
+          className="input min-w-[9rem] flex-1"
           min={today}
           value={draft || examDate || ''}
           onChange={(e) => setDraft(e.target.value)}
@@ -315,7 +315,11 @@ function DayCard({
                 : `${day.subtopic ? `${day.subtopic} · ` : ''}session ${day.session} of ${day.sessions}`}
             </p>
             {!startOpen ? (
-              <button type="button" className="mt-2 text-sm font-semibold text-navy-700 underline" onClick={() => setOpen((o) => !o)}>
+              <button
+                type="button"
+                className="mt-1 inline-flex min-h-[2.75rem] items-center text-sm font-semibold text-navy-700 underline"
+                onClick={() => setOpen((o) => !o)}
+              >
                 {open ? 'Hide questions' : 'Show 3 practice questions'}
               </button>
             ) : null}

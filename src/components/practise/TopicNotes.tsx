@@ -124,7 +124,7 @@ export function TopicNotes({
                 {example.steps.map((step, i) => (
                   <li key={i} className="flex gap-2 text-sm leading-relaxed text-navy-600">
                     <span className="shrink-0 font-semibold text-navy-500">{i + 1}.</span>
-                    <span>{step}</span>
+                    <span className="min-w-0 break-words">{step}</span>
                   </li>
                 ))}
               </ol>

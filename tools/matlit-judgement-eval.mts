@@ -18,9 +18,9 @@
  * A NOTE ON DRIFT, because this eval has a failure mode worth knowing about.
  * The truth sets name items by id and read their prompts out of the LIVE
  * corpus, so rewriting a listed item silently changes what is being measured.
- * That has happened three times: one BUILT item was rewritten, and two
- * HELD-OUT items went when the 2025 Papers 1 and 2 were rebuilt in the NSC
- * format. Each is excluded below rather than relabelled, because the prompt
+ * That has happened four times: one BUILT item was rewritten, a second BUILT
+ * item went with the 2024 Paper 1, and two HELD-OUT items went with the 2025
+ * Papers 1 and 2, when those papers were rebuilt in the NSC format. Each is excluded below rather than relabelled, because the prompt
  * its label described no longer exists. Relabelling it would have scored the
  * rewrite instead of the rule. Anyone rewriting a listed item should exclude
  * it the same way. The 81% above was scored once, on all 31, before either
@@ -53,7 +53,8 @@ const BUILT: Record<string, boolean> = {
   // relabelled because the item was subsequently rewritten into a genuine
   // Level 4 question, so the prompt this label described no longer exists in
   // the corpus. Scoring the rule against the replacement would measure the
-  // rewrite, not the rule. Excluding it drops BUILT from 31 items to 30.
+  // rewrite, not the rule. Excluding it dropped BUILT from 31 items to 30
+  // (29 since the 2024 Paper 1 exclusion below).
   'ml-g11-p2-21-1-2': true, // whether the stall holder can RELY on R1 480
   'ml-g11-p2-23-1-6': false, // that gain as a percentage improvement
   'ml-g11-p2-24-4-6': false, // how many more glasses
@@ -61,7 +62,9 @@ const BUILT: Record<string, boolean> = {
   'ml-g11-p2-c-3-3': true, // what the family should do if it does not
   'ml-p1-21-2-6': false, // how much extra ground to buy
   'ml-p1-22-4-2': true, // why the mean is a poor guide to next week
-  'ml-p1-24-2-7': true, // why buying for both coats at once wastes less
+  // 'ml-p1-24-2-7' was here, hand-labelled true ("why buying for both coats at
+  // once wastes less"). EXCLUDED: the 2024 Paper 1 it belonged to was rebuilt in
+  // the NSC format, so the prompt this label described is gone.
   'ml-p1-b-1-12': true, // one change he could make, noting its drawback
   'ml-p2-20-1-2': true, // why to plan staffing on recent months not the mean
   'ml-p2-21-3-5': false, // what percentage of expenses the VAT represents

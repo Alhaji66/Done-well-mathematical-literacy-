@@ -17,6 +17,11 @@
  * Lit taxonomy, WITH THE STORED LEVEL HIDDEN, for the obvious reason that a
  * label written after seeing the machine's answer measures nothing.
  *
+ * One of the 24 has since gone: the 2024 Paper 1 it came from was rebuilt in
+ * the NSC format. It is excluded below rather than relabelled or replaced, so
+ * the score is on 23. The tool had that item right, which is why agreement
+ * fell from 15/24 to 14/23 -- the tool did not get worse.
+ *
  * THE CAPS MAT LIT TAXONOMY, as applied here:
  *
  *   L1 Knowing -- recall a fact or definition, classify something, read a
@@ -62,7 +67,9 @@ const TRUTH: Record<string, { level: Level; why: string }> = {
   'ml-g11-p2-a-2-6': { level: 4, why: 'two defensible chair counts, then which one the clinic should use' },
   'ml-g11-p2-c-4-4': { level: 1, why: 'metres to centimetres' },
   'ml-p1-22-1-4': { level: 2, why: 'seedlings to whole packs, then cost' },
-  'ml-p1-24-2-3': { level: 4, why: 'which of two unit prices is the right basis for comparing suppliers' },
+  // 'ml-p1-24-2-3' was here, hand-labelled L4 ('which of two unit prices is the
+  // right basis for comparing suppliers'). EXCLUDED rather than relabelled: the
+  // 2024 Paper 1 it belonged to was rebuilt in the NSC format, so the prompt is gone.
   'ml-p1-a-3-1': { level: 2, why: 'scale conversion with a unit change' },
   'ml-p1-c-4-10': { level: 4, why: 'mean and median, then justify which represents a typical cost' },
   'ml-p2-22-1-2': { level: 4, why: 'why beating a target on average is not meeting it reliably' },

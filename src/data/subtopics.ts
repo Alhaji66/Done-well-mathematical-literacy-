@@ -143,7 +143,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Floor plans and elevation drawings',
-      match: /\b(floor plan|elevation|building plan|room|tile|tiling|skirting|paint|window|door|north elevation|carpet)\b/i,
+      match: /\b(floor plan|elevation|building plan|room|tile|tiling|skirting|paint|window|door|north elevation|carpet\w*)\b/i,
     },
     {
       name: 'Route planning and travel time',

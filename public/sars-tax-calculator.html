@@ -195,7 +195,7 @@
 
       document.getElementById('monthlyTaxVal').innerText = `R${formatMoney(netTaxMonthly)}`;
       document.getElementById('annualTaxVal').innerText = `R${formatMoney(netTaxAnnual)}`;
-      document.getElementById('effectiveRateVal').innerText = `${effectiveRate.toFixed(1)}%`;
+      document.getElementById('effectiveRateVal').innerText = `${effectiveRate.toFixed(1).replace('.', ',')}%`;
       document.getElementById('bracketBadge').innerText = bracketName;
 
       document.getElementById('breakdownSection').innerHTML = `
@@ -207,8 +207,14 @@
       `;
     }
 
+    // Rand as a Mathematical Literacy paper writes it, and as the rest of the
+    // site does: a space between thousands and a decimal comma, R41 797,00.
+    // Not toLocaleString('en-ZA'): browsers disagree on that locale, and
+    // some print 41,797.00. The space does not break, so an amount never
+    // splits across two lines.
     function formatMoney(amount) {
-      return amount.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const [whole, cents] = Math.abs(amount).toFixed(2).split('.');
+      return (amount < 0 ? '−' : '') + whole.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + ',' + cents;
     }
 
     function toggleBreakdown() {

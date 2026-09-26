@@ -233,4 +233,6 @@ export const chartExempt: Record<string, string> = {
     'Gives only January (120) and June (300). Drawing the months between would mean inventing four values the question never states.',
   'dh-hist-3':
     'Describes two wrongly drawn graphs without any frequencies. Drawing them would mean inventing the data.',
+  'ml-p1-cn-5-1-5':
+    'Asks the learner to name a suitable type of graph. Drawing one would give the answer away.',
 }

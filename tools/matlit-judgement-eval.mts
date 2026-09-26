@@ -69,7 +69,8 @@ const BUILT: Record<string, boolean> = {
   // 'ml-p1-24-2-7' was here, hand-labelled true ("why buying for both coats at
   // once wastes less"). EXCLUDED: the 2024 Paper 1 it belonged to was rebuilt in
   // the NSC format, so the prompt this label described is gone.
-  'ml-p1-b-1-12': true, // one change he could make, noting its drawback
+  // 'ml-p1-b-1-12' was here, hand-labelled true ("one change he could make, noting its drawback").
+  // EXCLUDED: Predicted Set B was rebuilt in the NSC format.
   // 'ml-p2-20-1-2' was here, hand-labelled true ("why to plan staffing on recent months not the mean").
   // EXCLUDED: the 2020 papers were rebuilt in the NSC format.
   // 'ml-p2-21-3-5' was here, hand-labelled false ("what percentage of expenses the VAT represents").
@@ -78,8 +79,10 @@ const BUILT: Record<string, boolean> = {
   // EXCLUDED: the 2022 papers were rebuilt in the NSC format.
   // 'ml-p2-24-4-5' was here, hand-labelled false ("the percentage increase in
   // marker spending"). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
-  'ml-p2-a-4-5': true, // whether turning the boxes the other way fits more
-  'ml-p2-c-1-7': true, // why the committee keeps the two apart
+  // 'ml-p2-a-4-5' was here, hand-labelled true ("whether turning the boxes the other way fits more").
+  // EXCLUDED: Predicted Set A was rebuilt in the NSC format.
+  // 'ml-p2-c-1-7' was here, hand-labelled true ("why the committee keeps the two apart").
+  // EXCLUDED: Predicted Set C was rebuilt in the NSC format.
 }
 
 const HELD_OUT: Record<string, boolean> = {
@@ -114,7 +117,8 @@ const HELD_OUT: Record<string, boolean> = {
   // 'ml-p1-25-4-10' was here, hand-labelled true ("why it differs from R250"). It
   // is EXCLUDED rather than relabelled: the whole 2025 Paper 1 it belonged to was
   // rebuilt in the NSC format, so the prompt this label described is gone.
-  'ml-p1-c-2-7': true, // why a tiler advises buying more boxes than this
+  // 'ml-p1-c-2-7' was here, hand-labelled true ("why a tiler advises buying more boxes than this").
+  // EXCLUDED: Predicted Set C was rebuilt in the NSC format.
   // 'ml-p2-20-3-5' was here, hand-labelled true ("what this means for how much of the grant arrived").
   // EXCLUDED: the 2020 papers were rebuilt in the NSC format.
   // 'ml-p2-22-1-8' was here, hand-labelled true ("the risk in dropping carrot entirely").
@@ -123,8 +127,10 @@ const HELD_OUT: Record<string, boolean> = {
   // credible"). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
   // 'ml-p2-25-4-5' was here, hand-labelled false ("how much of the last section
   // would be unused"). EXCLUDED for the same reason: 2025 Paper 2 was rebuilt too.
-  'ml-p2-b-3-3': true, // whether the bakery could absorb that rise
-  'ml-p2-c-4-5': true, // whether the per-metre price should stay the same
+  // 'ml-p2-b-3-3' was here, hand-labelled true ("whether the bakery could absorb that rise").
+  // EXCLUDED: Predicted Set B was rebuilt in the NSC format.
+  // 'ml-p2-c-4-5' was here, hand-labelled true ("whether the per-metre price should stay the same").
+  // EXCLUDED: Predicted Set C was rebuilt in the NSC format.
 }
 
 const list: any[] = (await papersForSubject('mat-lit')) as any

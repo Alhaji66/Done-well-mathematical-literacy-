@@ -18,13 +18,14 @@
  * A NOTE ON DRIFT, because this eval has a failure mode worth knowing about.
  * The truth sets name items by id and read their prompts out of the LIVE
  * corpus, so rewriting a listed item silently changes what is being measured.
- * That has happened four times: one BUILT item was rewritten, a second BUILT
- * item went with the 2024 Paper 1, and two HELD-OUT items went with the 2025
- * Papers 1 and 2, when those papers were rebuilt in the NSC format. Each is excluded below rather than relabelled, because the prompt
- * its label described no longer exists. Relabelling it would have scored the
- * rewrite instead of the rule. Anyone rewriting a listed item should exclude
- * it the same way. The 81% above was scored once, on all 31, before either
- * held-out item went; the same rule now scores 23/29 (79%) on what is left.
+ * That has happened six times: one BUILT item was rewritten; two more BUILT
+ * items and three HELD-OUT items went when the 2024 and 2025 papers were
+ * rebuilt in the NSC format. Each is excluded below rather than relabelled,
+ * because the prompt its label described no longer exists. Relabelling it
+ * would have scored the rewrite instead of the rule. Anyone rewriting a listed
+ * item should exclude it the same way. The 81% above was scored once, on all
+ * 31, before any held-out item went; the same rule now scores 22/28 (79%) on
+ * what is left.
  *
  *   npm run check:matlit-judgement
  */
@@ -54,7 +55,7 @@ const BUILT: Record<string, boolean> = {
   // Level 4 question, so the prompt this label described no longer exists in
   // the corpus. Scoring the rule against the replacement would measure the
   // rewrite, not the rule. Excluding it dropped BUILT from 31 items to 30
-  // (29 since the 2024 Paper 1 exclusion below).
+  // (28 since the 2024 paper exclusions below).
   'ml-g11-p2-21-1-2': true, // whether the stall holder can RELY on R1 480
   'ml-g11-p2-23-1-6': false, // that gain as a percentage improvement
   'ml-g11-p2-24-4-6': false, // how many more glasses
@@ -69,7 +70,8 @@ const BUILT: Record<string, boolean> = {
   'ml-p2-20-1-2': true, // why to plan staffing on recent months not the mean
   'ml-p2-21-3-5': false, // what percentage of expenses the VAT represents
   'ml-p2-22-4-3': false, // how much drink is left unsold
-  'ml-p2-24-4-5': false, // the percentage increase in marker spending
+  // 'ml-p2-24-4-5' was here, hand-labelled false ("the percentage increase in
+  // marker spending"). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
   'ml-p2-a-4-5': true, // whether turning the boxes the other way fits more
   'ml-p2-c-1-7': true, // why the committee keeps the two apart
 }
@@ -104,7 +106,8 @@ const HELD_OUT: Record<string, boolean> = {
   'ml-p1-c-2-7': true, // why a tiler advises buying more boxes than this
   'ml-p2-20-3-5': true, // what this means for how much of the grant arrived
   'ml-p2-22-1-8': true, // the risk in dropping carrot entirely
-  'ml-p2-24-1-4': true, // why that projection is not credible
+  // 'ml-p2-24-1-4' was here, hand-labelled true ("why that projection is not
+  // credible"). EXCLUDED: the 2024 Paper 2 was rebuilt in the NSC format.
   // 'ml-p2-25-4-5' was here, hand-labelled false ("how much of the last section
   // would be unused"). EXCLUDED for the same reason: 2025 Paper 2 was rebuilt too.
   'ml-p2-b-3-3': true, // whether the bakery could absorb that rise

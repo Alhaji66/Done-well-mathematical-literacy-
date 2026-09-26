@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
+import { enqueue, isNetworkError } from '@/lib/outbox'
 
 export interface ProgressRow {
   topic_id: string
@@ -41,14 +42,25 @@ export async function recordAttempt(
   const mastery_percent = Math.min(100, Math.max(0, baseMastery + delta))
   const questions_attempted = (existing?.questions_attempted ?? 0) + 1
 
-  const { error } = await supabase.from('learner_progress').upsert({
+  const row = {
     learner_id: learnerId,
     topic_id: topicId,
     mastery_percent,
     questions_attempted,
     updated_at: new Date().toISOString(),
-  })
+  }
+  // No signal: keep it on the phone and send it later (see outbox.ts). The
+  // learner sees their progress move either way.
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    enqueue({ kind: 'progress', row })
+    return { topic_id: topicId, mastery_percent, questions_attempted }
+  }
+  const { error } = await supabase.from('learner_progress').upsert(row)
 
+  if (error && isNetworkError(error)) {
+    enqueue({ kind: 'progress', row })
+    return { topic_id: topicId, mastery_percent, questions_attempted }
+  }
   if (error) {
     console.error('Failed to record practice attempt:', error)
     return null

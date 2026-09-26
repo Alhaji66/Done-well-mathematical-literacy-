@@ -7,6 +7,8 @@ import { getTopic } from '@/data/topics'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { PlanShortcuts } from '@/components/revision/PlanShortcuts'
+import { SaveOffline } from '@/components/layout/SaveOffline'
 import { PencilIcon, TrendingUpIcon, ClipboardIcon, CheckIcon } from '@/components/ui/Icons'
 
 function FamilyLinkCode({ code }: { code: string }) {
@@ -91,6 +93,16 @@ export function LearnerDashboard() {
         description={`Grade ${profile.grade} — ${profile.subject_id ? subjectNames[profile.subject_id] ?? profile.subject_id : ''}${schoolName ? ` · ${schoolName}` : ''}`}
       />
 
+      {profile.subject_id && profile.grade ? (
+        <PlanShortcuts
+          basePath="/account/learner"
+          scope={profile.id}
+          subjectId={profile.subject_id}
+          grade={profile.grade}
+          marks={progress.map((p) => ({ topicId: p.topic_id, mastery: p.mastery_percent }))}
+        />
+      ) : null}
+
       <div className="card p-5">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-navy-900">Overall mastery</h3>
@@ -144,6 +156,8 @@ export function LearnerDashboard() {
           <TrendingUpIcon className="h-4 w-4" /> View full progress
         </Link>
       </div>
+
+      {profile.subject_id ? <SaveOffline subjectId={profile.subject_id} /> : null}
 
       <FamilyLinkCode code={profile.id} />
     </div>

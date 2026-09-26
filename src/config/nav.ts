@@ -16,6 +16,7 @@ import {
   BarChartIcon,
   ClipboardCheckIcon,
   SparkleIcon,
+  CalendarIcon,
   EyeIcon,
   SchoolIcon,
 } from '@/components/ui/Icons'
@@ -27,9 +28,11 @@ export const learnerNav: RoleNavItem[] = [
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
-  // Six tabs already fill a phone's bottom bar; on a phone My Mistakes is
-  // reached from Home and Progress instead.
+  // Six tabs already fill a phone's bottom bar; on a phone these are reached
+  // from Home instead (My Mistakes from Progress too).
   { to: '/mistakes', label: 'My Mistakes', icon: AlertIcon, phone: false },
+  { to: '/countdown', label: 'Exam countdown', icon: CalendarIcon, phone: false },
+  { to: '/tutor', label: 'Check my working', icon: SparkleIcon, phone: false },
 ]
 
 export const parentNav: RoleNavItem[] = [
@@ -73,6 +76,8 @@ export const accountLearnerNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/practise', label: 'Practise', icon: PencilIcon },
   { to: '/mistakes', label: 'My Mistakes', shortLabel: 'Mistakes', icon: AlertIcon },
+  { to: '/countdown', label: 'Exam countdown', shortLabel: 'Countdown', icon: CalendarIcon },
+  { to: '/tutor', label: 'Check my working', shortLabel: 'Tutor', icon: SparkleIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },

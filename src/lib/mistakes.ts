@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
+import { enqueue, isNetworkError } from '@/lib/outbox'
 
 /**
  * My Mistakes: every question a learner has got wrong, until they get it right.
@@ -33,12 +34,15 @@ export async function recordAnswer(
   correct: boolean,
 ): Promise<void> {
   if (!supabase) return
-  const { error } = await supabase.rpc('record_answer', {
-    p_question: questionId,
-    p_topic: topicId,
-    p_source: source,
-    p_correct: correct,
-  })
+  const args = { p_question: questionId, p_topic: topicId, p_source: source, p_correct: correct }
+  // With no signal the answer is kept on the phone and sent later (outbox.ts).
+  const queue = async () => {
+    const { data } = await supabase!.auth.getSession()
+    if (data.session) enqueue({ kind: 'answer', learnerId: data.session.user.id, args })
+  }
+  if (typeof navigator !== 'undefined' && !navigator.onLine) return queue()
+  const { error } = await supabase.rpc('record_answer', args)
+  if (error && isNetworkError(error)) return queue()
   if (error) console.warn('Could not update My Mistakes:', error.message)
 }
 

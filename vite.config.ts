@@ -48,6 +48,20 @@ export default defineConfig({
               cacheableResponse: { statuses: [0, 200] },
             },
           },
+          {
+            // The maths fonts. Not precached (they are only needed once a page
+            // shows maths), but kept once fetched: without them an offline
+            // page draws every formula in a fallback font. Every browser that
+            // installs the app reads the .woff2 files, so .woff and .ttf are
+            // never fetched and are not cached.
+            urlPattern: /\/assets\/KaTeX_[\w-]+\.woff2$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'maths-fonts',
+              expiration: { maxEntries: 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
         ],
       },
       includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png'],

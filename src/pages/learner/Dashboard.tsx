@@ -11,6 +11,9 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { StatusBadge, TrendBadge } from '@/components/ui/Badges'
 import { formatDate } from '@/lib/utils'
 import { onDemoMistakesChange, openDemoMistakeCount } from '@/lib/demoMistakes'
+import { demoExampleExamDate } from '@/lib/revisionPlan'
+import { PlanShortcuts } from '@/components/revision/PlanShortcuts'
+import { SaveOffline } from '@/components/layout/SaveOffline'
 import {
   TrendingUpIcon,
   ClockIcon,
@@ -39,7 +42,7 @@ export function LearnerDashboard() {
         <p className="mt-1 text-sm text-navy-600">Here's how your week is going and what to focus on next.</p>
       </div>
 
-      {/* On a phone My Mistakes has no tab of its own -- the bottom bar is full -- so it is offered here, first. */}
+      {/* On a phone My Mistakes, the countdown and the tutor have no tab of their own -- the bottom bar is full -- so they are offered here, first. */}
       <Link
         to="/app/learner/mistakes"
         className="card flex items-center gap-4 border-gold-200 bg-gold-50 p-4 transition-colors hover:bg-gold-100"
@@ -57,6 +60,17 @@ export function LearnerDashboard() {
         </span>
         <ChevronRightIcon className="h-5 w-5 shrink-0 text-navy-400" />
       </Link>
+
+      <PlanShortcuts
+        basePath="/app/learner"
+        scope="demo"
+        subjectId={demoLearner.subjectId}
+        grade={demoLearner.grade}
+        marks={demoLearner.topicProgress.map((t) => ({ topicId: t.topicId, mastery: t.masteryPercent }))}
+        exampleDate={demoExampleExamDate()}
+      />
+
+      <SaveOffline subjectId={demoLearner.subjectId} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard

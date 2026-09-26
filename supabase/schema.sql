@@ -2881,3 +2881,43 @@ begin
 end;
 $$;
 grant execute on function public.add_content_editor(text, boolean) to authenticated;
+
+-- ============================================================================
+-- STEP 19: THE TUTOR'S DAILY LIMIT
+-- ============================================================================
+--
+-- WHY. "Check my working" sends a learner's question, and perhaps a photo of
+-- their working, to an AI model through supabase/functions/tutor. Each check
+-- costs money, so each learner gets a daily allowance (20 by default, set by
+-- the TUTOR_DAILY_LIMIT secret). This table is what the allowance counts.
+--
+-- WHAT IS KEPT. One row per check: who asked, for which subject, and when.
+-- Never the question, the photo or the reply -- those go to the model and back
+-- to the learner, and nowhere else. A demo check (only if TUTOR_ALLOW_DEMO is
+-- switched on) has no user; it is counted against a one-way hash of the
+-- caller's network address instead. Rows older than 30 days are deleted by
+-- the function each time it runs.
+--
+-- WHO CAN WRITE. Only the tutor function, which uses the service role. A
+-- learner can read their own rows (to see what is left of today's allowance)
+-- and nothing else.
+
+create table if not exists public.tutor_requests (
+  id bigint generated always as identity primary key,
+  user_id uuid references auth.users (id) on delete cascade,
+  client_key text,
+  subject_id text not null,
+  created_at timestamptz not null default now(),
+  constraint tutor_requests_who check (user_id is not null or client_key is not null)
+);
+
+create index if not exists tutor_requests_user_time on public.tutor_requests (user_id, created_at desc);
+create index if not exists tutor_requests_client_time on public.tutor_requests (client_key, created_at desc);
+
+alter table public.tutor_requests enable row level security;
+revoke insert, update, delete, truncate on public.tutor_requests from authenticated, anon;
+
+drop policy if exists tutor_requests_own on public.tutor_requests;
+create policy tutor_requests_own on public.tutor_requests
+  for select to authenticated
+  using (user_id = auth.uid());

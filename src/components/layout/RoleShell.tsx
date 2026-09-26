@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet } from 'react-router-dom'
 import { useDemoAuth, type DemoRole } from '@/context/DemoAuthContext'
 import { LogOutIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { OfflineNotice } from '@/components/layout/OfflineNotice'
 
 export interface RoleNavItem {
   to: string
@@ -100,6 +101,7 @@ export function RoleShell({ role, basePath, navItems }: RoleShellProps) {
         </aside>
 
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 pb-24 md:pb-6">
+          <OfflineNotice />
           <Outlet />
         </main>
       </div>

@@ -3,9 +3,11 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAccountAuth, type AccountRole } from '@/context/AccountAuthContext'
 import { LogOutIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { OfflineNotice } from '@/components/layout/OfflineNotice'
 import type { RoleNavItem } from '@/components/layout/RoleShell'
 import { NotificationBell } from '@/components/account/NotificationBell'
 import { logSignedIn } from '@/lib/activity'
+import { startOutbox } from '@/lib/outbox'
 import { usePlatformAccess } from '@/lib/platform'
 import { useContentAccess } from '@/lib/content'
 
@@ -32,6 +34,11 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
   // One "signed in" event a day, for the school's active-learner count.
   useEffect(() => {
     if (profile?.id) logSignedIn(profile.id)
+  }, [profile?.id])
+
+  // Send any answers saved while offline, now and whenever the signal returns.
+  useEffect(() => {
+    if (profile?.id) startOutbox()
   }, [profile?.id])
 
   return (
@@ -154,6 +161,7 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
         </aside>
 
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 pb-24 md:pb-6">
+          <OfflineNotice account />
           <Outlet />
         </main>
       </div>

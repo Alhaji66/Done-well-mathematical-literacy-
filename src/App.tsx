@@ -131,6 +131,7 @@ const LearnerAssessmentPaper = lazy(() =>
   import('@/pages/learner/AssessmentPaper').then((m) => ({ default: m.LearnerAssessmentPaper })),
 )
 const LearnerProgress = lazy(() => import('@/pages/learner/Progress').then((m) => ({ default: m.LearnerProgress })))
+const LearnerMistakes = lazy(() => import('@/pages/learner/Mistakes').then((m) => ({ default: m.LearnerMistakes })))
 
 const ParentDashboard = lazy(() => import('@/pages/parent/Dashboard').then((m) => ({ default: m.ParentDashboard })))
 const ParentMyChild = lazy(() => import('@/pages/parent/MyChild').then((m) => ({ default: m.ParentMyChild })))
@@ -326,6 +327,7 @@ export default function App() {
           <Route path="assessments/:paperId" element={<LearnerAssessmentPaper />} />
           <Route path="progress" element={<LearnerProgress />} />
           <Route path="tests" element={<DemoLearnerWeeklyTests />} />
+          <Route path="mistakes" element={<LearnerMistakes />} />
         </Route>
 
         <Route

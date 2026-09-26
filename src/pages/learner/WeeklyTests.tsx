@@ -4,6 +4,7 @@ import { assessments } from '@/data/assessments'
 import { getTopic } from '@/data/topics'
 import { buildTestPaper, totalMarks } from '@/lib/testPaper'
 import { QuestionCard } from '@/components/practise/QuestionCard'
+import { recordDemoAnswer } from '@/lib/demoMistakes'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { ArrowLeftIcon } from '@/components/ui/Icons'
@@ -77,8 +78,12 @@ export function LearnerWeeklyTests() {
         />
 
         <div className="rounded-lg border border-gold-200 bg-gold-50 p-4 text-sm text-navy-700">
-          <strong>This is the demo.</strong> Nothing you do here is saved. With a real account your teacher sets these tests and
-          sees your results, and any question you get wrong goes to My Mistakes.{' '}
+          <strong>This is the demo.</strong> With a real account your teacher sets these tests and sees your results. Any
+          question you mark wrong here goes to{' '}
+          <Link to="/app/learner/mistakes" className="font-semibold underline">
+            My Mistakes
+          </Link>{' '}
+          on this phone, so you can try it again.{' '}
           <Link to="/account/sign-in" className="font-semibold underline">
             Create an account
           </Link>
@@ -95,7 +100,10 @@ export function LearnerWeeklyTests() {
                 key={q.id}
                 question={q}
                 index={i}
-                onResult={(correct) => setMarks((m) => ({ ...m, [q.id]: correct }))}
+                onResult={(correct) => {
+                  setMarks((m) => ({ ...m, [q.id]: correct }))
+                  recordDemoAnswer(q, 'weekly_test', correct)
+                }}
               />
             ))}
 
@@ -107,8 +115,11 @@ export function LearnerWeeklyTests() {
                   </p>
                   <ProgressBar percent={pct} label="Your mark on this test" />
                   <p className="text-xs text-navy-500">
-                    In a real account this goes to your teacher, and the questions you missed go to My Mistakes so you can try
-                    them again.
+                    In a real account this goes to your teacher. The questions you missed are in{' '}
+                    <Link to="/app/learner/mistakes" className="font-semibold underline">
+                      My Mistakes
+                    </Link>{' '}
+                    so you can try them again.
                   </p>
                 </>
               ) : (

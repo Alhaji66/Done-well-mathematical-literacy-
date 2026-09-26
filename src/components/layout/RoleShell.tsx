@@ -15,6 +15,8 @@ export interface RoleNavItem {
   shortLabel?: string
   icon: (props: { className?: string }) => ReactNode
   end?: boolean
+  /** False to leave it out of the phone's bottom bar (it stays in the sidebar). */
+  phone?: boolean
 }
 
 const roleLabels: Record<DemoRole, string> = {
@@ -103,7 +105,7 @@ export function RoleShell({ role, basePath, navItems }: RoleShellProps) {
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-navy-100 bg-white/95 backdrop-blur md:hidden">
-        {navItems.map((item) => (
+        {navItems.filter((item) => item.phone !== false).map((item) => (
           <NavLink
             key={item.to}
             to={`${basePath}${item.to}`}

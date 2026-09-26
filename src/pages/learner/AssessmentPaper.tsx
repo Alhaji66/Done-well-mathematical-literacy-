@@ -4,6 +4,7 @@ import { demoLearner } from '@/data/learner'
 import { getPaper, type Paper } from '@/data/papers'
 import { getAnsweredItemIds, markItemAnswered, countPaperItems } from '@/lib/paperProgress'
 import { PaperRunner } from '@/components/assessments/PaperRunner'
+import { recordDemoAnswer } from '@/lib/demoMistakes'
 import { RouteLoading } from '@/components/layout/RouteLoading'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ArrowLeftIcon } from '@/components/ui/Icons'
@@ -84,6 +85,7 @@ export function LearnerAssessmentPaper() {
           markItemAnswered(demoLearner.id, paper.id, itemId)
           setAnsweredCount(getAnsweredItemIds(demoLearner.id, paper.id).size)
         }}
+        onResult={(itemId, topicId, correct) => recordDemoAnswer({ id: itemId, topicId }, 'paper', correct)}
       />
     </div>
   )

@@ -6,6 +6,7 @@ import { filterSubjectQuestions, questionsForSubject } from '@/data/questionBank
 import { demoLearner } from '@/data/learner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { QuestionCard } from '@/components/practise/QuestionCard'
+import { recordDemoAnswer } from '@/lib/demoMistakes'
 import { TopicNotes } from '@/components/practise/TopicNotes'
 import { subtopicNamesFor } from '@/data/topicNotes'
 import { SubtopicSection } from '@/components/practise/SubtopicSection'
@@ -334,7 +335,7 @@ export function LearnerPractise() {
               index={subtopic === 'All' ? groupIndex : groups.findIndex((g) => g.name === group.name)}
             >
               {group.questions.map((q, i) => (
-                <QuestionCard key={q.id} question={q} index={i} />
+                <QuestionCard key={q.id} question={q} index={i} onResult={(correct) => recordDemoAnswer(q, 'practice', correct)} />
               ))}
             </SubtopicSection>
           ))}

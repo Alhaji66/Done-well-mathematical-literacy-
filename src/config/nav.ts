@@ -27,6 +27,9 @@ export const learnerNav: RoleNavItem[] = [
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
+  // Six tabs already fill a phone's bottom bar; on a phone My Mistakes is
+  // reached from Home and Progress instead.
+  { to: '/mistakes', label: 'My Mistakes', icon: AlertIcon, phone: false },
 ]
 
 export const parentNav: RoleNavItem[] = [

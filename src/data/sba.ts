@@ -2,34 +2,31 @@
  * The formal Programme of Assessment (school-based assessment, SBA) for each
  * subject and grade, and the tasks themselves.
  *
- * WHAT IS FIXED AND WHAT IS NOT. CAPS sets the KINDS of formal task each FET
- * subject uses -- tests and examinations everywhere; investigations and
- * assignments in Mathematics and Mathematical Literacy; practical
- * investigations and experiments in Physical Sciences; practical tasks and
- * assignments in Life Sciences -- and each province's SBA guideline then fixes
- * exactly which task falls in which term and what it weighs, and revises that
- * from year to year. So the programme below is the TYPICAL arrangement, not a
- * ruling, and the page says so: a teacher follows their provincial guideline
- * where it differs, and every task here can still be used as it stands.
+ * THE PROGRAMME IS THE DBE'S. Every task, term, raw total, term weight and
+ * SBA weight below is transcribed from the Department of Basic Education's
+ * national "2024-2025 Programme of Assessment" (sections 24 Life Sciences,
+ * 25 Mathematical Literacy, 26 Mathematics and 31 Physical Sciences), and
+ * each grade's SBA weights add up to 100 -- check:sba fails if one does not.
+ * Two cells in the Mathematics tables disagree with themselves (Grade 11 and
+ * 12 final papers are 150 marks in the raw-total column but "2 hours" and
+ * "100 marks each" in the description); the raw totals are used.
  *
  * WHERE THE TASKS COME FROM.
  *
- *   Tests and assignments are assembled from the question bank, out of the
- *   topics the ATP puts in that term, and balanced to the subject's CAPS
- *   cognitive-level weighting (capsWeighting.ts) by marks -- the same targets
- *   the NSC papers are built to. An assignment leans on longer, contextual
- *   questions; a test takes the full range.
+ *   Tests, controlled tests and assignments are assembled from the question
+ *   bank, out of the topics the ATP puts in that term, to the task's DBE raw
+ *   total, and balanced to the subject's CAPS cognitive-level weighting
+ *   (capsWeighting.ts). An assignment leans on longer, contextual questions.
  *
- *   Investigations, projects, practicals and experiments are the written task
- *   sheets in sbaTaskSheets.ts, each with a rubric.
+ *   Investigations, practical tasks and experiments are the written task
+ *   sheets in sbaTaskSheets.ts, each with a rubric totalling the DBE raw mark.
  *
- *   Examinations are the full papers already in Assessments. Building a
- *   second, lesser exam here would only compete with them.
+ *   Examinations are the full papers already in Assessments.
  */
 import { atpFor } from './atp'
 import { capsWeightingFor } from './capsWeighting'
 import { getTopic } from './topics'
-import { taskSheetFor, type SheetKind, type TaskSheet } from './sbaTaskSheets'
+import { taskSheetFor, taskSheets, type SheetKind, type TaskSheet } from './sbaTaskSheets'
 import type { Grade, Question } from '@/types'
 
 /**
@@ -43,9 +40,8 @@ import type { Grade, Question } from '@/types'
  *
  *   Grade 12: SBA 25%, NSC final examination 75%, unchanged.
  *
- * What is NOT fixed nationally in this file is how the SBA itself is split
- * between its tasks; that is the DBE Programme of Assessment and the
- * province's guideline, which is why the programme below is the typical one.
+ * How the SBA itself is split between its tasks is the DBE Programme of
+ * Assessment, below.
  */
 export interface MarkSplit {
   sba: number
@@ -68,73 +64,200 @@ export interface SbaTask {
   term: 1 | 2 | 3 | 4
   kind: TaskKind
   title: string
-  /** For a test or an assignment: the marks it is built to. */
-  marks?: number
+  /** The DBE raw total: what the task is marked out of. */
+  marks: number
   /** For a test or an assignment: the time allowed. */
   minutes?: number
   exam?: ExamKind
-  /** Which of two tests in one term this is (1 or 2); it decides which topics it covers. */
-  part?: 1 | 2
+  /** The papers, for an examination: "2 papers × 75 marks, 1,5 hours each". */
+  papers?: string
+  /** Which of several tests in one term this is, and how many there are; it decides the topics. */
+  part?: number
+  parts?: number
+  /** The DBE term weight and SBA weight, in per cent. Absent for the final examination. */
+  termWeight?: number
+  sbaWeight?: number
 }
 
-type Row = [1 | 2 | 3 | 4, TaskKind, (ExamKind | 1 | 2)?]
+/** [term, kind, title, raw total, term weight, SBA weight, exam, papers] */
+type Row = [1 | 2 | 3 | 4, TaskKind, string, number, number?, number?, ExamKind?, string?]
 
-/** The typical programme, per subject, for Grades 10-11 and for Grade 12. */
-const PROGRAMMES: Record<string, { fet: Row[]; g12: Row[] }> = {
-  mathematics: {
-    fet: [[1, 'Test'], [1, 'Investigation'], [2, 'Assignment'], [2, 'Examination', 'mid-year'], [3, 'Test', 1], [3, 'Test', 2], [4, 'Examination', 'end-of-year']],
-    g12: [[1, 'Test'], [1, 'Investigation'], [2, 'Assignment'], [2, 'Examination', 'mid-year'], [3, 'Test'], [3, 'Examination', 'preparatory'], [4, 'Examination', 'final']],
-  },
-  'mat-lit': {
-    fet: [[1, 'Assignment'], [1, 'Test'], [2, 'Investigation'], [2, 'Examination', 'mid-year'], [3, 'Assignment'], [3, 'Test'], [4, 'Examination', 'end-of-year']],
-    g12: [[1, 'Assignment'], [1, 'Test'], [2, 'Investigation'], [2, 'Examination', 'mid-year'], [3, 'Test'], [3, 'Examination', 'preparatory'], [4, 'Examination', 'final']],
-  },
-  'physical-sciences': {
-    fet: [[1, 'Practical investigation'], [1, 'Test'], [2, 'Experiment'], [2, 'Examination', 'mid-year'], [3, 'Experiment'], [3, 'Test'], [4, 'Examination', 'end-of-year']],
-    g12: [[1, 'Practical investigation'], [1, 'Test'], [2, 'Experiment'], [2, 'Examination', 'mid-year'], [3, 'Experiment'], [3, 'Test'], [3, 'Examination', 'preparatory'], [4, 'Examination', 'final']],
-  },
-  'life-sciences': {
-    fet: [[1, 'Practical task'], [1, 'Test'], [2, 'Assignment'], [2, 'Examination', 'mid-year'], [3, 'Practical task'], [3, 'Test'], [4, 'Examination', 'end-of-year']],
-    g12: [[1, 'Practical task'], [1, 'Test'], [2, 'Assignment'], [2, 'Examination', 'mid-year'], [3, 'Practical task'], [3, 'Test'], [3, 'Examination', 'preparatory'], [4, 'Examination', 'final']],
-  },
+const PROGRAMMES: Record<string, Row[]> = {
+  // 26. Mathematics
+  'mathematics-10': [
+    [1, 'Investigation', 'Investigation or project', 50, 25, 15],
+    [1, 'Test', 'Test', 50, 75, 14],
+    [2, 'Assignment', 'Assignment', 50, 25, 15],
+    [2, 'Examination', 'Mid-year examination', 100, 75, 14, 'mid-year'],
+    [3, 'Test', 'Test 1', 50, 25, 14],
+    [3, 'Test', 'Test 2', 50, 75, 14],
+    [3, 'Test', 'Test 3', 50, 0, 14],
+    [4, 'Examination', 'End-of-year examination', 200, undefined, undefined, 'end-of-year', '2 papers × 100 marks, 2 hours each'],
+  ],
+  'mathematics-11': [
+    [1, 'Investigation', 'Investigation or project', 50, 25, 15],
+    [1, 'Test', 'Test', 50, 75, 14],
+    [2, 'Assignment', 'Assignment', 50, 25, 15],
+    [2, 'Examination', 'Mid-year examination', 200, 75, 14, 'mid-year'],
+    [3, 'Test', 'Test 1', 50, 25, 14],
+    [3, 'Test', 'Test 2', 50, 75, 14],
+    [3, 'Test', 'Test 3', 50, 0, 14],
+    [4, 'Examination', 'End-of-year examination', 300, undefined, undefined, 'end-of-year', '2 papers × 150 marks'],
+  ],
+  'mathematics-12': [
+    [1, 'Investigation', 'Investigation or project', 50, 25, 15],
+    [1, 'Test', 'Test', 50, 75, 15],
+    [2, 'Assignment', 'Assignment', 50, 25, 15],
+    [2, 'Examination', 'Mid-year examination', 300, 75, 15, 'mid-year'],
+    [3, 'Test', 'Test', 50, 25, 15],
+    [3, 'Examination', 'Preparatory examination', 300, 75, 25, 'preparatory'],
+    [4, 'Examination', 'NSC final examination', 300, undefined, undefined, 'final', '2 papers × 150 marks, 3 hours each'],
+  ],
+  // 25. Mathematical Literacy
+  'mat-lit-10': [
+    [1, 'Investigation', 'Investigation', 50, 40, 10],
+    [1, 'Test', 'Controlled test 1', 50, 60, 20],
+    [2, 'Assignment', 'Assignment', 50, 40, 10],
+    [2, 'Examination', 'June examination', 100, 60, 30, 'mid-year', '2 papers × 50 marks, 1 hour each'],
+    [3, 'Assignment', 'Assignment', 50, 40, 10],
+    [3, 'Test', 'Controlled test 2', 50, 60, 20],
+    [4, 'Examination', 'End-of-year examination', 150, undefined, undefined, 'end-of-year', '2 papers × 75 marks, 1,5 hours each'],
+  ],
+  'mat-lit-11': [
+    [1, 'Investigation', 'Investigation', 50, 40, 10],
+    [1, 'Test', 'Controlled test 1', 50, 60, 20],
+    [2, 'Assignment', 'Assignment', 50, 40, 10],
+    [2, 'Examination', 'June examination', 150, 60, 30, 'mid-year', '2 papers × 75 marks, 1,5 hours each'],
+    [3, 'Assignment', 'Assignment', 50, 40, 10],
+    [3, 'Test', 'Controlled test 2', 50, 60, 20],
+    [4, 'Examination', 'End-of-year examination', 200, undefined, undefined, 'end-of-year', '2 papers × 100 marks, 2 hours each'],
+  ],
+  'mat-lit-12': [
+    [1, 'Investigation', 'Investigation', 50, 25, 10],
+    [1, 'Test', 'Controlled test 1', 50, 75, 15],
+    [2, 'Assignment', 'Assignment', 50, 25, 10],
+    [2, 'Examination', 'June examination or controlled test', 200, 75, 25, 'mid-year', '2 papers × 100 marks, 2 hours each'],
+    [3, 'Test', 'Controlled test 2', 50, 25, 15],
+    [3, 'Examination', 'Preparatory examination', 300, 75, 25, 'preparatory', '2 papers × 150 marks, 3 hours each'],
+    [4, 'Examination', 'NSC final examination', 300, undefined, undefined, 'final', '2 papers × 150 marks, 3 hours each'],
+  ],
+  // 31. Physical Sciences
+  'physical-sciences-10': [
+    [1, 'Test', 'Controlled test', 75, 100, 25],
+    [2, 'Examination', 'June examination', 100, 60, 25, 'mid-year'],
+    [2, 'Experiment', 'Experiment', 50, 40, 12.5],
+    [3, 'Test', 'Controlled test', 75, 40, 25],
+    [3, 'Experiment', 'Experiment', 50, 60, 12.5],
+    [4, 'Examination', 'End-of-year examination', 200, undefined, undefined, 'end-of-year', '2 papers × 100 marks, 2 hours each'],
+  ],
+  'physical-sciences-11': [
+    [1, 'Test', 'Controlled test', 100, 60, 25],
+    [1, 'Experiment', 'Experiment', 50, 40, 12.5],
+    [2, 'Examination', 'June examination', 200, 100, 25, 'mid-year'],
+    [3, 'Test', 'Controlled test', 100, 60, 25],
+    [3, 'Experiment', 'Experiment', 50, 40, 12.5],
+    [4, 'Examination', 'End-of-year examination', 300, undefined, undefined, 'end-of-year', '2 papers × 150 marks, 3 hours each'],
+  ],
+  'physical-sciences-12': [
+    [1, 'Test', 'Controlled test', 100, 75, 20],
+    [1, 'Experiment', 'Experiment', 50, 25, 15],
+    [2, 'Examination', 'June examination or controlled test', 300, 100, 20, 'mid-year'],
+    [3, 'Examination', 'Preparatory examination', 300, 75, 30, 'preparatory'],
+    [3, 'Experiment', 'Experiment', 50, 25, 15],
+    [4, 'Examination', 'NSC final examination', 300, undefined, undefined, 'final', '2 papers × 150 marks, 3 hours each'],
+  ],
+  // 24. Life Sciences
+  'life-sciences-10': [
+    [1, 'Practical task', 'Practical task 1', 30, 25, 10],
+    [1, 'Test', 'Controlled test 1', 50, 75, 20],
+    [2, 'Assignment', 'Assignment', 50, 25, 20],
+    [2, 'Examination', 'June examination', 150, 75, 20, 'mid-year'],
+    [3, 'Practical task', 'Practical task 2', 30, 25, 10],
+    [3, 'Test', 'Controlled test 2', 50, 75, 20],
+    [4, 'Examination', 'End-of-year examination', 300, undefined, undefined, 'end-of-year', '2 papers × 150 marks, 2,5 hours each'],
+  ],
+  'life-sciences-11': [
+    [1, 'Practical task', 'Practical task 1', 30, 25, 10],
+    [1, 'Test', 'Controlled test 1', 50, 75, 20],
+    [2, 'Assignment', 'Assignment', 50, 25, 20],
+    [2, 'Examination', 'June examination', 150, 75, 20, 'mid-year'],
+    [3, 'Practical task', 'Practical task 2', 30, 25, 10],
+    [3, 'Test', 'Controlled test 2', 50, 75, 20],
+    [4, 'Examination', 'End-of-year examination', 300, undefined, undefined, 'end-of-year', '2 papers × 150 marks, 2,5 hours each'],
+  ],
+  'life-sciences-12': [
+    [1, 'Practical task', 'Practical task 1', 30, 25, 10],
+    [1, 'Test', 'Controlled test 1', 50, 75, 15],
+    [2, 'Practical task', 'Practical task 2', 30, 50, 10],
+    [2, 'Examination', 'Controlled test or June examination', 150, 50, 15, 'mid-year'],
+    [3, 'Assignment', 'Assignment', 50, 25, 20],
+    [3, 'Examination', 'Preparatory examination', 300, 75, 30, 'preparatory', '2 papers × 150 marks, 2,5 hours each'],
+    [4, 'Examination', 'NSC final examination', 300, undefined, undefined, 'final', '2 papers × 150 marks, 2,5 hours each'],
+  ],
 }
 
-const EXAM_TITLES: Record<ExamKind, string> = {
-  'mid-year': 'Mid-year examination',
-  preparatory: 'Preparatory (trial) examination',
-  'end-of-year': 'End-of-year examination',
-  final: 'NSC final examination (set externally)',
-}
+export const PROGRAMME_SOURCE = 'DBE 2024–2025 Programme of Assessment'
+
+/** About 1,2 minutes a mark, as the controlled tests are set: 50 marks in an hour, 100 in two. */
+const minutesFor = (kind: TaskKind, marks: number) => (kind === 'Assignment' ? 90 : marks <= 50 ? 60 : marks <= 75 ? 90 : 120)
 
 export function programmeFor(subjectId: string, grade: Grade): SbaTask[] {
-  const p = PROGRAMMES[subjectId]
-  if (!p) return []
-  const rows = grade === 12 ? p.g12 : p.fet
-  return rows.map(([term, kind, extra], i) => {
-    const exam = typeof extra === 'string' ? extra : undefined
-    const part = typeof extra === 'number' ? extra : undefined
+  const rows = PROGRAMMES[`${subjectId}-${grade}`]
+  if (!rows) return []
+  return rows.map(([term, kind, title, marks, termWeight, sbaWeight, exam, papers], i) => {
+    const sameKind = rows.filter((r) => r[0] === term && r[1] === kind)
+    const parts = kind === 'Test' && sameKind.length > 1 ? sameKind.length : undefined
+    const part = parts ? sameKind.findIndex((r) => r === rows[i]) + 1 : undefined
     const sheet = exam || kind === 'Test' || kind === 'Assignment' ? undefined : taskSheetFor(subjectId, grade, term, kind as SheetKind)
     return {
       key: `${subjectId}-g${grade}-t${term}-${i}`,
       term,
       kind,
+      title: sheet ? `${title}: ${sheet.title}` : title,
+      marks,
+      minutes: kind === 'Test' || kind === 'Assignment' ? minutesFor(kind, marks) : undefined,
       exam,
+      papers,
       part,
-      title: exam
-        ? EXAM_TITLES[exam]
-        : sheet
-          ? `${kind}: ${sheet.title}`
-          : `${kind}${part ? ` ${part}` : ''}`,
-      marks: kind === 'Test' ? 50 : kind === 'Assignment' ? 50 : undefined,
-      minutes: kind === 'Test' ? 60 : kind === 'Assignment' ? 90 : undefined,
+      parts,
+      termWeight,
+      sbaWeight,
     }
   })
 }
 
+/** Task sheets for the grade that the formal programme does not use: extra practical work, for practice. */
+export function extraSheets(subjectId: string, grade: Grade): TaskSheet[] {
+  const used = new Set(
+    programmeFor(subjectId, grade)
+      .map((t) => sheetForTask(subjectId, grade, t)?.id)
+      .filter(Boolean),
+  )
+  return taskSheets.filter((s) => s.subjectId === subjectId && s.grade === grade && !used.has(s.id))
+}
+
+/**
+ * The SBA mark from the marks a learner has so far: each task's mark as a
+ * fraction of its raw total, times its SBA weight. `covered` is how much of
+ * the SBA the entered tasks are worth, so a part-year mark can be read as
+ * "so far".
+ */
+export function sbaMark(tasks: SbaTask[], marks: Record<string, number>): { percent: number; covered: number } {
+  let earned = 0
+  let covered = 0
+  for (const t of tasks) {
+    const m = marks[t.key]
+    if (!t.sbaWeight || m === undefined || !Number.isFinite(m)) continue
+    earned += (Math.min(Math.max(m, 0), t.marks) / t.marks) * t.sbaWeight
+    covered += t.sbaWeight
+  }
+  return { percent: covered ? (earned / covered) * 100 : 0, covered }
+}
+
 /**
  * The topics a task covers, from the ATP: a test or an assignment covers its
- * term's topics (the first or second half of them when a term has two tests),
- * and an examination covers everything taught up to it.
+ * term's topics (a share of them when a term has several tests), and an
+ * examination covers everything taught up to it.
  */
 export function topicsFor(subjectId: string, grade: Grade, task: SbaTask): string[] {
   const atp = atpFor(subjectId, grade)
@@ -144,9 +267,11 @@ export function topicsFor(subjectId: string, grade: Grade, task: SbaTask): strin
   const ids = [
     ...new Set(atp.weeks.filter((w) => w.topicId && w.term >= from && w.term <= upTo).map((w) => w.topicId!)),
   ]
-  if (!task.part) return ids
-  const half = Math.ceil(ids.length / 2)
-  return task.part === 1 ? ids.slice(0, half) : ids.slice(half)
+  if (!task.part || !task.parts) return ids
+  const size = Math.ceil(ids.length / task.parts)
+  const share = ids.slice((task.part - 1) * size, task.part * size)
+  // Fewer topics than tests: a later test revises the whole term.
+  return share.length ? share : ids
 }
 
 export const sheetForTask = (subjectId: string, grade: Grade, task: SbaTask): TaskSheet | undefined =>

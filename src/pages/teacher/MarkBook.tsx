@@ -4,6 +4,9 @@ import { markBookTasks, type SbaMarkRow } from '@/lib/sbaMarks'
 import { MarkBookGrid } from '@/components/markbook/MarkBookGrid'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
 import { AtRiskList } from '@/components/markbook/AtRiskList'
+import { SchedulePanel } from '@/components/markbook/SchedulePanel'
+import { demoDates } from '@/data/demoSchedule'
+import type { TaskDate } from '@/lib/sbaSchedule'
 import { ModerationPanel } from '@/components/markbook/ModerationPanel'
 import { suggestSample, summarise, type ModerationDecision, type ModerationMark } from '@/lib/sbaModeration'
 import { cn } from '@/lib/utils'
@@ -129,6 +132,9 @@ export function DemoMarkBook() {
         .map((t) => t.slot),
     )
   const releasedHere = releasedOf(classId)
+  const [dateEdits, setDateEdits] = useState<Record<string, Map<string, TaskDate>>>({})
+  const datesOf = (id: string) => dateEdits[id] ?? demoDates('mat-lit', CLASSES.find((c) => c.id === id)!.grade, id, tasksOf(CLASSES.find((c) => c.id === id)!.grade))
+  const allDates = new Map(CLASSES.map((c) => [c.id, datesOf(c.id)]))
   const [moderation, setModeration] = useState<Record<string, DemoModeration>>({})
   const moderationOf = (id: string) => moderation[id] ?? sampleModeration(id, CLASSES.find((c) => c.id === id)!.grade, marksOf(id))
   const modHere = moderationOf(classId)
@@ -177,6 +183,7 @@ export function DemoMarkBook() {
             setView('class')
           }}
           school="DONE WELL Demo High School"
+          dates={allDates}
           teacherOf={() => 'Mr S. Nkosi'}
           onStartGroup={async () => undefined}
           groupsLink={<span>(In the demo nothing is saved.)</span>}
@@ -189,6 +196,7 @@ export function DemoMarkBook() {
           marks={new Map(CLASSES.map((c) => [c.id, marksOf(c.id)]))}
           released={new Map(CLASSES.map((c) => [c.id, releasedOf(c.id)]))}
           moderated={new Map(CLASSES.map((c) => [c.id, moderationOf(c.id).decisions]))}
+          dates={allDates}
           onOpen={(id) => {
             setClassId(id)
             setView('class')
@@ -230,6 +238,27 @@ export function DemoMarkBook() {
             else row.set(task.slot, { mark: typeof value === 'number' ? value : null, status: typeof value === 'number' ? 'marked' : value, out_of: task.marks })
             next.set(learnerId, row)
             setEdits((e) => ({ ...e, [classId]: next }))
+            return undefined
+          }}
+        />
+        <SchedulePanel
+          key={`dates-${classId}`}
+          tasks={tasks}
+          dates={datesOf(classId)}
+          editable
+          heading={{
+            school: 'DONE WELL Demo High School',
+            classLabel: cls.name,
+            subject: 'Mathematical Literacy',
+            grade: cls.grade,
+            year: new Date().getFullYear(),
+            teacher: 'Mr S. Nkosi',
+          }}
+          onSave={async (task, dueOn, note) => {
+            const next = new Map(datesOf(classId))
+            if (dueOn === null) next.delete(task.slot)
+            else next.set(task.slot, { class_id: classId, year: new Date().getFullYear(), task_key: task.slot, subject_id: 'mat-lit', grade: cls.grade, due_on: dueOn, note: note.trim() })
+            setDateEdits((d) => ({ ...d, [classId]: next }))
             return undefined
           }}
         />

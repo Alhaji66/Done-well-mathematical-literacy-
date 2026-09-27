@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
+import { sbaTaskTitle } from '@/data/sbaProgramme'
 import { markSplitFor, programmeFor, type SbaTask } from '@/data/sba'
 import { getSubject } from '@/data/subjects'
 import { capsLevel, fetchLearnerMarks, groupLearnerMarks, learnerResult, markBookTasks, type MarkReport, type SbaMarkRow } from '@/lib/sbaMarks'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ClipboardCheckIcon } from '@/components/ui/Icons'
+import { fetchLearnerDates, shortDate, todayIso, type TaskDate } from '@/lib/sbaSchedule'
+import { getSubject as subjectOf } from '@/data/subjects'
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -13,7 +16,7 @@ type Row = Pick<SbaMarkRow, 'mark' | 'status' | 'out_of'>
 const pct = (n: number) => String(Math.round(n * 10) / 10).replace('.', ',')
 const shortTitle = (t: SbaTask) => t.title.split(':')[0]
 
-function TaskLine({ task, row }: { task: SbaTask; row: Row | undefined }) {
+function TaskLine({ task, row, date }: { task: SbaTask; row: Row | undefined; date?: TaskDate }) {
   const percent = row?.status === 'marked' ? ((row.mark ?? 0) / row.out_of) * 100 : null
   return (
     <li className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 py-2">
@@ -26,7 +29,14 @@ function TaskLine({ task, row }: { task: SbaTask; row: Row | undefined }) {
       </div>
       <div className="text-right">
         {!row ? (
-          <span className="text-xs text-navy-400">No mark yet</span>
+          date ? (
+            <span className="text-xs font-semibold text-navy-700">
+              {date.due_on >= todayIso() ? shortDate(date.due_on) : `Written ${shortDate(date.due_on)}`}
+              <span className="block text-[11px] font-normal text-navy-400">{date.due_on >= todayIso() ? (date.note || 'Coming up') : 'No mark yet'}</span>
+            </span>
+          ) : (
+            <span className="text-xs text-navy-400">No mark yet</span>
+          )
         ) : row.status === 'absent' ? (
           <span className="text-sm font-semibold text-rose-700">
             Absent <span className="block text-[11px] font-normal">counts as 0</span>
@@ -52,7 +62,20 @@ function TaskLine({ task, row }: { task: SbaTask; row: Row | undefined }) {
  * task of the programme with its mark (or that it is still to come), and the
  * SBA mark so far with its CAPS achievement level.
  */
-export function SbaReport({ subjectId, grade, year, marks }: { subjectId: string; grade: Grade; year: number; marks: Map<string, Row> }) {
+export function SbaReport({
+  subjectId,
+  grade,
+  year,
+  marks,
+  dates,
+}: {
+  subjectId: string
+  grade: Grade
+  year: number
+  marks: Map<string, Row>
+  /** The dates the class's tasks are set for, by task. */
+  dates?: Map<string, TaskDate>
+}) {
   const tasks = markBookTasks(programmeFor(subjectId, grade))
   const result = learnerResult(tasks, grade, marks)
   const split = markSplitFor(grade)
@@ -103,7 +126,7 @@ export function SbaReport({ subjectId, grade, year, marks }: { subjectId: string
             <h4 className="text-xs font-semibold uppercase tracking-wide text-navy-500">Term {term}</h4>
             <ul className="divide-y divide-navy-100">
               {termTasks.map((t) => (
-                <TaskLine key={t.slot} task={t} row={marks.get(t.slot)} />
+                <TaskLine key={t.slot} task={t} row={marks.get(t.slot)} date={dates?.get(t.slot)} />
               ))}
             </ul>
           </div>
@@ -113,15 +136,57 @@ export function SbaReport({ subjectId, grade, year, marks }: { subjectId: string
   )
 }
 
+/** The tasks coming up in the next six weeks, soonest first. */
+export function ComingUp({ dates }: { dates: TaskDate[] }) {
+  const today = todayIso()
+  const horizon = todayIso(new Date(Date.now() + 42 * 86_400_000))
+  const soon = dates.filter((d) => d.due_on >= today && d.due_on <= horizon).sort((a, b) => a.due_on.localeCompare(b.due_on))
+  if (!soon.length) return null
+  return (
+    <section className="card p-5">
+      <h3 className="text-sm font-bold text-navy-900">Coming up</h3>
+      <ul className="mt-2 divide-y divide-navy-100">
+        {soon.map((d) => {
+          const days = Math.round((Date.parse(d.due_on) - Date.parse(today)) / 86_400_000)
+          return (
+            <li key={`${d.class_id}|${d.task_key}`} className="flex items-baseline justify-between gap-3 py-2 text-sm">
+              <span className="min-w-0">
+                <span className="font-medium text-navy-900">{sbaTaskTitle(d.subject_id, d.grade, d.task_key) ?? 'A formal task'}</span>
+                <span className="block text-[11px] text-navy-500">
+                  {subjectOf(d.subject_id)?.name ?? d.subject_id}
+                  {d.note ? ` · ${d.note}` : ''}
+                </span>
+              </span>
+              <span className="shrink-0 text-right font-semibold tabular-nums text-navy-800">
+                {shortDate(d.due_on)}
+                <span className="block text-[11px] font-normal text-navy-500">{days === 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`}</span>
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}
+
 /** Every SBA report for one learner, fetched live: the learner's own page and their parents'. */
 export function LearnerSbaReports({ learnerId, empty }: { learnerId: string; empty: string }) {
-  const [state, setState] = useState<{ reports: MarkReport[]; notSetUp: boolean } | null>(null)
+  const [state, setState] = useState<{ reports: MarkReport[]; dates: TaskDate[]; notSetUp: boolean } | null>(null)
 
   useEffect(() => {
     let live = true
     setState(null)
-    fetchLearnerMarks(learnerId).then(({ rows, notSetUp }) => {
-      if (live) setState({ reports: groupLearnerMarks(rows), notSetUp })
+    const year = new Date().getFullYear()
+    Promise.all([fetchLearnerMarks(learnerId), fetchLearnerDates(learnerId, year)]).then(([{ rows, notSetUp }, dates]) => {
+      if (!live) return
+      const reports = groupLearnerMarks(rows)
+      // A class with dates set but no marks released yet still gets its card, to show what is coming.
+      for (const d of dates ?? []) {
+        if (!reports.some((r) => r.classId === d.class_id && r.year === d.year)) {
+          reports.push({ classId: d.class_id, year: d.year, subjectId: d.subject_id, grade: d.grade, marks: new Map() })
+        }
+      }
+      setState({ reports, dates: dates ?? [], notSetUp: notSetUp && !(dates ?? []).length })
     })
     return () => {
       live = false
@@ -132,10 +197,13 @@ export function LearnerSbaReports({ learnerId, empty }: { learnerId: string; emp
   if (state.notSetUp || state.reports.length === 0) {
     return <EmptyState icon={<ClipboardCheckIcon className="h-6 w-6" />} title="No SBA marks yet" description={empty} />
   }
+  const datesOf = (classId: string, year: number) =>
+    new Map(state.dates.filter((d) => d.class_id === classId && d.year === year).map((d) => [d.task_key, d]))
   return (
     <div className="space-y-4">
+      <ComingUp dates={state.dates} />
       {state.reports.map((r) => (
-        <SbaReport key={`${r.year}|${r.classId}`} subjectId={r.subjectId} grade={r.grade} year={r.year} marks={r.marks} />
+        <SbaReport key={`${r.year}|${r.classId}`} subjectId={r.subjectId} grade={r.grade} year={r.year} marks={r.marks} dates={datesOf(r.classId, r.year)} />
       ))}
     </div>
   )

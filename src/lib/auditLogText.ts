@@ -123,13 +123,22 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
     case 'sba_release.withdrawn':
     case 'sba_moderation.accepted':
     case 'sba_moderation.returned':
-    case 'sba_moderation.reopened': {
+    case 'sba_moderation.reopened':
+    case 'sba_date.set':
+    case 'sba_date.moved':
+    case 'sba_date.cleared': {
       const task = sbaTaskTitle(String(d.subject ?? ''), Number(d.grade) as Grade, String(d.task ?? ''))
       const subject = subjects.find((s) => s.id === d.subject)?.name ?? String(d.subject ?? '')
       const cls = names.get(String(d.class_id ?? ''))
       const what = `the ${task ?? 'formal task'} (${subject}, Grade ${String(d.grade)}${cls ? `, ${cls}` : ''})`
       const mark = (v: unknown) => (v === 'absent' ? 'absent' : v === 'exempt' ? 'excused' : `${String(v).replace(/\.0$/, '').replace('.', ',')}/${String(d.out_of)}`)
       const sample = `${String(d.sample_size)} script${d.sample_size === 1 ? '' : 's'}, average difference ${String(d.mean_difference).replace('.', ',')} points`
+      const on = (v: unknown) =>
+        new Date(`${String(v)}T00:00:00Z`).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', timeZone: 'UTC' })
+      if (e.action === 'sba_date.set') return `${actor} set ${what} for ${on(d.due_on)}.`
+      if (e.action === 'sba_date.moved' && d.from === d.due_on) return `${actor} changed the note for ${what}.`
+      if (e.action === 'sba_date.moved') return `${actor} moved ${what} from ${on(d.from)} to ${on(d.due_on)}.`
+      if (e.action === 'sba_date.cleared') return `${actor} cleared the date of ${what}.`
       if (e.action === 'sba_moderation.accepted') return `${actor} moderated ${what} and accepted the marks (${sample}).`
       if (e.action === 'sba_moderation.returned') return `${actor} moderated ${what} and returned the marks to the teacher (${sample}).`
       if (e.action === 'sba_moderation.reopened') return `${actor} reopened the moderation of ${what}.`

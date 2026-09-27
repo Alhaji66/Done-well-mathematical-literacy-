@@ -1701,5 +1701,90 @@ insert into results
            and bool_and(recipient_id = '00000000-0000-0000-0000-00000000000a' and link = 'markbook')
   from public.notifications where kind like 'sba_moderation.%';
 
+-- ===========================================================================
+-- THE ASSESSMENT SCHEDULE (STEP 24)
+-- ===========================================================================
+-- 80. The class teacher sets a date to come: stamped from the class, and the class and a linked parent are told.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.sba_task_dates (class_id, year, task_key, due_on, note, subject_id, grade, school_id)
+  select c.id, extract(year from now())::smallint, 't3-1', current_date + 10, '  Bring a calculator  ', 'life-sciences', 10, c.school_id
+  from public.classes c where c.name = '12A Mat Lit';
+reset role;
+insert into results
+  select '80. a date is stamped with the class''s subject and grade',
+         subject_id || ' G' || grade || ' "' || note || '"',
+         subject_id = 'mat-lit' and grade = 12 and note = 'Bring a calculator' and updated_by = '00000000-0000-0000-0000-00000000000a'
+  from public.sba_task_dates;
+insert into results
+  select '80b. the class and a linked parent are told of the date',
+         string_agg(kind, ',' order by id),
+         count(*) filter (where kind = 'sba_date.set' and recipient_id = '00000000-0000-0000-0000-0000000000b1') = 1
+           and count(*) filter (where kind = 'sba_date.set' and recipient_id = '00000000-0000-0000-0000-0000000000b2') = 1
+           and count(*) filter (where kind = 'sba_date.child_set' and recipient_id = '00000000-0000-0000-0000-0000000000a1') = 1
+           and bool_and(link = 'marks')
+  from public.notifications where kind like 'sba_date.%';
+
+-- 81. Another teacher and a learner cannot set or move a date.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d1');
+set role authenticated;
+do $$ begin
+  begin update public.sba_task_dates set due_on = current_date + 30; exception when others then null; end;
+  begin
+    insert into public.sba_task_dates (class_id, year, task_key, due_on)
+      select id, extract(year from now())::smallint, 't3-2', current_date + 5 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin update public.sba_task_dates set due_on = current_date + 60; exception when others then null; end;
+end $$;
+insert into results select '81. a learner reads their class''s schedule', count(*)::text || ' date(s)', count(*) = 1 from public.sba_task_dates;
+reset role;
+insert into results
+  select '81b. only a class manager can set or move a date',
+         count(*)::text || ' date(s), ' || string_agg((due_on - current_date)::text, ',') || ' days away',
+         count(*) = 1 and bool_and(due_on = current_date + 10)
+  from public.sba_task_dates;
+
+-- 82. A linked parent reads the schedule; a teacher at another school does not.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results select '82. a linked parent reads their child''s schedule', count(*)::text || ' date(s)', count(*) = 1 from public.sba_task_dates;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+insert into results select '82b. a teacher at another school does not', count(*)::text || ' date(s)', count(*) = 0 from public.sba_task_dates;
+reset role;
+
+-- 83. Moving a date tells the class again; a date already past tells nobody.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update public.sba_task_dates set due_on = current_date + 12 where task_key = 't3-1';
+insert into public.sba_task_dates (class_id, year, task_key, due_on)
+  select id, extract(year from now())::smallint, 't1-0', current_date - 100 from public.classes where name = '12A Mat Lit';
+reset role;
+insert into results
+  select '83. a move is announced; a past date is not',
+         count(*) filter (where data->>'moved' = 'true')::text || ' move(s), '
+           || count(*) filter (where data->>'task' = 't1-0')::text || ' for the past date',
+         count(*) filter (where data->>'moved' = 'true' and recipient_id = '00000000-0000-0000-0000-0000000000b1') = 1
+           and count(*) filter (where data->>'task' = 't1-0') = 0
+  from public.notifications where kind like 'sba_date.%';
+
+-- 84. Clearing a date is allowed to the class teacher; every change is audited.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+delete from public.sba_task_dates where task_key = 't1-0';
+reset role;
+insert into results
+  select '84. setting, moving and clearing dates are audited',
+         string_agg(action, ',' order by id),
+         string_agg(action, ',' order by id) = 'sba_date.set,sba_date.moved,sba_date.set,sba_date.cleared'
+           and bool_or(action = 'sba_date.moved' and details->>'from' = (current_date + 10)::text)
+  from public.audit_log where target_table = 'sba_task_dates';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

@@ -95,7 +95,7 @@ export const lifeSciG12P1Y2025: Paper = {
   sections: [
     {
       number: 1,
-      title: 'Section A: Question 1',
+      title: 'Section A',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -575,7 +575,7 @@ export const lifeSciG12P1Y2025: Paper = {
     },
     {
       number: 2,
-      title: 'Question 2: Reproduction, homeostasis and an investigation',
+      title: 'Reproduction, homeostasis and an investigation',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -856,7 +856,7 @@ export const lifeSciG12P1Y2025: Paper = {
     },
     {
       number: 3,
-      title: 'Question 3: The senses, nerves and plant hormones',
+      title: 'The senses, nerves and plant hormones',
       topicId: 'life-sci-response-humans',
       marks: 50,
       items: [

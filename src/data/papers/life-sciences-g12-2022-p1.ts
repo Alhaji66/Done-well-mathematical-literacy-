@@ -84,7 +84,7 @@ export const lifeSciG12P1Y2022: Paper = {
   sections: [
     {
       number: 1,
-      title: 'Section A: Question 1',
+      title: 'Section A',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -538,7 +538,7 @@ export const lifeSciG12P1Y2022: Paper = {
     },
     {
       number: 2,
-      title: 'Question 2: Reproduction and the eye',
+      title: 'Reproduction and the eye',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -819,7 +819,7 @@ export const lifeSciG12P1Y2022: Paper = {
     },
     {
       number: 3,
-      title: 'Question 3: Plants, homeostasis and the nervous system',
+      title: 'Plants, homeostasis and the nervous system',
       topicId: 'life-sci-response-plants',
       marks: 50,
       items: [

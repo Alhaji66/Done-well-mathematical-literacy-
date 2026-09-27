@@ -146,7 +146,7 @@ export const lifeSciG12P1Y2020: Paper = {
   sections: [
     {
       number: 1,
-      title: 'Section A: Question 1',
+      title: 'Section A',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -614,7 +614,7 @@ export const lifeSciG12P1Y2020: Paper = {
     },
     {
       number: 2,
-      title: 'Question 2: Reproduction and hearing',
+      title: 'Reproduction and hearing',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -934,7 +934,7 @@ export const lifeSciG12P1Y2020: Paper = {
     },
     {
       number: 3,
-      title: 'Question 3: Water balance, sight, plants and nerves',
+      title: 'Water balance, sight, plants and nerves',
       topicId: 'life-sci-endocrine-homeostasis',
       marks: 50,
       items: [

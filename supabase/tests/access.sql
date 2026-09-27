@@ -1372,5 +1372,109 @@ insert into results
   from public.notifications n join public.profiles p on p.id = n.recipient_id
   where n.kind like 'lesson_plan.%';
 
+-- ===========================================================================
+-- THE SBA MARK BOOK (STEP 21)
+-- ===========================================================================
+-- 64. The class teacher enters marks; the class decides subject and grade.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark)
+  select id, '00000000-0000-0000-0000-0000000000b1', 't1-0', 50, 38 from public.classes where name = '12A Mat Lit';
+insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark, status, subject_id, grade, school_id)
+  select c.id, '00000000-0000-0000-0000-0000000000b1', 't1-1', 50, null, 'absent', 'life-sciences', 10, c.school_id
+  from public.classes c where c.name = '12A Mat Lit';
+reset role;
+insert into results
+  select '64. the class teacher enters marks, stamped with the class''s subject and grade',
+         string_agg(task_key || '=' || coalesce(mark::text, status) || ' ' || subject_id || ' G' || grade, ', ' order by task_key),
+         count(*) = 2 and bool_and(subject_id = 'mat-lit' and grade = 12 and updated_by = '00000000-0000-0000-0000-00000000000a')
+  from public.sba_marks;
+
+-- 64b. A mark above the total, or for a task the programme cannot name, is refused.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark)
+      select id, '00000000-0000-0000-0000-0000000000b1', 't2-0', 50, 55 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+  begin
+    insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark)
+      select id, '00000000-0000-0000-0000-0000000000b1', 'final', 300, 200 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '64b. a mark over the total or an unknown task is refused',
+         count(*)::text || ' row(s)',
+         count(*) = 2
+  from public.sba_marks;
+
+-- 65. Marks only for learners in the class.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark)
+      select id, '00000000-0000-0000-0000-0000000000c5', 't1-0', 50, 30 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '65. no marks for a learner who is not in the class',
+         count(*)::text || ' row(s) for them',
+         count(*) = 0
+  from public.sba_marks where learner_id = '00000000-0000-0000-0000-0000000000c5';
+
+-- 66. Another teacher cannot enter or change marks in a class that is not theirs.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark)
+      select id, '00000000-0000-0000-0000-0000000000b1', 't2-0', 50, 50 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+  begin update public.sba_marks set mark = 50 where task_key = 't1-0'; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '66. another teacher cannot write in a class that is not theirs',
+         string_agg(task_key || '=' || coalesce(mark::text, status), ', ' order by task_key),
+         count(*) = 2 and bool_and(task_key <> 't1-0' or mark = 38)
+  from public.sba_marks;
+
+-- 67. A learner sees only their own marks and cannot write any.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark)
+      select id, '00000000-0000-0000-0000-0000000000b2', 't1-0', 50, 50 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+insert into results select '67. a learner does not see a classmate''s marks', count(*)::text || ' visible', count(*) = 0 from public.sba_marks;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results select '67b. a learner sees their own marks', count(*)::text || ' visible', count(*) = 2 from public.sba_marks;
+reset role;
+
+-- 68. A linked parent sees their child's marks.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results select '68. a linked parent sees their child''s marks', count(*)::text || ' visible', count(*) = 2 from public.sba_marks;
+reset role;
+
+-- 69. A correction is recorded with the old and new mark.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update public.sba_marks set mark = 41 where task_key = 't1-0';
+reset role;
+insert into results
+  select '69. correcting a mark is audited with the old and new value',
+         string_agg(action || ' ' || coalesce(details->>'from', '∅') || '→' || coalesce(details->>'to', '∅'), ', ' order by id),
+         bool_or(action = 'sba_mark.update' and details->>'from' = '38.0' and details->>'to' = '41.0')
+  from public.audit_log where target_table = 'sba_marks';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

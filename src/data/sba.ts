@@ -61,6 +61,8 @@ export type ExamKind = 'mid-year' | 'preparatory' | 'end-of-year' | 'final'
 
 export interface SbaTask {
   key: string
+  /** The task's place in the grade's programme, "t1-0": how the mark book stores it. */
+  slot: string
   term: 1 | 2 | 3 | 4
   kind: TaskKind
   title: string
@@ -211,6 +213,7 @@ export function programmeFor(subjectId: string, grade: Grade): SbaTask[] {
     const sheet = exam || kind === 'Test' || kind === 'Assignment' ? undefined : taskSheetFor(subjectId, grade, term, kind as SheetKind)
     return {
       key: `${subjectId}-g${grade}-t${term}-${i}`,
+      slot: `t${term}-${i}`,
       term,
       kind,
       title: sheet ? `${title}: ${sheet.title}` : title,

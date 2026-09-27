@@ -51,6 +51,8 @@ export function ParentSbaMarks() {
             {children.length > 1 ? <h2 className="text-base font-bold text-navy-900">{child.full_name}</h2> : null}
             <LearnerSbaReports
               learnerId={child.id}
+              topicLink={(_, __, topic) => `/account/parent/resources/topic/${topic}`}
+              revise="Covers"
               empty={`${child.full_name}'s marks will show here once their teacher enters them in the class mark book.`}
             />
           </div>

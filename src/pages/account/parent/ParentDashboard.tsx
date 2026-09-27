@@ -9,11 +9,10 @@ import { ChildActivity } from '@/components/account/ParticipationPanel'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { HeartHandshakeIcon } from '@/components/ui/Icons'
+import { subjects } from '@/data/subjects'
 
-const subjectNames: Record<string, string> = {
-  'mat-lit': 'Mathematical Literacy',
-  mathematics: 'Mathematics',
-}
+// Every subject's name, from the one list of subjects.
+const subjectNames: Record<string, string> = Object.fromEntries(subjects.map((s) => [s.id, s.name]))
 
 function ChildCard({ child }: { child: LinkedChild }) {
   const [progress, setProgress] = useState<ProgressRow[]>([])

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { supabase } from '@/lib/supabaseClient'
 import { fetchSchoolLearners, fetchProgressForLearners, averageMastery, type RosterLearner, type RosterProgressRow } from '@/lib/teacherRoster'
@@ -20,6 +20,9 @@ import {
   readTeachingGrades,
   setAccountRole,
 } from '@/lib/teacherScope'
+
+// Loaded after the page: it brings the SBA programme with it.
+const SbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.SbaAttention })))
 
 // All four subjects. This listed only two, so a Life Sciences or Physical
 // Sciences learner appeared on the roster with an empty subject column.
@@ -124,6 +127,12 @@ export function TeacherDashboard() {
         title={`Welcome, ${profile.full_name}`}
         description={schoolName ?? 'Your school'}
       />
+
+      {profile ? (
+        <Suspense fallback={null}>
+          <SbaAttention profile={profile} to="../markbook" />
+        </Suspense>
+      ) : null}
 
       <PendingStaff schoolId={profile.school_id} />
       <SchoolJoinCode schoolId={profile.school_id} />

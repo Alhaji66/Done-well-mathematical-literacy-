@@ -215,6 +215,13 @@ export const LayoutIcon = (p: IconProps) => (
   </svg>
 )
 
+export const TableIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+    <path d="M3.5 9.5h17M3.5 14.5h17M9 9.5v10" />
+  </svg>
+)
+
 export const MapIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6l-6-2Z" />

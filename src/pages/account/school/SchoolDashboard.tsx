@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { supabase } from '@/lib/supabaseClient'
 import {
@@ -17,6 +17,9 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
 import { ParticipationPanel } from '@/components/account/ParticipationPanel'
 import { SchoolLicence } from '@/components/account/SchoolLicence'
+
+// Loaded after the page: it brings the SBA programme with it.
+const SbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.SbaAttention })))
 
 const grades = [10, 11, 12] as const
 
@@ -90,6 +93,12 @@ export function SchoolDashboard() {
   return (
     <div className="space-y-6">
       <SectionHeading eyebrow="Dashboard" title={schoolName ?? 'Your school'} description="A whole-school snapshot of participation and performance." />
+
+      {profile ? (
+        <Suspense fallback={null}>
+          <SbaAttention profile={profile} to="../markbook" />
+        </Suspense>
+      ) : null}
 
       <PendingStaff schoolId={profile?.school_id ?? null} />
       <SchoolJoinCode schoolId={profile?.school_id ?? null} />

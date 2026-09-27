@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { schoolStats, schoolGradeSummaries, interventionPriorities } from '@/data/teacherSchool'
 import { getTopic } from '@/data/topics'
@@ -7,6 +8,9 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { UsersIcon, TrendingUpIcon, ClipboardIcon, AlertIcon, ChevronRightIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 
+// Loaded after the page: it brings the SBA programme with it.
+const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
+
 export function SchoolDashboard() {
   return (
     <div className="space-y-8">
@@ -15,6 +19,10 @@ export function SchoolDashboard() {
         <h1 className="mt-1 text-2xl font-bold text-navy-900">Gojela High School</h1>
         <p className="mt-1 text-sm text-navy-600">A whole-school snapshot of participation and performance.</p>
       </div>
+
+      <Suspense fallback={null}>
+        <DemoSbaAttention to="/app/school/markbook" />
+      </Suspense>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Learners" value={schoolStats.learnerCount.toLocaleString()} icon={<UsersIcon className="h-4 w-4" />} />

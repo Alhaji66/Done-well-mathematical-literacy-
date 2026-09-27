@@ -1,9 +1,13 @@
+import { lazy, Suspense } from 'react'
 import { schoolTeachers, classTopicPerformance } from '@/data/teacherSchool'
 import { subjects } from '@/data/subjects'
 import { getTopic } from '@/data/topics'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
 import { SchoolIcon, UsersIcon, BarChartIcon } from '@/components/ui/Icons'
+
+// Loaded after the page: it brings the SBA programme with it.
+const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 /**
  * The demo Head of Department view.
@@ -47,6 +51,10 @@ export function HodDashboard() {
       />
 
       <PlanSignoffCard waiting={DEMO_WAITING} />
+
+      <Suspense fallback={null}>
+        <DemoSbaAttention to="/app/hod/markbook" />
+      </Suspense>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="card p-5">

@@ -1,6 +1,6 @@
-import { programmeFor, type SbaTask } from '@/data/sba'
+import { markBookTasks, programmeFor, type SbaTask } from '@/data/sba'
 import { demoDates } from '@/data/demoSchedule'
-import { markBookTasks, type SbaMarkRow } from '@/lib/sbaMarks'
+import type { SbaMarkRow } from '@/lib/sbaMarks'
 import type { AttentionData } from '@/components/markbook/SbaAttention'
 import type { Grade } from '@/types'
 

@@ -145,6 +145,21 @@ export async function fetchAttemptsForTest(testId: string): Promise<TestAttempt[
   return (data ?? []) as TestAttempt[]
 }
 
+/** The attempts at several tests, fetched a hundred tests at a time. */
+export async function fetchAttemptsForTests(testIds: string[]): Promise<TestAttempt[]> {
+  if (!supabase || testIds.length === 0) return []
+  const out: TestAttempt[] = []
+  for (let i = 0; i < testIds.length; i += 100) {
+    const { data, error } = await supabase.from('weekly_test_attempts').select('*').in('test_id', testIds.slice(i, i + 100))
+    if (error) {
+      console.error('Failed to load test attempts:', error)
+      return out
+    }
+    out.push(...((data ?? []) as TestAttempt[]))
+  }
+  return out
+}
+
 // -------------------------------------------------------------------- writes
 
 export async function createTest(input: {

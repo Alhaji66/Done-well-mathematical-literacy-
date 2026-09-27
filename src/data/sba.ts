@@ -254,3 +254,6 @@ export function buildTest(opts: {
 }
 
 export const topicNames = (ids: string[]) => ids.map((id) => getTopic(id)?.name ?? id)
+
+/** The columns of a mark book: the SBA tasks, then the end-of-year exam in Grades 10 and 11. */
+export const markBookTasks = (tasks: SbaTask[]) => tasks.filter((t) => t.sbaWeight || t.exam === 'end-of-year')

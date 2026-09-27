@@ -1,5 +1,7 @@
 import { supabase } from '@/lib/supabaseClient'
 import { markSplitFor, type SbaTask } from '@/data/sba'
+export { capsLevel } from '@/lib/capsScale'
+export { markBookTasks } from '@/data/sba'
 import type { Grade } from '@/types'
 
 /**
@@ -85,21 +87,6 @@ export function groupLearnerMarks(rows: SbaMarkRow[]): MarkReport[] {
     out.get(id)!.marks.set(r.task_key, r)
   }
   return [...out.values()].sort((a, b) => b.year - a.year || a.subjectId.localeCompare(b.subjectId))
-}
-
-/** The CAPS seven-point scale of achievement. */
-export function capsLevel(percent: number): { level: number; name: string } {
-  const levels: [number, string][] = [
-    [80, 'Outstanding achievement'],
-    [70, 'Meritorious achievement'],
-    [60, 'Substantial achievement'],
-    [50, 'Adequate achievement'],
-    [40, 'Moderate achievement'],
-    [30, 'Elementary achievement'],
-    [0, 'Not achieved'],
-  ]
-  const i = levels.findIndex(([min]) => percent >= min)
-  return { level: 7 - i, name: levels[i][1] }
 }
 
 /** Save one cell. An empty cell deletes the mark. Resolves to the saved row, or an error message. */
@@ -278,5 +265,3 @@ export function termResult(
   }
 }
 
-/** The columns of a mark book: the SBA tasks, then the end-of-year exam in Grades 10 and 11. */
-export const markBookTasks = (tasks: SbaTask[]) => tasks.filter((t) => t.sbaWeight || t.exam === 'end-of-year')

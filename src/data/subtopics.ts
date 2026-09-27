@@ -487,9 +487,18 @@ const rules: Record<string, SubtopicRule[]> = {
       match: /\b(adapt\w* to (life on )?land|terrestrial|desicc\w*|water loss|cuticle|waxy)\b/i,
     },
     {
+      // What happens AFTER fertilisation -- the seed, the fruit, dispersal and
+      // germination -- is the Reproduction in angiosperms sub-topic, and has to
+      // be asked before the flower rule. That rule used to hold "seed" and
+      // "fruit" too, so every seed and dispersal question was filed under the
+      // flower and the lessons on reproduction had no classwork at all.
+      name: 'Reproduction in angiosperms',
+      match: /\b(seed\w*|fruit\w*|dispers\w*|germinat\w*|cotyledon\w*|testa|plumule|radicle|endosperm)\b/i,
+    },
+    {
       name: 'The flower, pollination and fertilisation',
       match:
-        /\b(flower\w*|sepal\w*|petal\w*|stamen\w*|anther\w*|filament\w*|carpel\w*|pistil\w*|stigma\w*|style|ovary|ovule\w*|pollen|pollinat\w*|self[- ]pollinat\w*|cross[- ]pollinat\w*|fertilis\w*|seed\w*|fruit\w*|dispersal|gamete\w*|insect[- ]pollinated|wind[- ]pollinated)\b/i,
+        /\b(flower\w*|sepal\w*|petal\w*|stamen\w*|anther\w*|filament\w*|carpel\w*|pistil\w*|stigma\w*|style|ovary|ovule\w*|pollen|pollinat\w*|self[- ]pollinat\w*|cross[- ]pollinat\w*|fertilis\w*|gamete\w*|insect[- ]pollinated|wind[- ]pollinated)\b/i,
     },
     {
       name: 'Reproduction in angiosperms',
@@ -567,6 +576,12 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Energy loss', match: /\b(energy (loss|lost|flow|transfer\w*)|ten per cent|pyramid\w*|trophic level\w*|biomass)\b|\b10 ?%/i },
     { name: 'Effects of change', match: /\b(what would happen|removed|decline\w*|increase\w* in the population|disrupt\w*|introduc\w*|effect on the)\b/i },
     { name: 'Food chains and webs', match: /\b(food (chain|web)\w*|producer\w*|consumer\w*|decomposer\w*|predator\w*|prey|feeding relationship\w*)\b/i },
+  ],
+  'phys-work-energy-power': [
+    // The theorem is named in every question that uses it, but its note shares
+    // most of its words ("work", "energy", "friction") with its neighbours, so
+    // the scorer filed nearly all of them under Conservative forces and power.
+    { name: 'The work-energy theorem', match: /\b(work[- ]energy theorem|net work)\b/i },
   ],
   'phys-momentum-impulse': [
     {

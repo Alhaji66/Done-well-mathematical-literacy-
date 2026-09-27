@@ -124,6 +124,13 @@
   body:not([data-print='moderation']) .moderation-report {
     display: none !important;
   }
+  /* Letters home from the learners-at-risk list, the same way. */
+  body[data-print='letters'] .print-area:not(.parent-letters) {
+    display: none !important;
+  }
+  body:not([data-print='letters']) .parent-letters {
+    display: none !important;
+  }
 
   .print-avoid-break {
     break-inside: avoid;

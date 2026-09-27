@@ -62,13 +62,14 @@ const TRUTH: Record<string, { level: Level; why: string }> = {
   'math-g11-p2-23-3-5': { level: 2, why: 'one substitution of tan = sin/cos -- a proof in name only' },
   'math-g11-p2-a-2-7': { level: 3, why: 'several analytical-geometry procedures combined in one item' },
   'math-p1-20-2-1': { level: 2, why: 'apply Tn = a + (n-1)d' },
-  'math-p1-22-1-5': { level: 3, why: 'factorise, then reason about the sign of a product' },
-  'math-p1-24-1-2': { level: 2, why: 'a standard trinomial factorisation' },
+  // The four samples below replace ones that left with the pre-NSC 2021-2024 papers.
+  'math-p1-22n-1-1-3': { level: 2, why: 'standard form, factorise, read the interval -- a drilled inequality' },
+  'math-p1-24n-1-1-1': { level: 1, why: 'take out the common factor -- one step, both roots visible' },
   // math-p1-25-6-3 left with the pre-NSC 2025 paper; this is its nearest replacement in the rebuilt one.
   'math-p1-25n-11-3-2': { level: 3, why: 'two restricted positions filled first, then the rest -- counting steps combined' },
   'math-p1-b-5-8': { level: 2, why: 'differentiate a monomial, then substitute' },
-  'math-p2-21-1-4': { level: 1, why: 'a and b are given; one substitution into y = a + bx' },
-  'math-p2-23-4-2': { level: 2, why: 'a standard angle calculation' },
+  'math-p2-21n-2-3': { level: 1, why: 'one substitution into the line already found' },
+  'math-p2-23n-8-4-2': { level: 2, why: 'one circle theorem applied directly' },
   'math-p2-a-3-2': { level: 2, why: 'a reduction formula that has been drilled' },
 }
 

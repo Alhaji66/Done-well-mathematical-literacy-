@@ -23,16 +23,16 @@ const HYP =
   'Given: f(x) = −4/(x + 1) + 2'
 
 const EXP =
-  'Given: f(x) = (½)ˣ'
+  'Given: f(x) = (1/3)ˣ'
 
 const PAR =
-  'Given: p(x) = −x² + 2x + 8. The graph of p cuts the x-axis at A and B (A to the left of B) and the y-axis at C. The straight line l passes through B and C.'
+  'Given: p(x) = −x² − 2x + 15. The graph of p cuts the x-axis at A and B (A to the left of B) and the y-axis at C. The straight line l passes through B and C.'
 
 const SAVE =
   'Thandi deposits R2 500 into a savings account at the end of every month. The account earns 8% p.a., compounded monthly.'
 
 const CUB =
-  'Given: f(x) = −x³ + 6x² − 9x + 4'
+  'Given: f(x) = −x³ + 9x² − 24x + 20'
 
 const PEN =
   'A farmer has 120 m of fencing to build a rectangular enclosure against a long straight wall. The wall forms one long side, so no fence is needed there. A fence parallel to the ends divides the enclosure into two equal pens. Each end (and the divider) is w metres long. The farmer wants to maximise the area.'
@@ -44,7 +44,7 @@ const VENN =
   'In a group of 120 learners, 70 take Accounting (A), 50 take Geography (G) and 20 take neither.'
 
 const WORD =
-  'The letters of the word NUMBERS are arranged in a row to form "words" (the arrangements need not be real words).'
+  'The letters of the word FACTORS are arranged in a row to form "words" (the arrangements need not be real words).'
 
 export const mathG12P1Y2020: Paper = {
   id: 'math-p1-2020',
@@ -487,11 +487,11 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: EXP,
           prompt: 'Determine the equation of f⁻¹ in the form y = …',
-          answer: 'y = log_½ x',
-          explanation: 'Swap x and y: x = (½)ʸ.',
+          answer: 'y = log_(1/3) x',
+          explanation: 'Swap x and y: x = (1/3)ʸ.',
           memo: [
             { code: 'M', marks: 1, text: 'Swapping x and y' },
-            { code: 'A', marks: 1, text: 'y = log_½ x' },
+            { code: 'A', marks: 1, text: 'y = log_(1/3) x' },
           ],
         },
         {
@@ -520,7 +520,7 @@ export const mathG12P1Y2020: Paper = {
           marks: 3,
           context: EXP,
           prompt: 'Sketch the graphs of f and f⁻¹ on the same set of axes. (Describe your sketch in words.)',
-          answer: 'f: decreasing curve through (−1 ; 2), (0 ; 1) and (1 ; ½), asymptote y = 0. f⁻¹: decreasing curve through (2 ; −1), (1 ; 0) and (½ ; 1), asymptote x = 0. They are reflections of each other in y = x.',
+          answer: 'f: decreasing curve through (−1 ; 3), (0 ; 1) and (1 ; 1/3), asymptote y = 0. f⁻¹: decreasing curve through (3 ; −1), (1 ; 0) and (1/3 ; 1), asymptote x = 0. They are reflections of each other in y = x.',
           explanation: 'Swap the coordinates of key points.',
           memo: [
             { code: 'A', marks: 1, text: 'f' },
@@ -538,11 +538,11 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: EXP,
           prompt: 'For which values of x is f⁻¹(x) ≤ −2?',
-          answer: 'x ≥ 4',
-          explanation: 'f⁻¹(4) = −2, and f⁻¹ is decreasing, so it is at most −2 from x = 4 onwards.',
+          answer: 'x ≥ 9',
+          explanation: 'f⁻¹(9) = −2 because (1/3)⁻² = 9, and f⁻¹ is decreasing, so it is at most −2 from x = 9 onwards.',
           memo: [
-            { code: 'A', marks: 1, text: 'f⁻¹(4) = −2' },
-            { code: 'A', marks: 1, text: 'x ≥ 4' },
+            { code: 'A', marks: 1, text: 'f⁻¹(9) = −2' },
+            { code: 'A', marks: 1, text: 'x ≥ 9' },
           ],
         },
         {
@@ -555,10 +555,10 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: EXP,
           prompt: 'The graph of f is reflected in the x-axis and then moved 3 units up to form h. Write down the equation of h and its range.',
-          answer: 'h(x) = −(½)ˣ + 3; y < 3',
-          explanation: 'The reflection gives −(½)ˣ, with every value negative; moving up 3 gives values below 3.',
+          answer: 'h(x) = −(1/3)ˣ + 3; y < 3',
+          explanation: 'The reflection gives −(1/3)ˣ, with every value negative; moving up 3 gives values below 3.',
           memo: [
-            { code: 'A', marks: 1, text: 'h(x) = −(½)ˣ + 3' },
+            { code: 'A', marks: 1, text: 'h(x) = −(1/3)ˣ + 3' },
             { code: 'A', marks: 1, text: 'y < 3' },
           ],
         },
@@ -580,8 +580,8 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: PAR,
           prompt: 'Determine the coordinates of A and B.',
-          answer: 'A(−2 ; 0) and B(4 ; 0)',
-          explanation: '−(x² − 2x − 8) = −(x − 4)(x + 2) = 0.',
+          answer: 'A(−5 ; 0) and B(3 ; 0)',
+          explanation: '−(x² + 2x − 15) = −(x + 5)(x − 3) = 0.',
           memo: [
             { code: 'A', marks: 1, text: 'Factors' },
             { code: 'A', marks: 1, text: 'Both points' },
@@ -597,11 +597,11 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: PAR,
           prompt: 'Determine the coordinates of the turning point of p.',
-          answer: '(1 ; 9)',
-          explanation: 'x = −2/(−2) = 1, and p(1) = −1 + 2 + 8.',
+          answer: '(−1 ; 16)',
+          explanation: 'x = −(−2)/(2 × −1) = −1, and p(−1) = −1 + 2 + 15.',
           memo: [
-            { code: 'A', marks: 1, text: 'x = 1' },
-            { code: 'A', marks: 1, text: 'y = 9' },
+            { code: 'A', marks: 1, text: 'x = −1' },
+            { code: 'A', marks: 1, text: 'y = 16' },
           ],
         },
         {
@@ -614,11 +614,11 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: PAR,
           prompt: 'Determine the equation of l.',
-          answer: 'y = −2x + 8',
-          explanation: 'C(0 ; 8) and B(4 ; 0): m = −8/4 = −2, and c = 8.',
+          answer: 'y = −5x + 15',
+          explanation: 'C(0 ; 15) and B(3 ; 0): m = −15/3 = −5, and c = 15.',
           memo: [
-            { code: 'A', marks: 1, text: 'm = −2' },
-            { code: 'A', marks: 1, text: 'y = −2x + 8' },
+            { code: 'A', marks: 1, text: 'm = −5' },
+            { code: 'A', marks: 1, text: 'y = −5x + 15' },
           ],
         },
         {
@@ -631,11 +631,11 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: PAR,
           prompt: 'For which values of x is p(x) > l(x)?',
-          answer: '0 < x < 4',
-          explanation: 'p(x) − l(x) = −x² + 4x = x(4 − x) > 0: between C and B.',
+          answer: '0 < x < 3',
+          explanation: 'p(x) − l(x) = −x² + 3x = x(3 − x) > 0: between C and B.',
           memo: [
-            { code: 'A', marks: 1, text: 'x(4 − x) > 0' },
-            { code: 'A', marks: 1, text: '0 < x < 4' },
+            { code: 'A', marks: 1, text: 'x(3 − x) > 0' },
+            { code: 'A', marks: 1, text: '0 < x < 3' },
           ],
         },
         {
@@ -647,13 +647,13 @@ export const mathG12P1Y2020: Paper = {
           cognitiveLevel: 4,
           marks: 3,
           context: PAR,
-          prompt: 'Determine the maximum vertical distance between p and l for 0 ≤ x ≤ 4.',
-          answer: '4 units',
-          explanation: 'Vertical distance d = p(x) − l(x) = −x² + 4x. d′(x) = −2x + 4 = 0 gives x = 2, and d(2) = 4.',
+          prompt: 'Determine the maximum vertical distance between p and l for 0 ≤ x ≤ 3.',
+          answer: '2,25 units',
+          explanation: 'Vertical distance d = p(x) − l(x) = −x² + 3x. d′(x) = −2x + 3 = 0 gives x = 1,5, and d(1,5) = −2,25 + 4,5.',
           memo: [
-            { code: 'A', marks: 1, text: 'd = −x² + 4x' },
-            { code: 'M', marks: 1, text: 'Maximum at x = 2' },
-            { code: 'A', marks: 1, text: '4' },
+            { code: 'A', marks: 1, text: 'd = −x² + 3x' },
+            { code: 'M', marks: 1, text: 'Maximum at x = 1,5' },
+            { code: 'A', marks: 1, text: '2,25' },
           ],
         },
         {
@@ -665,12 +665,12 @@ export const mathG12P1Y2020: Paper = {
           cognitiveLevel: 4,
           marks: 2,
           context: PAR,
-          prompt: 'For which values of k will the line y = −2x + k cut p at two points?',
-          answer: 'k < 12',
-          explanation: 'The line is parallel to l. The parallel tangent touches p where p′(x) = −2x + 2 = −2, at (2 ; 8), so it is y = −2x + 12. Lines below it cut p twice.',
+          prompt: 'For which values of k will the line y = −5x + k cut p at two points?',
+          answer: 'k < 17,25',
+          explanation: 'The line is parallel to l. The parallel tangent touches p where p′(x) = −2x − 2 = −5, at (1,5 ; 9,75), so it is y = −5x + 17,25. Lines below it cut p twice.',
           memo: [
-            { code: 'A', marks: 1, text: 'Tangent y = −2x + 12' },
-            { code: 'A', marks: 1, text: 'k < 12' },
+            { code: 'A', marks: 1, text: 'Tangent y = −5x + 17,25' },
+            { code: 'A', marks: 1, text: 'k < 17,25' },
           ],
         },
       ],
@@ -830,13 +830,13 @@ export const mathG12P1Y2020: Paper = {
           cognitiveLevel: 2,
           marks: 3,
           context: CUB,
-          prompt: 'Show that x − 1 is a factor of the cubic f(x), and hence factorise f(x) fully.',
-          answer: 'f(1) = −1 + 6 − 9 + 4 = 0, so x − 1 is a factor. f(x) = −(x − 1)²(x − 4).',
+          prompt: 'Show that x − 2 is a factor of the cubic f(x), and hence factorise f(x) fully.',
+          answer: 'f(2) = −8 + 36 − 48 + 20 = 0, so x − 2 is a factor. f(x) = −(x − 2)²(x − 5).',
           explanation: 'Use the factor theorem, then divide.',
           memo: [
-            { code: 'A', marks: 1, text: 'f(1) = 0' },
-            { code: 'A', marks: 1, text: '−(x − 1)(x² − 5x + 4)' },
-            { code: 'A', marks: 1, text: '−(x − 1)²(x − 4)' },
+            { code: 'A', marks: 1, text: 'f(2) = 0' },
+            { code: 'A', marks: 1, text: '−(x − 2)(x² − 7x + 10)' },
+            { code: 'A', marks: 1, text: '−(x − 2)²(x − 5)' },
           ],
         },
         {
@@ -849,11 +849,11 @@ export const mathG12P1Y2020: Paper = {
           marks: 3,
           context: CUB,
           prompt: 'Determine the coordinates of the turning points of f.',
-          answer: '(1 ; 0) and (3 ; 4)',
-          explanation: 'f′(x) = −3x² + 12x − 9 = −3(x − 1)(x − 3) = 0.',
+          answer: '(2 ; 0) and (4 ; 4)',
+          explanation: 'f′(x) = −3x² + 18x − 24 = −3(x − 2)(x − 4) = 0.',
           memo: [
             { code: 'A', marks: 1, text: 'f′(x)' },
-            { code: 'A', marks: 1, text: 'x = 1 and x = 3' },
+            { code: 'A', marks: 1, text: 'x = 2 and x = 4' },
             { code: 'A', marks: 1, text: 'y-values 0 and 4' },
           ],
         },
@@ -867,7 +867,7 @@ export const mathG12P1Y2020: Paper = {
           marks: 3,
           context: CUB,
           prompt: 'Sketch the graph of f. (Describe your sketch in words.)',
-          answer: 'A cubic falling to the right: comes down from the top-left through (0 ; 4), touches the x-axis at the local minimum (1 ; 0), rises to the local maximum (3 ; 4), then falls through (4 ; 0).',
+          answer: 'A cubic falling to the right: comes down from the top-left through (0 ; 20), touches the x-axis at the local minimum (2 ; 0), rises to the local maximum (4 ; 4), then falls through (5 ; 0).',
           explanation: 'The leading coefficient is negative.',
           memo: [
             { code: 'A', marks: 1, text: 'Shape' },
@@ -885,11 +885,11 @@ export const mathG12P1Y2020: Paper = {
           marks: 2,
           context: CUB,
           prompt: 'For which values of x is f concave up?',
-          answer: 'x < 2',
-          explanation: 'f″(x) = −6x + 12 > 0.',
+          answer: 'x < 3',
+          explanation: 'f″(x) = −6x + 18 > 0.',
           memo: [
-            { code: 'A', marks: 1, text: 'f″(x) = −6x + 12' },
-            { code: 'A', marks: 1, text: 'x < 2' },
+            { code: 'A', marks: 1, text: 'f″(x) = −6x + 18' },
+            { code: 'A', marks: 1, text: 'x < 3' },
           ],
         },
         {
@@ -902,12 +902,12 @@ export const mathG12P1Y2020: Paper = {
           marks: 3,
           context: CUB,
           prompt: 'For which values of x is f(x) · f′(x) ≥ 0?',
-          answer: '1 ≤ x ≤ 3 or x ≥ 4',
-          explanation: 'f(x) ≥ 0 for x ≤ 4 and is negative after 4. f′(x) ≥ 0 only for 1 ≤ x ≤ 3. Both are ≥ 0 on 1 ≤ x ≤ 3; both are ≤ 0 for x ≥ 4 (and at x = 1, where f = 0).',
+          answer: '2 ≤ x ≤ 4 or x ≥ 5',
+          explanation: 'f(x) ≥ 0 for x ≤ 5 and is negative after 5. f′(x) ≥ 0 only for 2 ≤ x ≤ 4. Both are ≥ 0 on 2 ≤ x ≤ 4; both are ≤ 0 for x ≥ 5 (and at x = 2, where f = 0).',
           memo: [
             { code: 'A', marks: 1, text: 'Sign of f' },
             { code: 'A', marks: 1, text: 'Sign of f′' },
-            { code: 'A', marks: 1, text: '1 ≤ x ≤ 3 or x ≥ 4' },
+            { code: 'A', marks: 1, text: '2 ≤ x ≤ 4 or x ≥ 5' },
           ],
         },
       ],
@@ -1086,7 +1086,7 @@ export const mathG12P1Y2020: Paper = {
           context: WORD,
           prompt: 'How many arrangements start and end with a vowel?',
           answer: '240',
-          explanation: 'The vowels are U and E: 2 ways for the ends, then 5! for the middle. 2 × 120.',
+          explanation: 'The vowels are A and O: 2 ways for the ends, then 5! for the middle. 2 × 120.',
           memo: [
             { code: 'A', marks: 1, text: '2 ways for the ends' },
             { code: 'A', marks: 1, text: '5!' },
@@ -1102,11 +1102,11 @@ export const mathG12P1Y2020: Paper = {
           cognitiveLevel: 3,
           marks: 3,
           context: WORD,
-          prompt: 'An arrangement is chosen at random. Determine the probability that M and B are next to each other.',
+          prompt: 'An arrangement is chosen at random. Determine the probability that C and T are next to each other.',
           answer: '2/7',
-          explanation: 'Treat MB as one block: 6! arrangements, and the block can be MB or BM. 2 × 720 = 1 440, and 1 440/5 040.',
+          explanation: 'Treat CT as one block: 6! arrangements, and the block can be CT or TC. 2 × 720 = 1 440, and 1 440/5 040.',
           memo: [
-            { code: 'M', marks: 1, text: 'MB as one unit' },
+            { code: 'M', marks: 1, text: 'CT as one unit' },
             { code: 'A', marks: 1, text: '2 × 6! = 1 440' },
             { code: 'A', marks: 1, text: '2/7' },
           ],

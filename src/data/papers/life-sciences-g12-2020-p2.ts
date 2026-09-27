@@ -124,7 +124,7 @@ export const lifeSciG12P2Y2020: Paper = {
   sections: [
     {
       number: 1,
-      title: 'Section A: Question 1',
+      title: 'Section A',
       topicId: 'life-sci-dna-code',
       marks: 50,
       items: [
@@ -591,7 +591,7 @@ export const lifeSciG12P2Y2020: Paper = {
     },
     {
       number: 2,
-      title: 'Question 2: DNA, meiosis and genetics',
+      title: 'DNA, meiosis and genetics',
       topicId: 'life-sci-genetics',
       marks: 50,
       items: [
@@ -898,7 +898,7 @@ export const lifeSciG12P2Y2020: Paper = {
     },
     {
       number: 3,
-      title: 'Question 3: Evolution',
+      title: 'Evolution',
       topicId: 'life-sci-evolution',
       marks: 50,
       items: [

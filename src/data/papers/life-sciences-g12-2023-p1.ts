@@ -89,7 +89,7 @@ export const lifeSciG12P1Y2023: Paper = {
   sections: [
     {
       number: 1,
-      title: 'Section A: Question 1',
+      title: 'Section A',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -556,7 +556,7 @@ export const lifeSciG12P1Y2023: Paper = {
     },
     {
       number: 2,
-      title: 'Question 2: Reproduction and the nervous system',
+      title: 'Reproduction and the nervous system',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -876,7 +876,7 @@ export const lifeSciG12P1Y2023: Paper = {
     },
     {
       number: 3,
-      title: 'Question 3: Plant and animal hormones',
+      title: 'Plant and animal hormones',
       topicId: 'life-sci-endocrine-homeostasis',
       marks: 50,
       items: [

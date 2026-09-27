@@ -608,8 +608,12 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Simultaneous equations',
-        /** Grade 10 solves two linear equations together, Grade 11 adds a quadratic. Grade 12 does not return to them as a topic. */
-        grades: [10, 11],
+        /**
+         * Grade 10 solves two linear equations together, Grade 11 adds a quadratic. Grade 12 does not teach
+         * them again, but the NSC Paper 1 examines them in Question 1 every year (Nov 2024 and Nov 2025 Q1.2,
+         * one linear and one quadratic, 5-6 marks), so Grade 12 exam papers carry them.
+         */
+        grades: [10, 11, 12],
         points: [
           'Two linear equations can be solved by substitution or by elimination.',
           'With one linear and one quadratic equation, always make a variable the subject of the LINEAR one and substitute into the quadratic.',

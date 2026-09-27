@@ -162,7 +162,7 @@ export const lifeSciG12P1SetC: Paper = {
   sections: [
     {
       number: 1,
-      title: 'Section A: Question 1',
+      title: 'Section A',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -630,7 +630,7 @@ export const lifeSciG12P1SetC: Paper = {
     },
     {
       number: 2,
-      title: 'Question 2: Reproduction and hearing',
+      title: 'Reproduction and hearing',
       topicId: 'life-sci-human-reproduction',
       marks: 50,
       items: [
@@ -950,7 +950,7 @@ export const lifeSciG12P1SetC: Paper = {
     },
     {
       number: 3,
-      title: 'Question 3: Homeostasis, sight, plants and nerves',
+      title: 'Homeostasis, sight, plants and nerves',
       topicId: 'life-sci-endocrine-homeostasis',
       marks: 50,
       items: [

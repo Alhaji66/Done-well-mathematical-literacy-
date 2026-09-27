@@ -106,6 +106,14 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
       return `${actor} added ${target} to a catch-up group.`
     case 'intervention_learner.removed':
       return `${actor} removed ${target} from a catch-up group.`
+    case 'lesson_plan.submitted':
+    case 'lesson_plan.signed':
+    case 'lesson_plan.returned': {
+      const week = `the Grade ${String(d.grade)} lesson plan “${String(d.title ?? '')}”`
+      if (e.action === 'lesson_plan.submitted') return `${actor} submitted ${week} for sign-off.`
+      const teacher = d.teacher_id ? whom(String(d.teacher_id)) : 'the teacher'
+      return e.action === 'lesson_plan.signed' ? `${actor} signed off ${week} by ${teacher}.` : `${actor} returned ${week} to ${teacher}.`
+    }
     case 'school.suspended':
       return 'DONE WELL paused the school’s access. Staff cannot see learner data until it is reactivated.'
     case 'school.reactivated':

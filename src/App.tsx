@@ -103,6 +103,9 @@ const AccountHodTeachers = lazy(() =>
 const AccountHodLearners = lazy(() =>
   import('@/pages/account/hod/HodLearners').then((m) => ({ default: m.HodLearners })),
 )
+const AccountPlanSignoff = lazy(() =>
+  import('@/pages/account/hod/PlanSignoff').then((m) => ({ default: m.PlanSignoff })),
+)
 const AccountSchoolDashboard = lazy(() =>
   import('@/pages/account/school/SchoolDashboard').then((m) => ({ default: m.SchoolDashboard })),
 )
@@ -279,6 +282,7 @@ export default function App() {
                 <Route path="dashboard" element={<AccountHodDashboard />} />
                 <Route path="teachers" element={<AccountHodTeachers />} />
                 <Route path="learners" element={<AccountHodLearners />} />
+                <Route path="plan-signoff" element={<AccountPlanSignoff />} />
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
@@ -304,6 +308,7 @@ export default function App() {
                 <Route path="dashboard" element={<AccountSchoolDashboard />} />
                 <Route path="learners" element={<AccountSchoolLearners />} />
                 <Route path="teachers" element={<AccountSchoolTeachers />} />
+                <Route path="plan-signoff" element={<AccountPlanSignoff />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { subjects } from '@/data/subjects'
 import { topics } from '@/data/topics'
 import { atpFor } from '@/data/atp'
@@ -21,6 +21,9 @@ import { BookIcon, CalendarIcon, PrinterIcon } from '@/components/ui/Icons'
 import { MathText } from '@/components/practise/MathText'
 import { TreeDiagram, VennDiagram } from '@/components/practise/ProbabilityDiagrams'
 import { PrintQuestion } from '@/components/lessons/PrintQuestion'
+import { PlanRecordPanel } from '@/components/lessons/PlanRecordPanel'
+import { useOptionalAccountAuth } from '@/context/AccountAuthContext'
+import type { LessonPlanRecord } from '@/lib/lessonPlanRecords'
 import { cn } from '@/lib/utils'
 import type { Grade, Question } from '@/types'
 
@@ -54,6 +57,10 @@ export function TeacherLessonPlans() {
   const [copy, setCopy] = useState<'teacher' | 'learner'>('teacher')
   const [datesOverride, setDatesOverride] = useState<string | undefined>()
   const [questions, setQuestions] = useState<Question[] | null>(null)
+  // A signed-in teacher can record the week for their HOD; the demo cannot.
+  const profile = useOptionalAccountAuth()?.profile
+  // A record opened from the teacher's list, waiting for its subject and grade to load.
+  const opening = useRef<LessonPlanRecord | null>(null)
 
   const atp = atpFor(subjectId, grade)
 
@@ -70,12 +77,37 @@ export function TeacherLessonPlans() {
 
   // A new subject or grade has a different plan: start again from its first teaching week.
   useEffect(() => {
+    const r = opening.current
+    if (r && r.subject_id === subjectId && r.grade === grade) {
+      opening.current = null
+      showRecord(r)
+      return
+    }
     const first = atp?.weeks.findIndex((w) => w.topicId) ?? -1
     setWeekKey(first >= 0 ? String(first) : '')
     setWeeksOverride(undefined)
     setDatesOverride(undefined)
     setOnly('all')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjectId, grade])
+
+  // Put a recorded week back on the screen exactly as the teacher planned it.
+  function showRecord(r: LessonPlanRecord) {
+    setWeekKey(String(r.week_index))
+    setWeeksOverride(r.weeks ?? undefined)
+    if ((LESSON_LENGTHS as readonly number[]).includes(r.lesson_minutes)) setLessonMinutes(r.lesson_minutes as LessonLength)
+    setDatesOverride(r.dates || undefined)
+    setOnly('all')
+  }
+
+  const openRecord = (r: LessonPlanRecord) => {
+    if (r.subject_id === subjectId && r.grade === grade) showRecord(r)
+    else {
+      opening.current = r
+      setSubjectId(r.subject_id)
+      setGrade(r.grade)
+    }
+  }
 
   const weekIndex = weekKey === '' ? -1 : Number(weekKey)
   const week = atp && weekIndex >= 0 ? atp.weeks[weekIndex] : undefined
@@ -275,6 +307,20 @@ export function TeacherLessonPlans() {
         ) : null}
       </div>
 
+      {profile?.role === 'teacher' && plan && shown && !plan.examOnly ? (
+        <PlanRecordPanel
+          profile={profile}
+          plan={plan}
+          subjectId={subjectId}
+          grade={grade}
+          weekIndex={weekIndex}
+          weeksOverride={weeksOverride}
+          lessonMinutes={lessonMinutes}
+          dates={shown.when}
+          onOpen={openRecord}
+        />
+      ) : null}
+
       {!atp ? null : !questions ? (
         <p className="text-sm text-navy-500">Loading the question bank…</p>
       ) : !plan ? (
@@ -316,7 +362,7 @@ function DocHeader({ plan, title }: { plan: LessonPlanDoc; title: string }) {
   )
 }
 
-function PlanCover({ plan, lessons }: { plan: LessonPlanDoc; lessons: Lesson[] }) {
+export function PlanCover({ plan, lessons }: { plan: LessonPlanDoc; lessons: Lesson[] }) {
   return (
     <section className="print-avoid-break">
       <DocHeader plan={plan} title={`${plan.label}${plan.topicName && plan.topicName !== plan.label ? ` — ${plan.topicName}` : ''}`} />

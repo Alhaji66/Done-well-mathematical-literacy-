@@ -122,6 +122,15 @@ export function AccountAuthProvider({ children }: { children: ReactNode }) {
   return <AccountAuthContext.Provider value={value}>{children}</AccountAuthContext.Provider>
 }
 
+/**
+ * The signed-in account, or null on a page that also runs in the demo, where
+ * there is no account provider. For the few shared pages that add something
+ * only a real account can use.
+ */
+export function useOptionalAccountAuth() {
+  return useContext(AccountAuthContext)
+}
+
 export function useAccountAuth() {
   const ctx = useContext(AccountAuthContext)
   if (!ctx) throw new Error('useAccountAuth must be used within AccountAuthProvider')

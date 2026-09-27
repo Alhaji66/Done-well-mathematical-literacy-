@@ -2921,3 +2921,261 @@ drop policy if exists tutor_requests_own on public.tutor_requests;
 create policy tutor_requests_own on public.tutor_requests
   for select to authenticated
   using (user_id = auth.uid());
+
+-- ============================================================================
+-- STEP 20: LESSON PLAN RECORDS AND HOD SIGN-OFF
+-- ============================================================================
+--
+-- The lesson plans themselves are built in the app from the ATP and are the
+-- same for everyone, so they are not stored. What is stored is the teacher's
+-- RECORD of a week: which plan (subject, grade, ATP week, and the two choices
+-- that change it -- weeks on the topic and period length), the dates it was
+-- actually taught, how many of the planned lessons were taught, and the
+-- teacher's own reflection. From those ids the head of department's screen
+-- rebuilds exactly the plan the teacher used.
+--
+-- THE FLOW. A teacher saves a record as a draft and submits it. The HOD of
+-- that subject -- or the principal, for a school without one -- signs it off
+-- or returns it with a comment saying what to change. A returned record can be
+-- edited and submitted again. A signed record is final: nobody can change or
+-- delete it, because it is the department's evidence that the ATP was covered.
+--
+-- WHO CAN DO WHAT.
+--   * A teacher reads, writes and deletes only their own records, at their own
+--     school, and only while they are not signed.
+--   * The HOD for the record's subject and the principal read every submitted,
+--     returned or signed record at their school in that subject (a draft is
+--     the teacher's own until they submit it), and change them only through
+--     review_lesson_plan(), which decides what may change. Nobody signs off
+--     their own record.
+--   * A teacher's edits can never touch the review fields; a trigger keeps them.
+
+create table if not exists public.lesson_plan_records (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  teacher_id uuid not null references public.profiles (id) on delete cascade,
+  subject_id text not null,
+  grade smallint not null check (grade in (10, 11, 12)),
+  year smallint not null default extract(year from now())::smallint,
+  -- The ATP entry, by its position in that subject and grade's plan.
+  week_index smallint not null check (week_index >= 0),
+  -- What the plan was called when it was saved, for lists, and in case the
+  -- ATP is revised and the index later points somewhere else.
+  title text not null check (length(title) between 1 and 200),
+  term smallint not null check (term between 1 and 4),
+  topic_id text,
+  weeks smallint check (weeks between 1 and 12),
+  lesson_minutes smallint not null default 60 check (lesson_minutes between 20 and 120),
+  lessons_planned smallint not null default 0 check (lessons_planned between 0 and 60),
+  lessons_taught smallint not null default 0 check (lessons_taught between 0 and 60),
+  dates text not null default '' check (length(dates) <= 100),
+  reflection text not null default '' check (length(reflection) <= 2000),
+  status text not null default 'draft' check (status in ('draft', 'submitted', 'signed', 'returned')),
+  submitted_at timestamptz,
+  review_comment text not null default '' check (length(review_comment) <= 1000),
+  reviewed_by uuid references public.profiles (id) on delete set null,
+  reviewed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (teacher_id, subject_id, grade, year, week_index)
+);
+
+create index if not exists lesson_plan_records_school_idx
+  on public.lesson_plan_records (school_id, subject_id, status);
+
+alter table public.lesson_plan_records enable row level security;
+
+-- The HOD of the subject, or the principal, approved and at this school.
+create or replace function public.can_review_lesson_plans(p_school uuid, p_subject text)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select public.is_school_staff(p_school) and exists (
+    select 1 from public.profiles
+    where id = auth.uid() and school_id = p_school and staff_approved_at is not null
+      and (role::text = 'school' or (role::text = 'hod' and subject_id = p_subject))
+  );
+$$;
+grant execute on function public.can_review_lesson_plans(uuid, text) to authenticated;
+
+drop policy if exists "Teachers can read their own lesson plan records" on public.lesson_plan_records;
+create policy "Teachers can read their own lesson plan records"
+  on public.lesson_plan_records for select
+  using (teacher_id = auth.uid());
+
+drop policy if exists "The HOD and principal can read their school's records" on public.lesson_plan_records;
+create policy "The HOD and principal can read their school's records"
+  on public.lesson_plan_records for select
+  using (status <> 'draft' and public.can_review_lesson_plans(school_id, subject_id));
+
+drop policy if exists "Teachers can record a week at their school" on public.lesson_plan_records;
+create policy "Teachers can record a week at their school"
+  on public.lesson_plan_records for insert
+  with check (
+    teacher_id = auth.uid()
+    and school_id = public.current_school_id()
+    and public.is_school_staff(school_id)
+    and status in ('draft', 'submitted')
+    and reviewed_by is null and reviewed_at is null and review_comment = ''
+  );
+
+drop policy if exists "Teachers can change their own records until signed" on public.lesson_plan_records;
+create policy "Teachers can change their own records until signed"
+  on public.lesson_plan_records for update
+  using (teacher_id = auth.uid() and status <> 'signed')
+  with check (
+    teacher_id = auth.uid()
+    and school_id = public.current_school_id()
+    and public.is_school_staff(school_id)
+    and status in ('draft', 'submitted')
+  );
+
+drop policy if exists "Teachers can delete their own records until signed" on public.lesson_plan_records;
+create policy "Teachers can delete their own records until signed"
+  on public.lesson_plan_records for delete
+  using (teacher_id = auth.uid() and status <> 'signed');
+
+-- A teacher's edit keeps the review fields, the owner, the school and the
+-- plan's identity, and stamps the times. The review function runs as the
+-- reviewer, so it passes through with what it set.
+create or replace function public.guard_lesson_plan_record()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    new.submitted_at := case when new.status = 'submitted' then now() end;
+    new.created_at := now();
+    new.updated_at := now();
+    return new;
+  end if;
+  if coalesce(current_setting('app.lesson_plan_review', true), '') <> 'on' then
+    new.review_comment := old.review_comment;
+    new.reviewed_by := old.reviewed_by;
+    new.reviewed_at := old.reviewed_at;
+    if new.status = 'submitted' and old.status is distinct from 'submitted' then
+      new.submitted_at := now();
+    elsif new.status = 'draft' then
+      new.submitted_at := null;
+    else
+      new.submitted_at := old.submitted_at;
+    end if;
+  end if;
+  new.id := old.id;
+  new.teacher_id := old.teacher_id;
+  new.school_id := old.school_id;
+  new.subject_id := old.subject_id;
+  new.grade := old.grade;
+  new.year := old.year;
+  new.week_index := old.week_index;
+  new.created_at := old.created_at;
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists guard_lesson_plan_record on public.lesson_plan_records;
+create trigger guard_lesson_plan_record
+  before insert or update on public.lesson_plan_records
+  for each row execute function public.guard_lesson_plan_record();
+
+-- Sign off, or return with a comment. Only a submitted record, only by its
+-- subject's HOD or the principal, never by the teacher who wrote it.
+create or replace function public.review_lesson_plan(p_record uuid, p_sign boolean, p_comment text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.lesson_plan_records;
+  v_comment text := btrim(coalesce(p_comment, ''));
+begin
+  select * into r from public.lesson_plan_records where id = p_record for update;
+  if not found or not public.can_review_lesson_plans(r.school_id, r.subject_id) then
+    raise exception 'You cannot review this lesson plan record.' using errcode = '42501';
+  end if;
+  if r.teacher_id = auth.uid() then
+    raise exception 'Nobody signs off their own lesson plan.' using errcode = '42501';
+  end if;
+  if r.status <> 'submitted' then
+    raise exception 'Only a submitted record can be reviewed.' using errcode = '22023';
+  end if;
+  if not p_sign and v_comment = '' then
+    raise exception 'Say what to change when returning a record.' using errcode = '22023';
+  end if;
+  if length(v_comment) > 1000 then
+    raise exception 'Keep the comment under 1000 characters.' using errcode = '22023';
+  end if;
+  perform set_config('app.lesson_plan_review', 'on', true);
+  update public.lesson_plan_records
+    set status = case when p_sign then 'signed' else 'returned' end,
+        review_comment = v_comment,
+        reviewed_by = auth.uid(),
+        reviewed_at = now()
+    where id = p_record;
+  perform set_config('app.lesson_plan_review', '', true);
+end;
+$$;
+revoke execute on function public.review_lesson_plan(uuid, boolean, text) from public, anon;
+grant execute on function public.review_lesson_plan(uuid, boolean, text) to authenticated;
+
+-- Audit: submitted, signed and returned. The reflection and the comment are
+-- the teacher's and the HOD's own words and are not copied into the log.
+create or replace function public.audit_lesson_plan_records()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.status in ('submitted', 'signed', 'returned')
+     and (tg_op = 'INSERT' or new.status is distinct from old.status) then
+    perform public.write_audit(new.school_id, 'lesson_plan.' || new.status, 'lesson_plan_records', new.id::text,
+      jsonb_build_object('subject', new.subject_id, 'grade', new.grade, 'title', new.title, 'teacher_id', new.teacher_id));
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists audit_lesson_plan_records on public.lesson_plan_records;
+create trigger audit_lesson_plan_records
+  after insert or update on public.lesson_plan_records
+  for each row execute function public.audit_lesson_plan_records();
+
+-- Notifications: a submission goes to the reviewers; a decision to the teacher.
+create or replace function public.notify_lesson_plan_record()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_data jsonb := jsonb_build_object('record_id', new.id, 'title', new.title, 'grade', new.grade,
+                                     'subject', new.subject_id, 'profile_id', new.teacher_id);
+begin
+  if tg_op = 'UPDATE' and new.status is not distinct from old.status then
+    return new;
+  end if;
+  if new.status = 'submitted' then
+    perform public.notify(
+      array(select id from public.profiles
+            where school_id = new.school_id and staff_approved_at is not null
+              and (role::text = 'school' or (role::text = 'hod' and subject_id = new.subject_id))),
+      'lesson_plan.submitted', v_data, 'plan-signoff');
+  elsif new.status in ('signed', 'returned') then
+    perform public.notify(array[new.teacher_id], 'lesson_plan.' || new.status, v_data, 'lesson-plans');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists notify_lesson_plan_record on public.lesson_plan_records;
+create trigger notify_lesson_plan_record
+  after insert or update on public.lesson_plan_records
+  for each row execute function public.notify_lesson_plan_record();

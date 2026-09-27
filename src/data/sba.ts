@@ -32,6 +32,34 @@ import { getTopic } from './topics'
 import { taskSheetFor, type SheetKind, type TaskSheet } from './sbaTaskSheets'
 import type { Grade, Question } from '@/types'
 
+/**
+ * How the final mark is made up, which IS national: the SBA against the
+ * examination.
+ *
+ *   Grades 10 and 11: SBA 40%, end-of-year examination 60%. This is DBE
+ *   Circular S33 of 2022, which reintroduced the June and full end-of-year
+ *   examinations in these grades and set the new split from January 2023
+ *   (before that, CAPS had 25% : 75% here too).
+ *
+ *   Grade 12: SBA 25%, NSC final examination 75%, unchanged.
+ *
+ * What is NOT fixed nationally in this file is how the SBA itself is split
+ * between its tasks; that is the DBE Programme of Assessment and the
+ * province's guideline, which is why the programme below is the typical one.
+ */
+export interface MarkSplit {
+  sba: number
+  exam: number
+  examName: string
+  source: string
+}
+
+export function markSplitFor(grade: Grade): MarkSplit {
+  return grade === 12
+    ? { sba: 25, exam: 75, examName: 'NSC final examination', source: 'CAPS, Grade 12' }
+    : { sba: 40, exam: 60, examName: 'end-of-year examination', source: 'DBE Circular S33 of 2022, from 2023' }
+}
+
 export type TaskKind = 'Test' | 'Assignment' | 'Examination' | SheetKind
 export type ExamKind = 'mid-year' | 'preparatory' | 'end-of-year' | 'final'
 

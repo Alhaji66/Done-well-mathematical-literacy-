@@ -710,22 +710,43 @@ export const derivedGraphs: Record<string, GraphSpec> = {
       }
     ]
   },
-  "math-p1-c-4-8": {
-    "title": "The graph of f",
+  "math-p1-cn-5-3": {
+    "title": "The graph of h",
     "xRange": [
-      -7,
-      7
+      -6,
+      8
     ],
     "yRange": [
-      -22,
-      39
+      -1,
+      6
     ],
     "curves": [
       {
-        "kind": "parabola",
-        "a": 1,
-        "b": 0,
-        "c": -16,
+        "kind": "hyperbola",
+        "a": -2,
+        "p": 1,
+        "q": 3,
+        "label": "h"
+      }
+    ]
+  },
+  "math-p1-cn-9-3": {
+    "title": "The graph of f",
+    "xRange": [
+      -5,
+      5
+    ],
+    "yRange": [
+      -156,
+      614
+    ],
+    "curves": [
+      {
+        "kind": "cubic",
+        "a": -2,
+        "b": 9,
+        "c": -12,
+        "d": 4,
         "label": "f"
       }
     ]
@@ -5540,139 +5561,103 @@ export const derivedAnswerGraphs: Record<string, GraphSpec> = {
       }
     ]
   },
-  "math-p1-c-4-2": {
-    "title": "The graph of g",
+  "math-p1-cn-5-1": {
+    "title": "The graph of h",
     "xRange": [
       -6,
       8
     ],
     "yRange": [
-      -22,
-      39
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -2,
-        "c": -15,
-        "label": "g"
-      }
-    ]
-  },
-  "math-p1-c-4-2-r": {
-    "title": "The graph in this question",
-    "xRange": [
       -1,
-      7
-    ],
-    "yRange": [
-      -6,
-      14
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -6,
-        "c": 5
-      }
-    ]
-  },
-  "math-p1-c-4-3": {
-    "title": "The graph of h",
-    "xRange": [
-      -1,
-      9
-    ],
-    "yRange": [
-      -9,
-      22
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -8,
-        "c": 10,
-        "label": "h"
-      }
-    ]
-  },
-  "math-p1-c-4-3-r": {
-    "title": "The graph in this question",
-    "xRange": [
-      -2,
-      12
-    ],
-    "yRange": [
-      -12,
       6
     ],
     "curves": [
       {
         "kind": "hyperbola",
-        "a": 8,
-        "p": 5,
-        "q": -3
+        "a": -2,
+        "p": 1,
+        "q": 3,
+        "label": "h"
       }
     ]
   },
-  "math-p1-c-4-5": {
-    "title": "The graph of f",
+  "math-p1-cn-5-2": {
+    "title": "The graph of h",
     "xRange": [
-      -4,
-      3
-    ],
-    "yRange": [
-      -8,
-      12
-    ],
-    "curves": [
-      {
-        "kind": "exponential",
-        "a": 1,
-        "b": 3,
-        "q": -5,
-        "label": "f"
-      }
-    ]
-  },
-  "math-p1-c-4-6": {
-    "title": "The graph of f",
-    "xRange": [
-      -8,
+      -6,
       8
     ],
     "yRange": [
-      -39,
-      21
+      -1,
+      6
     ],
     "curves": [
       {
-        "kind": "line",
-        "m": 3,
-        "c": -9,
-        "label": "f"
+        "kind": "hyperbola",
+        "a": -2,
+        "p": 1,
+        "q": 3,
+        "label": "h"
       }
     ]
   },
-  "math-p1-c-4-9": {
-    "title": "The graph of f",
+  "math-p1-cn-5-4": {
+    "title": "The graph of h",
     "xRange": [
-      -1,
-      7
+      -6,
+      8
     ],
     "yRange": [
-      -3,
-      21
+      -1,
+      6
     ],
     "curves": [
       {
-        "kind": "parabola",
-        "a": 1,
-        "b": -6,
-        "c": 11,
+        "kind": "hyperbola",
+        "a": -2,
+        "p": 1,
+        "q": 3,
+        "label": "h"
+      }
+    ]
+  },
+  "math-p1-cn-5-5": {
+    "title": "The graph of h",
+    "xRange": [
+      -6,
+      8
+    ],
+    "yRange": [
+      -1,
+      6
+    ],
+    "curves": [
+      {
+        "kind": "hyperbola",
+        "a": -2,
+        "p": 1,
+        "q": 3,
+        "label": "h"
+      }
+    ]
+  },
+  "math-p1-cn-9-1": {
+    "title": "The graph of f",
+    "xRange": [
+      -5,
+      5
+    ],
+    "yRange": [
+      -156,
+      614
+    ],
+    "curves": [
+      {
+        "kind": "cubic",
+        "a": -2,
+        "b": 9,
+        "c": -12,
+        "d": 4,
         "label": "f"
       }
     ]

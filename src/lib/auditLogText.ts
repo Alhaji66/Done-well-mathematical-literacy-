@@ -1,5 +1,7 @@
 import { subjects } from '@/data/subjects'
 import { getTopic } from '@/data/topics'
+import { sbaTaskTitle } from '@/data/sbaProgramme'
+import type { Grade } from '@/types'
 
 /**
  * Audit log entries as sentences. Kept apart from the database client so it can
@@ -113,6 +115,25 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
       if (e.action === 'lesson_plan.submitted') return `${actor} submitted ${week} for sign-off.`
       const teacher = d.teacher_id ? whom(String(d.teacher_id)) : 'the teacher'
       return e.action === 'lesson_plan.signed' ? `${actor} signed off ${week} by ${teacher}.` : `${actor} returned ${week} to ${teacher}.`
+    }
+    case 'sba_mark.insert':
+    case 'sba_mark.update':
+    case 'sba_mark.delete':
+    case 'sba_release.released':
+    case 'sba_release.withdrawn': {
+      const task = sbaTaskTitle(String(d.subject ?? ''), Number(d.grade) as Grade, String(d.task ?? ''))
+      const subject = subjects.find((s) => s.id === d.subject)?.name ?? String(d.subject ?? '')
+      const cls = names.get(String(d.class_id ?? ''))
+      const what = `the ${task ?? 'formal task'} (${subject}, Grade ${String(d.grade)}${cls ? `, ${cls}` : ''})`
+      const mark = (v: unknown) => (v === 'absent' ? 'absent' : v === 'exempt' ? 'excused' : `${String(v).replace(/\.0$/, '').replace('.', ',')}/${String(d.out_of)}`)
+      if (e.action === 'sba_release.released') return `${actor} released the marks for ${what} to learners and parents.`
+      if (e.action === 'sba_release.withdrawn') return `${actor} hid the marks for ${what} from learners and parents again.`
+      if (e.action === 'sba_mark.insert')
+        return d.to === 'absent' || d.to === 'exempt'
+          ? `${actor} marked ${target} ${mark(d.to)} for ${what}.`
+          : `${actor} entered ${target}'s mark for ${what}: ${mark(d.to)}.`
+      if (e.action === 'sba_mark.delete') return `${actor} cleared ${target}'s mark for ${what} (was ${mark(d.from)}).`
+      return `${actor} changed ${target}'s mark for ${what} from ${mark(d.from)} to ${mark(d.to)}.`
     }
     case 'school.suspended':
       return 'DONE WELL paused the school’s access. Staff cannot see learner data until it is reactivated.'

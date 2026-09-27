@@ -1456,13 +1456,13 @@ insert into results select '67. a learner does not see a classmate''s marks', co
 reset role;
 select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
 set role authenticated;
-insert into results select '67b. a learner sees their own marks', count(*)::text || ' visible', count(*) = 2 from public.sba_marks;
+insert into results select '67b. a learner does not see their own marks before release', count(*)::text || ' visible', count(*) = 0 from public.sba_marks;
 reset role;
 
--- 68. A linked parent sees their child's marks.
+-- 68. Nor does a linked parent.
 select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
 set role authenticated;
-insert into results select '68. a linked parent sees their child''s marks', count(*)::text || ' visible', count(*) = 2 from public.sba_marks;
+insert into results select '68. a linked parent does not see marks before release', count(*)::text || ' visible', count(*) = 0 from public.sba_marks;
 reset role;
 
 -- 69. A correction is recorded with the old and new mark.
@@ -1475,6 +1475,92 @@ insert into results
          string_agg(action || ' ' || coalesce(details->>'from', '∅') || '→' || coalesce(details->>'to', '∅'), ', ' order by id),
          bool_or(action = 'sba_mark.update' and details->>'from' = '38.0' and details->>'to' = '41.0')
   from public.audit_log where target_table = 'sba_marks';
+
+-- ===========================================================================
+-- RELEASING SBA MARKS (STEP 22)
+-- ===========================================================================
+-- 70. A learner cannot release marks, nor can another teacher.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_releases (class_id, year, task_key)
+      select id, extract(year from now())::smallint, 't1-0' from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000d1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_releases (class_id, year, task_key)
+      select id, extract(year from now())::smallint, 't1-0' from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results select '70. only a class manager can release marks', count(*)::text || ' release(s)', count(*) = 0 from public.sba_releases;
+
+-- 71. The class teacher releases one task: the learner and the parent see that task only.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.sba_releases (class_id, year, task_key)
+  select id, extract(year from now())::smallint, 't1-0' from public.classes where name = '12A Mat Lit';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '71. after release the learner sees that task''s mark only',
+         coalesce(string_agg(task_key, ','), 'none'), count(*) = 1 and bool_and(task_key = 't1-0')
+  from public.sba_marks;
+insert into results
+  select '71b. the learner can see what has been released to their class', count(*)::text || ' release(s)', count(*) = 1
+  from public.sba_releases;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results
+  select '71c. so does the linked parent', coalesce(string_agg(task_key, ','), 'none'), count(*) = 1 and bool_and(task_key = 't1-0')
+  from public.sba_marks;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+insert into results select '71d. a classmate still sees none of it', count(*)::text || ' visible', count(*) = 0 from public.sba_marks;
+reset role;
+
+-- 72. The learner and the linked parent were told; the release was stamped and audited.
+insert into results
+  select '72. the learner and their parent are told of the release',
+         string_agg(p.full_name || ':' || n.kind, ', ' order by n.id),
+         count(*) filter (where n.recipient_id = '00000000-0000-0000-0000-0000000000b1' and n.kind = 'sba_marks.released' and n.link = 'marks') = 1
+           and count(*) filter (where n.recipient_id = '00000000-0000-0000-0000-0000000000a1' and n.kind = 'sba_marks.child_released') = 1
+           and count(*) filter (where n.recipient_id = '00000000-0000-0000-0000-00000000000a') = 0
+  from public.notifications n join public.profiles p on p.id = n.recipient_id
+  where n.kind like 'sba_marks.%';
+insert into results
+  select '72b. the release is stamped with who released it and the school',
+         count(*)::text || ' release(s)',
+         count(*) = 1 and bool_and(released_by = '00000000-0000-0000-0000-00000000000a' and school_id = (select school_id from public.classes where name = '12A Mat Lit'))
+  from public.sba_releases;
+
+-- 73. Withdrawing the release hides the mark again, and is audited.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d1');
+set role authenticated;
+delete from public.sba_releases;
+reset role;
+insert into results select '73. another teacher cannot withdraw a release', count(*)::text || ' release(s)', count(*) = 1 from public.sba_releases;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+delete from public.sba_releases where task_key = 't1-0';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results select '73b. after withdrawal the learner sees nothing', count(*)::text || ' visible', count(*) = 0 from public.sba_marks;
+reset role;
+insert into results
+  select '73c. release and withdrawal are in the audit log',
+         string_agg(action, ',' order by id),
+         string_agg(action, ',' order by id) = 'sba_release.released,sba_release.withdrawn'
+  from public.audit_log where target_table = 'sba_releases';
 
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

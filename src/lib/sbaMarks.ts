@@ -134,6 +134,31 @@ export async function saveMark(input: {
   return { row: data as SbaMarkRow }
 }
 
+/**
+ * Which tasks a class's learners and parents can see (STEP 22): the task keys
+ * released for the class and year. Null before STEP 22 is run, when every
+ * mark shows as soon as it is entered.
+ */
+export async function fetchReleases(classId: string, year: number): Promise<Set<string> | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase.from('sba_releases').select('task_key').eq('class_id', classId).eq('year', year)
+  if (error) {
+    if (!isMissing(error)) console.error('Failed to load releases:', error)
+    return null
+  }
+  return new Set((data ?? []).map((r) => r.task_key as string))
+}
+
+/** Release a task's marks to the class, or withdraw the release. Resolves to an error message, if any. */
+export async function setReleased(classId: string, year: number, taskKey: string, released: boolean): Promise<string | undefined> {
+  if (!supabase) return 'Not connected.'
+  const { error } = released
+    ? await supabase.from('sba_releases').insert({ class_id: classId, year, task_key: taskKey })
+    : await supabase.from('sba_releases').delete().match({ class_id: classId, year, task_key: taskKey })
+  if (!error || error.code === '23505') return undefined
+  return /row-level security|42501/i.test(error.message) ? 'You cannot release marks for this class.' : error.message
+}
+
 export interface LearnerResult {
   /** SBA as a percentage of the weight covered so far, or null before any mark. */
   sba: number | null

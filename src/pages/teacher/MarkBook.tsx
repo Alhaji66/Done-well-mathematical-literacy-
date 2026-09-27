@@ -50,6 +50,9 @@ export function DemoMarkBook() {
   const [edits, setEdits] = useState<Record<string, Map<string, Map<string, Pick<SbaMarkRow, 'mark' | 'status' | 'out_of'>>>>>({})
   const marks = edits[classId] ?? sampleMarks(tasks)
   const learners = NAMES.map((name, i) => ({ id: `demo-learner-${i}`, name }))
+  // Terms 1 and 2 are released; Term 3's marks are still with the teacher.
+  const [released, setReleasedTasks] = useState<Record<string, Set<string>>>({})
+  const releasedHere = released[classId] ?? new Set(tasks.filter((t) => t.term <= 2).map((t) => t.slot))
 
   return (
     <div className="space-y-6">
@@ -59,7 +62,7 @@ export function DemoMarkBook() {
         description="Every learner’s marks for the formal tasks of the DBE 2024–2025 Programme of Assessment, with their SBA and promotion marks worked out as you go."
       />
       <p className="rounded-lg bg-gold-50 p-3 text-sm text-gold-900">
-        Demo: sample classes with marks in for Terms 1 to 3. Your changes stay on this page only.
+        Demo: sample classes with marks in for Terms 1 to 3. Terms 1 and 2 are released to learners and parents; Term 3 is not yet. Your changes stay on this page only.
       </p>
       <div className="card flex flex-wrap items-end gap-3 p-4">
         <label className="min-w-0 max-w-full text-xs font-medium text-navy-500">
@@ -80,6 +83,14 @@ export function DemoMarkBook() {
         learners={learners}
         marks={marks}
         editable
+        released={releasedHere}
+        onRelease={async (task, on) => {
+          const next = new Set(releasedHere)
+          if (on) next.add(task.slot)
+          else next.delete(task.slot)
+          setReleasedTasks((r) => ({ ...r, [classId]: next }))
+          return undefined
+        }}
         onSave={async (learnerId, task, value) => {
           const next = new Map([...marks].map(([k, v]) => [k, new Map(v)]))
           const row = next.get(learnerId) ?? new Map()

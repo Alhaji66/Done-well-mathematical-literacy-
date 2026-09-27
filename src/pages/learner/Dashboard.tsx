@@ -21,6 +21,7 @@ import {
   StarIcon,
   ChevronRightIcon,
   AlertIcon,
+  ClipboardCheckIcon,
 } from '@/components/ui/Icons'
 
 export function LearnerDashboard() {
@@ -57,6 +58,17 @@ export function LearnerDashboard() {
               ? 'Nothing to fix right now. Questions you get wrong will be saved here.'
               : `${mistakes} question${mistakes === 1 ? '' : 's'} to try again`}
           </span>
+        </span>
+        <ChevronRightIcon className="h-5 w-5 shrink-0 text-navy-400" />
+      </Link>
+
+      <Link to="/app/learner/marks" className="card flex items-center gap-4 p-4 transition-colors hover:bg-navy-50 sm:hidden">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-navy-50 text-navy-700">
+          <ClipboardCheckIcon className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-semibold text-navy-900">My SBA marks</span>
+          <span className="block text-sm text-navy-600">Your formal task marks and your SBA so far</span>
         </span>
         <ChevronRightIcon className="h-5 w-5 shrink-0 text-navy-400" />
       </Link>

@@ -168,6 +168,9 @@ const TeacherAssessmentTasks = lazy(() =>
 )
 const AccountMarkBook = lazy(() => import('@/pages/account/MarkBook').then((m) => ({ default: m.MarkBook })))
 const DemoMarkBook = lazy(() => import('@/pages/teacher/MarkBook').then((m) => ({ default: m.DemoMarkBook })))
+const AccountLearnerSbaMarks = lazy(() => import('@/pages/account/learner/LearnerSbaMarks').then((m) => ({ default: m.LearnerSbaMarks })))
+const AccountParentSbaMarks = lazy(() => import('@/pages/account/parent/ParentSbaMarks').then((m) => ({ default: m.ParentSbaMarks })))
+const DemoSbaMarks = lazy(() => import('@/pages/learner/SbaMarks').then((m) => ({ default: m.DemoSbaMarks })))
 
 const SchoolDashboard = lazy(() => import('@/pages/school/Dashboard').then((m) => ({ default: m.SchoolDashboard })))
 const SchoolLearners = lazy(() => import('@/pages/school/Learners').then((m) => ({ default: m.SchoolLearners })))
@@ -227,6 +230,7 @@ export default function App() {
                 <Route path="tests" element={<LearnerWeeklyTests />} />
                 <Route path="progress" element={<AccountLearnerProgress />} />
                 <Route path="mistakes" element={<AccountMyMistakes />} />
+                <Route path="marks" element={<AccountLearnerSbaMarks />} />
                 <Route path="tutor" element={<AccountLearnerTutor />} />
                 <Route path="countdown" element={<AccountLearnerCountdown />} />
                 <Route path="resources" element={<AccountResourceCentre />} />
@@ -267,6 +271,7 @@ export default function App() {
               <Route path="parent" element={<AccountShell basePath="/account/parent" navItems={accountParentNav} />}>
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<AccountParentDashboard />} />
+                <Route path="marks" element={<AccountParentSbaMarks />} />
                 <Route path="resources" element={<AccountResourceCentre />} />
                 <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
                 <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
@@ -359,6 +364,7 @@ export default function App() {
           <Route path="mistakes" element={<LearnerMistakes />} />
           <Route path="tutor" element={<LearnerTutor />} />
           <Route path="countdown" element={<LearnerCountdown />} />
+          <Route path="marks" element={<DemoSbaMarks />} />
         </Route>
 
         <Route
@@ -373,6 +379,7 @@ export default function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ParentDashboard />} />
           <Route path="my-child" element={<ParentMyChild />} />
+          <Route path="marks" element={<DemoSbaMarks parent />} />
           <Route path="support" element={<ParentSupport />} />
           <Route path="resources" element={<ParentResources />} />
         </Route>

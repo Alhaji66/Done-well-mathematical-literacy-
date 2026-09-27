@@ -33,11 +33,13 @@ export const learnerNav: RoleNavItem[] = [
   { to: '/mistakes', label: 'My Mistakes', icon: AlertIcon, phone: false },
   { to: '/countdown', label: 'Exam countdown', icon: CalendarIcon, phone: false },
   { to: '/tutor', label: 'Check my working', icon: SparkleIcon, phone: false },
+  { to: '/marks', label: 'My SBA marks', icon: ClipboardCheckIcon, phone: false },
 ]
 
 export const parentNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/my-child', label: 'My Child', icon: UserIcon },
+  { to: '/marks', label: 'SBA marks', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/support', label: 'Support', icon: HeartHandshakeIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
 ]
@@ -86,6 +88,7 @@ export const accountLearnerNav: RoleNavItem[] = [
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
+  { to: '/marks', label: 'My SBA marks', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
 
@@ -116,6 +119,7 @@ export const accountTeacherNav: RoleNavItem[] = [
 // resources.ts to each linked child's real grade and subject.
 export const accountParentNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/marks', label: 'SBA marks', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/support', label: 'Support', icon: HeartHandshakeIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },

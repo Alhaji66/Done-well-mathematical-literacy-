@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { fetchLinkedChildren, linkChild, type LinkedChild } from '@/lib/parentLinks'
 import { fetchLearnerProgress, type ProgressRow } from '@/lib/learnerProgress'
@@ -59,6 +60,9 @@ function ChildCard({ child }: { child: LinkedChild }) {
       <div className="mt-3">
         <ChildActivity childId={child.id} name={child.full_name} />
       </div>
+      <Link to="../marks" relative="path" className="mt-3 inline-block text-sm font-semibold text-navy-700 hover:text-navy-900">
+        See {child.full_name}’s SBA marks →
+      </Link>
 
       {!loading && progress.length === 0 ? (
         <p className="mt-3 text-xs text-navy-400">No practice recorded yet.</p>

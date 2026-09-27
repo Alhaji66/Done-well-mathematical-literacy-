@@ -52,6 +52,7 @@ export function TeacherAssessmentTasks() {
     () =>
       extraSheets(subjectId, grade).map((sh) => ({
         key: `extra-${sh.id}`,
+        slot: `extra-${sh.id}`,
         term: sh.term,
         kind: sh.kind,
         title: `${sh.kind}: ${sh.title}`,

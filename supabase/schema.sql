@@ -3179,3 +3179,151 @@ drop trigger if exists notify_lesson_plan_record on public.lesson_plan_records;
 create trigger notify_lesson_plan_record
   after insert or update on public.lesson_plan_records
   for each row execute function public.notify_lesson_plan_record();
+
+-- ============================================================================
+-- STEP 21: THE SBA MARK BOOK
+-- ============================================================================
+--
+-- A class's marks for the formal tasks of the DBE Programme of Assessment:
+-- one row per learner per task, with the mark and what it is out of, or a
+-- note that the learner was absent or exempted. The app works out the SBA
+-- and promotion marks from these with the programme's weights, so only the
+-- raw marks are stored.
+--
+-- WHO CAN DO WHAT.
+--   * The class's teacher, the HODs and the principal (whoever can manage the
+--     class, as for class lists) enter and correct marks, only for learners
+--     in that class.
+--   * Every approved staff member at the school can read the marks, for
+--     moderation.
+--   * A learner reads their own marks; a linked parent reads their child's.
+--   * The school, subject and grade are taken from the class, and who made
+--     the change and when are stamped by the database.
+--   * Every change is written to the audit log with the old and new mark,
+--     because an SBA mark is evidence and a changed one must be traceable.
+
+create table if not exists public.sba_marks (
+  id bigint generated always as identity primary key,
+  school_id uuid not null references public.schools (id) on delete cascade,
+  class_id uuid not null references public.classes (id) on delete cascade,
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  subject_id text not null,
+  grade smallint not null check (grade in (10, 11, 12)),
+  year smallint not null default extract(year from now())::smallint,
+  -- The task, by its place in the grade's programme ("t1-0"), as the app names it.
+  task_key text not null check (task_key ~ '^t[1-4]-[0-9]{1,2}$'),
+  out_of smallint not null check (out_of between 1 and 1000),
+  mark numeric(6, 1) check (mark >= 0),
+  status text not null default 'marked' check (status in ('marked', 'absent', 'exempt')),
+  updated_by uuid references public.profiles (id) on delete set null,
+  updated_at timestamptz not null default now(),
+  unique (class_id, learner_id, year, task_key),
+  constraint sba_marks_mark_fits check (mark is null or mark <= out_of),
+  constraint sba_marks_mark_or_status check ((status = 'marked') = (mark is not null))
+);
+
+create index if not exists sba_marks_class_idx on public.sba_marks (class_id, year);
+create index if not exists sba_marks_learner_idx on public.sba_marks (learner_id);
+
+alter table public.sba_marks enable row level security;
+
+drop policy if exists "Staff can read the mark book at their school" on public.sba_marks;
+create policy "Staff can read the mark book at their school"
+  on public.sba_marks for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Learners can read their own marks" on public.sba_marks;
+create policy "Learners can read their own marks"
+  on public.sba_marks for select
+  using (learner_id = auth.uid());
+
+drop policy if exists "Linked parents can read their child's marks" on public.sba_marks;
+create policy "Linked parents can read their child's marks"
+  on public.sba_marks for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = sba_marks.learner_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+drop policy if exists "Class managers can enter marks for their class" on public.sba_marks;
+create policy "Class managers can enter marks for their class"
+  on public.sba_marks for insert
+  with check (
+    public.can_manage_class_id(class_id)
+    and exists (select 1 from public.class_members cm where cm.class_id = sba_marks.class_id and cm.learner_id = sba_marks.learner_id)
+  );
+
+drop policy if exists "Class managers can correct marks for their class" on public.sba_marks;
+create policy "Class managers can correct marks for their class"
+  on public.sba_marks for update
+  using (public.can_manage_class_id(class_id))
+  with check (
+    public.can_manage_class_id(class_id)
+    and exists (select 1 from public.class_members cm where cm.class_id = sba_marks.class_id and cm.learner_id = sba_marks.learner_id)
+  );
+
+drop policy if exists "Class managers can clear marks for their class" on public.sba_marks;
+create policy "Class managers can clear marks for their class"
+  on public.sba_marks for delete
+  using (public.can_manage_class_id(class_id));
+
+-- The class decides the school, subject and grade; the database decides who
+-- and when. A row cannot be moved to another class, learner, year or task.
+create or replace function public.stamp_sba_mark()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  c public.classes;
+begin
+  if tg_op = 'UPDATE' then
+    new.class_id := old.class_id;
+    new.learner_id := old.learner_id;
+    new.year := old.year;
+    new.task_key := old.task_key;
+  end if;
+  select * into c from public.classes where id = new.class_id;
+  new.school_id := c.school_id;
+  new.subject_id := c.subject_id;
+  new.grade := c.grade;
+  new.updated_by := auth.uid();
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_sba_mark on public.sba_marks;
+create trigger stamp_sba_mark
+  before insert or update on public.sba_marks
+  for each row execute function public.stamp_sba_mark();
+
+create or replace function public.audit_sba_marks()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.sba_marks := case when tg_op = 'DELETE' then old else new end;
+  v_old text := case when tg_op = 'INSERT' then null when old.status = 'marked' then old.mark::text else old.status end;
+  v_new text := case when tg_op = 'DELETE' then null when new.status = 'marked' then new.mark::text else new.status end;
+begin
+  if tg_op = 'UPDATE' and v_old is not distinct from v_new and old.out_of = new.out_of then
+    return new;
+  end if;
+  perform public.write_audit(r.school_id, 'sba_mark.' || lower(tg_op), 'sba_marks', r.learner_id::text,
+    jsonb_build_object('class_id', r.class_id, 'task', r.task_key, 'year', r.year, 'out_of', r.out_of,
+                       'subject', r.subject_id, 'grade', r.grade, 'from', v_old, 'to', v_new));
+  return r;
+end;
+$$;
+
+drop trigger if exists audit_sba_marks on public.sba_marks;
+create trigger audit_sba_marks
+  after insert or update or delete on public.sba_marks
+  for each row execute function public.audit_sba_marks();

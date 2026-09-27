@@ -51,6 +51,7 @@ export const teacherNav: RoleNavItem[] = [
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   // Six tabs fill the phone bar; SBA tasks is reached from the sidebar menu.
   { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon, phone: false },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon, phone: false },
 ]
 
 // Demo Head of Department nav. Smaller than the real one: the demo's job is
@@ -102,6 +103,7 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
   { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
@@ -129,6 +131,7 @@ export const accountHodNav: RoleNavItem[] = [
   { to: '/learners', label: 'Learners', icon: UsersIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/classes', label: 'Classes', icon: LayoutIcon },
   { to: '/interventions', label: 'Catch-up groups', shortLabel: 'Catch-up', icon: TargetIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
@@ -149,6 +152,7 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },

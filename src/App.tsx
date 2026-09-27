@@ -162,6 +162,9 @@ const TeacherAnalytics = lazy(() => import('@/pages/teacher/Analytics').then((m)
 const TeacherLessonPlans = lazy(() =>
   import('@/pages/teacher/LessonPlans').then((m) => ({ default: m.TeacherLessonPlans })),
 )
+const TeacherAssessmentTasks = lazy(() =>
+  import('@/pages/teacher/AssessmentTasks').then((m) => ({ default: m.TeacherAssessmentTasks })),
+)
 
 const SchoolDashboard = lazy(() => import('@/pages/school/Dashboard').then((m) => ({ default: m.SchoolDashboard })))
 const SchoolLearners = lazy(() => import('@/pages/school/Learners').then((m) => ({ default: m.SchoolLearners })))
@@ -244,6 +247,7 @@ export default function App() {
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="lesson-plans" element={<TeacherLessonPlans />} />
+                <Route path="assessment-tasks" element={<TeacherAssessmentTasks />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="classes" element={<AccountClasses />} />
@@ -396,6 +400,7 @@ export default function App() {
           <Route path="dashboard" element={<TeacherDashboard />} />
           <Route path="resources" element={<TeacherResources />} />
           <Route path="lesson-plans" element={<TeacherLessonPlans />} />
+          <Route path="assessment-tasks" element={<TeacherAssessmentTasks />} />
           <Route path="question-bank" element={<TeacherQuestionBank />} />
           <Route path="assessments" element={<TeacherAssessments />} />
           <Route path="analytics" element={<TeacherAnalytics />} />

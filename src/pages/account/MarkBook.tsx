@@ -8,6 +8,17 @@ import { fetchSchoolLearners, type RosterLearner } from '@/lib/teacherRoster'
 import { fetchClassMarks, fetchMarksFor, fetchReleases, fetchReleasesFor, markBookTasks, saveMark, setReleased, type SbaMarkRow } from '@/lib/sbaMarks'
 import { byLearner as groupByLearner } from '@/lib/sbaProgress'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
+import { ModerationPanel } from '@/components/markbook/ModerationPanel'
+import {
+  canModerate,
+  decideModeration,
+  fetchDecisionsFor,
+  fetchModeration,
+  reopenModeration,
+  saveModeratedMark,
+  type ModerationDecision,
+  type ModerationMark,
+} from '@/lib/sbaModeration'
 import { cn } from '@/lib/utils'
 import { MarkBookGrid } from '@/components/markbook/MarkBookGrid'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -33,10 +44,12 @@ export function MarkBook() {
   const [notSetUp, setNotSetUp] = useState(false)
   const [released, setReleasedTasks] = useState<Set<string> | null>(null)
   const [view, setView] = useState<'overview' | 'class' | null>(null)
+  const [moderation, setModeration] = useState<{ samples: ModerationMark[]; decisions: ModerationDecision[] } | null>(null)
   const [overview, setOverview] = useState<{
     members: Map<string, string[]>
     marks: Map<string, Map<string, Map<string, SbaMarkRow>>>
     released: Map<string, Set<string>> | null
+    moderated: Map<string, Map<string, ModerationDecision>> | null
   } | null>(null)
 
   useEffect(() => {
@@ -59,13 +72,16 @@ export function MarkBook() {
   useEffect(() => {
     if (!classId) return
     let live = true
-    Promise.all([fetchClassMembers([classId]), fetchClassMarks(classId, year), fetchReleases(classId, year)]).then(([members, marks, releases]) => {
+    Promise.all([fetchClassMembers([classId]), fetchClassMarks(classId, year), fetchReleases(classId, year), fetchModeration(classId, year)]).then(
+      ([members, marks, releases, mod]) => {
       if (!live) return
+      setModeration(mod)
       setMemberIds(members.map((m) => m.learner_id))
       setReleasedTasks(releases)
       setRows(marks.rows)
       setNotSetUp(marks.notSetUp)
-    })
+      },
+    )
     return () => {
       live = false
     }
@@ -75,7 +91,7 @@ export function MarkBook() {
     if (view !== 'overview' || !classes?.length) return
     let live = true
     const ids = classes.map((c) => c.id)
-    Promise.all([fetchClassMembers(ids), fetchMarksFor(ids, year), fetchReleasesFor(ids, year)]).then(([members, rows, releases]) => {
+    Promise.all([fetchClassMembers(ids), fetchMarksFor(ids, year), fetchReleasesFor(ids, year), fetchDecisionsFor(ids, year)]).then(([members, rows, releases, moderated]) => {
       if (!live) return
       if (rows === null) {
         setNotSetUp(true)
@@ -85,7 +101,7 @@ export function MarkBook() {
       for (const m of members) byClass.set(m.class_id, [...(byClass.get(m.class_id) ?? []), m.learner_id])
       const marks = new Map<string, Map<string, Map<string, SbaMarkRow>>>()
       for (const id of ids) marks.set(id, groupByLearner(rows.filter((r) => r.class_id === id)))
-      setOverview({ members: byClass, marks, released: releases })
+      setOverview({ members: byClass, marks, released: releases, moderated })
     })
     return () => {
       live = false
@@ -169,6 +185,7 @@ export function MarkBook() {
                 members={overview.members}
                 marks={overview.marks}
                 released={overview.released}
+                moderated={overview.moderated}
                 onOpen={(id) => {
                   setClassId(id)
                   setView('class')
@@ -236,6 +253,39 @@ export function MarkBook() {
                 }}
               />
             )}
+
+            {cls && moderation && classLearners.length ? (
+              <ModerationPanel
+                key={cls.id}
+                tasks={tasks}
+                learners={classLearners}
+                marks={byLearner}
+                samples={moderation.samples}
+                decisions={new Map(moderation.decisions.map((d) => [d.task_key, d]))}
+                canModerate={canModerate(profile, cls)}
+                onSave={async (task, learnerId, mark) => {
+                  const res = await saveModeratedMark({ classId: cls.id, year, taskKey: task.slot, learnerId }, mark)
+                  if (res.error) return res.error
+                  setModeration((m) =>
+                    m && {
+                      ...m,
+                      samples: [...m.samples.filter((x) => !(x.task_key === task.slot && x.learner_id === learnerId)), ...(res.row ? [res.row] : [])],
+                    },
+                  )
+                  return undefined
+                }}
+                onDecide={async (task, accept, comment) => {
+                  const error = await decideModeration(cls.id, year, task.slot, accept, comment)
+                  if (!error) setModeration(await fetchModeration(cls.id, year))
+                  return error
+                }}
+                onReopen={async (task) => {
+                  const error = await reopenModeration(cls.id, year, task.slot)
+                  if (!error) setModeration(await fetchModeration(cls.id, year))
+                  return error
+                }}
+              />
+            ) : null}
             </>
           )}
         </>

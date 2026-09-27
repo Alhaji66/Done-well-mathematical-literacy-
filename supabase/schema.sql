@@ -3468,3 +3468,229 @@ drop trigger if exists after_sba_release on public.sba_releases;
 create trigger after_sba_release
   after insert or delete on public.sba_releases
   for each row execute function public.after_sba_release();
+
+-- ============================================================================
+-- STEP 23: SBA MODERATION
+-- ============================================================================
+--
+-- Internal moderation of a formal task: the subject's head of department (or
+-- the principal) re-marks a sample of a class's scripts, and the app compares
+-- each moderated mark with the teacher's. The moderator then ACCEPTS the
+-- task's marks or RETURNS them to the teacher with a comment saying what to
+-- look at again (usually to re-mark the class against the memo).
+--
+-- WHO CAN DO WHAT.
+--   * The HOD of the class's subject or the principal moderates -- never the
+--     class's own teacher, so nobody moderates their own marking.
+--   * Only a script the teacher has marked can be moderated, and the teacher's
+--     mark is copied in each time the moderated mark is saved, so the sample
+--     compares like with like even after the teacher corrects a mark.
+--   * Once a task is accepted its sample is locked. The moderator can reopen
+--     it, which removes the decision.
+--   * Every staff member at the school can read the sample and the decision;
+--     learners and parents cannot.
+--   * Decisions and reopenings are audited, and the class teacher is told of
+--     each decision.
+
+create table if not exists public.sba_moderation_marks (
+  class_id uuid not null references public.classes (id) on delete cascade,
+  year smallint not null,
+  task_key text not null check (task_key ~ '^t[1-4]-[0-9]{1,2}$'),
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  school_id uuid not null references public.schools (id) on delete cascade,
+  teacher_mark numeric(6, 1) not null,
+  moderated_mark numeric(6, 1) not null check (moderated_mark >= 0),
+  out_of smallint not null,
+  moderator_id uuid references public.profiles (id) on delete set null,
+  updated_at timestamptz not null default now(),
+  primary key (class_id, year, task_key, learner_id),
+  constraint sba_moderation_mark_fits check (moderated_mark <= out_of)
+);
+
+create table if not exists public.sba_moderations (
+  class_id uuid not null references public.classes (id) on delete cascade,
+  year smallint not null,
+  task_key text not null check (task_key ~ '^t[1-4]-[0-9]{1,2}$'),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  status text not null check (status in ('accepted', 'returned')),
+  comment text not null default '' check (length(comment) <= 1000),
+  sample_size smallint not null,
+  mean_difference numeric(5, 1) not null,
+  moderator_id uuid references public.profiles (id) on delete set null,
+  decided_at timestamptz not null default now(),
+  primary key (class_id, year, task_key)
+);
+
+alter table public.sba_moderation_marks enable row level security;
+alter table public.sba_moderations enable row level security;
+
+-- The HOD of the class's subject or the principal, but not the class's teacher.
+create or replace function public.can_moderate_class(p_class uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.classes c
+    where c.id = p_class
+      and public.can_review_lesson_plans(c.school_id, c.subject_id)
+      and c.teacher_id is distinct from auth.uid()
+  );
+$$;
+grant execute on function public.can_moderate_class(uuid) to authenticated;
+
+create or replace function public.sba_moderation_accepted(p_class uuid, p_year smallint, p_task text)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.sba_moderations
+    where class_id = p_class and year = p_year and task_key = p_task and status = 'accepted'
+  );
+$$;
+
+drop policy if exists "Staff can read moderation samples" on public.sba_moderation_marks;
+create policy "Staff can read moderation samples"
+  on public.sba_moderation_marks for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Moderators can add to a sample" on public.sba_moderation_marks;
+create policy "Moderators can add to a sample"
+  on public.sba_moderation_marks for insert
+  with check (public.can_moderate_class(class_id) and not public.sba_moderation_accepted(class_id, year, task_key));
+
+drop policy if exists "Moderators can change a sample" on public.sba_moderation_marks;
+create policy "Moderators can change a sample"
+  on public.sba_moderation_marks for update
+  using (public.can_moderate_class(class_id) and not public.sba_moderation_accepted(class_id, year, task_key))
+  with check (public.can_moderate_class(class_id));
+
+drop policy if exists "Moderators can take a script out of a sample" on public.sba_moderation_marks;
+create policy "Moderators can take a script out of a sample"
+  on public.sba_moderation_marks for delete
+  using (public.can_moderate_class(class_id) and not public.sba_moderation_accepted(class_id, year, task_key));
+
+drop policy if exists "Staff can read moderation decisions" on public.sba_moderations;
+create policy "Staff can read moderation decisions"
+  on public.sba_moderations for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Moderators can reopen a moderation" on public.sba_moderations;
+create policy "Moderators can reopen a moderation"
+  on public.sba_moderations for delete
+  using (public.can_moderate_class(class_id));
+
+-- Stamp a sample mark: the school from the class, and the teacher's mark and
+-- total from the mark book as they stand now.
+create or replace function public.stamp_sba_moderation_mark()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  m public.sba_marks;
+begin
+  if tg_op = 'UPDATE' then
+    new.class_id := old.class_id;
+    new.year := old.year;
+    new.task_key := old.task_key;
+    new.learner_id := old.learner_id;
+  end if;
+  select * into m from public.sba_marks
+    where class_id = new.class_id and year = new.year and task_key = new.task_key and learner_id = new.learner_id;
+  if not found or m.status <> 'marked' then
+    raise exception 'Only a script the teacher has marked can be moderated.' using errcode = '22023';
+  end if;
+  new.school_id := m.school_id;
+  new.teacher_mark := m.mark;
+  new.out_of := m.out_of;
+  new.moderator_id := auth.uid();
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_sba_moderation_mark on public.sba_moderation_marks;
+create trigger stamp_sba_moderation_mark
+  before insert or update on public.sba_moderation_marks
+  for each row execute function public.stamp_sba_moderation_mark();
+
+-- Accept the task's marks, or return them to the teacher with a comment.
+create or replace function public.decide_sba_moderation(p_class uuid, p_year smallint, p_task text, p_accept boolean, p_comment text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_comment text := btrim(coalesce(p_comment, ''));
+  v_school uuid;
+  v_n integer;
+  v_mean numeric;
+begin
+  if not public.can_moderate_class(p_class) then
+    raise exception 'You cannot moderate this class.' using errcode = '42501';
+  end if;
+  if not p_accept and v_comment = '' then
+    raise exception 'Say what the teacher should look at again.' using errcode = '22023';
+  end if;
+  if length(v_comment) > 1000 then
+    raise exception 'Keep the comment under 1000 characters.' using errcode = '22023';
+  end if;
+  select count(*), avg(abs(moderated_mark - teacher_mark) * 100.0 / out_of)
+    into v_n, v_mean
+    from public.sba_moderation_marks
+    where class_id = p_class and year = p_year and task_key = p_task;
+  if v_n = 0 then
+    raise exception 'Moderate at least one script first.' using errcode = '22023';
+  end if;
+  select school_id into v_school from public.classes where id = p_class;
+  insert into public.sba_moderations (class_id, year, task_key, school_id, status, comment, sample_size, mean_difference, moderator_id, decided_at)
+    values (p_class, p_year, p_task, v_school, case when p_accept then 'accepted' else 'returned' end, v_comment, v_n, round(v_mean, 1), auth.uid(), now())
+    on conflict (class_id, year, task_key) do update
+      set status = excluded.status, comment = excluded.comment, sample_size = excluded.sample_size,
+          mean_difference = excluded.mean_difference, moderator_id = excluded.moderator_id, decided_at = excluded.decided_at;
+end;
+$$;
+revoke execute on function public.decide_sba_moderation(uuid, smallint, text, boolean, text) from public, anon;
+grant execute on function public.decide_sba_moderation(uuid, smallint, text, boolean, text) to authenticated;
+
+-- Audit each decision and reopening; tell the class teacher of each decision.
+-- The comment is the moderator's own words and is not copied into the log.
+create or replace function public.after_sba_moderation()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.sba_moderations := case when tg_op = 'DELETE' then old else new end;
+  c public.classes;
+  v_data jsonb;
+begin
+  select * into c from public.classes where id = r.class_id;
+  v_data := jsonb_build_object('class_id', r.class_id, 'task', r.task_key, 'year', r.year, 'subject', c.subject_id,
+                               'grade', c.grade, 'sample_size', r.sample_size, 'mean_difference', r.mean_difference);
+  if tg_op = 'DELETE' then
+    perform public.write_audit(r.school_id, 'sba_moderation.reopened', 'sba_moderations', r.class_id::text, v_data);
+    return old;
+  end if;
+  if tg_op = 'UPDATE' and new.status is not distinct from old.status and new.comment is not distinct from old.comment then
+    return new;
+  end if;
+  perform public.write_audit(r.school_id, 'sba_moderation.' || r.status, 'sba_moderations', r.class_id::text, v_data);
+  perform public.notify(array[c.teacher_id], 'sba_moderation.' || r.status, v_data, 'markbook');
+  return new;
+end;
+$$;
+
+drop trigger if exists after_sba_moderation on public.sba_moderations;
+create trigger after_sba_moderation
+  after insert or update or delete on public.sba_moderations
+  for each row execute function public.after_sba_moderation();

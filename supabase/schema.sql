@@ -3838,3 +3838,83 @@ drop trigger if exists after_sba_task_date on public.sba_task_dates;
 create trigger after_sba_task_date
   after insert or update or delete on public.sba_task_dates
   for each row execute function public.after_sba_task_date();
+
+-- ============================================================================
+-- STEP 25: REMINDERS THE DAY BEFORE A TASK
+-- ============================================================================
+--
+-- Every afternoon, each learner with a formal task on the next day -- by the
+-- assessment schedule of STEP 24 -- is reminded, and so is each of their
+-- linked parents. "Tomorrow" is South African time. A task is only ever
+-- reminded of once for its date: if the date moves, the new day gets its own
+-- reminder.
+--
+-- The reminders are sent by send_sba_reminders(), which the database's own
+-- timer (the pg_cron extension) runs at 14:00 UTC, 16:00 in South Africa.
+-- Nobody signed in can run it; it returns how many reminders it sent.
+
+create table if not exists public.sba_reminders_sent (
+  class_id uuid not null references public.classes (id) on delete cascade,
+  year smallint not null,
+  task_key text not null,
+  due_on date not null,
+  sent_at timestamptz not null default now(),
+  primary key (class_id, year, task_key, due_on)
+);
+
+-- Only the reminder function writes or reads this; nobody signed in sees it.
+alter table public.sba_reminders_sent enable row level security;
+
+create or replace function public.send_sba_reminders()
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_tomorrow date := (now() at time zone 'Africa/Johannesburg')::date + 1;
+  d record;
+  v_data jsonb;
+  v_learners uuid[];
+  v_sent integer := 0;
+  l record;
+begin
+  for d in
+    with fresh as (
+      insert into public.sba_reminders_sent (class_id, year, task_key, due_on)
+      select class_id, year, task_key, due_on from public.sba_task_dates where due_on = v_tomorrow
+      on conflict do nothing
+      returning class_id, year, task_key, due_on
+    )
+    select t.* from public.sba_task_dates t
+    join fresh f on f.class_id = t.class_id and f.year = t.year and f.task_key = t.task_key
+  loop
+    v_data := jsonb_build_object('class_id', d.class_id, 'task', d.task_key, 'year', d.year, 'subject', d.subject_id,
+                                 'grade', d.grade, 'due_on', d.due_on, 'note', d.note);
+    select array_agg(learner_id) into v_learners from public.class_members where class_id = d.class_id;
+    perform public.notify(v_learners, 'sba_date.tomorrow', v_data, 'marks');
+    v_sent := v_sent + coalesce(array_length(v_learners, 1), 0);
+    for l in
+      select pl.parent_id, pl.learner_id from public.parent_learner_links pl
+      where pl.learner_id = any (coalesce(v_learners, '{}'))
+    loop
+      perform public.notify(array[l.parent_id], 'sba_date.child_tomorrow', v_data || jsonb_build_object('learner_id', l.learner_id), 'marks');
+      v_sent := v_sent + 1;
+    end loop;
+  end loop;
+  return v_sent;
+end;
+$$;
+revoke execute on function public.send_sba_reminders() from public, anon, authenticated;
+
+-- The daily timer, where the pg_cron extension is switched on (Supabase:
+-- Database > Extensions > pg_cron, or `create extension if not exists pg_cron
+-- with schema pg_catalog;` first). Scheduling the same name again replaces the
+-- job, so this is safe to run more than once. Without pg_cron nothing is
+-- scheduled, and send_sba_reminders() can be run by hand.
+do $$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('sba-reminders', '0 14 * * *', 'select public.send_sba_reminders()');
+  end if;
+end $$;

@@ -63,7 +63,7 @@ export function SchedulePanel(props: {
             <h3 className="font-bold text-navy-900">Assessment schedule</h3>
             <p className="mt-1 text-xs text-navy-500">
               {editable
-                ? 'Set the date of each task. Learners and their parents see the dates, and are told when you set or move one that is still to come.'
+                ? 'Set the date of each task. Learners and their parents see the dates, are told when you set or move one that is still to come, and are reminded the afternoon before.'
                 : 'The dates of the class’s formal tasks, as its teacher has set them.'}{' '}
               {set} of {tasks.length} dates set.
             </p>

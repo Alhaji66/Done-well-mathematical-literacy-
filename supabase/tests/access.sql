@@ -1786,5 +1786,36 @@ insert into results
            and bool_or(action = 'sba_date.moved' and details->>'from' = (current_date + 10)::text)
   from public.audit_log where target_table = 'sba_task_dates';
 
+-- ===========================================================================
+-- REMINDERS (STEP 25)
+-- ===========================================================================
+-- 85. A task tomorrow (South African time) is reminded to the class and a linked parent, once.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.sba_task_dates (class_id, year, task_key, due_on, note)
+  select id, extract(year from now())::smallint, 't4-6', (now() at time zone 'Africa/Johannesburg')::date + 1, 'Paper 1'
+  from public.classes where name = '12A Mat Lit';
+reset role;
+select public.send_sba_reminders() as first_run \gset
+select public.send_sba_reminders() as second_run \gset
+insert into results
+  select '85. tomorrow''s task is reminded to the class and a linked parent',
+         string_agg(p.full_name || ':' || n.kind, ', ' order by n.id) || ' (runs: ' || :'first_run' || ', ' || :'second_run' || ')',
+         count(*) filter (where n.kind = 'sba_date.tomorrow' and n.recipient_id = '00000000-0000-0000-0000-0000000000b1') = 1
+           and count(*) filter (where n.kind = 'sba_date.tomorrow' and n.recipient_id = '00000000-0000-0000-0000-0000000000b2') = 1
+           and count(*) filter (where n.kind = 'sba_date.child_tomorrow' and n.recipient_id = '00000000-0000-0000-0000-0000000000a1') = 1
+           and :'first_run'::int = 3 and :'second_run'::int = 0
+  from public.notifications n join public.profiles p on p.id = n.recipient_id
+  where n.kind like 'sba_date.%tomorrow';
+
+-- 86. Nobody signed in can send reminders or read what has been sent.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin perform public.send_sba_reminders(); raise exception 'ran'; exception when insufficient_privilege then null; end;
+end $$;
+insert into results select '86. a teacher cannot run the reminders or read the log', count(*)::text || ' row(s) visible', count(*) = 0 from public.sba_reminders_sent;
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

@@ -9,6 +9,7 @@ import { fetchClassMarks, fetchMarksFor, fetchReleases, fetchReleasesFor, markBo
 import { byLearner as groupByLearner } from '@/lib/sbaProgress'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
 import { AtRiskList } from '@/components/markbook/AtRiskList'
+import { startIntervention } from '@/lib/interventions'
 import { ModerationPanel } from '@/components/markbook/ModerationPanel'
 import {
   canModerate,
@@ -200,6 +201,32 @@ export function MarkBook() {
                   setClassId(id)
                   setView('class')
                 }}
+                school={reportContext?.school ?? null}
+                teacherOf={(id) => {
+                  const teacher = classes.find((c) => c.id === id)?.teacher_id
+                  return teacher ? (reportContext?.names.get(teacher) ?? null) : null
+                }}
+                onStartGroup={async ({ cls: group, learners: chosen, topicId, plan }) => {
+                  if (!schoolId) return 'Your account is not linked to a school.'
+                  const result = await startIntervention({
+                    schoolId,
+                    createdBy: profile.id,
+                    classId: group.id,
+                    subjectId: group.subject_id,
+                    grade: group.grade,
+                    topicId,
+                    subtopic: null,
+                    plan,
+                    diagnosticTestId: null,
+                    learners: chosen,
+                  })
+                  return result.error
+                }}
+                groupsLink={
+                  <Link to="../interventions" relative="path" className="font-semibold underline">
+                    Open Catch-up groups
+                  </Link>
+                }
               />
             ) : (
               <MarkBookOverview

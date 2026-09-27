@@ -176,6 +176,10 @@ export function DemoMarkBook() {
             setClassId(id)
             setView('class')
           }}
+          school="DONE WELL Demo High School"
+          teacherOf={() => 'Mr S. Nkosi'}
+          onStartGroup={async () => undefined}
+          groupsLink={<span>(In the demo nothing is saved.)</span>}
         />
       ) : view === 'overview' ? (
         <MarkBookOverview

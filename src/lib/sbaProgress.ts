@@ -85,8 +85,10 @@ export interface AtRisk {
   sba: number | null
   /** Tasks the learner was absent for (each scores 0). */
   absent: number
+  absentTasks: SbaTask[]
   /** Overdue tasks with no entry for the learner. */
   missing: number
+  missingTasks: SbaTask[]
   /** The task with the lowest mark, in per cent. */
   lowest: { task: SbaTask; percent: number } | null
   band: 'below-30' | '30-39' | 'gaps'
@@ -114,8 +116,10 @@ export function atRiskLearners(
   for (const id of memberIds) {
     const row = marks.get(id) ?? new Map<string, Row>()
     const { sba } = learnerResult(tasks, grade, row)
-    const absent = tasks.filter((t) => row.get(t.slot)?.status === 'absent').length
-    const missing = overdue.filter((t) => !row.has(t.slot)).length
+    const absentTasks = tasks.filter((t) => row.get(t.slot)?.status === 'absent')
+    const missingTasks = overdue.filter((t) => !row.has(t.slot))
+    const absent = absentTasks.length
+    const missing = missingTasks.length
     let lowest: AtRisk['lowest'] = null
     for (const t of tasks) {
       const r = row.get(t.slot)
@@ -124,7 +128,7 @@ export function atRiskLearners(
       if (!lowest || percent < lowest.percent) lowest = { task: t, percent }
     }
     const band = sba !== null && sba < 30 ? 'below-30' : sba !== null && sba < 40 ? '30-39' : absent || missing ? 'gaps' : null
-    if (band) out.push({ learnerId: id, sba, absent, missing, lowest, band })
+    if (band) out.push({ learnerId: id, sba, absent, absentTasks, missing, missingTasks, lowest, band })
   }
   const order = { 'below-30': 0, '30-39': 1, gaps: 2 }
   return out.sort((a, b) => order[a.band] - order[b.band] || (a.sba ?? 0) - (b.sba ?? 0) || b.missing + b.absent - (a.missing + a.absent))

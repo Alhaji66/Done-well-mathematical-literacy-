@@ -1,4 +1,5 @@
 import type { SbaTask } from '@/data/sba'
+import { printPart } from '@/lib/print'
 import { difference, summarise, TOLERANCE, type ModerationDecision, type ModerationMark } from '@/lib/sbaModeration'
 
 export interface ReportInfo {
@@ -17,16 +18,8 @@ const num = (n: number) => String(Math.round(n * 10) / 10).replace('.', ',')
 const signed = (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${num(Math.abs(n))}`
 const day = (iso: string) => new Date(iso).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })
 
-/** Print `print-area` elements as the moderation report alone (see index.css). */
-export function printModerationReport() {
-  document.body.dataset.print = 'moderation'
-  const done = () => {
-    delete document.body.dataset.print
-    window.removeEventListener('afterprint', done)
-  }
-  window.addEventListener('afterprint', done)
-  window.print()
-}
+/** Print the moderation report alone (see index.css). */
+export const printModerationReport = () => printPart('moderation')
 
 /**
  * A task's moderation as a sheet for the subject's SBA file: the class and the

@@ -78,3 +78,54 @@ export function byLearner(rows: SbaMarkRow[]): Map<string, Map<string, SbaMarkRo
   }
   return m
 }
+
+export interface AtRisk {
+  learnerId: string
+  /** SBA so far, or null before any mark. */
+  sba: number | null
+  /** Tasks the learner was absent for (each scores 0). */
+  absent: number
+  /** Overdue tasks with no entry for the learner. */
+  missing: number
+  /** The task with the lowest mark, in per cent. */
+  lowest: { task: SbaTask; percent: number } | null
+  band: 'below-30' | '30-39' | 'gaps'
+}
+
+/**
+ * The learners of a class to worry about: an SBA so far below 30% (the least
+ * a subject can count at, CAPS Level 1 "Not achieved") or from 30% to 39%
+ * (Level 2), or with an absence or a missing mark for an overdue task. Worst
+ * first.
+ */
+export function atRiskLearners(
+  tasks: SbaTask[],
+  grade: Grade,
+  memberIds: string[],
+  marks: Map<string, Map<string, Row>>,
+  year: number,
+  today: Date,
+): AtRisk[] {
+  const overdue = tasks.filter((t) => {
+    const due = taskDue(t, year)
+    return due !== null && today > due
+  })
+  const out: AtRisk[] = []
+  for (const id of memberIds) {
+    const row = marks.get(id) ?? new Map<string, Row>()
+    const { sba } = learnerResult(tasks, grade, row)
+    const absent = tasks.filter((t) => row.get(t.slot)?.status === 'absent').length
+    const missing = overdue.filter((t) => !row.has(t.slot)).length
+    let lowest: AtRisk['lowest'] = null
+    for (const t of tasks) {
+      const r = row.get(t.slot)
+      if (r?.status !== 'marked') continue
+      const percent = ((r.mark ?? 0) / r.out_of) * 100
+      if (!lowest || percent < lowest.percent) lowest = { task: t, percent }
+    }
+    const band = sba !== null && sba < 30 ? 'below-30' : sba !== null && sba < 40 ? '30-39' : absent || missing ? 'gaps' : null
+    if (band) out.push({ learnerId: id, sba, absent, missing, lowest, band })
+  }
+  const order = { 'below-30': 0, '30-39': 1, gaps: 2 }
+  return out.sort((a, b) => order[a.band] - order[b.band] || (a.sba ?? 0) - (b.sba ?? 0) || b.missing + b.absent - (a.missing + a.absent))
+}

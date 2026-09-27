@@ -771,7 +771,7 @@ const rules: Record<string, SubtopicRule[]> = {
     // ˣ and the superscript digits other than ² catch 2ˣ⁺² and 2²⁰²⁰, which
     // otherwise fell to Linear equations (via "solve for x") or the scorer.
     { name: 'Exponents and surds', match: /\b(exponent\w*|surd|power of|index|indices|rationalis|base)\b|√|\d\^|[ˣ⁰¹³⁴⁵⁶⁷⁸⁹]/i },
-    { name: 'Linear equations and inequalities', match: /\b(inequalit|interval notation|number line|solve for x\b|linear equation)\b/i },
+    { name: 'Linear equations and inequalities', match: /\b(inequalit\w*|interval notation|number line|solve for x\b|linear equation)\b/i },
     { name: 'Word problems and setting up equations', match: /\b(consecutive|the sum of two numbers|word problem|let x be|three times as)\b/i },
     { name: 'Simplifying and factorising expressions', match: /\b(factoris\w*|factor|simplify|expand\w*|difference of two squares|trinomial|grouping)\b/i },
   ],

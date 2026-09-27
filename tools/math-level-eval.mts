@@ -64,7 +64,8 @@ const TRUTH: Record<string, { level: Level; why: string }> = {
   'math-p1-20-2-1': { level: 2, why: 'apply Tn = a + (n-1)d' },
   'math-p1-22-1-5': { level: 3, why: 'factorise, then reason about the sign of a product' },
   'math-p1-24-1-2': { level: 2, why: 'a standard trinomial factorisation' },
-  'math-p1-25-6-3': { level: 3, why: 'without replacement -- the second probability depends on the first' },
+  // math-p1-25-6-3 left with the pre-NSC 2025 paper; this is its nearest replacement in the rebuilt one.
+  'math-p1-25n-11-3-2': { level: 3, why: 'two restricted positions filled first, then the rest -- counting steps combined' },
   'math-p1-b-5-8': { level: 2, why: 'differentiate a monomial, then substitute' },
   'math-p2-21-1-4': { level: 1, why: 'a and b are given; one substitution into y = a + bx' },
   'math-p2-23-4-2': { level: 2, why: 'a standard angle calculation' },

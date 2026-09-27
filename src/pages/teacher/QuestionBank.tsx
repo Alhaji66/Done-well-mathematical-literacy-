@@ -228,8 +228,8 @@ export function TeacherQuestionBank() {
               </select>
             </div>
             <p className="pb-2 text-xs text-navy-400">{atp.source}
-                {atp.detail === 'term'
-                  ? ' · terms only, because the week a topic starts is set by your province. Send yours and this becomes week by week.'
+                {atp.detail === 'suggested'
+                  ? ' · the weeks and dates are a suggestion. Follow your school’s own teaching plan where it differs.'
                   : ''}</p>
           </div>
           {chosenWeek?.note ? (

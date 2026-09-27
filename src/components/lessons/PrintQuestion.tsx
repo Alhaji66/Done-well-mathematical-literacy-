@@ -25,7 +25,18 @@ import { levelName } from '@/data/lessonPlans'
  * The pictures follow QuestionCard exactly, so a question prints with the same
  * graph, chart, circuit or sketch a learner sees in Practise.
  */
-export function PrintQuestion({ question, number, showAnswer }: { question: Question; number: string; showAnswer: boolean }) {
+export function PrintQuestion({
+  question,
+  number,
+  showAnswer,
+  learner = false,
+}: {
+  question: Question
+  number: string
+  showAnswer: boolean
+  /** The learner's copy shows marks but not the cognitive level, which is for the teacher. */
+  learner?: boolean
+}) {
   const graph = question.graph ?? derivedGraphs[question.id]
   const figure = question.figure ?? derivedFigures[question.id]
   const circuit = question.circuit ?? derivedCircuits[question.id]
@@ -40,7 +51,8 @@ export function PrintQuestion({ question, number, showAnswer }: { question: Ques
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <p className="text-sm font-semibold text-navy-900">{number}</p>
         <p className="text-xs text-navy-500">
-          {levelName(question)} · {question.marks} {question.marks === 1 ? 'mark' : 'marks'}
+          {learner ? '' : `${levelName(question)} · `}
+          ({question.marks} {question.marks === 1 ? 'mark' : 'marks'})
         </p>
       </div>
       {question.context ? <QuestionText className="mt-1.5 text-sm text-navy-600">{question.context}</QuestionText> : null}

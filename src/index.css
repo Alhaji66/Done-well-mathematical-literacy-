@@ -118,4 +118,9 @@
   .print-avoid-break {
     break-inside: avoid;
   }
+
+  /* Lesson plans: each lesson, and the teacher notes, start a new sheet. */
+  .print-break-before {
+    break-before: page;
+  }
 }

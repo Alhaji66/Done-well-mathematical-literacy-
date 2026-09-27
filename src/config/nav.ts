@@ -45,6 +45,7 @@ export const parentNav: RoleNavItem[] = [
 export const teacherNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
+  { to: '/lesson-plans', label: 'Lesson plans', shortLabel: 'Plans', icon: CalendarIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
@@ -93,6 +94,7 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/classes', label: 'Classes', icon: UsersIcon },
   { to: '/interventions', label: 'Catch-up groups', shortLabel: 'Catch-up', icon: TargetIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
+  { to: '/lesson-plans', label: 'Lesson plans', shortLabel: 'Plans', icon: CalendarIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },

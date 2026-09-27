@@ -168,6 +168,8 @@ const TeacherAssessmentTasks = lazy(() =>
 )
 const AccountMarkBook = lazy(() => import('@/pages/account/MarkBook').then((m) => ({ default: m.MarkBook })))
 const DemoMarkBook = lazy(() => import('@/pages/teacher/MarkBook').then((m) => ({ default: m.DemoMarkBook })))
+const AccountLevels = lazy(() => import('@/pages/account/Levels').then((m) => ({ default: m.Levels })))
+const DemoLevels = lazy(() => import('@/pages/teacher/Levels').then((m) => ({ default: m.DemoLevels })))
 const AccountLearnerSbaMarks = lazy(() => import('@/pages/account/learner/LearnerSbaMarks').then((m) => ({ default: m.LearnerSbaMarks })))
 const AccountParentSbaMarks = lazy(() => import('@/pages/account/parent/ParentSbaMarks').then((m) => ({ default: m.ParentSbaMarks })))
 const DemoSbaMarks = lazy(() => import('@/pages/learner/SbaMarks').then((m) => ({ default: m.DemoSbaMarks })))
@@ -256,6 +258,7 @@ export default function App() {
                 <Route path="lesson-plans" element={<TeacherLessonPlans />} />
                 <Route path="assessment-tasks" element={<TeacherAssessmentTasks />} />
                 <Route path="markbook" element={<AccountMarkBook />} />
+                <Route path="levels" element={<AccountLevels />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
                 <Route path="classes" element={<AccountClasses />} />
@@ -297,6 +300,7 @@ export default function App() {
                 <Route path="learners" element={<AccountHodLearners />} />
                 <Route path="plan-signoff" element={<AccountPlanSignoff />} />
                 <Route path="markbook" element={<AccountMarkBook />} />
+                <Route path="levels" element={<AccountLevels />} />
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
@@ -324,6 +328,7 @@ export default function App() {
                 <Route path="teachers" element={<AccountSchoolTeachers />} />
                 <Route path="plan-signoff" element={<AccountPlanSignoff />} />
                 <Route path="markbook" element={<AccountMarkBook />} />
+                <Route path="levels" element={<AccountLevels />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
@@ -397,6 +402,7 @@ export default function App() {
           <Route path="dashboard" element={<DemoHodDashboard />} />
           <Route path="plan-signoff" element={<DemoPlanSignoff />} />
           <Route path="markbook" element={<DemoMarkBook />} />
+          <Route path="levels" element={<DemoLevels scope="hod" />} />
           <Route path="question-bank" element={<TeacherQuestionBank />} />
           <Route path="assessments" element={<TeacherAssessments />} />
           <Route path="analytics" element={<TeacherAnalytics />} />
@@ -417,6 +423,7 @@ export default function App() {
           <Route path="lesson-plans" element={<TeacherLessonPlans />} />
           <Route path="assessment-tasks" element={<TeacherAssessmentTasks />} />
           <Route path="markbook" element={<DemoMarkBook />} />
+          <Route path="levels" element={<DemoLevels scope="teacher" />} />
           <Route path="question-bank" element={<TeacherQuestionBank />} />
           <Route path="assessments" element={<TeacherAssessments />} />
           <Route path="analytics" element={<TeacherAnalytics />} />
@@ -436,6 +443,7 @@ export default function App() {
           <Route path="learners" element={<SchoolLearners />} />
           <Route path="teachers" element={<SchoolTeachers />} />
           <Route path="markbook" element={<DemoMarkBook />} />
+          <Route path="levels" element={<DemoLevels scope="school" />} />
           <Route path="plan-signoff" element={<DemoPlanSignoff />} />
           <Route path="assessments" element={<SchoolAssessments />} />
           <Route path="analytics" element={<SchoolAnalytics />} />

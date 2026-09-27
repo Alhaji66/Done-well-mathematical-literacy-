@@ -1,0 +1,119 @@
+import { atpFor, termWeeks } from '@/data/atp'
+import { markBookTasks, programmeFor } from '@/data/sba'
+import { CLASSES, learners as markBookLearners, sampleMarks, tasksOf } from '@/data/demoMarkBook'
+import { sbaResults, termOfDate, type LevelClass, type LevelData, type LevelResult, type Term } from '@/lib/levels'
+import type { Grade } from '@/types'
+
+/**
+ * The demo's levels: the three Mathematical Literacy classes of the demo mark
+ * book, with their SBA marks, plus a class in each of the other subjects so a
+ * principal's tally covers the school. Every class also has weekly tests on
+ * the ATP's topics for Terms 1 to 3. Each learner's weekly results sit around
+ * their SBA marks, so a learner who struggles in one struggles in the other.
+ */
+
+const OTHER_CLASSES: LevelClass[] = [
+  { id: 'demo-10m', name: '10A Mathematics', subject_id: 'mathematics', grade: 10 },
+  { id: 'demo-12m', name: '12B Mathematics', subject_id: 'mathematics', grade: 12 },
+  { id: 'demo-11p', name: '11C Physical Sciences', subject_id: 'physical-sciences', grade: 11 },
+  { id: 'demo-10l', name: '10B Life Sciences', subject_id: 'life-sciences', grade: 10 },
+]
+
+const OTHER_NAMES = [
+  'Mpho Radebe', 'Naledi Zulu', 'Owethu Cele', 'Palesa Tau', 'Qhawe Ngcobo', 'Refilwe Sebola',
+  'Sipho Maseko', 'Thandi Shabalala', 'Unathi Mkhize', 'Vusi Mabaso', 'Wandile Hadebe', 'Zanele Ntuli',
+]
+
+const seeded = (a: number, b: number) => {
+  const x = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453
+  return x - Math.floor(x)
+}
+const clamp = (p: number) => Math.max(8, Math.min(98, p))
+
+/** Up to three weekly tests a term, on the ATP's topics, set on the Friday of weeks 3, 6 and 9. */
+function weeklyTestsFor(subjectId: string, grade: Grade, today: string) {
+  const atp = atpFor(subjectId, grade)
+  const out: { id: string; title: string; date: string; term: Term }[] = []
+  for (const term of [1, 2, 3, 4] as Term[]) {
+    const labels = [...new Set((atp?.weeks ?? []).filter((w) => w.term === term && w.topicId).map((w) => w.label))].slice(0, 3)
+    const weeks = termWeeks(term)
+    labels.forEach((label, i) => {
+      const week = weeks[Math.min(weeks.length - 1, 2 + i * 3)]
+      const date = week.end.toISOString().slice(0, 10)
+      if (date <= today) out.push({ id: `demo-wt-${subjectId}-${grade}-${term}-${i}`, title: `Weekly test: ${label.split(/[:(]/)[0].trim()}`, date, term })
+    })
+  }
+  return out
+}
+
+function weeklyFor(c: LevelClass, learnerIds: string[], ability: (i: number) => number, today: string, seed: number): LevelResult[] {
+  return weeklyTestsFor(c.subject_id, c.grade, today).flatMap((t, ti) =>
+    learnerIds.flatMap((learnerId, li) => {
+      // Now and then a learner misses a test.
+      if (seeded(li + seed, ti + 40) < 0.06) return []
+      return [
+        {
+          learnerId,
+          classId: c.id,
+          subjectId: c.subject_id,
+          grade: c.grade,
+          source: 'weekly' as const,
+          itemId: t.id,
+          title: t.title,
+          date: t.date,
+          term: termOfDate(t.date),
+          percent: Math.round(clamp(ability(li) + (seeded(li + seed, ti) - 0.5) * 24)),
+        },
+      ]
+    }),
+  )
+}
+
+export function demoLevelData(scope: 'teacher' | 'hod' | 'school', now = new Date()): LevelData {
+  const today = now.toISOString().slice(0, 10)
+  const classes: LevelClass[] = scope === 'school' ? [...CLASSES, ...OTHER_CLASSES] : [...CLASSES]
+  const names = new Map<string, string>()
+  const members = new Map<string, string[]>()
+  const results: LevelResult[] = []
+
+  // The mark book's classes: its own marks, with learner ids made unique to the class.
+  CLASSES.forEach((c, ci) => {
+    const ids = markBookLearners.map((l) => `${c.id}:${l.id}`)
+    markBookLearners.forEach((l, i) => names.set(ids[i], l.name))
+    members.set(c.id, ids)
+    const marks = sampleMarks(tasksOf(c.grade), c.id)
+    const rows = markBookLearners.flatMap((l, i) =>
+      [...(marks.get(l.id) ?? new Map()).entries()].map(([slot, r]) => ({ class_id: c.id, learner_id: ids[i], task_key: slot, ...r })),
+    )
+    const sba = sbaResults(rows, [c])
+    results.push(...sba)
+    const average = (i: number) => {
+      const own = sba.filter((r) => r.learnerId === ids[i])
+      return own.length ? own.reduce((s, r) => s + r.percent, 0) / own.length : 50
+    }
+    results.push(...weeklyFor(c, ids, average, today, ci * 17))
+  })
+
+  if (scope === 'school')
+    OTHER_CLASSES.forEach((c, ci) => {
+      const ids = OTHER_NAMES.map((_, i) => `${c.id}:l${i}`)
+      OTHER_NAMES.forEach((n, i) => names.set(ids[i], n))
+      members.set(c.id, ids)
+      const ability = (i: number) => 22 + 66 * seeded(i + ci * 5, 7)
+      const rows = markBookTasks(programmeFor(c.subject_id, c.grade))
+        .filter((t) => t.term <= 3 && t.exam !== 'end-of-year')
+        .flatMap((t, ti) =>
+          ids.map((id, i) => ({
+            class_id: c.id,
+            learner_id: id,
+            task_key: t.slot,
+            mark: Math.round((clamp(ability(i) + (seeded(i + ci, ti + 9) - 0.5) * 20) / 100) * t.marks),
+            status: 'marked' as const,
+            out_of: t.marks,
+          })),
+        )
+      results.push(...sbaResults(rows, [c]), ...weeklyFor(c, ids, ability, today, 100 + ci * 13))
+    })
+
+  return { year: now.getFullYear(), classes, names: scope === 'teacher' ? names : new Map(), members, results }
+}

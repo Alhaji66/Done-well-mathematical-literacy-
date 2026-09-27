@@ -202,6 +202,14 @@ export const BarChartIcon = (p: IconProps) => (
   </svg>
 )
 
+/** A flight of steps: levels of achievement. */
+export const LevelsIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M3 20h4.5v-4.5H12V11h4.5V6.5H21" />
+    <path d="M3 20h18" />
+  </svg>
+)
+
 export const PlusIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M12 5v14M5 12h14" />

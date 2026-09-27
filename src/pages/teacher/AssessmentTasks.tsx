@@ -4,7 +4,7 @@ import { subjects, getSubject } from '@/data/subjects'
 import { topics } from '@/data/topics'
 import { questionsForSubject } from '@/data/questionBank'
 import { papersForSubject } from '@/data/papers'
-import { buildTest, programmeFor, sheetForTask, topicNames, topicsFor, type SbaTask } from '@/data/sba'
+import { buildTest, markSplitFor, programmeFor, sheetForTask, topicNames, topicsFor, type SbaTask } from '@/data/sba'
 import { sheetMarks, type TaskSheet } from '@/data/sbaTaskSheets'
 import { capsWeightingFor } from '@/data/capsWeighting'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -100,9 +100,11 @@ export function TeacherAssessmentTasks() {
             </select>
           </div>
         </div>
+        <YearMark grade={grade} />
         <p className="rounded-lg bg-navy-50 p-3 text-xs text-navy-600">
-          This is the typical CAPS programme for the subject. Your province’s SBA guideline sets the exact tasks, weightings and dates each year;
-          follow it where it differs. Every task here can still be used as it stands.
+          The tasks below are the typical CAPS programme for the subject. The DBE Programme of Assessment and your province’s SBA guideline set
+          the exact tasks, how the SBA is split between them, and the dates each year; follow them where they differ. Every task here can still
+          be used as it stands.
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -489,6 +491,63 @@ function ExamPanel({ task, papers }: { task: SbaTask; papers: Paper[] }) {
       ) : (
         <p>There are no full papers for this subject and grade yet.</p>
       )}
+    </div>
+  )
+}
+
+/**
+ * How the final mark is made up for the grade, and a quick calculator: the
+ * final mark from an SBA and an examination mark, and the examination mark a
+ * learner needs to reach a target -- the question every learner asks.
+ */
+function YearMark({ grade }: { grade: Grade }) {
+  const split = markSplitFor(grade)
+  const [sba, setSba] = useState('60')
+  const [exam, setExam] = useState('')
+  const sbaN = Number(sba.replace(',', '.'))
+  const examN = Number(exam.replace(',', '.'))
+  const valid = (v: string, n: number) => v.trim() !== '' && Number.isFinite(n) && n >= 0 && n <= 100
+  const final = valid(sba, sbaN) && valid(exam, examN) ? (sbaN * split.sba + examN * split.exam) / 100 : undefined
+  const needed = (target: number) => (target * 100 - sbaN * split.sba) / split.exam
+  const round = (n: number) => String(Math.round(n * 10) / 10).replace('.', ',')
+
+  return (
+    <div className="rounded-lg border border-navy-100 p-3">
+      <p className="text-sm font-semibold text-navy-900">
+        Grade {grade} final mark: SBA {split.sba}% + {split.examName} {split.exam}%
+      </p>
+      <div className="mt-2 flex h-3 overflow-hidden rounded-full" aria-hidden>
+        <span className="bg-gold-400" style={{ width: `${split.sba}%` }} />
+        <span className="bg-navy-700" style={{ width: `${split.exam}%` }} />
+      </div>
+      <p className="mt-1 text-xs text-navy-500">
+        National: {split.source}.{grade === 12 ? '' : ' The June examination is one of the SBA tasks.'}
+      </p>
+
+      <div className="mt-3 flex flex-wrap items-end gap-3 text-sm">
+        <label className="text-xs font-medium text-navy-500">
+          SBA mark (%)
+          <input className="input mt-1 w-24" inputMode="decimal" value={sba} onChange={(e) => setSba(e.target.value)} />
+        </label>
+        <label className="text-xs font-medium text-navy-500">
+          Exam mark (%)
+          <input className="input mt-1 w-24" inputMode="decimal" value={exam} onChange={(e) => setExam(e.target.value)} placeholder="optional" />
+        </label>
+        {final !== undefined ? (
+          <p className="pb-2 font-semibold text-navy-900">Final mark: {round(final)}%</p>
+        ) : null}
+      </div>
+      {valid(sba, sbaN) ? (
+        <p className="mt-2 text-xs text-navy-600">
+          With {round(sbaN)}% for SBA, the exam mark needed for a final mark of{' '}
+          {[30, 40, 50, 70]
+            .map((t) => {
+              const n = needed(t)
+              return `${t}%: ${n <= 0 ? 'already reached' : n > 100 ? 'not reachable' : `${round(Math.ceil(n * 10) / 10)}%`}`
+            })
+            .join(' · ')}
+        </p>
+      ) : null}
     </div>
   )
 }

@@ -85,7 +85,8 @@ function sampleModeration(classId: string, grade: Grade, marks: Marks): DemoMode
       teacher_mark: teacher,
       moderated_mark: Math.max(0, Math.min(task.marks, teacher + [-1, 1, 0, -2, 1][i % 5])),
       out_of: task.marks,
-      updated_at: new Date().toISOString(),
+      moderator_id: 'demo-hod',
+      updated_at: new Date(`${year}-04-14T10:00:00Z`).toISOString(),
     }
   })
   const summary = summarise(samples)!
@@ -102,7 +103,7 @@ function sampleModeration(classId: string, grade: Grade, marks: Marks): DemoMode
           comment: '',
           sample_size: summary.n,
           mean_difference: Math.round(summary.meanDifference * 10) / 10,
-          moderator_id: null,
+          moderator_id: 'demo-hod',
           decided_at: new Date(`${year}-04-15T08:00:00Z`).toISOString(),
         },
       ],
@@ -236,6 +237,15 @@ export function DemoMarkBook() {
           samples={modHere.samples}
           decisions={modHere.decisions}
           canModerate
+          report={{
+            school: 'DONE WELL Demo High School',
+            classLabel: cls.name,
+            subject: 'Mathematical Literacy',
+            grade: cls.grade,
+            year: new Date().getFullYear(),
+            teacher: 'Mr S. Nkosi',
+            names: new Map([...learners.map((l) => [l.id, l.name] as [string, string]), ['demo-hod', 'Ms T. Dube (HOD)']]),
+          }}
           onSave={async (task, learnerId, mark) => {
             const rest = modHere.samples.filter((x) => !(x.task_key === task.slot && x.learner_id === learnerId))
             const teacher = marks.get(learnerId)?.get(task.slot)?.mark ?? 0
@@ -254,6 +264,7 @@ export function DemoMarkBook() {
                         teacher_mark: teacher,
                         moderated_mark: mark,
                         out_of: task.marks,
+                        moderator_id: 'demo-hod',
                         updated_at: new Date().toISOString(),
                       },
                     ],
@@ -272,7 +283,7 @@ export function DemoMarkBook() {
               comment: comment.trim(),
               sample_size: summary.n,
               mean_difference: Math.round(summary.meanDifference * 10) / 10,
-              moderator_id: null,
+              moderator_id: 'demo-hod',
               decided_at: new Date().toISOString(),
             })
             setModHere({ ...modHere, decisions })

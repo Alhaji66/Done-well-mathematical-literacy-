@@ -15,6 +15,7 @@ import {
   decideModeration,
   fetchDecisionsFor,
   fetchModeration,
+  fetchReportContext,
   reopenModeration,
   saveModeratedMark,
   type ModerationDecision,
@@ -45,6 +46,7 @@ export function MarkBook() {
   const [notSetUp, setNotSetUp] = useState(false)
   const [released, setReleasedTasks] = useState<Set<string> | null>(null)
   const [view, setView] = useState<'overview' | 'class' | 'risk' | null>(null)
+  const [reportContext, setReportContext] = useState<{ school: string | null; names: Map<string, string> } | null>(null)
   const [moderation, setModeration] = useState<{ samples: ModerationMark[]; decisions: ModerationDecision[] } | null>(null)
   const [overview, setOverview] = useState<{
     members: Map<string, string[]>
@@ -87,6 +89,15 @@ export function MarkBook() {
       live = false
     }
   }, [classId, year])
+
+  useEffect(() => {
+    if (!schoolId) return
+    let live = true
+    fetchReportContext(schoolId).then((c) => live && setReportContext(c))
+    return () => {
+      live = false
+    }
+  }, [schoolId])
 
   useEffect(() => {
     if ((view !== 'overview' && view !== 'risk') || !classes?.length) return
@@ -275,6 +286,19 @@ export function MarkBook() {
                 samples={moderation.samples}
                 decisions={new Map(moderation.decisions.map((d) => [d.task_key, d]))}
                 canModerate={canModerate(profile, cls)}
+                report={
+                  reportContext
+                    ? {
+                        school: reportContext.school,
+                        classLabel: cls.name,
+                        subject: subjectName(cls.subject_id),
+                        grade: cls.grade,
+                        year,
+                        teacher: cls.teacher_id ? (reportContext.names.get(cls.teacher_id) ?? null) : null,
+                        names: new Map([...reportContext.names, ...names]),
+                      }
+                    : undefined
+                }
                 onSave={async (task, learnerId, mark) => {
                   const res = await saveModeratedMark({ classId: cls.id, year, taskKey: task.slot, learnerId }, mark)
                   if (res.error) return res.error

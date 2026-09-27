@@ -91,6 +91,10 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `Your marks for ${sbaTaskOf(d)} were returned after moderation. Open the mark book to read the comment.`
     case 'sba_date.set':
       return `${sbaTaskOf(d)} ${d.moved ? 'has moved to' : 'is on'} ${dayOf(d.due_on)}.`
+    case 'sba_date.tomorrow':
+      return `Reminder: ${sbaTaskOf(d)} is tomorrow.${d.note ? ` ${String(d.note).replace(/\.$/, '')}.` : ''}`
+    case 'sba_date.child_tomorrow':
+      return `Reminder: ${names.get(String(d.learner_id)) ?? 'Your child'}’s ${sbaTaskOf(d)} is tomorrow.${d.note ? ` ${String(d.note).replace(/\.$/, '')}.` : ''}`
     case 'sba_date.child_set':
       return `${names.get(String(d.learner_id)) ?? 'Your child'}’s ${sbaTaskOf(d)} ${d.moved ? 'has moved to' : 'is on'} ${dayOf(d.due_on)}.`
     case 'parent_link.created':

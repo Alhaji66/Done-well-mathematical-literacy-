@@ -57,6 +57,7 @@ export const teacherNav: RoleNavItem[] = [
 // to show what the role is for, not to be a working department console.
 export const hodNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },

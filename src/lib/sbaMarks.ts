@@ -15,6 +15,8 @@ export interface SbaMarkRow {
   id: number
   class_id: string
   learner_id: string
+  subject_id: string
+  grade: Grade
   year: number
   task_key: string
   out_of: number
@@ -53,6 +55,51 @@ export async function fetchClassMarks(classId: string, year: number): Promise<{ 
     return { rows: [], notSetUp: isMissing(error) }
   }
   return { rows: (data ?? []) as SbaMarkRow[], notSetUp: false }
+}
+
+/** Every mark a learner has, in every class and year: for the learner and their linked parents. */
+export async function fetchLearnerMarks(learnerId: string): Promise<{ rows: SbaMarkRow[]; notSetUp: boolean }> {
+  if (!supabase) return { rows: [], notSetUp: true }
+  const { data, error } = await supabase.from('sba_marks').select('*').eq('learner_id', learnerId)
+  if (error) {
+    if (!isMissing(error)) console.error('Failed to load marks:', error)
+    return { rows: [], notSetUp: isMissing(error) }
+  }
+  return { rows: (data ?? []) as SbaMarkRow[], notSetUp: false }
+}
+
+export interface MarkReport {
+  classId: string
+  year: number
+  subjectId: string
+  grade: Grade
+  marks: Map<string, SbaMarkRow>
+}
+
+/** A learner's marks as one report per class and year, the latest year first. */
+export function groupLearnerMarks(rows: SbaMarkRow[]): MarkReport[] {
+  const out = new Map<string, MarkReport>()
+  for (const r of rows) {
+    const id = `${r.year}|${r.class_id}`
+    if (!out.has(id)) out.set(id, { classId: r.class_id, year: r.year, subjectId: r.subject_id, grade: r.grade, marks: new Map() })
+    out.get(id)!.marks.set(r.task_key, r)
+  }
+  return [...out.values()].sort((a, b) => b.year - a.year || a.subjectId.localeCompare(b.subjectId))
+}
+
+/** The CAPS seven-point scale of achievement. */
+export function capsLevel(percent: number): { level: number; name: string } {
+  const levels: [number, string][] = [
+    [80, 'Outstanding achievement'],
+    [70, 'Meritorious achievement'],
+    [60, 'Substantial achievement'],
+    [50, 'Adequate achievement'],
+    [40, 'Moderate achievement'],
+    [30, 'Elementary achievement'],
+    [0, 'Not achieved'],
+  ]
+  const i = levels.findIndex(([min]) => percent >= min)
+  return { level: 7 - i, name: levels[i][1] }
 }
 
 /** Save one cell. An empty cell deletes the mark. Resolves to the saved row, or an error message. */

@@ -8,6 +8,7 @@ import { fetchSchoolLearners, type RosterLearner } from '@/lib/teacherRoster'
 import { fetchClassMarks, fetchMarksFor, fetchReleases, fetchReleasesFor, markBookTasks, saveMark, setReleased, type SbaMarkRow } from '@/lib/sbaMarks'
 import { byLearner as groupByLearner } from '@/lib/sbaProgress'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
+import { AtRiskList } from '@/components/markbook/AtRiskList'
 import { ModerationPanel } from '@/components/markbook/ModerationPanel'
 import {
   canModerate,
@@ -43,7 +44,7 @@ export function MarkBook() {
   const [rows, setRows] = useState<SbaMarkRow[]>([])
   const [notSetUp, setNotSetUp] = useState(false)
   const [released, setReleasedTasks] = useState<Set<string> | null>(null)
-  const [view, setView] = useState<'overview' | 'class' | null>(null)
+  const [view, setView] = useState<'overview' | 'class' | 'risk' | null>(null)
   const [moderation, setModeration] = useState<{ samples: ModerationMark[]; decisions: ModerationDecision[] } | null>(null)
   const [overview, setOverview] = useState<{
     members: Map<string, string[]>
@@ -88,7 +89,7 @@ export function MarkBook() {
   }, [classId, year])
 
   useEffect(() => {
-    if (view !== 'overview' || !classes?.length) return
+    if ((view !== 'overview' && view !== 'risk') || !classes?.length) return
     let live = true
     const ids = classes.map((c) => c.id)
     Promise.all([fetchClassMembers(ids), fetchMarksFor(ids, year), fetchReleasesFor(ids, year), fetchDecisionsFor(ids, year)]).then(([members, rows, releases, moderated]) => {
@@ -148,28 +149,27 @@ export function MarkBook() {
         />
       ) : (
         <>
-          {classes.length > 1 ? (
-            <div className="flex w-fit flex-wrap rounded-lg border border-navy-200 bg-white p-1" role="group" aria-label="View">
-              {(
-                [
-                  ['overview', 'All classes'],
-                  ['class', 'Class mark book'],
-                ] as const
-              ).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  aria-pressed={view === id}
-                  onClick={() => setView(id)}
-                  className={cn('rounded-md px-3 py-1.5 text-sm font-semibold', view === id ? 'bg-navy-900 text-white' : 'text-navy-600')}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          ) : null}
+          <div className="flex w-fit flex-wrap rounded-lg border border-navy-200 bg-white p-1 print:hidden" role="group" aria-label="View">
+            {(
+              [
+                ...(classes.length > 1 ? ([['overview', 'All classes']] as const) : []),
+                ['class', 'Class mark book'],
+                ['risk', 'Learners at risk'],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={view === id}
+                onClick={() => setView(id)}
+                className={cn('rounded-md px-3 py-1.5 text-sm font-semibold', view === id ? 'bg-navy-900 text-white' : 'text-navy-600')}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-          {view === 'overview' ? (
+          {view === 'overview' || view === 'risk' ? (
             notSetUp ? (
               <EmptyState
                 icon={<ClipboardCheckIcon className="h-6 w-6" />}
@@ -178,6 +178,18 @@ export function MarkBook() {
               />
             ) : overview === null ? (
               <p className="text-sm text-navy-500">Loading…</p>
+            ) : view === 'risk' ? (
+              <AtRiskList
+                classes={classes}
+                year={year}
+                members={overview.members}
+                marks={overview.marks}
+                names={names}
+                onOpen={(id) => {
+                  setClassId(id)
+                  setView('class')
+                }}
+              />
             ) : (
               <MarkBookOverview
                 classes={classes}

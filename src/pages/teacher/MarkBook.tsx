@@ -3,6 +3,7 @@ import { programmeFor, type SbaTask } from '@/data/sba'
 import { markBookTasks, type SbaMarkRow } from '@/lib/sbaMarks'
 import { MarkBookGrid } from '@/components/markbook/MarkBookGrid'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
+import { AtRiskList } from '@/components/markbook/AtRiskList'
 import { ModerationPanel } from '@/components/markbook/ModerationPanel'
 import { suggestSample, summarise, type ModerationDecision, type ModerationMark } from '@/lib/sbaModeration'
 import { cn } from '@/lib/utils'
@@ -42,7 +43,8 @@ function sampleMarks(tasks: SbaTask[], classId: string): Marks {
   const behind = classId === 'demo-11a'
   const seed = { 'demo-11a': 7, 'demo-12a': 3 }[classId] ?? 0
   NAMES.forEach((_, li) => {
-    const ability = 0.35 + 0.55 * seeded(li + seed, 99)
+    // One learner in 11A is struggling badly.
+    const ability = behind && li === 5 ? 0.22 : 0.35 + 0.55 * seeded(li + seed, 99)
     const row = new Map<string, Pick<SbaMarkRow, 'mark' | 'status' | 'out_of'>>()
     tasks.forEach((t, ti) => {
       if (t.term > 3 || t.exam === 'end-of-year') return
@@ -109,7 +111,7 @@ function sampleModeration(classId: string, grade: Grade, marks: Marks): DemoMode
 }
 
 export function DemoMarkBook() {
-  const [view, setView] = useState<'overview' | 'class'>('overview')
+  const [view, setView] = useState<'overview' | 'class' | 'risk'>('overview')
   const [classId, setClassId] = useState(CLASSES[1].id)
   const cls = CLASSES.find((c) => c.id === classId)!
   const tasks = useMemo(() => tasksOf(cls.grade), [cls.grade])
@@ -143,11 +145,12 @@ export function DemoMarkBook() {
         behind. Each Term 1 investigation has been moderated; below a class’s mark book you can moderate any task as its HOD would. Your
         changes stay on this page only.
       </p>
-      <div className="flex w-fit flex-wrap rounded-lg border border-navy-200 bg-white p-1" role="group" aria-label="View">
+      <div className="flex w-fit flex-wrap rounded-lg border border-navy-200 bg-white p-1 print:hidden" role="group" aria-label="View">
         {(
           [
             ['overview', 'All classes'],
             ['class', 'Class mark book'],
+            ['risk', 'Learners at risk'],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -161,7 +164,19 @@ export function DemoMarkBook() {
           </button>
         ))}
       </div>
-      {view === 'overview' ? (
+      {view === 'risk' ? (
+        <AtRiskList
+          classes={CLASSES}
+          year={new Date().getFullYear()}
+          members={new Map(CLASSES.map((c) => [c.id, learners.map((l) => l.id)]))}
+          marks={new Map(CLASSES.map((c) => [c.id, marksOf(c.id)]))}
+          names={new Map(learners.map((l) => [l.id, l.name]))}
+          onOpen={(id) => {
+            setClassId(id)
+            setView('class')
+          }}
+        />
+      ) : view === 'overview' ? (
         <MarkBookOverview
           classes={CLASSES}
           year={new Date().getFullYear()}

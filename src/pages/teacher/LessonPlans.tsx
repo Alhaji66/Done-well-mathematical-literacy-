@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { subjects } from '@/data/subjects'
 import { topics } from '@/data/topics'
 import { atpFor } from '@/data/atp'
@@ -9,6 +9,7 @@ import {
   LESSON_LENGTHS,
   marksOf,
   teachableSubtopics,
+  weekSpan,
   type Lesson,
   type LessonLength,
   type LessonPlanDoc,
@@ -20,6 +21,9 @@ import { BookIcon, CalendarIcon, PrinterIcon } from '@/components/ui/Icons'
 import { MathText } from '@/components/practise/MathText'
 import { TreeDiagram, VennDiagram } from '@/components/practise/ProbabilityDiagrams'
 import { PrintQuestion } from '@/components/lessons/PrintQuestion'
+import { PlanRecordPanel } from '@/components/lessons/PlanRecordPanel'
+import { useOptionalAccountAuth } from '@/context/AccountAuthContext'
+import type { LessonPlanRecord } from '@/lib/lessonPlanRecords'
 import { cn } from '@/lib/utils'
 import type { Grade, Question } from '@/types'
 
@@ -50,7 +54,13 @@ export function TeacherLessonPlans() {
   const [showPlans, setShowPlans] = useState(true)
   const [showNotes, setShowNotes] = useState(true)
   const [showAnswers, setShowAnswers] = useState(true)
+  const [copy, setCopy] = useState<'teacher' | 'learner'>('teacher')
+  const [datesOverride, setDatesOverride] = useState<string | undefined>()
   const [questions, setQuestions] = useState<Question[] | null>(null)
+  // A signed-in teacher can record the week for their HOD; the demo cannot.
+  const profile = useOptionalAccountAuth()?.profile
+  // A record opened from the teacher's list, waiting for its subject and grade to load.
+  const opening = useRef<LessonPlanRecord | null>(null)
 
   const atp = atpFor(subjectId, grade)
 
@@ -67,17 +77,45 @@ export function TeacherLessonPlans() {
 
   // A new subject or grade has a different plan: start again from its first teaching week.
   useEffect(() => {
+    const r = opening.current
+    if (r && r.subject_id === subjectId && r.grade === grade) {
+      opening.current = null
+      showRecord(r)
+      return
+    }
     const first = atp?.weeks.findIndex((w) => w.topicId) ?? -1
     setWeekKey(first >= 0 ? String(first) : '')
     setWeeksOverride(undefined)
+    setDatesOverride(undefined)
     setOnly('all')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjectId, grade])
+
+  // Put a recorded week back on the screen exactly as the teacher planned it.
+  function showRecord(r: LessonPlanRecord) {
+    setWeekKey(String(r.week_index))
+    setWeeksOverride(r.weeks ?? undefined)
+    if ((LESSON_LENGTHS as readonly number[]).includes(r.lesson_minutes)) setLessonMinutes(r.lesson_minutes as LessonLength)
+    setDatesOverride(r.dates || undefined)
+    setOnly('all')
+  }
+
+  const openRecord = (r: LessonPlanRecord) => {
+    if (r.subject_id === subjectId && r.grade === grade) showRecord(r)
+    else {
+      opening.current = r
+      setSubjectId(r.subject_id)
+      setGrade(r.grade)
+    }
+  }
 
   const weekIndex = weekKey === '' ? -1 : Number(weekKey)
   const week = atp && weekIndex >= 0 ? atp.weeks[weekIndex] : undefined
-  const termLevel = atp?.detail === 'term' && !!week?.topicId
+  // A provincial ATP fixes the weeks; a suggested plan's weeks are the teacher's to change.
+  const adjustable = atp?.detail !== 'week' && !!week?.topicId
   const suggestedWeeks =
-    atp && week && questions ? defaultWeeksFor(teachableSubtopics(atp, weekIndex, grade, questions).length) : 1
+    (week && weekSpan(week.weeks)) ??
+    (atp && week && questions ? defaultWeeksFor(teachableSubtopics(atp, weekIndex, grade, questions).length) : 1)
 
   const plan: LessonPlanDoc | undefined = useMemo(() => {
     if (!atp || weekIndex < 0 || !questions) return undefined
@@ -85,6 +123,8 @@ export function TeacherLessonPlans() {
   }, [atp, weekIndex, grade, questions, lessonMinutes, weeksOverride])
 
   const lessons = plan ? (only === 'all' ? plan.lessons : plan.lessons.filter((l) => l.number === only)) : []
+  // The teacher can write in their own dates; the plan's are printed otherwise.
+  const shown = plan && datesOverride !== undefined ? { ...plan, when: datesOverride || plan.when } : plan
 
   return (
     <div className="space-y-6">
@@ -135,7 +175,7 @@ export function TeacherLessonPlans() {
               ))}
             </select>
           </div>
-          {termLevel ? (
+          {adjustable ? (
             <div>
               <label className="text-xs font-medium text-navy-500" htmlFor="lp-weeks">
                 Weeks for this topic
@@ -145,7 +185,8 @@ export function TeacherLessonPlans() {
                 className="select mt-1"
                 value={weeksOverride ?? suggestedWeeks}
                 onChange={(e) => {
-                  setWeeksOverride(Number(e.target.value))
+                  const n = Number(e.target.value)
+                  setWeeksOverride(n === suggestedWeeks ? undefined : n)
                   setOnly('all')
                 }}
               >
@@ -172,6 +213,7 @@ export function TeacherLessonPlans() {
               onChange={(e) => {
                 setWeekKey(e.target.value)
                 setWeeksOverride(undefined)
+                setDatesOverride(undefined)
                 setOnly('all')
               }}
             >
@@ -189,8 +231,8 @@ export function TeacherLessonPlans() {
             </select>
             <p className="mt-1.5 text-xs text-navy-400">
               {atp.source}
-              {atp.detail === 'term'
-                ? ' · this plan is by term, because your province sets the week each topic starts. Choose how many weeks you will spend on the topic.'
+              {atp.detail === 'suggested'
+                ? ' · the weeks and dates are a suggestion. Change the weeks for the topic and type your own dates to match your school’s plan.'
                 : ''}
             </p>
           </div>
@@ -218,7 +260,35 @@ export function TeacherLessonPlans() {
                 ))}
               </select>
             </div>
-            <fieldset className="flex flex-wrap gap-x-5 gap-y-2 pb-2 text-sm text-navy-700">
+            <div className="min-w-[min(16rem,100%)]">
+              <label className="text-xs font-medium text-navy-500" htmlFor="lp-dates">
+                Dates printed on the plan
+              </label>
+              <input
+                id="lp-dates"
+                className="input mt-1"
+                value={datesOverride ?? plan.when}
+                onChange={(e) => setDatesOverride(e.target.value)}
+                placeholder="e.g. 3 Feb – 21 Feb"
+              />
+            </div>
+            <div>
+              <span className="text-xs font-medium text-navy-500">Print</span>
+              <div className="mt-1 flex rounded-lg border border-navy-200 bg-white p-1" role="group" aria-label="Which copy">
+                {(['teacher', 'learner'] as const).map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    aria-pressed={copy === c}
+                    onClick={() => setCopy(c)}
+                    className={cn('rounded-md px-3 py-1.5 text-sm font-semibold', copy === c ? 'bg-navy-900 text-white' : 'text-navy-600')}
+                  >
+                    {c === 'teacher' ? 'Teacher plan' : 'Learner handout'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <fieldset className={cn('flex flex-wrap gap-x-5 gap-y-2 pb-2 text-sm text-navy-700', copy === 'learner' && 'hidden')}>
               <legend className="sr-only">What to include</legend>
               <label className="inline-flex items-center gap-2">
                 <input type="checkbox" checked={showPlans} onChange={(e) => setShowPlans(e.target.checked)} /> Lesson plans
@@ -237,6 +307,20 @@ export function TeacherLessonPlans() {
         ) : null}
       </div>
 
+      {profile?.role === 'teacher' && plan && shown && !plan.examOnly ? (
+        <PlanRecordPanel
+          profile={profile}
+          plan={plan}
+          subjectId={subjectId}
+          grade={grade}
+          weekIndex={weekIndex}
+          weeksOverride={weeksOverride}
+          lessonMinutes={lessonMinutes}
+          dates={shown.when}
+          onOpen={openRecord}
+        />
+      ) : null}
+
       {!atp ? null : !questions ? (
         <p className="text-sm text-navy-500">Loading the question bank…</p>
       ) : !plan ? (
@@ -250,9 +334,15 @@ export function TeacherLessonPlans() {
       ) : (
         <div className="card overflow-hidden">
           <div className="print-area p-5 sm:p-8">
-            <PlanCover plan={plan} lessons={lessons} />
-            {showPlans ? lessons.map((l) => <LessonPage key={l.number} plan={plan} lesson={l} showAnswers={showAnswers} />) : null}
-            {showNotes ? plan.notes.map((n) => <NotesPages key={n.topicId} plan={plan} notes={n} />) : null}
+            {copy === 'learner' && shown ? (
+              lessons.map((l, i) => <LearnerSheet key={l.number} plan={shown} lesson={l} first={i === 0} />)
+            ) : shown ? (
+              <>
+                <PlanCover plan={shown} lessons={lessons} />
+                {showPlans ? lessons.map((l) => <LessonPage key={l.number} plan={shown} lesson={l} showAnswers={showAnswers} />) : null}
+                {showNotes ? shown.notes.map((n) => <NotesPages key={n.topicId} plan={shown} notes={n} />) : null}
+              </>
+            ) : null}
           </div>
         </div>
       )}
@@ -272,7 +362,7 @@ function DocHeader({ plan, title }: { plan: LessonPlanDoc; title: string }) {
   )
 }
 
-function PlanCover({ plan, lessons }: { plan: LessonPlanDoc; lessons: Lesson[] }) {
+export function PlanCover({ plan, lessons }: { plan: LessonPlanDoc; lessons: Lesson[] }) {
   return (
     <section className="print-avoid-break">
       <DocHeader plan={plan} title={`${plan.label}${plan.topicName && plan.topicName !== plan.label ? ` — ${plan.topicName}` : ''}`} />
@@ -550,5 +640,87 @@ function NotesPages({ plan, notes }: { plan: LessonPlanDoc; notes: TeacherNotes 
         <BookIcon className="h-3.5 w-3.5" /> Built from the CAPS topic notes and question bank in DONE WELL. Adapt it to your class.
       </p>
     </section>
+  )
+}
+
+/** Writing lines under a question: roughly one line per mark, between two and eight. */
+function AnswerSpace({ marks }: { marks: number }) {
+  const lines = Math.min(8, Math.max(2, marks))
+  return (
+    <div className="mt-2" aria-hidden="true">
+      {Array.from({ length: lines }, (_, i) => (
+        <div key={i} className="h-7 border-b border-navy-200" />
+      ))}
+    </div>
+  )
+}
+
+/**
+ * The learner's copy of a lesson: the same questions as the teacher's plan,
+ * with room to write and no answers, levels or teaching notes. One lesson to a
+ * sheet, so a teacher can run off a class set of just today's.
+ */
+function LearnerSheet({ plan, lesson, first }: { plan: LessonPlanDoc; lesson: Lesson; first: boolean }) {
+  const work = lesson.classwork
+  const test = lesson.focus === 'Consolidate and assess'
+  return (
+    <section className={cn(!first && 'print-break-before mt-10 border-t border-dashed border-navy-200 pt-6 print:mt-0 print:border-0 print:pt-0')}>
+      <div className="border-b-2 border-navy-900 pb-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gold-700">
+          DONE WELL® {plan.subjectName} · Grade {plan.grade}
+        </p>
+        <h2 className="mt-1 text-lg font-bold text-navy-900 [text-wrap:balance]">
+          {test ? 'Class test' : 'Classwork'}: {lesson.title}
+        </h2>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-navy-700">
+        <span>Name: ______________________________</span>
+        <span>Class: ________</span>
+        <span>Date: ______________</span>
+        {work.length ? <span className="font-semibold">Total: {plural(marksOf(work), 'mark')}</span> : null}
+      </div>
+
+      {lesson.warmUp ? (
+        <div className="mt-4">
+          <Heading>Warm-up</Heading>
+          <div className="mt-1.5">
+            <LearnerQuestion question={lesson.warmUp} number="Warm-up" />
+          </div>
+        </div>
+      ) : null}
+
+      {work.length ? (
+        <div className="mt-4">
+          <Heading>{test ? 'Answer all the questions' : 'Classwork'}</Heading>
+          <div className="mt-1.5 space-y-4">
+            {work.map((q, i) => (
+              <LearnerQuestion key={q.id} question={q} number={`Question ${i + 1}`} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="mt-4 text-sm text-navy-600">Your teacher will give you the exercise for this lesson.</p>
+      )}
+
+      {lesson.homework.length ? (
+        <div className="mt-5">
+          <Heading>Homework</Heading>
+          <div className="mt-1.5 space-y-4">
+            {lesson.homework.map((q, i) => (
+              <LearnerQuestion key={q.id} question={q} number={`Homework ${i + 1}`} />
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
+function LearnerQuestion({ question, number }: { question: Question; number: string }) {
+  return (
+    <div className="print-avoid-break">
+      <PrintQuestion question={question} number={number} showAnswer={false} learner />
+      {question.options?.length ? null : <AnswerSpace marks={question.marks} />}
+    </div>
   )
 }

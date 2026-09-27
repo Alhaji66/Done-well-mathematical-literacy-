@@ -88,7 +88,7 @@ export interface LessonPlanDoc {
   subtopics: string[]
   note?: string
   source: string
-  detail: 'week' | 'term'
+  detail: 'week' | 'term' | 'suggested'
   weeks: number
   hoursPerWeek: number
   lessonMinutes: number
@@ -334,7 +334,7 @@ interface BuildInput {
   /** Every question in the subject for this grade. */
   questions: Question[]
   lessonMinutes: LessonLength
-  /** For a term-level plan, the weeks the teacher gives the topic. Ignored when the ATP says. */
+  /** The weeks the teacher gives the topic, where they differ from the plan's. */
   weeksOverride?: number
 }
 
@@ -349,7 +349,8 @@ export function buildLessonPlan({ atp, weekIndex, grade, questions, lessonMinute
   const perWeek = Math.max(1, Math.floor((hoursPerWeek * 60) / lessonMinutes))
   const subtopics = teachableSubtopics(atp, weekIndex, grade, questions)
   const span = weekSpan(week.weeks)
-  const weeks = span ?? weeksOverride ?? (week.topicId ? defaultWeeksFor(subtopics.length) : 1)
+  // A teacher's own choice wins; then the plan's week range; then a default.
+  const weeks = weeksOverride ?? span ?? (week.topicId ? defaultWeeksFor(subtopics.length) : 1)
   const when = week.dates ? `Week ${week.weeks} (${week.dates})` : week.weeks
   const [intro, dev, cons, concl] = phaseMinutes(lessonMinutes)
   const gradePool = questions.filter((q) => q.grade === grade)

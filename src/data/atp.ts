@@ -1,3 +1,6 @@
+import { subtopicsForWeek } from './lessonPlans'
+import type { Grade } from '@/types'
+
 /**
  * The Annual Teaching Plan, week by week.
  *
@@ -79,7 +82,7 @@ export interface Atp {
    * week needs to know whether they are looking at their province's plan or a
    * reasonable default.
    */
-  detail: 'week' | 'term'
+  detail: 'week' | 'term' | 'suggested'
   weeks: AtpWeek[]
 }
 
@@ -569,6 +572,128 @@ const physG12 = term('physical-sciences', 12, 'Physical Sciences', [
   [4, 'Revision and final examination', undefined],
 ])
 
+/**
+ * THE SUGGESTED WEEK PLANS.
+ *
+ * Only Mat Lit Grades 11 and 12 have a real provincial ATP here. Every other
+ * plan above knows which TERM each topic falls in, and that was all the
+ * teacher got: "Term 1 -- Functions", with no weeks and no dates. A teacher
+ * planning next week needs a week.
+ *
+ * So each term-level plan is laid out across the real 2026 school terms (the
+ * same calendar the WCED ATP uses) as a SUGGESTION, and says so wherever it
+ * is shown. Exam blocks keep their usual length -- three weeks for the
+ * mid-year and preparatory examinations, five for a Grade 10 or 11 end-of-year
+ * revision and exam, the whole of Term 4 for Grade 12 -- and the teaching
+ * weeks left in the term are shared between its topics in proportion to how
+ * many sub-topics each has, every topic getting at least a week.
+ *
+ * The weeks are a reasonable default, not a ruling: the lesson-plan page lets
+ * the teacher change how many weeks a topic gets and type their own dates,
+ * and a provincial ATP sent in replaces the suggestion outright.
+ */
+
+/** 2026 public school terms: first and last school day of each. */
+const TERMS_2026: Record<1 | 2 | 3 | 4, [string, string]> = {
+  1: ['2026-01-14', '2026-03-27'],
+  2: ['2026-04-08', '2026-06-26'],
+  3: ['2026-07-21', '2026-09-23'],
+  4: ['2026-10-06', '2026-12-09'],
+}
+
+const MONTHS = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+const fmt = (d: Date) => `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`
+const addDays = (d: Date, n: number) => new Date(d.getTime() + n * 86_400_000)
+
+/**
+ * The school weeks of a term, Monday to Friday. The first week starts on the
+ * term's first day and the last ends on its last day, whatever weekday those are.
+ */
+export function termWeeks(term: 1 | 2 | 3 | 4): { start: Date; end: Date }[] {
+  const [a, b] = TERMS_2026[term].map((iso) => new Date(`${iso}T00:00:00Z`))
+  const out: { start: Date; end: Date }[] = []
+  let start = a
+  while (start <= b) {
+    const toFriday = (5 - start.getUTCDay() + 7) % 7
+    const friday = addDays(start, toFriday)
+    const end = friday > b ? b : friday
+    out.push({ start, end })
+    start = addDays(friday, 3)
+  }
+  return out
+}
+
+/** How many weeks a week with no topic takes, and whether it takes the rest of the term. */
+function reserveFor(label: string, grade: number, hasTeaching: boolean): number | 'rest' {
+  if (/mid-year/i.test(label)) return 3
+  if (/preparatory/i.test(label)) return 3
+  if (/final|end-of-year/i.test(label)) return grade === 12 || !hasTeaching ? 'rest' : 5
+  // "Revision and term test", added below for a term with no exam block.
+  return 1
+}
+
+/** Share `total` among `weights`, every share at least 1, by largest remainder. */
+function apportion(total: number, weights: number[]): number[] {
+  const n = weights.length
+  if (!n) return []
+  const t = Math.max(total, n)
+  const sum = weights.reduce((a, w) => a + w, 0) || n
+  const exact = weights.map((w) => 1 + ((t - n) * w) / sum)
+  const out = exact.map(Math.floor)
+  let left = t - out.reduce((a, x) => a + x, 0)
+  const order = exact.map((x, i) => [x - Math.floor(x), i] as const).sort((p, q) => q[0] - p[0])
+  for (let k = 0; left > 0; k = (k + 1) % n, left--) out[order[k][1]]++
+  return out
+}
+
+function suggestWeeks(plan: Atp): Atp {
+  const weeks: AtpWeek[] = []
+  for (const term of [1, 2, 3, 4] as const) {
+    const cal = termWeeks(term)
+    const entries = plan.weeks.map((w, i) => ({ w, i })).filter(({ w }) => w.term === term)
+    // A term with no exam block ends on its last topic in the term-level
+    // plan. A real ATP closes such a term with revision and a term test, and
+    // so does the suggestion: one week, taken from the teaching weeks.
+    if (entries.length && entries.every(({ w }) => w.topicId)) {
+      entries.push({ w: { term, weeks: '', label: 'Revision and term test' }, i: -1 })
+    }
+    const teaching = entries.filter(({ w }) => w.topicId)
+    const reserves = entries.map(({ w }) => (w.topicId ? 0 : reserveFor(w.label, plan.grade, teaching.length > 0)))
+    const fixed = reserves.reduce<number>((a, r) => a + (r === 'rest' ? 0 : r), 0)
+    const hasRest = reserves.includes('rest')
+    // Where the term ends in the final examination (Grade 12, Term 4), the
+    // exam block takes whatever the teaching leaves, so the teaching must be
+    // capped rather than given the term: two weeks a topic.
+    const teachingWeeks = hasRest
+      ? Math.min(cal.length - 1, 2 * teaching.length)
+      : Math.max(teaching.length, cal.length - fixed)
+    const shares = apportion(
+      hasRest && !teaching.length ? 0 : teachingWeeks,
+      teaching.map(({ i }) => Math.max(1, subtopicsForWeek(plan, i, plan.grade as Grade).length)),
+    )
+    let cursor = 0
+    let t = 0
+    entries.forEach(({ w }, k) => {
+      const r = reserves[k]
+      const len = w.topicId ? shares[t++] : r === 'rest' ? cal.length - cursor : r
+      const from = Math.min(cursor, cal.length - 1)
+      const to = Math.min(cursor + Math.max(1, len) - 1, cal.length - 1)
+      cursor += Math.max(1, len)
+      weeks.push({
+        ...w,
+        weeks: from === to ? `${from + 1}` : `${from + 1} – ${to + 1}`,
+        dates: `${fmt(cal[from].start)} – ${fmt(cal[to].end)}`,
+      })
+    })
+  }
+  return {
+    ...plan,
+    source: `${plan.source.replace(' — not a provincial ATP', '')}, laid out week by week on the 2026 school calendar by DONE WELL`,
+    detail: 'suggested',
+    weeks,
+  }
+}
+
 const plans: Atp[] = [
   matLitG10,
   matLitG11,
@@ -582,7 +707,7 @@ const plans: Atp[] = [
   physG10,
   physG11,
   physG12,
-]
+].map((p) => (p.detail === 'term' ? suggestWeeks(p) : p))
 
 /** The ATP for a subject and grade, or undefined where none has been supplied. */
 export function atpFor(subjectId: string, grade: number): Atp | undefined {

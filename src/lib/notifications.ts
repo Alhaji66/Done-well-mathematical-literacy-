@@ -62,6 +62,12 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `${names.get(String(d.profile_id)) ?? 'Someone'} is waiting for you to approve them as staff.`
     case 'staff.approved':
       return 'A colleague has approved you as staff. You can now see your school’s learners.'
+    case 'lesson_plan.submitted':
+      return `${names.get(String(d.profile_id)) ?? 'A teacher'} submitted a Grade ${String(d.grade)} week for sign-off: “${String(d.title ?? '')}”.`
+    case 'lesson_plan.signed':
+      return `Your head of department signed off “${String(d.title ?? '')}”.`
+    case 'lesson_plan.returned':
+      return `Your head of department returned “${String(d.title ?? '')}” with a comment. Open it to see what to change.`
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

@@ -1206,5 +1206,171 @@ insert into results
          count(*) = 3
   from public.tutor_requests;
 
+-- ===========================================================================
+-- LESSON PLAN RECORDS AND HOD SIGN-OFF (STEP 20)
+-- ===========================================================================
+-- Two heads of department at Gojela High: Mathematical Literacy (f5) and Life
+-- Sciences (f6), both approved. Teacher A teaches Mathematical Literacy.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000f5'), ('00000000-0000-0000-0000-0000000000f6');
+insert into public.profiles (id, role, full_name, school_id, subject_id, staff_approved_at)
+  select v.id::uuid, 'hod', v.n, s.school_id, v.subj, now()
+  from s, (values ('00000000-0000-0000-0000-0000000000f5', 'HOD Mat Lit', 'mat-lit'),
+                  ('00000000-0000-0000-0000-0000000000f6', 'HOD Life Sciences', 'life-sciences')) v(id, n, subj);
+
+-- 58. A teacher records a week as a draft and submits it.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.lesson_plan_records (school_id, teacher_id, subject_id, grade, week_index, title, term, topic_id, lessons_planned, lessons_taught, dates, reflection)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'mat-lit', 12, 3, 'Term 1 · Week 4 — Finance', 1, 'finance', 4, 4, '3–7 Feb', 'Went well.'
+  from s;
+update public.lesson_plan_records set status = 'submitted';
+insert into results
+  select '58. a teacher records a week and submits it',
+         string_agg(status || ' at ' || case when submitted_at is null then 'no time' else 'a time' end, ', '),
+         count(*) = 1 and bool_and(status = 'submitted' and submitted_at is not null)
+  from public.lesson_plan_records;
+
+-- 58b. The teacher cannot sign it off, or write the review fields, themselves.
+do $$ begin
+  begin update public.lesson_plan_records set status = 'signed'; exception when others then null; end;
+  begin perform public.review_lesson_plan((select id from public.lesson_plan_records limit 1), true, 'Looks good'); exception when others then null; end;
+end $$;
+update public.lesson_plan_records
+  set review_comment = 'Approved by me', reviewed_by = '00000000-0000-0000-0000-0000000000f5', reviewed_at = now();
+insert into results
+  select '58b. a teacher cannot sign off or fake a review of their own record',
+         status || ', comment "' || review_comment || '", reviewer ' || coalesce(reviewed_by::text, 'none'),
+         status = 'submitted' and review_comment = '' and reviewed_by is null and reviewed_at is null
+  from public.lesson_plan_records;
+reset role;
+
+-- 59. A learner sees no records and cannot create one.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.lesson_plan_records (school_id, teacher_id, subject_id, grade, week_index, title, term)
+      select school_id, '00000000-0000-0000-0000-0000000000b1', 'mat-lit', 12, 5, 'Fake', 1 from s;
+  exception when others then null; end;
+end $$;
+insert into results
+  select '59. a learner sees no lesson plan records and cannot add one',
+         count(*)::text || ' visible',
+         count(*) = 0
+  from public.lesson_plan_records;
+reset role;
+insert into results
+  select '59b. the learner''s record was refused',
+         count(*)::text || ' in total',
+         count(*) = 1
+  from public.lesson_plan_records;
+
+-- 60. Another department's HOD neither sees nor reviews it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f6');
+set role authenticated;
+create temp table other_hod as select count(*) as n from public.lesson_plan_records;
+do $$ begin
+  begin perform public.review_lesson_plan((select id from public.lesson_plan_records limit 1), true, ''); exception when others then null; end;
+end $$;
+reset role;
+grant select on other_hod to authenticated;
+insert into results
+  select '60. another department''s HOD cannot see or sign the record',
+         (select n from other_hod)::text || ' visible, status ' || status,
+         (select n from other_hod) = 0 and status = 'submitted'
+  from public.lesson_plan_records;
+
+-- 61. The subject's HOD must say what to change to return it; then returns it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+do $$ begin
+  begin perform public.review_lesson_plan((select id from public.lesson_plan_records limit 1), false, '  '); exception when others then null; end;
+end $$;
+create temp table after_blank as select status from public.lesson_plan_records;
+select public.review_lesson_plan((select id from public.lesson_plan_records limit 1), false, 'Add the homework you set.');
+reset role;
+grant select on after_blank to authenticated;
+insert into results
+  select '61. returning needs a comment; with one, the record goes back to the teacher',
+         (select status from after_blank) || ' then ' || status || ': ' || review_comment,
+         (select status from after_blank) = 'submitted' and status = 'returned'
+           and review_comment = 'Add the homework you set.' and reviewed_by = '00000000-0000-0000-0000-0000000000f5'
+  from public.lesson_plan_records;
+
+-- 61b. The teacher sees the comment, edits and resubmits; the HOD signs it.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update public.lesson_plan_records set reflection = 'Went well. Homework: Ex 3.2.', status = 'submitted';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+select public.review_lesson_plan((select id from public.lesson_plan_records limit 1), true, 'Thank you.');
+reset role;
+insert into results
+  select '61b. resubmitted and signed off by the HOD',
+         status || ', reflection "' || reflection || '"',
+         status = 'signed' and reflection like '%Ex 3.2%' and reviewed_at is not null
+  from public.lesson_plan_records;
+
+-- 61c. A signed record is final: the teacher can neither change nor delete it.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin update public.lesson_plan_records set reflection = 'Rewritten later', status = 'draft'; exception when others then null; end;
+  begin delete from public.lesson_plan_records; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '61c. a signed record cannot be changed or deleted',
+         count(*)::text || ' record(s), ' || string_agg(status, ','),
+         count(*) = 1 and bool_and(status = 'signed' and reflection not like 'Rewritten%')
+  from public.lesson_plan_records;
+
+-- 62. Nobody signs off their own record, HOD included.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+insert into public.lesson_plan_records (school_id, teacher_id, subject_id, grade, week_index, title, term, status)
+  select school_id, '00000000-0000-0000-0000-0000000000f5', 'mat-lit', 11, 2, 'HOD''s own week', 1, 'submitted' from s;
+do $$ begin
+  begin perform public.review_lesson_plan((select id from public.lesson_plan_records where teacher_id = auth.uid()), true, ''); exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '62. an HOD cannot sign off their own record',
+         status,
+         status = 'submitted'
+  from public.lesson_plan_records where teacher_id = '00000000-0000-0000-0000-0000000000f5';
+
+-- 62b. A draft stays the teacher's own until they submit it.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.lesson_plan_records (school_id, teacher_id, subject_id, grade, week_index, title, term)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'mat-lit', 12, 7, 'Still writing', 1 from s;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+insert into results
+  select '62b. the HOD does not see a teacher''s draft',
+         count(*) filter (where title = 'Still writing')::text || ' draft(s) visible',
+         count(*) filter (where title = 'Still writing') = 0 and count(*) >= 1
+  from public.lesson_plan_records;
+reset role;
+
+-- 63. The journey is in the audit log, and each side was told.
+insert into results
+  select '63. submitted, returned and signed are recorded in the audit log',
+         string_agg(action, ',' order by id),
+         string_agg(action, ',' order by id) = 'lesson_plan.submitted,lesson_plan.returned,lesson_plan.submitted,lesson_plan.signed,lesson_plan.submitted'
+  from public.audit_log where target_table = 'lesson_plan_records';
+insert into results
+  select '63b. the HOD was told of each submission; the teacher of each decision',
+         string_agg(p.full_name || ':' || n.kind, ', ' order by n.id),
+         count(*) filter (where n.recipient_id = '00000000-0000-0000-0000-0000000000f5' and n.kind = 'lesson_plan.submitted') = 2
+           and count(*) filter (where n.recipient_id = '00000000-0000-0000-0000-00000000000a' and n.kind = 'lesson_plan.returned') = 1
+           and count(*) filter (where n.recipient_id = '00000000-0000-0000-0000-00000000000a' and n.kind = 'lesson_plan.signed') = 1
+           and count(*) filter (where n.recipient_id = '00000000-0000-0000-0000-0000000000f6') = 0
+  from public.notifications n join public.profiles p on p.id = n.recipient_id
+  where n.kind like 'lesson_plan.%';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

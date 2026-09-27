@@ -115,5 +115,5 @@ export function demoLevelData(scope: 'teacher' | 'hod' | 'school', now = new Dat
       results.push(...sbaResults(rows, [c]), ...weeklyFor(c, ids, ability, today, 100 + ci * 13))
     })
 
-  return { year: now.getFullYear(), classes, names: scope === 'teacher' ? names : new Map(), members, results }
+  return { year: now.getFullYear(), classes, names: scope === 'school' ? new Map() : names, members, results }
 }

@@ -10,20 +10,24 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 
 /**
  * Learners' levels, 1 to 7, from weekly tests and SBA tasks. A class teacher
- * sees each of their learners; a head of department (their subject) and a
- * principal (the school) see how many learners are at each level.
+ * sees each of their learners; a head of department sees how many learners
+ * in their subject are at each level and, class by class, who they are; a
+ * principal sees how many learners in the school are at each level.
  */
 export function Levels() {
   const { profile } = useAccountAuth()
   const [data, setData] = useState<LevelData | null>(null)
   const teacher = profile?.role === 'teacher'
+  const hod = profile?.role === 'hod'
+  // Names are loaded only for the views that show them.
+  const named = teacher || hod
 
   useEffect(() => {
     if (!profile?.school_id) return
     let live = true
     const schoolId = profile.school_id
     const year = new Date().getFullYear()
-    Promise.all([fetchClasses(schoolId), fetchTestsForSchool(schoolId), teacher ? fetchSchoolLearners(schoolId) : Promise.resolve([])]).then(
+    Promise.all([fetchClasses(schoolId), fetchTestsForSchool(schoolId), named ? fetchSchoolLearners(schoolId) : Promise.resolve([])]).then(
       async ([{ classes: all }, allTests, roster]) => {
         const classes = classesInView(profile, all)
         const ids = classes.map((c) => c.id)
@@ -48,7 +52,7 @@ export function Levels() {
     return () => {
       live = false
     }
-  }, [profile, teacher])
+  }, [profile, teacher, named])
 
   return (
     <div className="space-y-6">
@@ -59,11 +63,11 @@ export function Levels() {
           teacher
             ? 'Each learner’s level, 1 to 7, on every weekly test and SBA task, and for the term or year.'
             : profile?.role === 'hod'
-              ? 'How many learners in your department are at each level, 1 to 7, by grade, class and test.'
+              ? 'How many learners in your subject are at each level, 1 to 7, by grade, class and test. Switch to Learners to see each learner’s level, class by class.'
               : 'How many learners are at each level, 1 to 7, in every subject and grade, then by class and by test.'
         }
       />
-      {data ? <LevelsView data={data} mode={teacher ? 'learners' : 'tally'} /> : <p className="text-sm text-navy-500">Loading levels…</p>}
+      {data ? <LevelsView data={data} mode={teacher ? 'learners' : hod ? 'both' : 'tally'} /> : <p className="text-sm text-navy-500">Loading levels…</p>}
     </div>
   )
 }

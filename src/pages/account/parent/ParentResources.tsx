@@ -6,11 +6,10 @@ import { filterResources } from '@/data/resources'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { BookIcon, DownloadIcon, EyeIcon, HeartHandshakeIcon } from '@/components/ui/Icons'
+import { subjects } from '@/data/subjects'
 
-const subjectNames: Record<string, string> = {
-  'mat-lit': 'Mathematical Literacy',
-  mathematics: 'Mathematics',
-}
+// Every subject's name, from the one list of subjects.
+const subjectNames: Record<string, string> = Object.fromEntries(subjects.map((s) => [s.id, s.name]))
 
 function ChildResources({ child }: { child: LinkedChild }) {
   const subjectName = child.subject_id ? subjectNames[child.subject_id] ?? child.subject_id : null

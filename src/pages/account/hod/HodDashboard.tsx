@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { fetchSchoolLearners, fetchProgressForLearners, averageMastery, type RosterLearner, type RosterProgressRow } from '@/lib/teacherRoster'
 import { fetchDepartmentTeachers, type SchoolTeacher } from '@/lib/schoolStaff'
@@ -11,6 +11,9 @@ import { UsersIcon, SchoolIcon } from '@/components/ui/Icons'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
 import { PendingStaff } from '@/components/account/PendingStaff'
 import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
+
+// Loaded after the page: it brings the SBA programme with it.
+const SbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.SbaAttention })))
 
 /**
  * What a Head of Department is looking at, as opposed to a teacher or a
@@ -94,6 +97,12 @@ export function HodDashboard() {
         title={`${subjectName} department`}
         description="Every teacher and every learner taking this subject at your school, across all three grades."
       />
+
+      {profile ? (
+        <Suspense fallback={null}>
+          <SbaAttention profile={profile} to="../markbook" />
+        </Suspense>
+      ) : null}
 
       <TeachingSubject profile={profile} variant="hod" />
 

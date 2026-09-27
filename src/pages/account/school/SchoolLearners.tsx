@@ -6,11 +6,10 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { subjects } from '@/data/subjects'
 
-const subjectNames: Record<string, string> = {
-  'mat-lit': 'Mathematical Literacy',
-  mathematics: 'Mathematics',
-}
+// Every subject's name, from the one list of subjects.
+const subjectNames: Record<string, string> = Object.fromEntries(subjects.map((s) => [s.id, s.name]))
 
 export function SchoolLearners() {
   const { profile } = useAccountAuth()

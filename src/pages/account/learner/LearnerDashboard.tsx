@@ -14,6 +14,7 @@ import { fetchLearnerDates, upcoming, type TaskDate } from '@/lib/sbaSchedule'
 // Loaded only when something is coming up: it brings the SBA programme with it.
 const ComingUp = lazy(() => import('@/components/markbook/ComingUp'))
 import { PencilIcon, TrendingUpIcon, ClipboardIcon, CheckIcon } from '@/components/ui/Icons'
+import { subjects } from '@/data/subjects'
 
 function FamilyLinkCode({ code }: { code: string }) {
   const [copied, setCopied] = useState(false)
@@ -44,10 +45,8 @@ function FamilyLinkCode({ code }: { code: string }) {
   )
 }
 
-const subjectNames: Record<string, string> = {
-  'mat-lit': 'Mathematical Literacy',
-  mathematics: 'Mathematics',
-}
+// Every subject's name, from the one list of subjects.
+const subjectNames: Record<string, string> = Object.fromEntries(subjects.map((s) => [s.id, s.name]))
 
 export function LearnerDashboard() {
   const { profile } = useAccountAuth()

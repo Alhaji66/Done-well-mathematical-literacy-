@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { demoTeacher, classLearners, classTopicPerformance } from '@/data/teacherSchool'
 import { getSubject } from '@/data/subjects'
@@ -9,6 +10,9 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { RiskBadge, StatusBadge } from '@/components/ui/Badges'
 import { formatDate } from '@/lib/utils'
 import { UsersIcon, BarChartIcon, SparkleIcon, ClipboardIcon, ChevronRightIcon } from '@/components/ui/Icons'
+
+// Loaded after the page: it brings the SBA programme with it.
+const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 export function TeacherDashboard() {
   const subject = getSubject(demoTeacher.subjectId)!
@@ -26,6 +30,10 @@ export function TeacherDashboard() {
         <h1 className="mt-1 text-2xl font-bold text-navy-900">Welcome back, {demoTeacher.name}</h1>
         <p className="mt-1 text-sm text-navy-600">Here's your class overview for this week.</p>
       </div>
+
+      <Suspense fallback={null}>
+        <DemoSbaAttention to="/app/teacher/markbook" />
+      </Suspense>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Total learners" value={String(totalLearners)} icon={<UsersIcon className="h-4 w-4" />} hint={`${demoTeacher.classes.length} classes`} />

@@ -19,6 +19,8 @@ import {
   CalendarIcon,
   EyeIcon,
   SchoolIcon,
+  TableIcon,
+  MapIcon,
 } from '@/components/ui/Icons'
 
 export const learnerNav: RoleNavItem[] = [
@@ -53,7 +55,7 @@ export const teacherNav: RoleNavItem[] = [
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   // Six tabs fill the phone bar; SBA tasks is reached from the sidebar menu.
   { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon, phone: false },
-  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon, phone: false },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon, phone: false },
 ]
 
 // Demo Head of Department nav. Smaller than the real one: the demo's job is
@@ -61,6 +63,7 @@ export const teacherNav: RoleNavItem[] = [
 export const hodNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
@@ -70,8 +73,11 @@ export const schoolNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
   { to: '/learners', label: 'Learners', icon: UsersIcon },
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+  // Six tabs fill the phone bar; plan sign-off is reached from the sidebar menu.
+  { to: '/plan-signoff', label: 'Plan sign-off', icon: CalendarIcon, phone: false },
 ]
 
 // Real (non-demo) Learner account nav -- deliberately smaller than the demo's
@@ -104,12 +110,12 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/lesson-plans', label: 'Lesson plans', shortLabel: 'Plans', icon: CalendarIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
-  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
+  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },
   { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon },
-  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },
-  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/coverage', label: 'Coverage', icon: MapIcon },
   { to: '/activity', label: 'Activity log', shortLabel: 'Activity', icon: ClockIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
@@ -135,15 +141,15 @@ export const accountHodNav: RoleNavItem[] = [
   { to: '/learners', label: 'Learners', icon: UsersIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
-  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
   { to: '/classes', label: 'Classes', icon: LayoutIcon },
   { to: '/interventions', label: 'Catch-up groups', shortLabel: 'Catch-up', icon: TargetIcon },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
-  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
+  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },
-  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/coverage', label: 'Coverage', icon: MapIcon },
   { to: '/activity', label: 'Activity log', shortLabel: 'Activity', icon: ClockIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
@@ -156,12 +162,12 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
-  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: ClipboardCheckIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
-  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
+  { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },
-  { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },
+  { to: '/coverage', label: 'Coverage', icon: MapIcon },
   { to: '/activity', label: 'Activity log', shortLabel: 'Activity', icon: ClockIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]

@@ -396,6 +396,7 @@ export default function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<DemoHodDashboard />} />
           <Route path="plan-signoff" element={<DemoPlanSignoff />} />
+          <Route path="markbook" element={<DemoMarkBook />} />
           <Route path="question-bank" element={<TeacherQuestionBank />} />
           <Route path="assessments" element={<TeacherAssessments />} />
           <Route path="analytics" element={<TeacherAnalytics />} />
@@ -434,6 +435,8 @@ export default function App() {
           <Route path="dashboard" element={<SchoolDashboard />} />
           <Route path="learners" element={<SchoolLearners />} />
           <Route path="teachers" element={<SchoolTeachers />} />
+          <Route path="markbook" element={<DemoMarkBook />} />
+          <Route path="plan-signoff" element={<DemoPlanSignoff />} />
           <Route path="assessments" element={<SchoolAssessments />} />
           <Route path="analytics" element={<SchoolAnalytics />} />
         </Route>

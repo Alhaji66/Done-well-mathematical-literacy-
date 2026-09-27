@@ -3,6 +3,7 @@ import { getSubject } from '@/data/subjects'
 import { programmeFor, type SbaTask } from '@/data/sba'
 import { markBookTasks, type SbaMarkRow } from '@/lib/sbaMarks'
 import { classSbaAverage, taskDue, taskProgress, type TaskProgress } from '@/lib/sbaProgress'
+import type { ModerationDecision } from '@/lib/sbaModeration'
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -26,7 +27,7 @@ const CELL: Record<TaskProgress['state'], string> = {
   overdue: 'bg-rose-50 text-rose-900',
 }
 
-function Cell({ p, due }: { p: TaskProgress; due: Date | null }) {
+function Cell({ p, due, moderated }: { p: TaskProgress; due: Date | null; moderated?: ModerationDecision }) {
   const label =
     p.state === 'none'
       ? 'Not started'
@@ -52,6 +53,11 @@ function Cell({ p, due }: { p: TaskProgress; due: Date | null }) {
       ) : p.state === 'none' && due ? (
         <span className="block text-[10px]">by {dateText(due)}</span>
       ) : null}
+      {moderated ? (
+        <span className={cn('block text-[10px] font-semibold', moderated.status === 'accepted' ? 'text-navy-700' : 'text-rose-700')}>
+          {moderated.status === 'accepted' ? 'Moderated' : 'Returned'}
+        </span>
+      ) : null}
     </td>
   )
 }
@@ -68,10 +74,12 @@ export function MarkBookOverview(props: {
   members: Map<string, string[]>
   marks: Map<string, Map<string, Map<string, Row>>>
   released: Map<string, Set<string>> | null
+  /** Moderation decisions by class and task; leave out before STEP 23. */
+  moderated?: Map<string, Map<string, ModerationDecision>> | null
   onOpen: (classId: string) => void
   today?: Date
 }) {
-  const { classes, year, members, marks, released, onOpen } = props
+  const { classes, year, members, marks, released, moderated, onOpen } = props
   const today = props.today ?? new Date()
 
   const groups = useMemo(() => {
@@ -148,6 +156,7 @@ export function MarkBookOverview(props: {
                         <Cell
                           key={t.slot}
                           due={taskDue(t, year)}
+                          moderated={moderated?.get(c.id)?.get(t.slot)}
                           p={taskProgress(t, ids, classMarks, released ? (released.get(c.id) ?? new Set()) : null, taskDue(t, year), today)}
                         />
                       ))}

@@ -81,6 +81,10 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `Your mark for ${sbaTaskOf(d)} is out.`
     case 'sba_marks.child_released':
       return `${names.get(String(d.learner_id)) ?? 'Your child'}’s mark for ${sbaTaskOf(d)} is out.`
+    case 'sba_moderation.accepted':
+      return `Your marks for ${sbaTaskOf(d)} were moderated and accepted.`
+    case 'sba_moderation.returned':
+      return `Your marks for ${sbaTaskOf(d)} were returned after moderation. Open the mark book to read the comment.`
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

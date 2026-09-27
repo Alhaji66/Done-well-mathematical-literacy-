@@ -3,6 +3,8 @@ import { programmeFor, type SbaTask } from '@/data/sba'
 import { markBookTasks, type SbaMarkRow } from '@/lib/sbaMarks'
 import { MarkBookGrid } from '@/components/markbook/MarkBookGrid'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
+import { ModerationPanel } from '@/components/markbook/ModerationPanel'
+import { suggestSample, summarise, type ModerationDecision, type ModerationMark } from '@/lib/sbaModeration'
 import { cn } from '@/lib/utils'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import type { Grade } from '@/types'
@@ -58,6 +60,54 @@ function sampleMarks(tasks: SbaTask[], classId: string): Marks {
 const tasksOf = (grade: Grade) => markBookTasks(programmeFor('mat-lit', grade))
 const learners = NAMES.map((name, i) => ({ id: `demo-learner-${i}`, name }))
 
+interface DemoModeration {
+  samples: ModerationMark[]
+  decisions: Map<string, ModerationDecision>
+}
+
+/** In each class the Term 1 investigation has been moderated and accepted: five scripts, each within a mark or two. */
+function sampleModeration(classId: string, grade: Grade, marks: Marks): DemoModeration {
+  const task = tasksOf(grade)[0]
+  const year = new Date().getFullYear()
+  const scripts = learners
+    .map((l) => ({ learnerId: l.id, row: marks.get(l.id)?.get(task.slot) }))
+    .filter((s) => s.row?.status === 'marked')
+    .map((s) => ({ learnerId: s.learnerId, mark: s.row!.mark ?? 0, percent: ((s.row!.mark ?? 0) / s.row!.out_of) * 100 }))
+  const samples = suggestSample(scripts).map((id, i) => {
+    const teacher = scripts.find((s) => s.learnerId === id)!.mark
+    return {
+      class_id: classId,
+      year,
+      task_key: task.slot,
+      learner_id: id,
+      teacher_mark: teacher,
+      moderated_mark: Math.max(0, Math.min(task.marks, teacher + [-1, 1, 0, -2, 1][i % 5])),
+      out_of: task.marks,
+      updated_at: new Date().toISOString(),
+    }
+  })
+  const summary = summarise(samples)!
+  return {
+    samples,
+    decisions: new Map([
+      [
+        task.slot,
+        {
+          class_id: classId,
+          year,
+          task_key: task.slot,
+          status: 'accepted',
+          comment: '',
+          sample_size: summary.n,
+          mean_difference: Math.round(summary.meanDifference * 10) / 10,
+          moderator_id: null,
+          decided_at: new Date(`${year}-04-15T08:00:00Z`).toISOString(),
+        },
+      ],
+    ]),
+  }
+}
+
 export function DemoMarkBook() {
   const [view, setView] = useState<'overview' | 'class'>('overview')
   const [classId, setClassId] = useState(CLASSES[1].id)
@@ -76,6 +126,10 @@ export function DemoMarkBook() {
         .map((t) => t.slot),
     )
   const releasedHere = releasedOf(classId)
+  const [moderation, setModeration] = useState<Record<string, DemoModeration>>({})
+  const moderationOf = (id: string) => moderation[id] ?? sampleModeration(id, CLASSES.find((c) => c.id === id)!.grade, marksOf(id))
+  const modHere = moderationOf(classId)
+  const setModHere = (next: DemoModeration) => setModeration((m) => ({ ...m, [classId]: next }))
 
   return (
     <div className="space-y-6">
@@ -86,7 +140,8 @@ export function DemoMarkBook() {
       />
       <p className="rounded-lg bg-gold-50 p-3 text-sm text-gold-900">
         Demo: sample classes with marks in for Terms 1 to 3. Terms 1 and 2 are released to learners and parents; Term 3 is not yet. 11A is
-        behind. Your changes stay on this page only.
+        behind. Each Term 1 investigation has been moderated; below a class’s mark book you can moderate any task as its HOD would. Your
+        changes stay on this page only.
       </p>
       <div className="flex w-fit flex-wrap rounded-lg border border-navy-200 bg-white p-1" role="group" aria-label="View">
         {(
@@ -113,6 +168,7 @@ export function DemoMarkBook() {
           members={new Map(CLASSES.map((c) => [c.id, learners.map((l) => l.id)]))}
           marks={new Map(CLASSES.map((c) => [c.id, marksOf(c.id)]))}
           released={new Map(CLASSES.map((c) => [c.id, releasedOf(c.id)]))}
+          moderated={new Map(CLASSES.map((c) => [c.id, moderationOf(c.id).decisions]))}
           onOpen={(id) => {
             setClassId(id)
             setView('class')
@@ -154,6 +210,63 @@ export function DemoMarkBook() {
             else row.set(task.slot, { mark: typeof value === 'number' ? value : null, status: typeof value === 'number' ? 'marked' : value, out_of: task.marks })
             next.set(learnerId, row)
             setEdits((e) => ({ ...e, [classId]: next }))
+            return undefined
+          }}
+        />
+        <ModerationPanel
+          key={classId}
+          tasks={tasks}
+          learners={learners}
+          marks={marks}
+          samples={modHere.samples}
+          decisions={modHere.decisions}
+          canModerate
+          onSave={async (task, learnerId, mark) => {
+            const rest = modHere.samples.filter((x) => !(x.task_key === task.slot && x.learner_id === learnerId))
+            const teacher = marks.get(learnerId)?.get(task.slot)?.mark ?? 0
+            setModHere({
+              ...modHere,
+              samples:
+                mark === null
+                  ? rest
+                  : [
+                      ...rest,
+                      {
+                        class_id: classId,
+                        year: new Date().getFullYear(),
+                        task_key: task.slot,
+                        learner_id: learnerId,
+                        teacher_mark: teacher,
+                        moderated_mark: mark,
+                        out_of: task.marks,
+                        updated_at: new Date().toISOString(),
+                      },
+                    ],
+            })
+            return undefined
+          }}
+          onDecide={async (task, accept, comment) => {
+            const summary = summarise(modHere.samples.filter((x) => x.task_key === task.slot))
+            if (!summary) return 'Moderate at least one script first.'
+            const decisions = new Map(modHere.decisions)
+            decisions.set(task.slot, {
+              class_id: classId,
+              year: new Date().getFullYear(),
+              task_key: task.slot,
+              status: accept ? 'accepted' : 'returned',
+              comment: comment.trim(),
+              sample_size: summary.n,
+              mean_difference: Math.round(summary.meanDifference * 10) / 10,
+              moderator_id: null,
+              decided_at: new Date().toISOString(),
+            })
+            setModHere({ ...modHere, decisions })
+            return undefined
+          }}
+          onReopen={async (task) => {
+            const decisions = new Map(modHere.decisions)
+            decisions.delete(task.slot)
+            setModHere({ ...modHere, decisions })
             return undefined
           }}
         />

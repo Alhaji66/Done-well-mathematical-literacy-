@@ -1562,5 +1562,144 @@ insert into results
          string_agg(action, ',' order by id) = 'sba_release.released,sba_release.withdrawn'
   from public.audit_log where target_table = 'sba_releases';
 
+-- ===========================================================================
+-- SBA MODERATION (STEP 23)
+-- ===========================================================================
+-- Set-up: put Learner Two back in 12A, to moderate alongside Learner One.
+insert into public.class_members (class_id, learner_id)
+  select id, '00000000-0000-0000-0000-0000000000b2' from public.classes where name = '12A Mat Lit'
+  on conflict do nothing;
+select '00000000-0000-0000-0000-0000000000b2' as other_learner \gset
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.sba_marks (class_id, learner_id, task_key, out_of, mark)
+  select id, :'other_learner', 't1-0', 50, 30 from public.classes where name = '12A Mat Lit';
+reset role;
+
+-- 74. The class teacher, another subject's HOD and a learner cannot moderate.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_moderation_marks (class_id, year, task_key, learner_id, moderated_mark, teacher_mark, out_of)
+      select id, extract(year from now())::smallint, 't1-0', '00000000-0000-0000-0000-0000000000b1', 40, 0, 50 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f6');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_moderation_marks (class_id, year, task_key, learner_id, moderated_mark, teacher_mark, out_of)
+      select id, extract(year from now())::smallint, 't1-0', '00000000-0000-0000-0000-0000000000b1', 40, 0, 50 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.sba_moderation_marks (class_id, year, task_key, learner_id, moderated_mark, teacher_mark, out_of)
+      select id, extract(year from now())::smallint, 't1-0', '00000000-0000-0000-0000-0000000000b1', 40, 0, 50 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results select '74. only the subject HOD or principal, not the class teacher, can moderate', count(*)::text || ' sample mark(s)', count(*) = 0 from public.sba_moderation_marks;
+
+-- 75. The subject HOD moderates two scripts; the teacher's marks are copied in, whatever was sent.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+insert into public.sba_moderation_marks (class_id, year, task_key, learner_id, moderated_mark, teacher_mark, out_of)
+  select id, extract(year from now())::smallint, 't1-0', l, m, 0, 999
+  from public.classes, (values ('00000000-0000-0000-0000-0000000000b1'::uuid, 38), (:'other_learner'::uuid, 33)) v(l, m)
+  where name = '12A Mat Lit';
+do $$ begin
+  -- a script marked absent cannot be moderated
+  begin
+    insert into public.sba_moderation_marks (class_id, year, task_key, learner_id, moderated_mark, teacher_mark, out_of)
+      select id, extract(year from now())::smallint, 't1-1', '00000000-0000-0000-0000-0000000000b1', 20, 0, 50 from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '75. the HOD moderates marked scripts; teacher marks and totals come from the mark book',
+         string_agg(teacher_mark || '→' || moderated_mark || '/' || out_of, ', ' order by learner_id),
+         count(*) = 2 and bool_and(out_of = 50 and school_id is not null and moderator_id = '00000000-0000-0000-0000-0000000000f5')
+           and bool_or(teacher_mark = 41.0 and moderated_mark = 38.0) and bool_or(teacher_mark = 30.0 and moderated_mark = 33.0)
+  from public.sba_moderation_marks;
+
+-- 76. Staff can read the sample; a learner cannot.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d1');
+set role authenticated;
+insert into results select '76. another teacher at the school can read the sample', count(*)::text || ' visible', count(*) = 2 from public.sba_moderation_marks;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results select '76b. a learner cannot read the sample', count(*)::text || ' visible', count(*) = 0 from public.sba_moderation_marks;
+reset role;
+
+-- 77. Returning needs a comment; a return is recorded and the teacher told.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+do $$ begin
+  begin
+    perform public.decide_sba_moderation((select id from public.classes where name = '12A Mat Lit'), extract(year from now())::smallint, 't1-0', false, '  ');
+  exception when others then null; end;
+end $$;
+insert into results select '77. a return without a comment is refused', count(*)::text || ' decision(s)', count(*) = 0 from public.sba_moderations;
+select public.decide_sba_moderation((select id from public.classes where name = '12A Mat Lit'), extract(year from now())::smallint, 't1-0', false, 'Question 3 is marked too leniently.');
+reset role;
+insert into results
+  select '77b. the return records the sample size and mean difference',
+         status || ' n=' || sample_size || ' mean=' || mean_difference,
+         status = 'returned' and sample_size = 2 and mean_difference = 6.0
+  from public.sba_moderations;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$ begin
+  begin
+    perform public.decide_sba_moderation((select id from public.classes where name = '12A Mat Lit'), extract(year from now())::smallint, 't1-0', true, '');
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results select '77c. the class teacher cannot accept their own marks', status, status = 'returned' from public.sba_moderations;
+
+-- 78. Accepting locks the sample until the HOD reopens it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+select public.decide_sba_moderation((select id from public.classes where name = '12A Mat Lit'), extract(year from now())::smallint, 't1-0', true, '');
+do $$ begin
+  begin update public.sba_moderation_marks set moderated_mark = 50; exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '78. an accepted sample is locked',
+         string_agg(moderated_mark::text, ',' order by learner_id),
+         bool_and(moderated_mark <> 50)
+  from public.sba_moderation_marks;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+delete from public.sba_moderations;
+update public.sba_moderation_marks set moderated_mark = 40 where learner_id = '00000000-0000-0000-0000-0000000000b1';
+reset role;
+insert into results
+  select '78b. after reopening the HOD can change the sample',
+         string_agg(moderated_mark::text, ',' order by learner_id),
+         bool_or(moderated_mark = 40.0) and (select count(*) from public.sba_moderations) = 0
+  from public.sba_moderation_marks;
+
+-- 79. The decisions and the reopening are audited, and the teacher was told of each decision.
+insert into results
+  select '79. returned, accepted and reopened are in the audit log',
+         string_agg(action, ',' order by id),
+         string_agg(action, ',' order by id) = 'sba_moderation.returned,sba_moderation.accepted,sba_moderation.reopened'
+  from public.audit_log where target_table = 'sba_moderations';
+insert into results
+  select '79b. the class teacher was told of the return and the acceptance',
+         string_agg(kind, ',' order by id),
+         string_agg(kind, ',' order by id) = 'sba_moderation.returned,sba_moderation.accepted'
+           and bool_and(recipient_id = '00000000-0000-0000-0000-00000000000a' and link = 'markbook')
+  from public.notifications where kind like 'sba_moderation.%';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

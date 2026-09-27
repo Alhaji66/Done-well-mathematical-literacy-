@@ -120,12 +120,19 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
     case 'sba_mark.update':
     case 'sba_mark.delete':
     case 'sba_release.released':
-    case 'sba_release.withdrawn': {
+    case 'sba_release.withdrawn':
+    case 'sba_moderation.accepted':
+    case 'sba_moderation.returned':
+    case 'sba_moderation.reopened': {
       const task = sbaTaskTitle(String(d.subject ?? ''), Number(d.grade) as Grade, String(d.task ?? ''))
       const subject = subjects.find((s) => s.id === d.subject)?.name ?? String(d.subject ?? '')
       const cls = names.get(String(d.class_id ?? ''))
       const what = `the ${task ?? 'formal task'} (${subject}, Grade ${String(d.grade)}${cls ? `, ${cls}` : ''})`
       const mark = (v: unknown) => (v === 'absent' ? 'absent' : v === 'exempt' ? 'excused' : `${String(v).replace(/\.0$/, '').replace('.', ',')}/${String(d.out_of)}`)
+      const sample = `${String(d.sample_size)} script${d.sample_size === 1 ? '' : 's'}, average difference ${String(d.mean_difference).replace('.', ',')} points`
+      if (e.action === 'sba_moderation.accepted') return `${actor} moderated ${what} and accepted the marks (${sample}).`
+      if (e.action === 'sba_moderation.returned') return `${actor} moderated ${what} and returned the marks to the teacher (${sample}).`
+      if (e.action === 'sba_moderation.reopened') return `${actor} reopened the moderation of ${what}.`
       if (e.action === 'sba_release.released') return `${actor} released the marks for ${what} to learners and parents.`
       if (e.action === 'sba_release.withdrawn') return `${actor} hid the marks for ${what} from learners and parents again.`
       if (e.action === 'sba_mark.insert')

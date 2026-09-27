@@ -528,9 +528,15 @@ export const derivedCircuits: Record<string, CircuitSpec> = {
       }
     ]
   },
-  "psci-p1-a-6-3": {
+  "psci-p1-an-8-7": {
     "title": "The circuit described in this question",
+    "emf": 6,
+    "internalResistance": 1,
     "elements": [
+      {
+        "kind": "resistor",
+        "ohms": 2
+      },
       {
         "kind": "parallel",
         "of": [
@@ -538,94 +544,9 @@ export const derivedCircuits: Record<string, CircuitSpec> = {
             "ohms": 6
           },
           {
-            "ohms": 12
+            "ohms": 3
           }
         ]
-      }
-    ]
-  },
-  "psci-p1-a-6-4": {
-    "title": "The circuit described in this question",
-    "emf": 12,
-    "internalResistance": 0.5,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 5.5
-      }
-    ]
-  },
-  "psci-p1-a-6-5": {
-    "title": "The circuit described in this question",
-    "emf": 12,
-    "internalResistance": 0.5,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 5.5
-      }
-    ]
-  },
-  "psci-p1-b-6-3": {
-    "title": "The circuit described in this question",
-    "elements": [
-      {
-        "kind": "parallel",
-        "of": [
-          {
-            "ohms": 4
-          },
-          {
-            "ohms": 6
-          },
-          {
-            "ohms": 12
-          }
-        ]
-      }
-    ]
-  },
-  "psci-p1-b-6-4": {
-    "title": "The circuit described in this question",
-    "emf": 9,
-    "internalResistance": 1,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 8
-      }
-    ]
-  },
-  "psci-p1-b-6-5": {
-    "title": "The circuit described in this question",
-    "emf": 9,
-    "internalResistance": 1,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 8
-      }
-    ]
-  },
-  "psci-p1-c-6-4": {
-    "title": "The circuit described in this question",
-    "emf": 6,
-    "internalResistance": 0.4,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 2.6
-      }
-    ]
-  },
-  "psci-p1-c-6-5": {
-    "title": "The circuit described in this question",
-    "emf": 6,
-    "internalResistance": 0.4,
-    "elements": [
-      {
-        "kind": "resistor",
-        "ohms": 2.6
       }
     ]
   },

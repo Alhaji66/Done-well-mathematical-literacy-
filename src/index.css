@@ -123,4 +123,28 @@
   .print-break-before {
     break-before: page;
   }
+
+  /* SBA mark sheets: however many questions a test has, every column fits the
+     width of the sheet -- the learner's name column takes a fixed share and
+     the mark columns split the rest evenly. */
+  .mark-sheet table {
+    table-layout: fixed;
+    font-size: 8px;
+  }
+  .mark-sheet th,
+  .mark-sheet td {
+    padding-left: 1px;
+    padding-right: 1px;
+    letter-spacing: -0.02em;
+  }
+  .mark-sheet .mark-sheet-scroll {
+    overflow: visible;
+  }
+  .mark-sheet .mark-sheet-no {
+    width: 5%;
+  }
+  .mark-sheet .mark-sheet-name {
+    width: 26%;
+    min-width: 0;
+  }
 }

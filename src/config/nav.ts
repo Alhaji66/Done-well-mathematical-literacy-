@@ -49,6 +49,8 @@ export const teacherNav: RoleNavItem[] = [
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
+  // Six tabs fill the phone bar; SBA tasks is reached from the sidebar menu.
+  { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon, phone: false },
 ]
 
 // Demo Head of Department nav. Smaller than the real one: the demo's job is
@@ -98,6 +100,7 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: ClipboardCheckIcon },
+  { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },
   { to: '/coverage', label: 'Coverage', icon: ClipboardCheckIcon },

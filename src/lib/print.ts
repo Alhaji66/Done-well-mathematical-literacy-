@@ -4,7 +4,7 @@
  * letters home -- and index.css leaves every other area off the paper while
  * `body[data-print]` names the part being printed.
  */
-export function printPart(part: 'moderation' | 'letters' | 'schedule') {
+export function printPart(part: 'moderation' | 'letters' | 'schedule' | 'reports') {
   document.body.dataset.print = part
   const done = () => {
     delete document.body.dataset.print

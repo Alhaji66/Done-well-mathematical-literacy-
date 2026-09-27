@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { markSplitFor, programmeFor, type SbaTask } from '@/data/sba'
 import { ComingUp } from '@/components/markbook/ComingUp'
 import { getSubject } from '@/data/subjects'
-import { capsLevel, fetchLearnerMarks, groupLearnerMarks, learnerResult, markBookTasks, type MarkReport, type SbaMarkRow } from '@/lib/sbaMarks'
+import { capsLevel, fetchLearnerMarks, groupLearnerMarks, learnerResult, markBookTasks, termResult, type MarkReport, type SbaMarkRow } from '@/lib/sbaMarks'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ClipboardCheckIcon } from '@/components/ui/Icons'
 import { fetchLearnerDates, shortDate, todayIso, type TaskDate } from '@/lib/sbaSchedule'
+import { fetchLearnerComments, type TermComment } from '@/lib/sbaComments'
 
 export { ComingUp }
 import { cn } from '@/lib/utils'
@@ -69,6 +70,7 @@ export function SbaReport({
   year,
   marks,
   dates,
+  comments,
 }: {
   subjectId: string
   grade: Grade
@@ -76,6 +78,8 @@ export function SbaReport({
   marks: Map<string, Row>
   /** The dates the class's tasks are set for, by task. */
   dates?: Map<string, TaskDate>
+  /** The teacher's comment on each term, by term. */
+  comments?: Map<number, string>
 }) {
   const tasks = markBookTasks(programmeFor(subjectId, grade))
   const result = learnerResult(tasks, grade, marks)
@@ -124,12 +128,29 @@ export function SbaReport({
       <div className="grid gap-x-8 p-5 pt-3 sm:grid-cols-2">
         {terms.map(({ term, tasks: termTasks }) => (
           <div key={term} className="pt-2">
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-navy-500">Term {term}</h4>
+            <h4 className="flex items-baseline justify-between gap-2 text-xs font-semibold uppercase tracking-wide text-navy-500">
+              Term {term}
+              {(() => {
+                const t = termResult(tasks, term, marks)
+                return t.percent === null ? null : (
+                  <span className="normal-case tracking-normal text-navy-700">
+                    Term mark <span className="tabular-nums text-navy-900">{pct(t.percent)}%</span>
+                    {t.covered < 100 ? ' so far' : ''}
+                  </span>
+                )
+              })()}
+            </h4>
             <ul className="divide-y divide-navy-100">
               {termTasks.map((t) => (
                 <TaskLine key={t.slot} task={t} row={marks.get(t.slot)} date={dates?.get(t.slot)} />
               ))}
             </ul>
+            {comments?.get(term) ? (
+              <p className="mt-1 rounded-lg bg-navy-50 p-2 text-xs text-navy-700">
+                <span className="font-semibold">Teacher’s comment: </span>
+                {comments.get(term)}
+              </p>
+            ) : null}
           </div>
         ))}
       </div>
@@ -149,13 +170,13 @@ export function LearnerSbaReports({
   topicLink?: (subjectId: string, grade: Grade, topicId: string) => string
   revise?: string
 }) {
-  const [state, setState] = useState<{ reports: MarkReport[]; dates: TaskDate[]; notSetUp: boolean } | null>(null)
+  const [state, setState] = useState<{ reports: MarkReport[]; dates: TaskDate[]; comments: TermComment[]; notSetUp: boolean } | null>(null)
 
   useEffect(() => {
     let live = true
     setState(null)
     const year = new Date().getFullYear()
-    Promise.all([fetchLearnerMarks(learnerId), fetchLearnerDates(learnerId, year)]).then(([{ rows, notSetUp }, dates]) => {
+    Promise.all([fetchLearnerMarks(learnerId), fetchLearnerDates(learnerId, year), fetchLearnerComments(learnerId)]).then(([{ rows, notSetUp }, dates, notes]) => {
       if (!live) return
       const reports = groupLearnerMarks(rows)
       // A class with dates set but no marks released yet still gets its card, to show what is coming.
@@ -164,7 +185,7 @@ export function LearnerSbaReports({
           reports.push({ classId: d.class_id, year: d.year, subjectId: d.subject_id, grade: d.grade, marks: new Map() })
         }
       }
-      setState({ reports, dates: dates ?? [], notSetUp: notSetUp && !(dates ?? []).length })
+      setState({ reports, dates: dates ?? [], comments: notes, notSetUp: notSetUp && !(dates ?? []).length })
     })
     return () => {
       live = false
@@ -181,7 +202,15 @@ export function LearnerSbaReports({
     <div className="space-y-4">
       <ComingUp dates={state.dates} topicLink={topicLink} revise={revise} />
       {state.reports.map((r) => (
-        <SbaReport key={`${r.year}|${r.classId}`} subjectId={r.subjectId} grade={r.grade} year={r.year} marks={r.marks} dates={datesOf(r.classId, r.year)} />
+        <SbaReport
+          key={`${r.year}|${r.classId}`}
+          subjectId={r.subjectId}
+          grade={r.grade}
+          year={r.year}
+          marks={r.marks}
+          dates={datesOf(r.classId, r.year)}
+          comments={new Map(state.comments.filter((c) => c.class_id === r.classId && c.year === r.year).map((c) => [c.term, c.comment]))}
+        />
       ))}
     </div>
   )

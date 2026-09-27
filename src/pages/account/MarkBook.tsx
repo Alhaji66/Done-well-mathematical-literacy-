@@ -12,6 +12,8 @@ import { AtRiskList } from '@/components/markbook/AtRiskList'
 import { startIntervention } from '@/lib/interventions'
 import { fetchDatesFor, saveTaskDate, type TaskDate } from '@/lib/sbaSchedule'
 import { SchedulePanel } from '@/components/markbook/SchedulePanel'
+import { TermReportsPanel } from '@/components/markbook/TermReportsPanel'
+import { fetchClassComments, saveComment, type TermComment } from '@/lib/sbaComments'
 import { ModerationPanel } from '@/components/markbook/ModerationPanel'
 import {
   canModerate,
@@ -50,6 +52,7 @@ export function MarkBook() {
   const [released, setReleasedTasks] = useState<Set<string> | null>(null)
   const [view, setView] = useState<'overview' | 'class' | 'risk' | null>(null)
   const [classDates, setClassDates] = useState<Map<string, TaskDate> | null>(null)
+  const [comments, setComments] = useState<Map<string, TermComment> | null>(null)
   const [reportContext, setReportContext] = useState<{ school: string | null; names: Map<string, string> } | null>(null)
   const [moderation, setModeration] = useState<{ samples: ModerationMark[]; decisions: ModerationDecision[] } | null>(null)
   const [overview, setOverview] = useState<{
@@ -86,9 +89,11 @@ export function MarkBook() {
       fetchReleases(classId, year),
       fetchModeration(classId, year),
       fetchDatesFor([classId], year),
+      fetchClassComments(classId, year),
     ]).then(
-      ([members, marks, releases, mod, dates]) => {
+      ([members, marks, releases, mod, dates, notes]) => {
       if (!live) return
+      setComments(notes)
       setModeration(mod)
       setClassDates(dates ? (dates.get(classId) ?? new Map()) : null)
       setMemberIds(members.map((m) => m.learner_id))
@@ -338,6 +343,31 @@ export function MarkBook() {
                   if (error) return error
                   const fresh = await fetchDatesFor([cls.id], year)
                   setClassDates(fresh?.get(cls.id) ?? new Map())
+                  return undefined
+                }}
+              />
+            ) : null}
+
+            {cls && tasks.length && classLearners.length ? (
+              <TermReportsPanel
+                key={`reports-${cls.id}`}
+                tasks={tasks}
+                learners={classLearners}
+                marks={byLearner}
+                comments={comments}
+                editable={canManageClass(profile, cls)}
+                heading={{
+                  school: reportContext?.school ?? null,
+                  classLabel: cls.name,
+                  subject: subjectName(cls.subject_id),
+                  grade: cls.grade,
+                  year,
+                  teacher: cls.teacher_id ? (reportContext?.names.get(cls.teacher_id) ?? null) : null,
+                }}
+                onSave={async (learnerId, term, comment) => {
+                  const error = await saveComment({ classId: cls.id, learnerId, year, term }, comment)
+                  if (error) return error
+                  setComments(await fetchClassComments(cls.id, year))
                   return undefined
                 }}
               />

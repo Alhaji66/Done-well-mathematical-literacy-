@@ -1817,5 +1817,55 @@ end $$;
 insert into results select '86. a teacher cannot run the reminders or read the log', count(*)::text || ' row(s) visible', count(*) = 0 from public.sba_reminders_sent;
 reset role;
 
+-- ===========================================================================
+-- TERM REPORT COMMENTS (STEP 26)
+-- ===========================================================================
+-- 87. The class teacher writes a comment, stamped from the class; not for a learner outside it.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.sba_term_comments (class_id, learner_id, year, term, comment, subject_id, grade, school_id)
+  select c.id, '00000000-0000-0000-0000-0000000000b1', extract(year from now())::smallint, 1, '  Works hard; must show all working.  ', 'x', 10, c.school_id
+  from public.classes c where c.name = '12A Mat Lit';
+do $$ begin
+  begin
+    insert into public.sba_term_comments (class_id, learner_id, year, term, comment)
+      select id, '00000000-0000-0000-0000-0000000000c5', extract(year from now())::smallint, 1, 'Not in this class' from public.classes where name = '12A Mat Lit';
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '87. the class teacher comments on their learners only, stamped from the class',
+         count(*)::text || ' comment(s): ' || string_agg(subject_id || ' G' || grade || ' "' || comment || '"', '; '),
+         count(*) = 1 and bool_and(subject_id = 'mat-lit' and grade = 12 and comment = 'Works hard; must show all working.')
+  from public.sba_term_comments;
+
+-- 88. Another teacher cannot write or change a comment; a learner cannot either.
+select pg_temp.act('00000000-0000-0000-0000-0000000000d1');
+set role authenticated;
+do $$ begin
+  begin update public.sba_term_comments set comment = 'Changed'; exception when others then null; end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin update public.sba_term_comments set comment = 'Excellent'; exception when others then null; end;
+end $$;
+insert into results select '88. the learner reads their own comment', count(*)::text || ' visible', count(*) = 1 from public.sba_term_comments;
+reset role;
+insert into results
+  select '88b. only a class manager can change a comment', comment, comment = 'Works hard; must show all working.'
+  from public.sba_term_comments;
+
+-- 89. A linked parent reads it; a classmate does not.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results select '89. a linked parent reads their child''s comment', count(*)::text || ' visible', count(*) = 1 from public.sba_term_comments;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+insert into results select '89b. a classmate does not', count(*)::text || ' visible', count(*) = 0 from public.sba_term_comments;
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

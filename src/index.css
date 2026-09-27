@@ -124,6 +124,14 @@
   body:not([data-print='moderation']) .moderation-report {
     display: none !important;
   }
+  /* Term reports, the same way. */
+  body[data-print='reports'] .print-area:not(.term-reports) {
+    display: none !important;
+  }
+  body:not([data-print='reports']) .term-reports {
+    display: none !important;
+  }
+
   /* The printed assessment schedule, the same way. */
   body[data-print='schedule'] .print-area:not(.sba-schedule) {
     display: none !important;

@@ -54,7 +54,10 @@ export function DemoSbaMarks({ parent = false }: { parent?: boolean }) {
         revise={parent ? 'Covers' : 'Revise'}
         topicLink={parent ? undefined : (subject, grade, topic) => `/app/learner/practise?subject=${subject}&grade=${grade}&topic=${topic}`}
       />
-      <SbaReport subjectId={demoLearner.subjectId} grade={demoLearner.grade} year={year} marks={marks} dates={dates} />
+      <SbaReport subjectId={demoLearner.subjectId} grade={demoLearner.grade} year={year} marks={marks}
+        dates={dates}
+        comments={new Map([[2, 'A good term: Karabo’s assignment was careful and complete. Keep practising the examination-style questions.']])}
+      />
     </div>
   )
 }

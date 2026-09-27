@@ -5,6 +5,8 @@ import { MarkBookGrid } from '@/components/markbook/MarkBookGrid'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
 import { AtRiskList } from '@/components/markbook/AtRiskList'
 import { SchedulePanel } from '@/components/markbook/SchedulePanel'
+import { TermReportsPanel } from '@/components/markbook/TermReportsPanel'
+import type { TermComment } from '@/lib/sbaComments'
 import { demoDates } from '@/data/demoSchedule'
 import { CLASSES, demoReleased, learners, sampleMarks, tasksOf, type Marks } from '@/data/demoMarkBook'
 import type { TaskDate } from '@/lib/sbaSchedule'
@@ -83,6 +85,14 @@ export function DemoMarkBook() {
   const [dateEdits, setDateEdits] = useState<Record<string, Map<string, TaskDate>>>({})
   const datesOf = (id: string) => dateEdits[id] ?? demoDates('mat-lit', CLASSES.find((c) => c.id === id)!.grade, id, tasksOf(CLASSES.find((c) => c.id === id)!.grade))
   const allDates = new Map(CLASSES.map((c) => [c.id, datesOf(c.id)]))
+  // Two sample comments for Term 2, so the reports show one filled in.
+  const [comments, setComments] = useState<Map<string, TermComment>>(
+    () =>
+      new Map([
+        ['demo-learner-0|2', { class_id: '', learner_id: 'demo-learner-0', year: 0, term: 2, comment: 'A strong term. Ayanda reads the context carefully and shows every step.' }],
+        ['demo-learner-2|2', { class_id: '', learner_id: 'demo-learner-2', year: 0, term: 2, comment: 'Chantel must hand in every task. Please make time for practice at home.' }],
+      ]),
+  )
   const [moderation, setModeration] = useState<Record<string, DemoModeration>>({})
   const moderationOf = (id: string) => moderation[id] ?? sampleModeration(id, CLASSES.find((c) => c.id === id)!.grade, marksOf(id))
   const modHere = moderationOf(classId)
@@ -207,6 +217,31 @@ export function DemoMarkBook() {
             if (dueOn === null) next.delete(task.slot)
             else next.set(task.slot, { class_id: classId, year: new Date().getFullYear(), task_key: task.slot, subject_id: 'mat-lit', grade: cls.grade, due_on: dueOn, note: note.trim() })
             setDateEdits((d) => ({ ...d, [classId]: next }))
+            return undefined
+          }}
+        />
+        <TermReportsPanel
+          key={`reports-${classId}`}
+          tasks={tasks}
+          learners={learners}
+          marks={marks}
+          comments={comments}
+          editable
+          heading={{
+            school: 'DONE WELL Demo High School',
+            classLabel: cls.name,
+            subject: 'Mathematical Literacy',
+            grade: cls.grade,
+            year: new Date().getFullYear(),
+            teacher: 'Mr S. Nkosi',
+          }}
+          onSave={async (learnerId, term, comment) => {
+            setComments((c) => {
+              const next = new Map(c)
+              if (comment.trim()) next.set(`${learnerId}|${term}`, { class_id: classId, learner_id: learnerId, year: 0, term, comment: comment.trim() })
+              else next.delete(`${learnerId}|${term}`)
+              return next
+            })
             return undefined
           }}
         />

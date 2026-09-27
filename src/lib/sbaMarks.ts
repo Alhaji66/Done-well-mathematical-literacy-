@@ -243,5 +243,40 @@ export function learnerResult(tasks: SbaTask[], grade: Grade, byTask: Map<string
   return { sba, covered: covered + excused, promotion }
 }
 
+/**
+ * A learner's term mark: the term's formal tasks weighted by the DBE term
+ * weights (equally where the programme gives none, as for a term with only the
+ * end-of-year examination). Absent scores 0; excused is left out, the other
+ * tasks carrying its weight. Null before any of the term's tasks is marked.
+ */
+export function termResult(
+  tasks: SbaTask[],
+  term: number,
+  byTask: Map<string, Pick<SbaMarkRow, 'mark' | 'status' | 'out_of'>>,
+): { percent: number | null; covered: number; tasks: SbaTask[] } {
+  const inTerm = tasks.filter((t) => t.term === term)
+  const weightOf = (t: SbaTask) => (inTerm.some((x) => x.termWeight) ? (t.termWeight ?? 0) : 1)
+  const total = inTerm.reduce((a, t) => a + weightOf(t), 0)
+  let earned = 0
+  let weight = 0
+  let excused = 0
+  for (const t of inTerm) {
+    const row = byTask.get(t.slot)
+    if (!row) continue
+    if (row.status === 'exempt') {
+      excused += weightOf(t)
+      continue
+    }
+    const fraction = row.status === 'absent' ? 0 : Math.min(1, (row.mark ?? 0) / row.out_of)
+    earned += fraction * weightOf(t)
+    weight += weightOf(t)
+  }
+  return {
+    percent: weight ? (earned / weight) * 100 : null,
+    covered: total ? ((weight + excused) / total) * 100 : 0,
+    tasks: inTerm,
+  }
+}
+
 /** The columns of a mark book: the SBA tasks, then the end-of-year exam in Grades 10 and 11. */
 export const markBookTasks = (tasks: SbaTask[]) => tasks.filter((t) => t.sbaWeight || t.exam === 'end-of-year')

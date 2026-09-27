@@ -3918,3 +3918,106 @@ begin
     perform cron.schedule('sba-reminders', '0 14 * * *', 'select public.send_sba_reminders()');
   end if;
 end $$;
+
+-- ============================================================================
+-- STEP 26: TERM REPORT COMMENTS
+-- ============================================================================
+--
+-- The teacher's comment on each learner's term in a subject, printed on the
+-- term report beside the term mark (which the app works out from the mark
+-- book, so it is not stored).
+--
+-- WHO CAN DO WHAT.
+--   * Whoever can manage the class (the class teacher, the HODs, the
+--     principal) writes, changes and clears comments, only for learners in
+--     the class.
+--   * Staff at the school read them; so does the learner, and each linked
+--     parent, as they would on a paper report.
+
+create table if not exists public.sba_term_comments (
+  class_id uuid not null references public.classes (id) on delete cascade,
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  year smallint not null,
+  term smallint not null check (term between 1 and 4),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  subject_id text not null,
+  grade smallint not null check (grade in (10, 11, 12)),
+  comment text not null check (length(comment) between 1 and 600),
+  updated_by uuid references public.profiles (id) on delete set null,
+  updated_at timestamptz not null default now(),
+  primary key (class_id, learner_id, year, term)
+);
+
+alter table public.sba_term_comments enable row level security;
+
+drop policy if exists "Staff can read term comments" on public.sba_term_comments;
+create policy "Staff can read term comments"
+  on public.sba_term_comments for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Learners can read their own term comments" on public.sba_term_comments;
+create policy "Learners can read their own term comments"
+  on public.sba_term_comments for select
+  using (learner_id = auth.uid());
+
+drop policy if exists "Linked parents can read their child's term comments" on public.sba_term_comments;
+create policy "Linked parents can read their child's term comments"
+  on public.sba_term_comments for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = sba_term_comments.learner_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+  );
+
+drop policy if exists "Class managers can write term comments" on public.sba_term_comments;
+create policy "Class managers can write term comments"
+  on public.sba_term_comments for insert
+  with check (
+    public.can_manage_class_id(class_id)
+    and exists (select 1 from public.class_members cm where cm.class_id = sba_term_comments.class_id and cm.learner_id = sba_term_comments.learner_id)
+  );
+
+drop policy if exists "Class managers can change term comments" on public.sba_term_comments;
+create policy "Class managers can change term comments"
+  on public.sba_term_comments for update
+  using (public.can_manage_class_id(class_id))
+  with check (public.can_manage_class_id(class_id));
+
+drop policy if exists "Class managers can clear term comments" on public.sba_term_comments;
+create policy "Class managers can clear term comments"
+  on public.sba_term_comments for delete
+  using (public.can_manage_class_id(class_id));
+
+-- The school, subject and grade come from the class; the keys never change.
+create or replace function public.stamp_sba_term_comment()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  c public.classes;
+begin
+  if tg_op = 'UPDATE' then
+    new.class_id := old.class_id;
+    new.learner_id := old.learner_id;
+    new.year := old.year;
+    new.term := old.term;
+  end if;
+  select * into c from public.classes where id = new.class_id;
+  new.school_id := c.school_id;
+  new.subject_id := c.subject_id;
+  new.grade := c.grade;
+  new.comment := btrim(new.comment);
+  new.updated_by := auth.uid();
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_sba_term_comment on public.sba_term_comments;
+create trigger stamp_sba_term_comment
+  before insert or update on public.sba_term_comments
+  for each row execute function public.stamp_sba_term_comment();

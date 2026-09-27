@@ -2,6 +2,7 @@ import { schoolTeachers, classTopicPerformance } from '@/data/teacherSchool'
 import { subjects } from '@/data/subjects'
 import { getTopic } from '@/data/topics'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
 import { SchoolIcon, UsersIcon, BarChartIcon } from '@/components/ui/Icons'
 
 /**
@@ -15,6 +16,8 @@ import { SchoolIcon, UsersIcon, BarChartIcon } from '@/components/ui/Icons'
  * than one teacher, all three grades.
  */
 const DEPARTMENT_SUBJECT = 'mat-lit'
+/** The demo sign-off page has the newest week of each of the three grades waiting. */
+const DEMO_WAITING = 3
 
 export function HodDashboard() {
   const subjectName = subjects.find((s) => s.id === DEPARTMENT_SUBJECT)?.name ?? 'Department'
@@ -42,6 +45,8 @@ export function HodDashboard() {
         title={`${subjectName} department`}
         description="Every teacher and every learner taking this subject, across all three grades."
       />
+
+      <PlanSignoffCard waiting={DEMO_WAITING} />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="card p-5">

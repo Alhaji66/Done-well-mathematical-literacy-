@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon, SchoolIcon } from '@/components/ui/Icons'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
 import { PendingStaff } from '@/components/account/PendingStaff'
+import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
 
 /**
  * What a Head of Department is looking at, as opposed to a teacher or a
@@ -97,6 +98,8 @@ export function HodDashboard() {
       <TeachingSubject profile={profile} variant="hod" />
 
       <PendingStaff schoolId={profile?.school_id ?? null} />
+
+      <PlanSignoffCard schoolId={profile?.school_id} subjectId={subjectId} />
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading your department…</p>

@@ -601,6 +601,9 @@ const TERMS_2026: Record<1 | 2 | 3 | 4, [string, string]> = {
   4: ['2026-10-06', '2026-12-09'],
 }
 
+/** The last school day of a term, for a week whose own dates say only when it starts. */
+export const termEndDate = (term: 1 | 2 | 3 | 4): Date => new Date(`${TERMS_2026[term][1]}T00:00:00Z`)
+
 const MONTHS = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
 const fmt = (d: Date) => `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`
 const addDays = (d: Date, n: number) => new Date(d.getTime() + n * 86_400_000)

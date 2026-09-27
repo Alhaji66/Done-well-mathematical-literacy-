@@ -150,6 +150,7 @@ const ParentSupport = lazy(() => import('@/pages/parent/Support').then((m) => ({
 const ParentResources = lazy(() => import('@/pages/parent/Resources').then((m) => ({ default: m.ParentResources })))
 
 const DemoHodDashboard = lazy(() => import('@/pages/hod/Dashboard').then((m) => ({ default: m.HodDashboard })))
+const DemoPlanSignoff = lazy(() => import('@/pages/hod/PlanSignoff').then((m) => ({ default: m.DemoPlanSignoff })))
 const TeacherDashboard = lazy(() => import('@/pages/teacher/Dashboard').then((m) => ({ default: m.TeacherDashboard })))
 const TeacherResources = lazy(() => import('@/pages/teacher/Resources').then((m) => ({ default: m.TeacherResources })))
 const TeacherQuestionBank = lazy(() =>
@@ -382,6 +383,7 @@ export default function App() {
         >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<DemoHodDashboard />} />
+          <Route path="plan-signoff" element={<DemoPlanSignoff />} />
           <Route path="question-bank" element={<TeacherQuestionBank />} />
           <Route path="assessments" element={<TeacherAssessments />} />
           <Route path="analytics" element={<TeacherAnalytics />} />

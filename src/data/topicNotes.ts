@@ -1234,8 +1234,9 @@ export const topicNotes: TopicNote[] = [
       },
       {
         name: 'Quadratic patterns',
-      /** Second differences are Grade 11; Grade 12 patterns are arithmetic and geometric series. */
-      grades: [11],
+      /** Second differences are taught in Grade 11, and the Grade 12 NSC examines them
+       * again: Nov 2024 P1 Q2.2 (Tₙ = n² − 2n + 29) and Nov 2025 P1 (Tₙ = −n² + 38n − 1). */
+      grades: [11, 12],
         points: [
           'The SECOND difference is constant. The first differences themselves form a linear pattern.',
           'General term: Tₙ = an² + bn + c, with 2a = second difference.',

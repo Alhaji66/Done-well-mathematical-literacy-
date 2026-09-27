@@ -18,7 +18,8 @@ import type { Question, SceneSpec, ScenePoint } from '@/types'
 type Q = Pick<Question, 'id' | 'topicId' | 'prompt' | 'context' | 'answer'>
 
 const pt = (id: string, x: number, y: number): ScenePoint => ({ id, x, y })
-const sub = (s: string) => s.replace(/[₀-₉]/g, (c) => String('₀₁₂₃₄₅₆₇₈₉'.indexOf(c)))
+// The papers write chlorine as Cℓ (the exam's script l); read it as Cl.
+const sub = (s: string) => s.replace(/ℓ/g, 'l').replace(/[₀-₉]/g, (c) => String('₀₁₂₃₄₅₆₇₈₉'.indexOf(c)))
 
 /* ------------------------------------------------------------------ */
 /* Condensed formula -> molecule                                       */
@@ -206,7 +207,7 @@ export function structuralScene(m: Molecule, title: string): SceneSpec {
       } else if (s === '=O') {
         bond(C, atom(C.x + ux * STEP, C.y + uy * STEP, 'O'), 2)
       } else {
-        bond(C, atom(C.x + ux * STEP, C.y + uy * STEP, s))
+        bond(C, atom(C.x + ux * STEP, C.y + uy * STEP, s === 'Cl' ? 'Cℓ' : s))
       }
     }
     for (let k = 0; k < c.h; k++) {
@@ -226,13 +227,15 @@ export function formulasIn(answer: string, fallbackName?: string): { name: strin
   // IUPAC-looking names only: 2-methylpropane, but-1-ene, propan-2-ol, butan-2-one.
   const iupac = /^(?:\d+(?:,\d+)*-)?[A-Za-z]+(?:-\d+(?:,\d+)*-[a-z]+)*$/
   const looksNamed = (w: string) => iupac.test(w) && /(ane|ene|yne|ol|one|al)$/i.test(w)
-  for (const m of answer.matchAll(re)) {
+  // Cℓ -> Cl keeps every index in place: both are one UTF-16 unit.
+  const text = answer.replace(/ℓ/g, 'l')
+  for (const m of text.matchAll(re)) {
     const mol = parseCondensed(m[0])
     if (!mol) continue
-    const before = answer.slice(0, m.index).match(/([A-Za-z0-9,-]+)\s*\($/)?.[1]
-    const after = answer.slice((m.index ?? 0) + m[0].length).match(/^\s*\(([A-Za-z0-9,-]+)\)/)?.[1]
+    const before = text.slice(0, m.index).match(/([A-Za-z0-9,-]+)\s*\($/)?.[1]
+    const after = text.slice((m.index ?? 0) + m[0].length).match(/^\s*\(([A-Za-z0-9,-]+)\)/)?.[1]
     const name = [before, after].find((w) => w && looksNamed(w)) ?? fallbackName ?? ''
-    out.push({ name, m: mol, formula: m[0] })
+    out.push({ name, m: mol, formula: answer.slice(m.index, (m.index ?? 0) + m[0].length) })
   }
   return out
 }

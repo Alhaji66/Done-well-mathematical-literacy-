@@ -159,6 +159,46 @@ export async function setReleased(classId: string, year: number, taskKey: string
   return /row-level security|42501/i.test(error.message) ? 'You cannot release marks for this class.' : error.message
 }
 
+const PAGE = 1000
+
+/** Every mark in these classes for the year, for the progress overview. Paged: the API returns at most 1000 rows a request. */
+export async function fetchMarksFor(classIds: string[], year: number): Promise<SbaMarkRow[] | null> {
+  if (!supabase || classIds.length === 0) return []
+  const rows: SbaMarkRow[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from('sba_marks')
+      .select('*')
+      .in('class_id', classIds)
+      .eq('year', year)
+      .order('id')
+      .range(from, from + PAGE - 1)
+    if (error) {
+      if (!isMissing(error)) console.error('Failed to load marks:', error)
+      return null
+    }
+    rows.push(...((data ?? []) as SbaMarkRow[]))
+    if (!data || data.length < PAGE) return rows
+  }
+}
+
+/** The released tasks of each of these classes, or null before STEP 22. */
+export async function fetchReleasesFor(classIds: string[], year: number): Promise<Map<string, Set<string>> | null> {
+  if (!supabase) return null
+  if (classIds.length === 0) return new Map()
+  const { data, error } = await supabase.from('sba_releases').select('class_id, task_key').in('class_id', classIds).eq('year', year)
+  if (error) {
+    if (!isMissing(error)) console.error('Failed to load releases:', error)
+    return null
+  }
+  const out = new Map<string, Set<string>>()
+  for (const r of data ?? []) {
+    if (!out.has(r.class_id as string)) out.set(r.class_id as string, new Set())
+    out.get(r.class_id as string)!.add(r.task_key as string)
+  }
+  return out
+}
+
 export interface LearnerResult {
   /** SBA as a percentage of the weight covered so far, or null before any mark. */
   sba: number | null

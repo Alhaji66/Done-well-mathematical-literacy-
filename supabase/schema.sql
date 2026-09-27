@@ -3327,3 +3327,144 @@ drop trigger if exists audit_sba_marks on public.sba_marks;
 create trigger audit_sba_marks
   after insert or update or delete on public.sba_marks
   for each row execute function public.audit_sba_marks();
+
+-- ============================================================================
+-- STEP 22: RELEASING SBA MARKS TO LEARNERS AND PARENTS
+-- ============================================================================
+--
+-- A teacher marks a task over several days, and moderates or corrects it
+-- before the class sees it. So learners and parents see a task's marks only
+-- once it is RELEASED for that class: one row here per class, year and task.
+-- Staff see every mark as before.
+--
+-- WHO CAN DO WHAT.
+--   * Whoever can enter the class's marks (the class teacher, the HODs, the
+--     principal) releases a task, and can withdraw a release, which hides the
+--     task's marks again until it is released once more.
+--   * Staff at the school and the learners in the class can see what has been
+--     released.
+--   * On release, each learner with a mark for the task is told, and so is
+--     each of their linked parents. Releases and withdrawals are audited.
+--
+-- NOTE. Marks entered before this step become hidden from learners and
+-- parents until their task is released.
+
+create table if not exists public.sba_releases (
+  class_id uuid not null references public.classes (id) on delete cascade,
+  year smallint not null,
+  task_key text not null check (task_key ~ '^t[1-4]-[0-9]{1,2}$'),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  released_by uuid references public.profiles (id) on delete set null,
+  released_at timestamptz not null default now(),
+  primary key (class_id, year, task_key)
+);
+
+alter table public.sba_releases enable row level security;
+
+drop policy if exists "Staff can see what has been released" on public.sba_releases;
+create policy "Staff can see what has been released"
+  on public.sba_releases for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Learners can see what has been released to their class" on public.sba_releases;
+create policy "Learners can see what has been released to their class"
+  on public.sba_releases for select
+  using (public.is_class_member(class_id));
+
+drop policy if exists "Class managers can release marks" on public.sba_releases;
+create policy "Class managers can release marks"
+  on public.sba_releases for insert
+  with check (public.can_manage_class_id(class_id));
+
+drop policy if exists "Class managers can withdraw a release" on public.sba_releases;
+create policy "Class managers can withdraw a release"
+  on public.sba_releases for delete
+  using (public.can_manage_class_id(class_id));
+
+create or replace function public.stamp_sba_release()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  select school_id into new.school_id from public.classes where id = new.class_id;
+  new.released_by := auth.uid();
+  new.released_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_sba_release on public.sba_releases;
+create trigger stamp_sba_release
+  before insert on public.sba_releases
+  for each row execute function public.stamp_sba_release();
+
+create or replace function public.sba_mark_released(p_class uuid, p_year smallint, p_task text)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.sba_releases
+    where class_id = p_class and year = p_year and task_key = p_task
+  );
+$$;
+grant execute on function public.sba_mark_released(uuid, smallint, text) to authenticated;
+
+drop policy if exists "Learners can read their own marks" on public.sba_marks;
+create policy "Learners can read their own marks"
+  on public.sba_marks for select
+  using (learner_id = auth.uid() and public.sba_mark_released(class_id, year, task_key));
+
+drop policy if exists "Linked parents can read their child's marks" on public.sba_marks;
+create policy "Linked parents can read their child's marks"
+  on public.sba_marks for select
+  using (
+    exists (
+      select 1 from public.parent_learner_links
+      where parent_learner_links.learner_id = sba_marks.learner_id
+        and parent_learner_links.parent_id = auth.uid()
+    )
+    and public.sba_mark_released(class_id, year, task_key)
+  );
+
+create or replace function public.after_sba_release()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.sba_releases := case when tg_op = 'DELETE' then old else new end;
+  c public.classes;
+  v_data jsonb;
+  v_learners uuid[];
+  l record;
+begin
+  select * into c from public.classes where id = r.class_id;
+  v_data := jsonb_build_object('class_id', r.class_id, 'task', r.task_key, 'year', r.year,
+                               'subject', c.subject_id, 'grade', c.grade);
+  perform public.write_audit(r.school_id, case when tg_op = 'DELETE' then 'sba_release.withdrawn' else 'sba_release.released' end,
+    'sba_releases', r.class_id::text, v_data);
+  if tg_op = 'INSERT' then
+    select array_agg(learner_id) into v_learners from public.sba_marks
+      where class_id = r.class_id and year = r.year and task_key = r.task_key;
+    perform public.notify(v_learners, 'sba_marks.released', v_data, 'marks');
+    for l in
+      select pl.parent_id, pl.learner_id from public.parent_learner_links pl
+      where pl.learner_id = any (coalesce(v_learners, '{}'))
+    loop
+      perform public.notify(array[l.parent_id], 'sba_marks.child_released', v_data || jsonb_build_object('learner_id', l.learner_id), 'marks');
+    end loop;
+  end if;
+  return r;
+end;
+$$;
+
+drop trigger if exists after_sba_release on public.sba_releases;
+create trigger after_sba_release
+  after insert or delete on public.sba_releases
+  for each row execute function public.after_sba_release();

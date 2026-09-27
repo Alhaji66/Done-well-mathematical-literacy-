@@ -28,8 +28,13 @@ export function MarkBookGrid(props: {
   marks: Map<string, Map<string, Row>>
   editable: boolean
   onSave: (learnerId: string, task: SbaTask, value: CellValue) => Promise<string | undefined>
+  /** The tasks released to learners and parents; leave out where there is no release step. */
+  released?: Set<string>
+  onRelease?: (task: SbaTask, released: boolean) => Promise<string | undefined>
 }) {
-  const { title, grade, tasks, learners, marks, editable, onSave } = props
+  const { title, grade, tasks, learners, marks, editable, onSave, released, onRelease } = props
+  const [releasing, setReleasing] = useState<string | null>(null)
+  const [releaseError, setReleaseError] = useState('')
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const [states, setStates] = useState<Record<string, CellState>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -75,6 +80,17 @@ export function MarkBookGrid(props: {
     setDrafts(({ [id]: _, ...rest }) => rest)
   }
 
+  const toggleRelease = async (task: SbaTask) => {
+    if (!onRelease || !released) return
+    const on = !released.has(task.slot)
+    if (!on && !window.confirm(`Hide the ${shortTitle(task)} marks from learners and parents again?`)) return
+    setReleasing(task.slot)
+    setReleaseError('')
+    const error = await onRelease(task, on)
+    setReleasing(null)
+    if (error) setReleaseError(error)
+  }
+
   const exportCsv = () => {
     const q = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
     const head = ['Learner', ...tasks.map((t) => `T${t.term} ${shortTitle(t)} (/${t.marks})`), 'SBA %', ...(hasExam ? ['Promotion %'] : [])]
@@ -102,6 +118,7 @@ export function MarkBookGrid(props: {
       <div className="flex flex-wrap items-center gap-2">
         <p className="mr-auto text-xs text-navy-500">
           {editable ? 'Type a mark, a for absent (scores 0) or e for excused (not counted). Enter moves down.' : 'Read only: only the class teacher, the HOD or the principal can enter marks.'}
+          {released && editable ? ' Learners and parents see a task’s marks once you release it.' : ''}
         </p>
         <button type="button" className="btn-outline btn-sm inline-flex items-center gap-1.5" onClick={exportCsv}>
           <DownloadIcon className="h-4 w-4" /> Export CSV
@@ -110,6 +127,8 @@ export function MarkBookGrid(props: {
           <PrinterIcon className="h-4 w-4" /> Print
         </button>
       </div>
+
+      {releaseError ? <p className="text-sm text-rose-600">{releaseError}</p> : null}
 
       <div className="print-area mark-sheet">
         <div className="hidden print:block">
@@ -129,6 +148,26 @@ export function MarkBookGrid(props: {
                       /{t.marks}
                       {t.sbaWeight ? ` · ${pct(t.sbaWeight)}%` : ''}
                     </span>
+                    {released ? (
+                      editable && onRelease ? (
+                        <button
+                          type="button"
+                          disabled={releasing === t.slot}
+                          onClick={() => toggleRelease(t)}
+                          title={released.has(t.slot) ? 'Learners and parents can see these marks. Click to hide them again.' : 'Learners and parents cannot see these marks yet. Click to release them.'}
+                          className={cn(
+                            'mt-1 whitespace-nowrap rounded-full border px-1.5 py-0.5 text-[10px] font-semibold print:hidden',
+                            released.has(t.slot) ? 'border-emerald-300 bg-emerald-50 text-emerald-800' : 'border-gold-300 bg-white text-gold-800 hover:bg-gold-50',
+                          )}
+                        >
+                          {releasing === t.slot ? '…' : released.has(t.slot) ? '✓ Released' : 'Release'}
+                        </button>
+                      ) : (
+                        <span className={cn('mt-1 block text-[10px] font-semibold print:hidden', released.has(t.slot) ? 'text-emerald-700' : 'text-navy-400')}>
+                          {released.has(t.slot) ? 'Released' : 'Not released'}
+                        </span>
+                      )
+                    ) : null}
                   </th>
                 ))}
                 <th className="min-w-[4rem] border-l border-navy-200 px-1 py-1.5 text-center font-semibold">SBA %</th>

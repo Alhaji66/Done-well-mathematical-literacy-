@@ -5,7 +5,7 @@ import { subjects } from '@/data/subjects'
 import { programmeFor, PROGRAMME_SOURCE } from '@/data/sba'
 import { canManageClass, classesInView, fetchClassMembers, fetchClasses, type SchoolClass } from '@/lib/classes'
 import { fetchSchoolLearners, type RosterLearner } from '@/lib/teacherRoster'
-import { fetchClassMarks, markBookTasks, saveMark, type SbaMarkRow } from '@/lib/sbaMarks'
+import { fetchClassMarks, fetchReleases, markBookTasks, saveMark, setReleased, type SbaMarkRow } from '@/lib/sbaMarks'
 import { MarkBookGrid } from '@/components/markbook/MarkBookGrid'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -28,6 +28,7 @@ export function MarkBook() {
   const [memberIds, setMemberIds] = useState<string[]>([])
   const [rows, setRows] = useState<SbaMarkRow[]>([])
   const [notSetUp, setNotSetUp] = useState(false)
+  const [released, setReleasedTasks] = useState<Set<string> | null>(null)
 
   useEffect(() => {
     if (!schoolId) return
@@ -47,9 +48,10 @@ export function MarkBook() {
   useEffect(() => {
     if (!classId) return
     let live = true
-    Promise.all([fetchClassMembers([classId]), fetchClassMarks(classId, year)]).then(([members, marks]) => {
+    Promise.all([fetchClassMembers([classId]), fetchClassMarks(classId, year), fetchReleases(classId, year)]).then(([members, marks, releases]) => {
       if (!live) return
       setMemberIds(members.map((m) => m.learner_id))
+      setReleasedTasks(releases)
       setRows(marks.rows)
       setNotSetUp(marks.notSetUp)
     })
@@ -142,6 +144,18 @@ export function MarkBook() {
                   return res.row ? [...rest, res.row] : rest
                 })
                 return undefined
+              }}
+              released={released ?? undefined}
+              onRelease={async (task, on) => {
+                const error = await setReleased(cls.id, year, task.slot, on)
+                if (!error)
+                  setReleasedTasks((r) => {
+                    const next = new Set(r)
+                    if (on) next.add(task.slot)
+                    else next.delete(task.slot)
+                    return next
+                  })
+                return error
               }}
             />
           )}

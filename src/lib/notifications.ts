@@ -1,5 +1,8 @@
 import { supabase } from '@/lib/supabaseClient'
 import { getTopic } from '@/data/topics'
+import { getSubject } from '@/data/subjects'
+import { sbaTaskTitle } from '@/data/sbaProgramme'
+import type { Grade } from '@/types'
 
 /**
  * In-app notifications, written by the database (STEP 16) when something
@@ -46,6 +49,12 @@ export async function markNotificationsRead(ids: number[]): Promise<void> {
 
 const topicOf = (d: Record<string, unknown>) => getTopic(String(d.topic ?? ''))?.name ?? 'a topic'
 
+/** "Mathematical Literacy: Controlled test 1", from a release's subject, grade and task. */
+const sbaTaskOf = (d: Record<string, unknown>) => {
+  const subject = getSubject(String(d.subject ?? ''))?.name ?? 'SBA'
+  return `${subject}: ${sbaTaskTitle(String(d.subject ?? ''), Number(d.grade) as Grade, String(d.task ?? '')) ?? 'a formal task'}`
+}
+
 /** One notification as a sentence. */
 export function describeNotification(n: AppNotification, names: Map<string, string>): string {
   const d = n.data
@@ -68,6 +77,10 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `Your head of department signed off “${String(d.title ?? '')}”.`
     case 'lesson_plan.returned':
       return `Your head of department returned “${String(d.title ?? '')}” with a comment. Open it to see what to change.`
+    case 'sba_marks.released':
+      return `Your mark for ${sbaTaskOf(d)} is out.`
+    case 'sba_marks.child_released':
+      return `${names.get(String(d.learner_id)) ?? 'Your child'}’s mark for ${sbaTaskOf(d)} is out.`
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

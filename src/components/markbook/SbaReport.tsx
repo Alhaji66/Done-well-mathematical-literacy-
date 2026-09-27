@@ -26,7 +26,7 @@ function TaskLine({ task, row }: { task: SbaTask; row: Row | undefined }) {
       </div>
       <div className="text-right">
         {!row ? (
-          <span className="text-xs text-navy-400">Not marked yet</span>
+          <span className="text-xs text-navy-400">No mark yet</span>
         ) : row.status === 'absent' ? (
           <span className="text-sm font-semibold text-rose-700">
             Absent <span className="block text-[11px] font-normal">counts as 0</span>

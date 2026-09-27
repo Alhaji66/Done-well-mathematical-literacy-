@@ -7,9 +7,12 @@
  * national "2024-2025 Programme of Assessment" (sections 24 Life Sciences,
  * 25 Mathematical Literacy, 26 Mathematics and 31 Physical Sciences), and
  * each grade's SBA weights add up to 100 -- check:sba fails if one does not.
- * Two cells in the Mathematics tables disagree with themselves (Grade 11 and
- * 12 final papers are 150 marks in the raw-total column but "2 hours" and
- * "100 marks each" in the description); the raw totals are used.
+ * Two cells in the Mathematics tables disagree with themselves. Grade 11's
+ * end-of-year papers are "150 x 2" but "2 hours per paper"; the school sets
+ * them, so they are 2 x 100 marks, 2 hours each, like Grade 10's and to match
+ * the 200-mark mid-year examination. Grade 12's final papers say "100 marks
+ * each for 2 hours" but "150 x 2" and 150 per paper in the final-mark table:
+ * the NSC papers are 150 marks, 3 hours each, and that is used.
  *
  * WHERE THE TASKS COME FROM.
  *
@@ -104,7 +107,7 @@ const PROGRAMMES: Record<string, Row[]> = {
     [3, 'Test', 'Test 1', 50, 25, 14],
     [3, 'Test', 'Test 2', 50, 75, 14],
     [3, 'Test', 'Test 3', 50, 0, 14],
-    [4, 'Examination', 'End-of-year examination', 300, undefined, undefined, 'end-of-year', '2 papers × 150 marks'],
+    [4, 'Examination', 'End-of-year examination', 200, undefined, undefined, 'end-of-year', '2 papers × 100 marks, 2 hours each'],
   ],
   'mathematics-12': [
     [1, 'Investigation', 'Investigation or project', 50, 25, 15],

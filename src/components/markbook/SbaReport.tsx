@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
-import { sbaTaskTitle } from '@/data/sbaProgramme'
 import { markSplitFor, programmeFor, type SbaTask } from '@/data/sba'
+import { ComingUp } from '@/components/markbook/ComingUp'
 import { getSubject } from '@/data/subjects'
 import { capsLevel, fetchLearnerMarks, groupLearnerMarks, learnerResult, markBookTasks, type MarkReport, type SbaMarkRow } from '@/lib/sbaMarks'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ClipboardCheckIcon } from '@/components/ui/Icons'
 import { fetchLearnerDates, shortDate, todayIso, type TaskDate } from '@/lib/sbaSchedule'
-import { getSubject as subjectOf } from '@/data/subjects'
+
+export { ComingUp }
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -136,41 +137,18 @@ export function SbaReport({
   )
 }
 
-/** The tasks coming up in the next six weeks, soonest first. */
-export function ComingUp({ dates }: { dates: TaskDate[] }) {
-  const today = todayIso()
-  const horizon = todayIso(new Date(Date.now() + 42 * 86_400_000))
-  const soon = dates.filter((d) => d.due_on >= today && d.due_on <= horizon).sort((a, b) => a.due_on.localeCompare(b.due_on))
-  if (!soon.length) return null
-  return (
-    <section className="card p-5">
-      <h3 className="text-sm font-bold text-navy-900">Coming up</h3>
-      <ul className="mt-2 divide-y divide-navy-100">
-        {soon.map((d) => {
-          const days = Math.round((Date.parse(d.due_on) - Date.parse(today)) / 86_400_000)
-          return (
-            <li key={`${d.class_id}|${d.task_key}`} className="flex items-baseline justify-between gap-3 py-2 text-sm">
-              <span className="min-w-0">
-                <span className="font-medium text-navy-900">{sbaTaskTitle(d.subject_id, d.grade, d.task_key) ?? 'A formal task'}</span>
-                <span className="block text-[11px] text-navy-500">
-                  {subjectOf(d.subject_id)?.name ?? d.subject_id}
-                  {d.note ? ` · ${d.note}` : ''}
-                </span>
-              </span>
-              <span className="shrink-0 text-right font-semibold tabular-nums text-navy-800">
-                {shortDate(d.due_on)}
-                <span className="block text-[11px] font-normal text-navy-500">{days === 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`}</span>
-              </span>
-            </li>
-          )
-        })}
-      </ul>
-    </section>
-  )
-}
-
 /** Every SBA report for one learner, fetched live: the learner's own page and their parents'. */
-export function LearnerSbaReports({ learnerId, empty }: { learnerId: string; empty: string }) {
+export function LearnerSbaReports({
+  learnerId,
+  empty,
+  topicLink,
+  revise,
+}: {
+  learnerId: string
+  empty: string
+  topicLink?: (subjectId: string, grade: Grade, topicId: string) => string
+  revise?: string
+}) {
   const [state, setState] = useState<{ reports: MarkReport[]; dates: TaskDate[]; notSetUp: boolean } | null>(null)
 
   useEffect(() => {
@@ -201,7 +179,7 @@ export function LearnerSbaReports({ learnerId, empty }: { learnerId: string; emp
     new Map(state.dates.filter((d) => d.class_id === classId && d.year === year).map((d) => [d.task_key, d]))
   return (
     <div className="space-y-4">
-      <ComingUp dates={state.dates} />
+      <ComingUp dates={state.dates} topicLink={topicLink} revise={revise} />
       {state.reports.map((r) => (
         <SbaReport key={`${r.year}|${r.classId}`} subjectId={r.subjectId} grade={r.grade} year={r.year} marks={r.marks} dates={datesOf(r.classId, r.year)} />
       ))}

@@ -77,3 +77,13 @@ export const shortDate = (iso: string) =>
 /** Today as YYYY-MM-DD, in the viewer's own time zone. */
 export const todayIso = (d = new Date()) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+/** How far ahead "Coming up" looks, in days. */
+export const COMING_UP_DAYS = 42
+
+/** The dates still to come within COMING_UP_DAYS. */
+export const upcoming = (dates: TaskDate[], now = new Date()) => {
+  const today = todayIso(now)
+  const horizon = todayIso(new Date(now.getTime() + COMING_UP_DAYS * 86_400_000))
+  return dates.filter((d) => d.due_on >= today && d.due_on <= horizon)
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { supabase } from '@/lib/supabaseClient'
@@ -9,6 +9,10 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PlanShortcuts } from '@/components/revision/PlanShortcuts'
 import { SaveOffline } from '@/components/layout/SaveOffline'
+import { fetchLearnerDates, upcoming, type TaskDate } from '@/lib/sbaSchedule'
+
+// Loaded only when something is coming up: it brings the SBA programme with it.
+const ComingUp = lazy(() => import('@/components/markbook/ComingUp'))
 import { PencilIcon, TrendingUpIcon, ClipboardIcon, CheckIcon } from '@/components/ui/Icons'
 
 function FamilyLinkCode({ code }: { code: string }) {
@@ -50,6 +54,7 @@ export function LearnerDashboard() {
   const [schoolName, setSchoolName] = useState<string | null>(null)
   const [progress, setProgress] = useState<ProgressRow[]>([])
   const [loading, setLoading] = useState(true)
+  const [soon, setSoon] = useState<TaskDate[]>([])
 
   useEffect(() => {
     if (!profile) return
@@ -60,6 +65,10 @@ export function LearnerDashboard() {
         setProgress(rows)
         setLoading(false)
       }
+    })
+
+    fetchLearnerDates(profile.id, new Date().getFullYear()).then((dates) => {
+      if (active) setSoon(upcoming(dates ?? []))
     })
 
     if (profile.school_id && supabase) {
@@ -92,6 +101,15 @@ export function LearnerDashboard() {
         title={`Welcome, ${profile.full_name}`}
         description={`Grade ${profile.grade} — ${profile.subject_id ? subjectNames[profile.subject_id] ?? profile.subject_id : ''}${schoolName ? ` · ${schoolName}` : ''}`}
       />
+
+      {soon.length ? (
+        <Suspense fallback={null}>
+          <ComingUp
+            dates={soon}
+            topicLink={(subject, grade, topic) => `/account/learner/practise?subject=${subject}&grade=${grade}&topic=${topic}`}
+          />
+        </Suspense>
+      ) : null}
 
       {profile.subject_id && profile.grade ? (
         <PlanShortcuts

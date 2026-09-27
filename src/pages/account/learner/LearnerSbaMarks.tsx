@@ -16,6 +16,7 @@ export function LearnerSbaMarks() {
       />
       <LearnerSbaReports
         learnerId={profile.id}
+        topicLink={(subject, grade, topic) => `/account/learner/practise?subject=${subject}&grade=${grade}&topic=${topic}`}
         empty="Your marks will show here once your teacher enters them in the class mark book."
       />
     </div>

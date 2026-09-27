@@ -49,7 +49,11 @@ export function DemoSbaMarks({ parent = false }: { parent?: boolean }) {
         description={`${parent ? `${demoLearner.name}’s` : 'Your'} marks for the formal tasks of the ${PROGRAMME_SOURCE}, as ${parent ? 'their' : 'your'} teacher enters them, and what they add up to so far.`}
       />
       <p className="rounded-lg bg-gold-50 p-3 text-sm text-gold-900">Demo: sample marks for the first five tasks of the year.</p>
-      <ComingUp dates={[...dates.values()]} />
+      <ComingUp
+        dates={[...dates.values()]}
+        revise={parent ? 'Covers' : 'Revise'}
+        topicLink={parent ? undefined : (subject, grade, topic) => `/app/learner/practise?subject=${subject}&grade=${grade}&topic=${topic}`}
+      />
       <SbaReport subjectId={demoLearner.subjectId} grade={demoLearner.grade} year={year} marks={marks} dates={dates} />
     </div>
   )

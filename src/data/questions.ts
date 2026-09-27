@@ -10,6 +10,7 @@ import { matlitGraphGaps } from '@/data/matlitGraphGaps'
 import { matlitChartGaps } from '@/data/matlitChartGaps'
 import { matlitLessonGaps } from '@/data/matlitLessonGaps'
 import { lessonGapQuestions } from '@/data/lessonGapQuestions'
+import { physicsGapQuestions } from '@/data/physicsGapQuestions'
 
 /*
  * Taxation and compound-interest items live in taxQuestions.ts, and the Grade
@@ -28,6 +29,7 @@ export const questions: Question[] = [
   ...matlitChartGaps,
   ...matlitLessonGaps,
   ...lessonGapQuestions,
+  ...physicsGapQuestions,
   // Finance
   {
     id: 'fin-e1',

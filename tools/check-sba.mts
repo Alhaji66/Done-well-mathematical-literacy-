@@ -1,7 +1,9 @@
 /**
  * Every task in every Programme of Assessment must be usable.
  *
- *   FAIL  a practical, investigation or experiment with no task sheet; a task
+ *   FAIL  a grade whose SBA weights do not add up to 100; a practical,
+ *         investigation or experiment with no task sheet, or whose rubric does
+ *         not total the programme's raw mark; a task
  *         sheet whose topic the grade is not taught; a test or assignment that
  *         cannot reach 80% of its marks from the term's topics; a term with no
  *         topics for its test.
@@ -33,7 +35,9 @@ for (const subjectId of ['mathematics', 'mat-lit', 'physical-sciences', 'life-sc
   for (const grade of [10, 11, 12] as Grade[]) {
     const prog = programmeFor(subjectId, grade)
     if (!prog.length) fail(`${subjectId} G${grade}: no programme`)
-    console.log(`\n${subjectId} Grade ${grade}`)
+    const weights = prog.reduce((a, t) => a + (t.sbaWeight ?? 0), 0)
+    console.log(`\n${subjectId} Grade ${grade} (SBA weights total ${weights})`)
+    if (weights !== 100) fail(`${subjectId} G${grade}: SBA weights add up to ${weights}, not 100`)
     for (const task of prog) {
       const where = `${subjectId} G${grade} T${task.term} ${task.title}`
       if (task.exam) {
@@ -54,6 +58,7 @@ for (const subjectId of ['mathematics', 'mat-lit', 'physical-sciences', 'life-sc
       }
       const sheet = sheetForTask(subjectId, grade, task)
       if (!sheet) fail(`${where}: no task sheet`)
+      else if (sheetMarks(sheet) !== task.marks) fail(`${where}: rubric totals ${sheetMarks(sheet)}, but the programme marks it out of ${task.marks}`)
       else console.log(`  ok    T${task.term} ${task.title} (${sheetMarks(sheet)} marks)`)
     }
   }

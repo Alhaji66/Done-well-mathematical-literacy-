@@ -4,7 +4,18 @@ import { subjects, getSubject } from '@/data/subjects'
 import { topics } from '@/data/topics'
 import { questionsForSubject } from '@/data/questionBank'
 import { papersForSubject } from '@/data/papers'
-import { buildTest, markSplitFor, programmeFor, sheetForTask, topicNames, topicsFor, type SbaTask } from '@/data/sba'
+import {
+  buildTest,
+  extraSheets,
+  markSplitFor,
+  programmeFor,
+  PROGRAMME_SOURCE,
+  sbaMark,
+  sheetForTask,
+  topicNames,
+  topicsFor,
+  type SbaTask,
+} from '@/data/sba'
 import { sheetMarks, type TaskSheet } from '@/data/sbaTaskSheets'
 import { capsWeightingFor } from '@/data/capsWeighting'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -32,8 +43,23 @@ export function TeacherAssessmentTasks() {
   const [questions, setQuestions] = useState<Question[] | null>(null)
   const [papers, setPapers] = useState<Paper[]>([])
 
+  const [sba, setSba] = useState('60')
+  const [taskMarks, setTaskMarks] = useState<Record<string, number>>({})
+
   const programme = useMemo(() => programmeFor(subjectId, grade), [subjectId, grade])
-  const task = programme.find((t) => t.key === taskKey) ?? programme[0]
+  // Task sheets the formal programme does not use, offered as extra practical work.
+  const extras = useMemo<SbaTask[]>(
+    () =>
+      extraSheets(subjectId, grade).map((sh) => ({
+        key: `extra-${sh.id}`,
+        term: sh.term,
+        kind: sh.kind,
+        title: `${sh.kind}: ${sh.title}`,
+        marks: sheetMarks(sh),
+      })),
+    [subjectId, grade],
+  )
+  const task = [...programme, ...extras].find((t) => t.key === taskKey) ?? programme[0]
 
   useEffect(() => {
     let live = true
@@ -55,6 +81,7 @@ export function TeacherAssessmentTasks() {
   useEffect(() => {
     setTaskKey('')
     setVersion(0)
+    setTaskMarks({})
   }, [subjectId, grade])
 
   const topicIds = task ? topicsFor(subjectId, grade, task) : []
@@ -100,11 +127,16 @@ export function TeacherAssessmentTasks() {
             </select>
           </div>
         </div>
-        <YearMark grade={grade} />
+        <YearMark grade={grade} sba={sba} setSba={setSba} />
+        <ProgrammeTable
+          programme={programme}
+          marks={taskMarks}
+          setMarks={setTaskMarks}
+          onUse={(pct) => setSba(String(Math.round(pct * 10) / 10).replace('.', ','))}
+        />
         <p className="rounded-lg bg-navy-50 p-3 text-xs text-navy-600">
-          The tasks below are the typical CAPS programme for the subject. The DBE Programme of Assessment and your province’s SBA guideline set
-          the exact tasks, how the SBA is split between them, and the dates each year; follow them where they differ. Every task here can still
-          be used as it stands.
+          The tasks, raw totals and weights are the national {PROGRAMME_SOURCE}. Check your province’s circulars for the year’s dates and any
+          common tasks it sets. Tap a task to print it.
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -130,6 +162,11 @@ export function TeacherAssessmentTasks() {
                         )}
                       >
                         {t.title}
+                        {t.sbaWeight ? (
+                          <span className={cn('ml-1 text-xs tabular-nums', task?.key === t.key ? 'text-navy-200' : 'text-navy-400')}>
+                            · {pct(t.sbaWeight)} of SBA
+                          </span>
+                        ) : null}
                       </button>
                     </li>
                   ))}
@@ -137,6 +174,27 @@ export function TeacherAssessmentTasks() {
             </div>
           ))}
         </div>
+        {extras.length ? (
+          <div className="text-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">Extra practical work (not part of the formal programme)</p>
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {extras.map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  aria-pressed={task?.key === t.key}
+                  onClick={() => {
+                    setTaskKey(t.key)
+                    setCopy('learner')
+                  }}
+                  className={cn('rounded-md border px-2 py-1 text-left', task?.key === t.key ? 'border-navy-900 bg-navy-900 text-white' : 'border-navy-200 text-navy-700')}
+                >
+                  {t.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {task ? (
@@ -145,6 +203,11 @@ export function TeacherAssessmentTasks() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Term {task.term}</p>
               <h3 className="text-base font-bold text-navy-900">{task.title}</h3>
+              <p className="text-xs text-navy-500">
+                {task.papers ?? `Out of ${task.marks}`}
+                {task.sbaWeight ? ` · ${pct(task.sbaWeight)} of the SBA` : task.key.startsWith('extra-') ? ' · practice, not recorded for SBA' : ''}
+                {task.termWeight !== undefined && task.sbaWeight ? ` (${pct(task.termWeight)} of the term mark)` : ''}
+              </p>
               {!task.exam && topicIds.length ? (
                 <p className="text-xs text-navy-500">Covers: {topicNames(sheet ? [sheet.topicId] : topicIds).join(' · ')}</p>
               ) : null}
@@ -500,9 +563,8 @@ function ExamPanel({ task, papers }: { task: SbaTask; papers: Paper[] }) {
  * final mark from an SBA and an examination mark, and the examination mark a
  * learner needs to reach a target -- the question every learner asks.
  */
-function YearMark({ grade }: { grade: Grade }) {
+function YearMark({ grade, sba, setSba }: { grade: Grade; sba: string; setSba: (v: string) => void }) {
   const split = markSplitFor(grade)
-  const [sba, setSba] = useState('60')
   const [exam, setExam] = useState('')
   const sbaN = Number(sba.replace(',', '.'))
   const examN = Number(exam.replace(',', '.'))
@@ -549,5 +611,98 @@ function YearMark({ grade }: { grade: Grade }) {
         </p>
       ) : null}
     </div>
+  )
+}
+
+/** A percentage as the programme prints it: 12,5% keeps its decimal comma. */
+const pct = (n: number) => `${String(n).replace('.', ',')}%`
+
+/**
+ * The Programme of Assessment as a table, with a place to type a learner's
+ * mark for each task. The SBA mark is each task's mark over its raw total,
+ * times its SBA weight -- the way the DBE programme combines them -- so a
+ * teacher can check a learner's SBA mark, or its value so far.
+ */
+function ProgrammeTable({
+  programme,
+  marks,
+  setMarks,
+  onUse,
+}: {
+  programme: SbaTask[]
+  marks: Record<string, number>
+  setMarks: (update: (m: Record<string, number>) => Record<string, number>) => void
+  onUse: (percent: number) => void
+}) {
+  const { percent, covered } = sbaMark(programme, marks)
+  const round = (n: number) => String(Math.round(n * 10) / 10).replace('.', ',')
+  return (
+    <details className="rounded-lg border border-navy-100 p-3">
+      <summary className="cursor-pointer text-sm font-semibold text-navy-900">Programme of Assessment and SBA calculator</summary>
+      <div className="mt-2 overflow-x-auto">
+        <table className="w-full border-collapse text-xs">
+          <thead>
+            <tr className="text-left text-navy-500">
+              <th className="border-b border-navy-200 py-1.5 pr-2 font-semibold">Task</th>
+              <th className="border-b border-navy-200 py-1.5 pr-2 text-right font-semibold">Out of</th>
+              <th className="hidden border-b border-navy-200 py-1.5 pr-2 text-right font-semibold sm:table-cell">Term weight</th>
+              <th className="border-b border-navy-200 py-1.5 pr-2 text-right font-semibold">SBA weight</th>
+              <th className="border-b border-navy-200 py-1.5 text-right font-semibold">Learner’s mark</th>
+            </tr>
+          </thead>
+          <tbody>
+            {programme.map((t) => (
+              <tr key={t.key} className="align-middle">
+                <td className="border-b border-navy-100 py-1 pr-2 text-navy-900">
+                  <span className="text-navy-500">T{t.term} · </span>
+                  {t.title}
+                  {t.papers ? <span className="block text-navy-500">{t.papers}</span> : null}
+                </td>
+                <td className="border-b border-navy-100 py-1 pr-2 text-right tabular-nums">{t.marks}</td>
+                <td className="hidden border-b border-navy-100 py-1 pr-2 text-right tabular-nums sm:table-cell">
+                  {t.termWeight === undefined ? '—' : pct(t.termWeight)}
+                </td>
+                <td className="border-b border-navy-100 py-1 pr-2 text-right font-semibold tabular-nums">{t.sbaWeight ? pct(t.sbaWeight) : '—'}</td>
+                <td className="border-b border-navy-100 py-1 text-right">
+                  {t.sbaWeight ? (
+                    <input
+                      className="input w-16 px-1.5 py-1 text-right text-xs"
+                      inputMode="decimal"
+                      aria-label={`Mark for ${t.title}, out of ${t.marks}`}
+                      placeholder={`/${t.marks}`}
+                      value={marks[t.key] ?? ''}
+                      onChange={(e) => {
+                        const v = e.target.value.replace(',', '.')
+                        setMarks((m) => {
+                          const next = { ...m }
+                          if (v.trim() === '' || !Number.isFinite(Number(v))) delete next[t.key]
+                          else next[t.key] = Number(v)
+                          return next
+                        })
+                      }}
+                    />
+                  ) : (
+                    <span className="text-navy-400">exam</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {covered ? (
+        <div className="mt-2 flex flex-wrap items-center gap-3 text-sm">
+          <p className="font-semibold text-navy-900">
+            SBA mark{covered < 100 ? ' so far' : ''}: {round(percent)}%
+            {covered < 100 ? <span className="font-normal text-navy-500"> (from tasks worth {round(covered)}% of the SBA)</span> : null}
+          </p>
+          <button type="button" className="btn-outline btn-sm" onClick={() => onUse(percent)}>
+            Use in the final-mark calculator
+          </button>
+        </div>
+      ) : (
+        <p className="mt-2 text-xs text-navy-500">Type a learner’s marks to work out their SBA mark.</p>
+      )}
+    </details>
   )
 }

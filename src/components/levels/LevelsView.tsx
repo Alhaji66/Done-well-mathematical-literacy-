@@ -136,12 +136,15 @@ function startingTerm(results: LevelResult[], today: Date): Term | 0 {
  *
  *   learners -- a class teacher's view: each learner in the class with their
  *               result and level on every test, their average and its level.
- *   tally    -- a principal's or HOD's view: how many learners are at each
- *               level, by subject and grade, then by class and by test. No
- *               names: the tally is the point.
+ *   tally    -- a principal's view: how many learners are at each level, by
+ *               subject and grade, then by class and by test. No names: the
+ *               tally is the point.
+ *   both     -- a head of department's view: the tally for their subject, and
+ *               a switch to each learner's level class by class.
  */
-export function LevelsView({ data, mode, today = new Date() }: { data: LevelData; mode: 'learners' | 'tally'; today?: Date }) {
+export function LevelsView({ data, mode, today = new Date() }: { data: LevelData; mode: 'learners' | 'tally' | 'both'; today?: Date }) {
   const [source, setSource] = useState<LevelSource | 'all'>('all')
+  const [show, setShow] = useState<'tally' | 'learners'>(mode === 'learners' ? 'learners' : 'tally')
   const [period, setPeriod] = useState<Term | 0>(() => startingTerm(data.results, today))
   const term = period === 0 ? null : period
 
@@ -151,6 +154,17 @@ export function LevelsView({ data, mode, today = new Date() }: { data: LevelData
         <div className="flex flex-wrap items-center gap-2">
           <Segmented label="Which tests" value={source} options={SOURCES} onChange={setSource} />
           <Segmented label="Period" value={period} options={PERIODS} onChange={setPeriod} />
+          {mode === 'both' ? (
+            <Segmented
+              label="Show"
+              value={show}
+              options={[
+                { value: 'tally', label: 'Counts' },
+                { value: 'learners', label: 'Learners' },
+              ]}
+              onChange={setShow}
+            />
+          ) : null}
         </div>
         <Legend />
         <p className="text-xs text-navy-500">
@@ -159,7 +173,7 @@ export function LevelsView({ data, mode, today = new Date() }: { data: LevelData
         </p>
       </section>
 
-      {mode === 'learners' ? <ClassLevels data={data} source={source} term={term} /> : <SchoolTally data={data} source={source} term={term} />}
+      {show === 'learners' ? <ClassLevels data={data} source={source} term={term} /> : <SchoolTally data={data} source={source} term={term} />}
     </div>
   )
 }

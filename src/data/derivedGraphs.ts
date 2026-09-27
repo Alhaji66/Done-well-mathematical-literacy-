@@ -433,64 +433,50 @@ export const derivedGraphs: Record<string, GraphSpec> = {
       }
     ]
   },
-  "math-p1-23-4-8": {
-    "title": "The graph of f",
-    "xRange": [
-      -10,
-      10
-    ],
-    "yRange": [
-      -61,
-      63
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": 0,
-        "c": -49,
-        "label": "f"
-      }
-    ]
-  },
-  "math-p1-23-5-5": {
-    "title": "The graph of f",
+  "math-p1-23n-10-3": {
+    "title": "The graph of g",
     "xRange": [
       -5,
       5
     ],
     "yRange": [
-      -170,
-      30
+      -20,
+      180
     ],
     "curves": [
       {
         "kind": "cubic",
-        "a": 1,
-        "b": -3,
-        "c": -9,
+        "a": -1,
+        "b": 3,
+        "c": 9,
         "d": 5,
-        "label": "f"
+        "label": "g"
       }
     ]
   },
-  "math-p1-24-4-8": {
-    "title": "The graph of f",
+  "math-p1-23n-4-3": {
+    "title": "The graphs in this question",
     "xRange": [
-      -9,
-      9
+      -8,
+      8
     ],
     "yRange": [
-      -46,
-      55
+      -28,
+      22
     ],
     "curves": [
       {
         "kind": "parabola",
-        "a": 1,
-        "b": 0,
-        "c": -36,
+        "a": -2,
+        "b": 4,
+        "c": 6,
         "label": "f"
+      },
+      {
+        "kind": "line",
+        "m": 2,
+        "c": 2,
+        "label": "g"
       }
     ]
   },
@@ -4678,296 +4664,123 @@ export const derivedAnswerGraphs: Record<string, GraphSpec> = {
       }
     ]
   },
-  "math-p1-23-4-2": {
+  "math-p1-23n-10-1": {
     "title": "The graph of g",
-    "xRange": [
-      -7,
-      8
-    ],
-    "yRange": [
-      -27,
-      43
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -1,
-        "c": -20,
-        "label": "g"
-      }
-    ]
-  },
-  "math-p1-23-4-2-r": {
-    "title": "The graph in this question",
-    "xRange": [
-      -8,
-      8
-    ],
-    "yRange": [
-      -123,
-      117
-    ],
-    "curves": [
-      {
-        "kind": "line",
-        "m": 12,
-        "c": -3
-      }
-    ]
-  },
-  "math-p1-23-4-3": {
-    "title": "The graph of h",
-    "xRange": [
-      -2,
-      13
-    ],
-    "yRange": [
-      -19,
-      82
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -14,
-        "c": 40,
-        "label": "h"
-      }
-    ]
-  },
-  "math-p1-23-4-3-r": {
-    "title": "The graph in this question",
-    "xRange": [
-      -2,
-      18
-    ],
-    "yRange": [
-      -29,
-      215
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -24,
-        "c": 139
-      }
-    ]
-  },
-  "math-p1-23-4-5": {
-    "title": "The graph of f",
-    "xRange": [
-      -4,
-      3
-    ],
-    "yRange": [
-      -5,
-      15
-    ],
-    "curves": [
-      {
-        "kind": "exponential",
-        "a": 1,
-        "b": 3,
-        "q": -2,
-        "label": "f"
-      }
-    ]
-  },
-  "math-p1-23-4-6": {
-    "title": "The graph of f",
-    "xRange": [
-      -8,
-      8
-    ],
-    "yRange": [
-      -56,
-      24
-    ],
-    "curves": [
-      {
-        "kind": "line",
-        "m": 4,
-        "c": -16,
-        "label": "f"
-      }
-    ]
-  },
-  "math-p1-23-4-9": {
-    "title": "The graph of f",
-    "xRange": [
-      -2,
-      11
-    ],
-    "yRange": [
-      -9,
-      78
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -12,
-        "c": 41,
-        "label": "f"
-      }
-    ]
-  },
-  "math-p1-23-5-3": {
-    "title": "The graph of f",
     "xRange": [
       -5,
       5
     ],
     "yRange": [
-      -174,
-      174
+      -20,
+      180
     ],
     "curves": [
       {
         "kind": "cubic",
-        "a": 1,
-        "b": 0,
-        "c": 3,
-        "d": 0,
-        "label": "f"
-      }
-    ]
-  },
-  "math-p1-24-4-2": {
-    "title": "The graph of g",
-    "xRange": [
-      -6,
-      10
-    ],
-    "yRange": [
-      -33,
-      47
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -4,
-        "c": -21,
+        "a": -1,
+        "b": 3,
+        "c": 9,
+        "d": 5,
         "label": "g"
       }
     ]
   },
-  "math-p1-24-4-2-r": {
-    "title": "The graph in this question",
+  "math-p1-23n-10-2": {
+    "title": "The graph of g",
     "xRange": [
       -5,
-      9
+      5
     ],
     "yRange": [
-      -9,
-      3
+      -20,
+      180
     ],
     "curves": [
       {
-        "kind": "hyperbola",
-        "a": 5,
-        "p": 2,
-        "q": -3
+        "kind": "cubic",
+        "a": -1,
+        "b": 3,
+        "c": 9,
+        "d": 5,
+        "label": "g"
       }
     ]
   },
-  "math-p1-24-4-3": {
-    "title": "The graph of h",
-    "xRange": [
-      -2,
-      13
-    ],
-    "yRange": [
-      -24,
-      56
-    ],
-    "curves": [
-      {
-        "kind": "parabola",
-        "a": 1,
-        "b": -12,
-        "c": 20,
-        "label": "h"
-      }
-    ]
-  },
-  "math-p1-24-4-3-r": {
-    "title": "The graph in this question",
+  "math-p1-23n-4-1": {
+    "title": "The graphs in this question",
     "xRange": [
       -8,
       8
     ],
     "yRange": [
-      -132,
-      126
+      -28,
+      22
     ],
     "curves": [
       {
-        "kind": "line",
-        "m": 13,
-        "c": -3
-      }
-    ]
-  },
-  "math-p1-24-4-5": {
-    "title": "The graph of f",
-    "xRange": [
-      -4,
-      3
-    ],
-    "yRange": [
-      -10,
-      29
-    ],
-    "curves": [
-      {
-        "kind": "exponential",
-        "a": 1,
+        "kind": "parabola",
+        "a": -2,
         "b": 4,
-        "q": -5,
+        "c": 6,
         "label": "f"
+      },
+      {
+        "kind": "line",
+        "m": 2,
+        "c": 2,
+        "label": "g"
       }
     ]
   },
-  "math-p1-24-4-6": {
-    "title": "The graph of f",
+  "math-p1-23n-4-2": {
+    "title": "The graphs in this question",
     "xRange": [
       -8,
       8
     ],
     "yRange": [
-      -65,
-      35
+      -28,
+      22
     ],
     "curves": [
       {
-        "kind": "line",
-        "m": 5,
-        "c": -15,
+        "kind": "parabola",
+        "a": -2,
+        "b": 4,
+        "c": 6,
         "label": "f"
+      },
+      {
+        "kind": "line",
+        "m": 2,
+        "c": 2,
+        "label": "g"
       }
     ]
   },
-  "math-p1-24-4-9": {
-    "title": "The graph of f",
+  "math-p1-24n-6-1": {
+    "title": "The graphs in this question",
     "xRange": [
-      -1,
-      9
+      -8,
+      8
     ],
     "yRange": [
-      -5,
-      45
+      -12,
+      19
     ],
     "curves": [
       {
         "kind": "parabola",
         "a": 1,
-        "b": -10,
-        "c": 29,
+        "b": -2,
+        "c": -8,
         "label": "f"
+      },
+      {
+        "kind": "line",
+        "m": 1,
+        "c": 2,
+        "label": "g"
       }
     ]
   },

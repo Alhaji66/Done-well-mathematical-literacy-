@@ -840,7 +840,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Scatter plots, correlation and regression', match: /\b(scatter\w*|correlation|regression|least squares)\b|ŷ|\br ?=/i },
     { name: 'Ogives (cumulative frequency curves)', match: /\b(ogive|cumulative frequency)\b/i },
     { name: 'Outliers and their effect', match: /\b(outlier)\b/i },
-    { name: 'Five-number summary and box-and-whisker plots', match: /\b(box[- ]and[- ]whisker|five[- ]number|skew)\b/i },
+    { name: 'Five-number summary and box-and-whisker plots', match: /\b(box[- ]and[- ]whisker|five[- ]number|skew\w*)\b/i },
     { name: 'Measures of dispersion', match: /\b(standard deviation|variance|dispersion|interquartile|iqr|quartile|spread|range)\b/i },
     // "grouped data" needed the word "data" after it, so a table headed "Test
     // marks of 50 learners, GROUPED" did not match and the question under it went

@@ -768,7 +768,9 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Simultaneous equations', match: /\b(simultaneous|solve for x and y|two equations)\b/i },
     { name: 'Quadratic equations', match: /\b(quadratic|quadratic formula|complet(e|ing) the square|roots of the equation)\b|x²/i },
     { name: 'Algebraic fractions', match: /\b(fraction|denominator|numerator|lowest common denominator)\b|\bsimplify.*\//i },
-    { name: 'Exponents and surds', match: /\b(exponent\w*|surd|power of|index|indices|rationalis|base)\b|√|\d\^/i },
+    // ˣ and the superscript digits other than ² catch 2ˣ⁺² and 2²⁰²⁰, which
+    // otherwise fell to Linear equations (via "solve for x") or the scorer.
+    { name: 'Exponents and surds', match: /\b(exponent\w*|surd|power of|index|indices|rationalis|base)\b|√|\d\^|[ˣ⁰¹³⁴⁵⁶⁷⁸⁹]/i },
     { name: 'Linear equations and inequalities', match: /\b(inequalit|interval notation|number line|solve for x\b|linear equation)\b/i },
     { name: 'Word problems and setting up equations', match: /\b(consecutive|the sum of two numbers|word problem|let x be|three times as)\b/i },
     { name: 'Simplifying and factorising expressions', match: /\b(factoris\w*|factor|simplify|expand\w*|difference of two squares|trinomial|grouping)\b/i },
@@ -785,7 +787,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Inverse functions', match: /\b(inverse|reflect\w* in the line y = x|one[- ]to[- ]one)\b|[a-z]⁻¹/i },
     { name: 'Transformations of graphs', match: /\b(transform\w*|shift\w*|translat\w*|reflect\w*|stretch\w*|shrink\w*|moved .* units)\b/i },
     { name: 'Exponential and logarithmic functions', match: /\b(exponential|logarith\w*|log\b|grow\w*|decay\w*|doubling time|half[- ]life|b\^x)\b/i },
-    { name: 'Hyperbolic functions', match: /\b(hyperbola|hyperbolic|asymptote|a ÷ \(x)\b/i },
+    { name: 'Hyperbolic functions', match: /\b(hyperbola|hyperbolic|asymptote\w*|a ÷ \(x)\b/i },
     { name: 'Quadratic functions (parabolas)', match: /\b(parabola|turning point|axis of symmetry|maximum value of the (function|graph))\b|x²/i },
     { name: 'Linear functions', match: /\b(straight line|linear function|y = mx|gradient of the line|y[- ]intercept)\b/i },
     {
@@ -874,7 +876,7 @@ const rules: Record<string, SubtopicRule[]> = {
     { name: 'Sigma notation', match: /\b(sigma|sum from)\b|∑|σ notation/i },
     { name: 'Geometric sequences and series', match: /\b(geometric|common ratio)\b|\br ?=|\bar\^/i },
     { name: 'Arithmetic sequences and series', match: /\b(arithmetic (sequence|series)|sum of the first|common difference)\b|\bsₙ/i },
-    { name: 'Quadratic patterns', match: /\b(quadratic (pattern|sequence)|second difference|an² ?\+ ?bn)\b/i },
+    { name: 'Quadratic patterns', match: /\b(quadratic (number )?(pattern|sequence)|second difference|an² ?\+ ?bn)\b/i },
     { name: 'Linear (arithmetic) patterns', match: /\b(pattern|sequence|nth term|first difference\w*)\b|\btₙ/i },
   ],
 

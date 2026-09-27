@@ -191,7 +191,7 @@ const rules: Record<string, SubtopicRule[]> = {
     },
     {
       name: 'Surface area',
-      match: /\b(surface area|total area of (all|every|the) (faces?|sides?)|paint the outside|wrap)\b/i,
+      match: /\b(surface area|total area of (all|every|the) (faces?|sides?)|paint the outside|wrap\w*)\b/i,
     },
     {
       // THE SUPERSCRIPT UNITS USED TO BE DEAD. "m³" and "cm³" sat inside the
@@ -264,7 +264,7 @@ const rules: Record<string, SubtopicRule[]> = {
       name: 'The brain and its parts',
       match: /\b(brain|cerebrum|cerebral|cortex|cerebell\w*|medulla|hypothalamus|corpus callosum|mening\w*|cerebrospinal|hemisphere\w*)\b/i,
     },
-    { name: 'The eye', match: /\b(eye|retina|cornea|lens|iris|pupil|optic nerve|rod\w*|cone\w*|accommodat\w*|blind spot|fovea|aqueous|vitreous)\b/i },
+    { name: 'The eye', match: /\b(eye|retina|cornea|lens|iris|pupil|optic nerve|rod\w*|cone\w*|accommodat\w*|blind spot\w*|fovea|aqueous|vitreous)\b/i },
     { name: 'The ear', match: /\b(ear|cochlea|ossicle\w*|malleus|incus|stapes|eardrum|tympan\w*|semicircular|eustachian|auditory|balance)\b/i },
     {
       name: 'Nervous system and the reflex arc',

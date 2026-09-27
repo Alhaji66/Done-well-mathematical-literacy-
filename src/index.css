@@ -124,6 +124,14 @@
   body:not([data-print='moderation']) .moderation-report {
     display: none !important;
   }
+  /* The printed assessment schedule, the same way. */
+  body[data-print='schedule'] .print-area:not(.sba-schedule) {
+    display: none !important;
+  }
+  body:not([data-print='schedule']) .sba-schedule {
+    display: none !important;
+  }
+
   /* Letters home from the learners-at-risk list, the same way. */
   body[data-print='letters'] .print-area:not(.parent-letters) {
     display: none !important;

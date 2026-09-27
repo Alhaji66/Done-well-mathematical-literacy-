@@ -4,6 +4,7 @@ import { programmeFor, type SbaTask } from '@/data/sba'
 import { markBookTasks, type SbaMarkRow } from '@/lib/sbaMarks'
 import { classSbaAverage, taskDue, taskProgress, type TaskProgress } from '@/lib/sbaProgress'
 import type { ModerationDecision } from '@/lib/sbaModeration'
+import { shortDate, type TaskDate } from '@/lib/sbaSchedule'
 import { cn } from '@/lib/utils'
 import type { Grade } from '@/types'
 
@@ -27,7 +28,7 @@ const CELL: Record<TaskProgress['state'], string> = {
   overdue: 'bg-rose-50 text-rose-900',
 }
 
-function Cell({ p, due, moderated }: { p: TaskProgress; due: Date | null; moderated?: ModerationDecision }) {
+function Cell({ p, due, setFor, moderated }: { p: TaskProgress; due: Date | null; setFor?: string; moderated?: ModerationDecision }) {
   const label =
     p.state === 'none'
       ? 'Not started'
@@ -50,6 +51,8 @@ function Cell({ p, due, moderated }: { p: TaskProgress; due: Date | null; modera
         <span className="block text-[10px] font-semibold text-emerald-700">✓ Released</span>
       ) : p.state === 'done' && p.released === false ? (
         <span className="block text-[10px] font-semibold text-gold-800">Ready to release</span>
+      ) : p.state === 'none' && setFor ? (
+        <span className="block text-[10px]">on {shortDate(setFor)}</span>
       ) : p.state === 'none' && due ? (
         <span className="block text-[10px]">by {dateText(due)}</span>
       ) : null}
@@ -76,10 +79,13 @@ export function MarkBookOverview(props: {
   released: Map<string, Set<string>> | null
   /** Moderation decisions by class and task; leave out before STEP 23. */
   moderated?: Map<string, Map<string, ModerationDecision>> | null
+  /** The dates each class's tasks are set for; leave out before STEP 24. */
+  dates?: Map<string, Map<string, TaskDate>> | null
   onOpen: (classId: string) => void
   today?: Date
 }) {
-  const { classes, year, members, marks, released, moderated, onOpen } = props
+  const { classes, year, members, marks, released, moderated, dates, onOpen } = props
+  const setFor = (classId: string, slot: string) => dates?.get(classId)?.get(slot)?.due_on
   const today = props.today ?? new Date()
 
   const groups = useMemo(() => {
@@ -97,7 +103,9 @@ export function MarkBookOverview(props: {
 
   const all = groups.flatMap((g) =>
     g.classes.flatMap((c) =>
-      g.tasks.map((t) => taskProgress(t, members.get(c.id) ?? [], marks.get(c.id) ?? new Map(), released ? (released.get(c.id) ?? new Set()) : null, taskDue(t, year), today)),
+      g.tasks.map((t) =>
+        taskProgress(t, members.get(c.id) ?? [], marks.get(c.id) ?? new Map(), released ? (released.get(c.id) ?? new Set()) : null, taskDue(t, year, setFor(c.id, t.slot)), today),
+      ),
     ),
   )
   const overdue = all.filter((p) => p.state === 'overdue').length
@@ -155,9 +163,10 @@ export function MarkBookOverview(props: {
                       {g.tasks.map((t) => (
                         <Cell
                           key={t.slot}
-                          due={taskDue(t, year)}
+                          due={taskDue(t, year, setFor(c.id, t.slot))}
+                          setFor={setFor(c.id, t.slot)}
                           moderated={moderated?.get(c.id)?.get(t.slot)}
-                          p={taskProgress(t, ids, classMarks, released ? (released.get(c.id) ?? new Set()) : null, taskDue(t, year), today)}
+                          p={taskProgress(t, ids, classMarks, released ? (released.get(c.id) ?? new Set()) : null, taskDue(t, year, setFor(c.id, t.slot)), today)}
                         />
                       ))}
                       <td className="border-l border-navy-200 px-1 text-center font-semibold tabular-nums text-navy-900">
@@ -173,8 +182,8 @@ export function MarkBookOverview(props: {
       ))}
 
       <p className="text-[11px] text-navy-500">
-        Each cell: learners with a mark (absent and excused included) out of the class, and the class average. A task is overdue once its
-        term has been over for two weeks and marks are still missing. Open a class to see its mark book.
+        Each cell: learners with a mark (absent and excused included) out of the class, and the class average. A task is overdue once it is
+        two weeks past its date (or, without one, past the end of its term) and marks are still missing. Open a class to see its mark book.
       </p>
     </div>
   )

@@ -44,6 +44,8 @@ export function AtRiskList(props: {
   onStartGroup?: (input: { cls: OverviewClass; learners: { id: string; baseline: number | null }[]; topicId: string; plan: string }) => Promise<string | undefined>
   /** Where the catch-up groups are, shown once a group has been started. */
   groupsLink?: ReactNode
+  /** The dates each class's tasks were set for. */
+  dates?: Map<string, Map<string, { due_on: string }>> | null
 }) {
   const { classes, year, members, marks, names, onOpen } = props
   const today = useMemo(() => props.today ?? new Date(), [props.today])
@@ -59,11 +61,11 @@ export function AtRiskList(props: {
   const rows = useMemo(
     () =>
       classes.flatMap((c) =>
-        atRiskLearners(markBookTasks(programmeFor(c.subject_id, c.grade)), c.grade, members.get(c.id) ?? [], marks.get(c.id) ?? new Map(), year, today).map(
+        atRiskLearners(markBookTasks(programmeFor(c.subject_id, c.grade)), c.grade, members.get(c.id) ?? [], marks.get(c.id) ?? new Map(), year, today, props.dates?.get(c.id)).map(
           (r) => ({ ...r, cls: c }),
         ),
       ).sort((a, b) => BAND_ORDER[a.band] - BAND_ORDER[b.band] || (a.sba ?? 0) - (b.sba ?? 0)),
-    [classes, members, marks, year, today],
+    [classes, members, marks, year, today, props.dates],
   )
   const count = (f: Filter) => (f === 'all' ? rows.length : rows.filter((r) => r.band === f).length)
   const shown = filter === 'all' ? rows : rows.filter((r) => r.band === filter)

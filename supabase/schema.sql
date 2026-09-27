@@ -3694,3 +3694,147 @@ drop trigger if exists after_sba_moderation on public.sba_moderations;
 create trigger after_sba_moderation
   after insert or update or delete on public.sba_moderations
   for each row execute function public.after_sba_moderation();
+
+-- ============================================================================
+-- STEP 24: THE SBA ASSESSMENT SCHEDULE
+-- ============================================================================
+--
+-- The date each formal task is written, handed in or examined, per class,
+-- so that learners and parents know what is coming -- the schedule a school
+-- gives out at the start of each term -- and so that "overdue" counts from
+-- the real date rather than from the end of the term.
+--
+-- WHO CAN DO WHAT.
+--   * Whoever can manage the class (the class teacher, the HODs, the
+--     principal) sets, moves and clears a task's date.
+--   * Staff at the school, the learners in the class and their linked
+--     parents can read the class's dates.
+--   * When a date is set or moved, and it is still to come, each learner in
+--     the class and each of their linked parents is told. Changes are
+--     audited.
+
+create table if not exists public.sba_task_dates (
+  class_id uuid not null references public.classes (id) on delete cascade,
+  year smallint not null,
+  task_key text not null check (task_key ~ '^t[1-4]-[0-9]{1,2}$'),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  subject_id text not null,
+  grade smallint not null check (grade in (10, 11, 12)),
+  due_on date not null,
+  note text not null default '' check (length(note) <= 200),
+  updated_by uuid references public.profiles (id) on delete set null,
+  updated_at timestamptz not null default now(),
+  primary key (class_id, year, task_key)
+);
+
+alter table public.sba_task_dates enable row level security;
+
+drop policy if exists "Staff can read the assessment schedule" on public.sba_task_dates;
+create policy "Staff can read the assessment schedule"
+  on public.sba_task_dates for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Learners can read their class's schedule" on public.sba_task_dates;
+create policy "Learners can read their class's schedule"
+  on public.sba_task_dates for select
+  using (public.is_class_member(class_id));
+
+drop policy if exists "Linked parents can read their child's schedule" on public.sba_task_dates;
+create policy "Linked parents can read their child's schedule"
+  on public.sba_task_dates for select
+  using (
+    exists (
+      select 1 from public.class_members cm
+      join public.parent_learner_links pl on pl.learner_id = cm.learner_id
+      where cm.class_id = sba_task_dates.class_id and pl.parent_id = auth.uid()
+    )
+  );
+
+drop policy if exists "Class managers can set a date" on public.sba_task_dates;
+create policy "Class managers can set a date"
+  on public.sba_task_dates for insert
+  with check (public.can_manage_class_id(class_id));
+
+drop policy if exists "Class managers can move a date" on public.sba_task_dates;
+create policy "Class managers can move a date"
+  on public.sba_task_dates for update
+  using (public.can_manage_class_id(class_id))
+  with check (public.can_manage_class_id(class_id));
+
+drop policy if exists "Class managers can clear a date" on public.sba_task_dates;
+create policy "Class managers can clear a date"
+  on public.sba_task_dates for delete
+  using (public.can_manage_class_id(class_id));
+
+-- The school, subject and grade come from the class; the keys never change.
+create or replace function public.stamp_sba_task_date()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  c public.classes;
+begin
+  if tg_op = 'UPDATE' then
+    new.class_id := old.class_id;
+    new.year := old.year;
+    new.task_key := old.task_key;
+  end if;
+  select * into c from public.classes where id = new.class_id;
+  new.school_id := c.school_id;
+  new.subject_id := c.subject_id;
+  new.grade := c.grade;
+  new.note := btrim(new.note);
+  new.updated_by := auth.uid();
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_sba_task_date on public.sba_task_dates;
+create trigger stamp_sba_task_date
+  before insert or update on public.sba_task_dates
+  for each row execute function public.stamp_sba_task_date();
+
+-- Audit every change; tell the class and their parents of a date to come.
+create or replace function public.after_sba_task_date()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.sba_task_dates := case when tg_op = 'DELETE' then old else new end;
+  v_data jsonb;
+  v_learners uuid[];
+  l record;
+begin
+  v_data := jsonb_build_object('class_id', r.class_id, 'task', r.task_key, 'year', r.year, 'subject', r.subject_id,
+                               'grade', r.grade, 'due_on', r.due_on);
+  if tg_op = 'UPDATE' and new.due_on is not distinct from old.due_on and new.note is not distinct from old.note then
+    return new;
+  end if;
+  perform public.write_audit(r.school_id, 'sba_date.' || case tg_op when 'INSERT' then 'set' when 'UPDATE' then 'moved' else 'cleared' end,
+    'sba_task_dates', r.class_id::text,
+    v_data || case when tg_op = 'UPDATE' then jsonb_build_object('from', old.due_on) else '{}'::jsonb end);
+  if tg_op = 'DELETE' or r.due_on < current_date or (tg_op = 'UPDATE' and new.due_on is not distinct from old.due_on) then
+    return r;
+  end if;
+  v_data := v_data || jsonb_build_object('moved', tg_op = 'UPDATE');
+  select array_agg(learner_id) into v_learners from public.class_members where class_id = r.class_id;
+  perform public.notify(v_learners, 'sba_date.set', v_data, 'marks');
+  for l in
+    select pl.parent_id, pl.learner_id from public.parent_learner_links pl
+    where pl.learner_id = any (coalesce(v_learners, '{}'))
+  loop
+    perform public.notify(array[l.parent_id], 'sba_date.child_set', v_data || jsonb_build_object('learner_id', l.learner_id), 'marks');
+  end loop;
+  return r;
+end;
+$$;
+
+drop trigger if exists after_sba_task_date on public.sba_task_dates;
+create trigger after_sba_task_date
+  after insert or update or delete on public.sba_task_dates
+  for each row execute function public.after_sba_task_date();

@@ -10,6 +10,8 @@ import { byLearner as groupByLearner } from '@/lib/sbaProgress'
 import { MarkBookOverview } from '@/components/markbook/MarkBookOverview'
 import { AtRiskList } from '@/components/markbook/AtRiskList'
 import { startIntervention } from '@/lib/interventions'
+import { fetchDatesFor, saveTaskDate, type TaskDate } from '@/lib/sbaSchedule'
+import { SchedulePanel } from '@/components/markbook/SchedulePanel'
 import { ModerationPanel } from '@/components/markbook/ModerationPanel'
 import {
   canModerate,
@@ -47,6 +49,7 @@ export function MarkBook() {
   const [notSetUp, setNotSetUp] = useState(false)
   const [released, setReleasedTasks] = useState<Set<string> | null>(null)
   const [view, setView] = useState<'overview' | 'class' | 'risk' | null>(null)
+  const [classDates, setClassDates] = useState<Map<string, TaskDate> | null>(null)
   const [reportContext, setReportContext] = useState<{ school: string | null; names: Map<string, string> } | null>(null)
   const [moderation, setModeration] = useState<{ samples: ModerationMark[]; decisions: ModerationDecision[] } | null>(null)
   const [overview, setOverview] = useState<{
@@ -54,6 +57,7 @@ export function MarkBook() {
     marks: Map<string, Map<string, Map<string, SbaMarkRow>>>
     released: Map<string, Set<string>> | null
     moderated: Map<string, Map<string, ModerationDecision>> | null
+    dates: Map<string, Map<string, TaskDate>> | null
   } | null>(null)
 
   useEffect(() => {
@@ -76,10 +80,17 @@ export function MarkBook() {
   useEffect(() => {
     if (!classId) return
     let live = true
-    Promise.all([fetchClassMembers([classId]), fetchClassMarks(classId, year), fetchReleases(classId, year), fetchModeration(classId, year)]).then(
-      ([members, marks, releases, mod]) => {
+    Promise.all([
+      fetchClassMembers([classId]),
+      fetchClassMarks(classId, year),
+      fetchReleases(classId, year),
+      fetchModeration(classId, year),
+      fetchDatesFor([classId], year),
+    ]).then(
+      ([members, marks, releases, mod, dates]) => {
       if (!live) return
       setModeration(mod)
+      setClassDates(dates ? (dates.get(classId) ?? new Map()) : null)
       setMemberIds(members.map((m) => m.learner_id))
       setReleasedTasks(releases)
       setRows(marks.rows)
@@ -104,7 +115,8 @@ export function MarkBook() {
     if ((view !== 'overview' && view !== 'risk') || !classes?.length) return
     let live = true
     const ids = classes.map((c) => c.id)
-    Promise.all([fetchClassMembers(ids), fetchMarksFor(ids, year), fetchReleasesFor(ids, year), fetchDecisionsFor(ids, year)]).then(([members, rows, releases, moderated]) => {
+    Promise.all([fetchClassMembers(ids), fetchMarksFor(ids, year), fetchReleasesFor(ids, year), fetchDecisionsFor(ids, year), fetchDatesFor(ids, year)]).then(
+      ([members, rows, releases, moderated, dates]) => {
       if (!live) return
       if (rows === null) {
         setNotSetUp(true)
@@ -114,8 +126,9 @@ export function MarkBook() {
       for (const m of members) byClass.set(m.class_id, [...(byClass.get(m.class_id) ?? []), m.learner_id])
       const marks = new Map<string, Map<string, Map<string, SbaMarkRow>>>()
       for (const id of ids) marks.set(id, groupByLearner(rows.filter((r) => r.class_id === id)))
-      setOverview({ members: byClass, marks, released: releases, moderated })
-    })
+      setOverview({ members: byClass, marks, released: releases, moderated, dates })
+      },
+    )
     return () => {
       live = false
     }
@@ -201,6 +214,7 @@ export function MarkBook() {
                   setClassId(id)
                   setView('class')
                 }}
+                dates={overview.dates}
                 school={reportContext?.school ?? null}
                 teacherOf={(id) => {
                   const teacher = classes.find((c) => c.id === id)?.teacher_id
@@ -236,6 +250,7 @@ export function MarkBook() {
                 marks={overview.marks}
                 released={overview.released}
                 moderated={overview.moderated}
+                dates={overview.dates}
                 onOpen={(id) => {
                   setClassId(id)
                   setView('class')
@@ -303,6 +318,30 @@ export function MarkBook() {
                 }}
               />
             )}
+
+            {cls && classDates && tasks.length ? (
+              <SchedulePanel
+                key={`dates-${cls.id}`}
+                tasks={tasks}
+                dates={classDates}
+                editable={canManageClass(profile, cls)}
+                heading={{
+                  school: reportContext?.school ?? null,
+                  classLabel: cls.name,
+                  subject: subjectName(cls.subject_id),
+                  grade: cls.grade,
+                  year,
+                  teacher: cls.teacher_id ? (reportContext?.names.get(cls.teacher_id) ?? null) : null,
+                }}
+                onSave={async (task, dueOn, note) => {
+                  const error = await saveTaskDate(cls.id, year, task.slot, dueOn, note)
+                  if (error) return error
+                  const fresh = await fetchDatesFor([cls.id], year)
+                  setClassDates(fresh?.get(cls.id) ?? new Map())
+                  return undefined
+                }}
+              />
+            ) : null}
 
             {cls && moderation && classLearners.length ? (
               <ModerationPanel

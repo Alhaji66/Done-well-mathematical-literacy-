@@ -49,6 +49,10 @@ export async function markNotificationsRead(ids: number[]): Promise<void> {
 
 const topicOf = (d: Record<string, unknown>) => getTopic(String(d.topic ?? ''))?.name ?? 'a topic'
 
+/** "Mon 12 Oct" from a date in a notification. */
+const dayOf = (v: unknown) =>
+  new Date(`${String(v)}T00:00:00Z`).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' })
+
 /** "Mathematical Literacy: Controlled test 1", from a release's subject, grade and task. */
 const sbaTaskOf = (d: Record<string, unknown>) => {
   const subject = getSubject(String(d.subject ?? ''))?.name ?? 'SBA'
@@ -85,6 +89,10 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `Your marks for ${sbaTaskOf(d)} were moderated and accepted.`
     case 'sba_moderation.returned':
       return `Your marks for ${sbaTaskOf(d)} were returned after moderation. Open the mark book to read the comment.`
+    case 'sba_date.set':
+      return `${sbaTaskOf(d)} ${d.moved ? 'has moved to' : 'is on'} ${dayOf(d.due_on)}.`
+    case 'sba_date.child_set':
+      return `${names.get(String(d.learner_id)) ?? 'Your child'}’s ${sbaTaskOf(d)} ${d.moved ? 'has moved to' : 'is on'} ${dayOf(d.due_on)}.`
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

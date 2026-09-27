@@ -26,8 +26,13 @@ export interface TaskProgress {
 /** Two weeks after the end of the task's term: time enough to mark and moderate. */
 const GRACE_DAYS = 14
 
-/** When a task's marks should be in, for the year the term dates are known for; otherwise null. */
-export function taskDue(task: SbaTask, year: number): Date | null {
+/**
+ * When a task's marks should be in: two weeks after the date it was set for,
+ * or, without one, after the end of its term (for the year the term dates are
+ * known for; otherwise null).
+ */
+export function taskDue(task: SbaTask, year: number, setFor?: string): Date | null {
+  if (setFor) return new Date(new Date(`${setFor}T00:00:00Z`).getTime() + GRACE_DAYS * 86_400_000)
   const end = termEndDate(task.term)
   if (end.getUTCFullYear() !== year) return null
   return new Date(end.getTime() + GRACE_DAYS * 86_400_000)
@@ -107,9 +112,11 @@ export function atRiskLearners(
   marks: Map<string, Map<string, Row>>,
   year: number,
   today: Date,
+  /** The dates the class's tasks were set for, by task. */
+  dates?: Map<string, { due_on: string }>,
 ): AtRisk[] {
   const overdue = tasks.filter((t) => {
-    const due = taskDue(t, year)
+    const due = taskDue(t, year, dates?.get(t.slot)?.due_on)
     return due !== null && today > due
   })
   const out: AtRisk[] = []

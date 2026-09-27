@@ -16,6 +16,7 @@ export interface ModerationMark {
   teacher_mark: number
   moderated_mark: number
   out_of: number
+  moderator_id?: string | null
   updated_at: string
 }
 
@@ -76,6 +77,19 @@ export async function fetchDecisionsFor(classIds: string[], year: number): Promi
     out.get(d.class_id)!.set(d.task_key, d)
   }
   return out
+}
+
+/** The school's name and its people's names, for the printed moderation report. */
+export async function fetchReportContext(schoolId: string): Promise<{ school: string | null; names: Map<string, string> }> {
+  if (!supabase) return { school: null, names: new Map() }
+  const [school, people] = await Promise.all([
+    supabase.from('schools').select('name').eq('id', schoolId).maybeSingle(),
+    supabase.from('profiles').select('id, full_name').eq('school_id', schoolId),
+  ])
+  return {
+    school: (school.data?.name as string | undefined) ?? null,
+    names: new Map((people.data ?? []).map((p) => [p.id as string, p.full_name as string])),
+  }
 }
 
 const explain = (message: string) =>

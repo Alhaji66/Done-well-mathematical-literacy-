@@ -115,6 +115,16 @@
     border: none !important;
   }
 
+  /* The moderation report prints on its own: while it is being printed the
+     mark book beside it is left off the page, and at any other time the
+     report is. */
+  body[data-print='moderation'] .print-area:not(.moderation-report) {
+    display: none !important;
+  }
+  body:not([data-print='moderation']) .moderation-report {
+    display: none !important;
+  }
+
   .print-avoid-break {
     break-inside: avoid;
   }

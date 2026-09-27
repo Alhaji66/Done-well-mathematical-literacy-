@@ -469,7 +469,11 @@ export function buildLessonPlan({ atp, weekIndex, grade, questions, lessonMinute
     // lesson of a sub-topic with several is for practice.
     const teaching = count === 1 ? 1 : Math.min(count - 1, Math.max(1, Math.ceil(points.length / 3)))
     const chunks = split(points, teaching)
-    const budgets = share(subPool.filter((q) => !used.has(q.id)).length, count)
+    // When the week ends with a consolidation lesson, hold one question of each
+    // sub-topic back for its class test; otherwise the lessons before it share
+    // out every question and the test has nothing left to ask.
+    const available = subPool.filter((q) => !used.has(q.id)).length
+    const budgets = share(Math.max(0, available - (reserve && available > count ? 1 : 0)), count)
 
     for (let k = 0; k < count; k++) {
       const isTeach = k < teaching

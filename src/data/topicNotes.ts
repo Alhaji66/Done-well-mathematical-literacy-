@@ -2919,9 +2919,11 @@ export const topicNotes: TopicNote[] = [
       {
         name: 'Reproduction in angiosperms',
         points: [
-          'Pollination is the transfer of pollen from anther to stigma; fertilisation is the fusion of gametes',
-          'Insect-pollinated flowers are large, coloured and scented with nectar; wind-pollinated flowers are small, dull, with feathery stigmas and exposed anthers',
-          'After fertilisation the ovule becomes the seed and the ovary becomes the fruit',
+          'After fertilisation the ovule develops into the seed and the ovary into the fruit; the petals, stamens and style usually wither.',
+          'A seed has a seed coat (testa) that protects it, a food store in one or two cotyledons (or an endosperm), and an embryo made of a plumule, the future shoot, and a radicle, the future root.',
+          'Seeds and fruits are dispersed by wind, water, animals or by the fruit bursting open. Dispersal spreads the offspring and reduces competition with the parent plant for light, water and nutrients.',
+          'A seed germinates when it has water, oxygen and a suitable temperature. It takes up water first, which activates the enzymes that break down its food store.',
+          'Seeds matter to people as food (maize, wheat, rice and beans), as a source of oil and income, and are stored in seed banks to protect plant diversity for the future.',
         ],
       },
       {
@@ -2932,7 +2934,6 @@ export const topicNotes: TopicNote[] = [
           'Self-pollination is pollen landing on a stigma of the same plant; cross-pollination is pollen reaching a different plant of the same species. Cross-pollination gives more genetic variation.',
           'Insect-pollinated flowers are large and brightly coloured, scented, produce nectar, and have sticky pollen and stigmas inside the flower. Wind-pollinated flowers are small and dull, have no scent or nectar, and hang their anthers and feathery stigmas outside the flower where the wind can reach them.',
           'After pollination the pollen grain grows a pollen tube down the style to the ovule, and the male gamete travels down it to fuse with the egg cell.',
-          'After fertilisation the ovule becomes the seed and the ovary becomes the fruit. Seed dispersal then moves the offspring away from the parent, reducing competition.',
         ],
       },
     ],

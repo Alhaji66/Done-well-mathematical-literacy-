@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { demoLearner } from '@/data/learner'
 import { getSubject } from '@/data/subjects'
@@ -14,6 +14,8 @@ import { onDemoMistakesChange, openDemoMistakeCount } from '@/lib/demoMistakes'
 import { demoExampleExamDate } from '@/lib/revisionPlan'
 import { PlanShortcuts } from '@/components/revision/PlanShortcuts'
 import { SaveOffline } from '@/components/layout/SaveOffline'
+
+const DemoMyLevels = lazy(() => import('@/components/levels/DemoMyLevels'))
 import {
   TrendingUpIcon,
   ClockIcon,
@@ -42,6 +44,10 @@ export function LearnerDashboard() {
         <h1 className="mt-1 text-2xl font-bold text-navy-900">Welcome back, {demoLearner.name.split(' ')[0]}</h1>
         <p className="mt-1 text-sm text-navy-600">Here's how your week is going and what to focus on next.</p>
       </div>
+
+      <Suspense fallback={null}>
+        <DemoMyLevels />
+      </Suspense>
 
       {/* On a phone My Mistakes, the countdown and the tutor have no tab of their own -- the bottom bar is full -- so they are offered here, first. */}
       <Link

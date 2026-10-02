@@ -13,6 +13,7 @@ import { fetchLearnerDates, upcoming, type TaskDate } from '@/lib/sbaSchedule'
 
 // Loaded only when something is coming up: it brings the SBA programme with it.
 const ComingUp = lazy(() => import('@/components/markbook/ComingUp'))
+const MyLevels = lazy(() => import('@/components/levels/MyLevels'))
 import { PencilIcon, TrendingUpIcon, ClipboardIcon, CheckIcon } from '@/components/ui/Icons'
 import { subjects } from '@/data/subjects'
 
@@ -109,6 +110,10 @@ export function LearnerDashboard() {
           />
         </Suspense>
       ) : null}
+
+      <Suspense fallback={null}>
+        <MyLevels learners={[{ id: profile.id }]} />
+      </Suspense>
 
       {profile.subject_id && profile.grade ? (
         <PlanShortcuts

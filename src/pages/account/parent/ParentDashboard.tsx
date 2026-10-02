@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { fetchLinkedChildren, linkChild, type LinkedChild } from '@/lib/parentLinks'
@@ -6,6 +6,9 @@ import { fetchLearnerProgress, type ProgressRow } from '@/lib/learnerProgress'
 import { getTopic } from '@/data/topics'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ChildActivity } from '@/components/account/ParticipationPanel'
+
+// Loaded once there is a child to show levels for.
+const MyLevels = lazy(() => import('@/components/levels/MyLevels'))
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { HeartHandshakeIcon } from '@/components/ui/Icons'
@@ -189,6 +192,9 @@ export function ParentDashboard() {
               <ChildCard key={child.id} child={child} />
             ))}
           </div>
+          <Suspense fallback={null}>
+            <MyLevels learners={children.map((c) => ({ id: c.id, name: c.full_name.split(' ')[0] }))} />
+          </Suspense>
           {linkForm}
         </>
       )}

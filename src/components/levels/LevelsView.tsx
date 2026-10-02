@@ -6,6 +6,7 @@ import {
   filterResults,
   learnerLevels,
   levelMovement,
+  startingTerm,
   levelOf,
   LEVEL_NAMES,
   LEVEL_RANGES,
@@ -19,6 +20,7 @@ import {
   type Term,
 } from '@/lib/levels'
 import { cn } from '@/lib/utils'
+import { LevelChip } from '@/components/levels/LevelChip'
 import { downloadCsv } from '@/lib/csv'
 import { printPart } from '@/lib/print'
 import { DownloadIcon, PrinterIcon } from '@/components/ui/Icons'
@@ -71,27 +73,6 @@ const FILL: Record<number, string> = {
   2: 'bg-rose-300',
   1: 'bg-rose-600',
 }
-const CHIP: Record<number, string> = {
-  7: 'bg-emerald-100 text-emerald-900',
-  6: 'bg-emerald-50 text-emerald-800',
-  5: 'bg-emerald-50 text-emerald-700',
-  4: 'bg-navy-50 text-navy-700',
-  3: 'bg-amber-50 text-amber-900',
-  2: 'bg-rose-50 text-rose-800',
-  1: 'bg-rose-100 text-rose-900',
-}
-
-export function LevelChip({ level, className }: { level: number; className?: string }) {
-  return (
-    <span
-      title={`Level ${level}: ${LEVEL_NAMES[level]} (${LEVEL_RANGES[level]})`}
-      className={cn('inline-flex min-w-[2.25rem] justify-center rounded-md px-1.5 py-0.5 text-xs font-bold tabular-nums', CHIP[level], className)}
-    >
-      L{level}
-    </span>
-  )
-}
-
 /** A bar split by level, 7 on the left. */
 function TallyBar({ counts, total }: { counts: Record<number, number>; total: number }) {
   return (
@@ -161,13 +142,6 @@ const PERIODS: { value: Term | 0; label: string }[] = [
   { value: 0, label: 'Year' },
 ]
 
-/** The term to open on: today's, or the latest one anything has been written in. */
-function startingTerm(results: LevelResult[], today: Date): Term | 0 {
-  const now = termOfDate(today.toISOString().slice(0, 10))
-  if (results.some((r) => r.term === now)) return now
-  const latest = Math.max(0, ...results.map((r) => r.term))
-  return (latest || now) as Term
-}
 
 /**
  * Learners' levels, 1 to 7, over the weekly tests and SBA tasks of a term or

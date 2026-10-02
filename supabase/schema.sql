@@ -4021,3 +4021,42 @@ drop trigger if exists stamp_sba_term_comment on public.sba_term_comments;
 create trigger stamp_sba_term_comment
   before insert or update on public.sba_term_comments
   for each row execute function public.stamp_sba_term_comment();
+
+-- ============================================================================
+-- STEP 27: PARENTS SEE THE WEEKLY TESTS THEIR CHILD SAT
+-- ============================================================================
+--
+-- A parent's dashboard shows their child's level in each subject, worked out
+-- from the child's weekly tests and released SBA marks. A parent could
+-- already read the child's attempts (STEP 7), but not the tests themselves:
+-- weekly_tests is read through the school, and a parent belongs to no school.
+-- Without the test there is no subject or grade to put the result under.
+--
+-- WHO CAN DO WHAT.
+--   * A linked parent reads a test their child has an attempt at -- the
+--     title, subject, grade and topics, nothing about other learners. Tests
+--     the child never sat stay out of view.
+--
+-- The check runs in a security-definer function, so the policy on
+-- weekly_tests does not query weekly_test_attempts under that table's own
+-- policies (which look back at weekly_tests, and would recurse).
+create or replace function public.parent_sees_test(p_test uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.weekly_test_attempts a
+    join public.parent_learner_links l on l.learner_id = a.learner_id
+    where a.test_id = p_test and l.parent_id = auth.uid()
+  );
+$$;
+grant execute on function public.parent_sees_test(uuid) to authenticated;
+
+drop policy if exists "Linked parents can view tests their child sat" on public.weekly_tests;
+create policy "Linked parents can view tests their child sat"
+  on public.weekly_tests for select
+  using (public.parent_sees_test(id));

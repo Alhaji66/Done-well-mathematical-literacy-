@@ -117,3 +117,13 @@ export function demoLevelData(scope: 'teacher' | 'hod' | 'school', now = new Dat
 
   return { year: now.getFullYear(), school: 'Gojela High School', classes, names: scope === 'school' ? new Map() : names, members, results }
 }
+
+/**
+ * The demo learner's own levels, for the learner and parent demo dashboards:
+ * one learner of the sample 12A class, standing in for Karabo.
+ */
+export function demoMyLevels(now = new Date()): LevelResult[] {
+  return demoLevelData('teacher', now)
+    .results.filter((r) => r.learnerId === 'demo-12a:demo-learner-0')
+    .map((r) => ({ ...r, learnerId: 'demo-karabo' }))
+}

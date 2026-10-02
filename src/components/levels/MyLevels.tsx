@@ -26,6 +26,7 @@ export default function MyLevels({ learners }: { learners: { id: string; name?: 
           title={l.name ? `${l.name}’s levels` : 'My levels'}
           results={data.results.filter((r) => r.learnerId === l.id)}
           hiddenTests={data.hiddenTests.get(l.id) ?? 0}
+          child={l.name}
         />
       ))}
     </>

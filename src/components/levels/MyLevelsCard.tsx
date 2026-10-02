@@ -1,10 +1,68 @@
 import { subjects } from '@/data/subjects'
-import { filterResults, learnerLevels, LEVEL_NAMES, levelMovement, startingTerm, type LevelResult, type Term } from '@/lib/levels'
+import { getTopic } from '@/data/topics'
+import {
+  earlyWarnings,
+  filterResults,
+  learnerLevels,
+  LEVEL_NAMES,
+  levelMovement,
+  levelOf,
+  startingTerm,
+  type EarlyWarning,
+  type LevelResult,
+  type Term,
+} from '@/lib/levels'
+import { shortDate } from '@/components/levels/warningText'
 import { LevelChip } from '@/components/levels/LevelChip'
-import { LevelsIcon } from '@/components/ui/Icons'
+import { AlertIcon, LevelsIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 
 const subjectName = (id: string) => subjects.find((s) => s.id === id)?.name ?? id
+
+/**
+ * An early warning in plain words, for the learner ("your") or a parent
+ * (the child's first name): what the test showed and what helps.
+ */
+function WarningNote({ w, child }: { w: EarlyWarning; child?: string }) {
+  const t = w.latest
+  const pct = Math.round(t.percent)
+  const topic = (t.topicIds ?? []).map((id) => getTopic(id)?.name).filter(Boolean).join(' and ') || 'this topic'
+  const whose = child ? `${child}’s` : 'your'
+  const reasons = [
+    w.reasons.includes('below_40') ? 'below 40%' : null,
+    w.reasons.includes('dropped') && w.previous ? `down from ${Math.round(w.previous.percent)}% (Level ${levelOf(w.previous.percent)}) on the test before` : null,
+    w.reasons.includes('month_drop') && w.month ? `the last four weeks average ${w.month.now}%, down from ${w.month.before}%` : null,
+    w.reasons.includes('falling') ? 'the third test in a row to go down' : null,
+  ].filter(Boolean)
+  return (
+    <li className="space-y-1.5 py-2.5">
+      <p className="text-sm text-navy-900">
+        <span className="font-semibold">{subjectName(t.subjectId)}:</span> {child ? `${child} scored` : 'you scored'} <strong>{pct}%</strong> (Level{' '}
+        {levelOf(t.percent)}) on “{t.title}” on {shortDate(t.date!)}
+        {reasons.length ? ` — ${reasons.join('; ')}.` : '.'}
+      </p>
+      {child ? (
+        <ul className="list-disc space-y-0.5 pl-5 text-xs text-navy-700">
+          <li>Ask {child} to show you the test and explain the questions that were hard.</li>
+          <li>
+            Help {child} practise {topic} for about 30 minutes a day in the app; every question has a worked solution.
+          </li>
+          <li>Check that homework is done, and that {child} goes to every lesson and any extra lessons.</li>
+        </ul>
+      ) : (
+        <p className="text-xs text-navy-700">
+          Practise {topic} for about 30 minutes a day in Practise, and check your working against the worked solutions. Your teacher will help
+          you catch up, then give a short test to see {whose} progress.
+        </p>
+      )}
+      {child ? (
+        <p className="text-[11px] text-navy-500">
+          {child}’s teacher has been told too, and will give extra help with {topic}.
+        </p>
+      ) : null}
+    </li>
+  )
+}
 
 /**
  * One learner's CAPS level in each subject: this term's, how it moved since
@@ -17,17 +75,21 @@ export function MyLevelsCard({
   title = 'My levels',
   hiddenTests = 0,
   today = new Date(),
+  child,
 }: {
   results: LevelResult[]
   title?: string
   hiddenTests?: number
   today?: Date
+  /** The child's first name, on a parent's card; absent on the learner's own. */
+  child?: string
 }) {
   if (!results.length && !hiddenTests) return null
   const term = (startingTerm(results, today) || 1) as Term
   const now = learnerLevels(filterResults(results, { term, source: 'all' }))
   const year = new Map(learnerLevels(filterResults(results, { term: null, source: 'all' })).map((l) => [`${l.subjectId}|${l.grade}`, l]))
   const moves = new Map(levelMovement(results, term, { source: 'all' }).map((m) => [`${m.subjectId}|${m.grade}`, m]))
+  const warnings = earlyWarnings(results, {}, today)
   const subjectsSeen = [...year.values()].sort((a, b) => subjectName(a.subjectId).localeCompare(subjectName(b.subjectId)))
 
   return (
@@ -35,6 +97,18 @@ export function MyLevelsCard({
       <h3 className="flex items-center gap-2 font-bold text-navy-900">
         <LevelsIcon className="h-5 w-5 text-navy-500" /> {title} · Term {term}
       </h3>
+      {warnings.length ? (
+        <div className="mt-3 rounded-lg border border-rose-200 bg-rose-50/60 px-3">
+          <p className="flex items-center gap-1.5 pt-2.5 text-xs font-bold uppercase tracking-wider text-rose-800">
+            <AlertIcon className="h-4 w-4" /> Early warning
+          </p>
+          <ul className="divide-y divide-rose-100">
+            {warnings.map((w) => (
+              <WarningNote key={`${w.subjectId}|${w.grade}`} w={w} child={child} />
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <ul className="mt-3 divide-y divide-navy-100">
         {subjectsSeen.map((y) => {
           const key = `${y.subjectId}|${y.grade}`

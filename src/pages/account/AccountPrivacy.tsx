@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { ParentContactCard } from '@/components/account/ParentContactCard'
 import {
   deleteMyAccount,
   downloadExport,
@@ -45,6 +46,12 @@ export function AccountPrivacy() {
     ...(profile.grade ? [{ label: 'Your grade', value: `Grade ${profile.grade}` }] : []),
     ...(profile.subject_id ? [{ label: 'Your subject', value: profile.subject_id }] : []),
     { label: 'Topics you have practised', value: 'One row per topic, with a mastery percentage' },
+    ...(profile.role === 'parent'
+      ? [
+          { label: 'Your phone number for the school', value: 'If you gave one: see below' },
+          { label: 'Your replies to early warnings', value: 'Each answer you sent your child’s teacher' },
+        ]
+      : []),
   ]
 
   const handleExport = async () => {
@@ -141,6 +148,8 @@ export function AccountPrivacy() {
           {busy === 'export' ? 'Preparing…' : 'Download everything we hold'}
         </button>
       </section>
+
+      {profile.role === 'parent' ? <ParentContactCard parentId={profile.id} /> : null}
 
       <section className="card p-5">
         <h2 className="text-base font-bold text-navy-900">Who can see your progress</h2>

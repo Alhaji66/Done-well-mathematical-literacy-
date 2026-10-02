@@ -84,3 +84,10 @@ export async function saveContact(parentId: string, phone: string, bestTime: str
   }
   return undefined
 }
+
+/** Remove the parent's own phone number. */
+export async function deleteContact(parentId: string): Promise<string | undefined> {
+  if (!supabase) return 'Real accounts are not set up on this deployment.'
+  const { error } = await supabase.from('parent_contacts').delete().eq('parent_id', parentId)
+  return error ? error.message : undefined
+}

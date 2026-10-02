@@ -1,4 +1,6 @@
-import { demoLevelData } from '@/data/demoLevels'
+import { DEMO_CLASS_TEACHER, demoLevelData } from '@/data/demoLevels'
+
+export { DEMO_CLASS_TEACHER }
 import type { ImpactGroup } from '@/lib/catchUpImpact'
 import type { LevelResult } from '@/lib/levels'
 
@@ -10,16 +12,6 @@ import type { LevelResult } from '@/lib/levels'
  * not -- as in a real school.
  */
 
-/** Who teaches each demo class. The demo teacher is Alhaji T. */
-export const DEMO_CLASS_TEACHER: Record<string, string> = {
-  'demo-11a': 'Alhaji T',
-  'demo-11b': 'Mangyani T.S',
-  'demo-12a': 'Alhaji T',
-  'demo-10m': 'Ms. F. Adams',
-  'demo-12m': 'Ms. F. Adams',
-  'demo-11p': 'Mr. K. Mokoena',
-  'demo-10l': 'Mr. T. Sithole',
-}
 
 const seeded = (a: number, b: number) => {
   const x = Math.sin(a * 91.17 + b * 47.53) * 24634.6345

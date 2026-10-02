@@ -48,6 +48,8 @@ export interface LevelClass {
   name: string
   subject_id: string
   grade: Grade
+  /** The class teacher's name, where known -- for letters home. */
+  teacher?: string | null
 }
 
 export interface LevelData {

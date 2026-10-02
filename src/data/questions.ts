@@ -11,6 +11,8 @@ import { matlitChartGaps } from '@/data/matlitChartGaps'
 import { matlitLessonGaps } from '@/data/matlitLessonGaps'
 import { lessonGapQuestions } from '@/data/lessonGapQuestions'
 import { physicsGapQuestions } from '@/data/physicsGapQuestions'
+import { lifeSciGapQuestions } from '@/data/lifeSciGapQuestions'
+import { mathThinGaps } from '@/data/mathThinGaps'
 
 /*
  * Taxation and compound-interest items live in taxQuestions.ts, and the Grade
@@ -30,6 +32,8 @@ export const questions: Question[] = [
   ...matlitLessonGaps,
   ...lessonGapQuestions,
   ...physicsGapQuestions,
+  ...lifeSciGapQuestions,
+  ...mathThinGaps,
   // Finance
   {
     id: 'fin-e1',

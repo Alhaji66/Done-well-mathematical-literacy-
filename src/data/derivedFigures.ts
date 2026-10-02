@@ -506,7 +506,12 @@ export const derivedFigures: Record<string, FigureId> = {
   "lifesci-p2-bn-1-4-2": "dna-structure",
   "lifesci-p2-bn-1-4-3": "dna-structure",
   "lifesci-p2-bn-1-4-4": "dna-structure",
-  "lifesci-p2-cn-1-1-1": "dna-structure"
+  "lifesci-p2-cn-1-1-1": "dna-structure",
+  "lsg-10-cytokinesis-animal-plant": "plant-cell",
+  "lsg-10-ddt-bioaccumulation": "energy-pyramid",
+  "lsg-10-jackals-removed": "energy-pyramid",
+  "lsg-10-owls-poisoned": "energy-pyramid",
+  "lsg-10-remove-species-web": "energy-pyramid"
 }
 
 /** Shown only with the revealed answer: naming questions the diagram would answer. */

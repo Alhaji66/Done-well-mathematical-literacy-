@@ -36,6 +36,13 @@ export function describeAuthError(raw: unknown): string {
     return 'That password is too short. Use at least 8 characters.'
   }
 
+  // The sign-in CAPTCHA (Cloudflare Turnstile, checked by Supabase): its token
+  // is single-use and expires, so a retry after a wait or a failed attempt
+  // needs a fresh tick in the box.
+  if (lower.includes('captcha')) {
+    return 'The security check did not go through. Wait for the box above the button to show a tick, then try again.'
+  }
+
   if (lower.includes('failed to fetch') || lower.includes('networkerror') || lower.includes('network request failed')) {
     return 'Could not reach the server. Check your connection and try again.'
   }

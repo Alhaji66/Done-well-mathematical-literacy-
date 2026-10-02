@@ -6,6 +6,7 @@ import { describeAuthError } from '@/lib/authErrors'
 import { MessageIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { SIGNED_OUT_REASON_KEY } from '@/lib/devices'
+import { Captcha, captchaEnabled } from '@/components/auth/Captcha'
 
 /**
  * WHY THERE IS A PASSWORD OPTION AT ALL.
@@ -35,6 +36,9 @@ export function AccountSignIn() {
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState<'idle' | 'working' | 'sent' | 'confirm' | 'error'>('idle')
   const [error, setError] = useState('')
+  // The sign-in CAPTCHA's single-use token (see components/auth/Captcha.tsx).
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaRound, setCaptchaRound] = useState(0)
   // Set by the device check (STEP 35) when another device took this one's place.
   const [signedOutElsewhere] = useState(() => {
     try {
@@ -66,10 +70,11 @@ export function AccountSignIn() {
     setStatus('working')
     setError('')
 
-    const credentials = { email: email.trim(), password }
+    const credentials = { email: email.trim(), password, options: { captchaToken: captchaToken ?? undefined } }
     const { data, error: authError } = creating
       ? await supabase.auth.signUp(credentials)
       : await supabase.auth.signInWithPassword(credentials)
+    setCaptchaRound((r) => r + 1)
 
     if (authError) {
       setStatus('error')
@@ -97,8 +102,9 @@ export function AccountSignIn() {
     const redirectTo = `${window.location.origin}${import.meta.env.BASE_URL}account/sign-in`
     const { error: sendError } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo: redirectTo },
+      options: { emailRedirectTo: redirectTo, captchaToken: captchaToken ?? undefined },
     })
+    setCaptchaRound((r) => r + 1)
     if (sendError) {
       setStatus('error')
       setError(describeAuthError(sendError))
@@ -108,6 +114,7 @@ export function AccountSignIn() {
   }
 
   const busy = status === 'working'
+  const waitingForCaptcha = captchaEnabled && !captchaToken
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-navy-50 px-4 py-12">
@@ -237,12 +244,16 @@ export function AccountSignIn() {
                   </div>
                 ) : null}
 
+                <Captcha onToken={setCaptchaToken} round={captchaRound} />
+
                 {status === 'error' ? <p className="text-sm text-rose-600">{error}</p> : null}
 
-                <button type="submit" disabled={busy} className="btn-primary w-full">
+                <button type="submit" disabled={busy || waitingForCaptcha} className="btn-primary w-full">
                   {busy
                     ? 'Working…'
-                    : mode === 'link'
+                    : waitingForCaptcha
+                      ? 'Checking you are not a robot…'
+                      : mode === 'link'
                       ? 'Send sign-in link'
                       : creating
                         ? 'Create account'

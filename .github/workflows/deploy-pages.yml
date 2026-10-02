@@ -35,6 +35,8 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: true
+          # Public, so a repository VARIABLE, not a secret (see .env.example).
+          VITE_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
       # Stops the deploy if the question bank has leaked back into the website.

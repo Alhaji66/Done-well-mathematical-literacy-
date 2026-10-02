@@ -32,21 +32,9 @@
     <meta name="twitter:title" content="DONE WELL® | School Support Platform" />
     <meta name="twitter:description" content="Affordable, curriculum-aligned resources, practice and progress support for South African learners, parents, teachers and schools." />
     <meta name="twitter:image" content="https://alhaji66.github.io/Done-well-mathematical-literacy-/og-image.png" />
-    <script type="text/javascript">
-      // Undo the redirect encoding from 404.html (see public/404.html for why this exists).
-      ;(function (l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search
-            .slice(1)
-            .split('&')
-            .map(function (s) {
-              return s.replace(/~and~/g, '&')
-            })
-            .join('?')
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash)
-        }
-      })(window.location)
-    </script>
+    <!-- Undoes the redirect encoding from 404.html (see public/404.html). A file, not
+         inline, because the security policy in public/_headers runs no inline script. -->
+    <script src="/spa-redirect.js"></script>
   </head>
   <body>
     <div id="root"></div>

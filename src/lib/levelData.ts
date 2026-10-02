@@ -2,6 +2,7 @@ import type { AccountProfile } from '@/context/AccountAuthContext'
 import { classesInView, fetchClassMembers, fetchClasses } from '@/lib/classes'
 import { fetchSchoolLearners } from '@/lib/teacherRoster'
 import { fetchSchoolName } from '@/lib/schools'
+import { fetchSchoolTeachers } from '@/lib/schoolStaff'
 import { fetchMarksFor } from '@/lib/sbaMarks'
 import { fetchAttemptsForTests, fetchTestsForSchool } from '@/lib/weeklyTests'
 import { sbaResults, weeklyResults, type LevelData } from '@/lib/levels'
@@ -19,13 +20,18 @@ export async function fetchLevelData(profile: AccountProfile): Promise<LevelData
   const teacher = profile.role === 'teacher'
   const named = teacher || profile.role === 'hod'
   const year = new Date().getFullYear()
-  const [{ classes: all }, allTests, roster, school] = await Promise.all([
+  const [{ classes: all }, allTests, roster, school, staff] = await Promise.all([
     fetchClasses(schoolId),
     fetchTestsForSchool(schoolId),
     named ? fetchSchoolLearners(schoolId) : Promise.resolve([]),
     fetchSchoolName(schoolId),
+    named ? fetchSchoolTeachers(schoolId) : Promise.resolve([]),
   ])
-  const classes = classesInView(profile, all)
+  const teacherName = new Map(staff.map((t) => [t.id, t.full_name]))
+  const classes = classesInView(profile, all).map((c) => ({
+    ...c,
+    teacher: c.teacher_id === profile.id ? profile.full_name : c.teacher_id ? (teacherName.get(c.teacher_id) ?? null) : null,
+  }))
   const ids = classes.map((c) => c.id)
   const subjectsInView = new Set(classes.map((c) => c.subject_id))
   if (profile.role === 'hod' && profile.subject_id) subjectsInView.add(profile.subject_id)

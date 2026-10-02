@@ -20,6 +20,17 @@ const OTHER_CLASSES: LevelClass[] = [
   { id: 'demo-10l', name: '10B Life Sciences', subject_id: 'life-sciences', grade: 10 },
 ]
 
+/** Who teaches each demo class. The demo teacher is Alhaji T. */
+export const DEMO_CLASS_TEACHER: Record<string, string> = {
+  'demo-11a': 'Alhaji T',
+  'demo-11b': 'Mangyani T.S',
+  'demo-12a': 'Alhaji T',
+  'demo-10m': 'Ms. F. Adams',
+  'demo-12m': 'Ms. F. Adams',
+  'demo-11p': 'Mr. K. Mokoena',
+  'demo-10l': 'Mr. T. Sithole',
+}
+
 const OTHER_NAMES = [
   'Mpho Radebe', 'Naledi Zulu', 'Owethu Cele', 'Palesa Tau', 'Qhawe Ngcobo', 'Refilwe Sebola',
   'Sipho Maseko', 'Thandi Shabalala', 'Unathi Mkhize', 'Vusi Mabaso', 'Wandile Hadebe', 'Zanele Ntuli',
@@ -85,7 +96,10 @@ function weeklyFor(c: LevelClass, learnerIds: string[], ability: (i: number) => 
 
 export function demoLevelData(scope: 'teacher' | 'hod' | 'school', now = new Date()): LevelData {
   const today = now.toISOString().slice(0, 10)
-  const classes: LevelClass[] = scope === 'school' ? [...CLASSES, ...OTHER_CLASSES] : [...CLASSES]
+  const classes: LevelClass[] = (scope === 'school' ? [...CLASSES, ...OTHER_CLASSES] : [...CLASSES]).map((c) => ({
+    ...c,
+    teacher: DEMO_CLASS_TEACHER[c.id] ?? null,
+  }))
   const names = new Map<string, string>()
   const members = new Map<string, string[]>()
   const results: LevelResult[] = []

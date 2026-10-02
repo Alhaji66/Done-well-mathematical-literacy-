@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { demoLevelData } from '@/data/demoLevels'
+import { demoLevelData, demoToday } from '@/data/demoLevels'
 import { LevelsView } from '@/components/levels/LevelsView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 
@@ -11,12 +11,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
  */
 export function DemoLevels({ scope }: { scope: 'teacher' | 'hod' | 'school' }) {
   const [data] = useState(() => demoLevelData(scope))
-  // The sample tests stop at today's date; the demo is seen a few days after
-  // its latest one, so the early warnings it shows are always current.
-  const [today] = useState(() => {
-    const latest = data.results.reduce((m, r) => (r.date && r.date > m ? r.date : m), '')
-    return latest ? new Date(new Date(`${latest}T12:00:00Z`).getTime() + 3 * 86_400_000) : new Date()
-  })
+  const [today] = useState(() => demoToday(data))
   const teacher = scope === 'teacher'
   return (
     <div className="space-y-6">

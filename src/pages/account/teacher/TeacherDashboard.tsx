@@ -22,6 +22,7 @@ import {
 } from '@/lib/teacherScope'
 
 // Loaded after the page: it brings the SBA programme with it.
+const EarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard'))
 const SbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.SbaAttention })))
 
 // All four subjects. This listed only two, so a Life Sciences or Physical
@@ -129,9 +130,14 @@ export function TeacherDashboard() {
       />
 
       {profile ? (
-        <Suspense fallback={null}>
-          <SbaAttention profile={profile} to="../markbook" />
-        </Suspense>
+        <>
+          <Suspense fallback={null}>
+            <EarlyWarning profile={profile} to="../levels" />
+          </Suspense>
+          <Suspense fallback={null}>
+            <SbaAttention profile={profile} to="../markbook" />
+          </Suspense>
+        </>
       ) : null}
 
       <PendingStaff schoolId={profile.school_id} />

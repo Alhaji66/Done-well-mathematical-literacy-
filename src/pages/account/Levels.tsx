@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
-import { classesInView, fetchClassMembers, fetchClasses } from '@/lib/classes'
-import { fetchSchoolLearners } from '@/lib/teacherRoster'
-import { fetchSchoolName } from '@/lib/schools'
-import { fetchMarksFor } from '@/lib/sbaMarks'
-import { fetchAttemptsForTests, fetchTestsForSchool } from '@/lib/weeklyTests'
-import { sbaResults, weeklyResults, type LevelData } from '@/lib/levels'
+import { fetchLevelData } from '@/lib/levelData'
+import type { LevelData } from '@/lib/levels'
 import { LevelsView } from '@/components/levels/LevelsView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { startIntervention } from '@/lib/interventions'
@@ -22,45 +18,15 @@ export function Levels() {
   const [data, setData] = useState<LevelData | null>(null)
   const teacher = profile?.role === 'teacher'
   const hod = profile?.role === 'hod'
-  // Names are loaded only for the views that show them.
-  const named = teacher || hod
 
   useEffect(() => {
-    if (!profile?.school_id) return
+    if (!profile) return
     let live = true
-    const schoolId = profile.school_id
-    const year = new Date().getFullYear()
-    Promise.all([
-      fetchClasses(schoolId),
-      fetchTestsForSchool(schoolId),
-      named ? fetchSchoolLearners(schoolId) : Promise.resolve([]),
-      fetchSchoolName(schoolId),
-    ]).then(
-      async ([{ classes: all }, allTests, roster, school]) => {
-        const classes = classesInView(profile, all)
-        const ids = classes.map((c) => c.id)
-        const subjectsInView = new Set(classes.map((c) => c.subject_id))
-        if (profile.role === 'hod' && profile.subject_id) subjectsInView.add(profile.subject_id)
-        // A principal sees every test; a teacher or HOD the tests in their subjects.
-        const tests = allTests.filter((t) => profile.role === 'school' || subjectsInView.has(t.subject_id))
-        const [members, rows, attempts] = await Promise.all([
-          fetchClassMembers(ids),
-          fetchMarksFor(ids, year),
-          fetchAttemptsForTests(tests.map((t) => t.id)),
-        ])
-        if (!live) return
-        const byClass = new Map<string, string[]>()
-        for (const m of members) byClass.set(m.class_id, [...(byClass.get(m.class_id) ?? []), m.learner_id])
-        let results = [...weeklyResults(tests, attempts, classes, byClass, year), ...sbaResults(rows ?? [], classes)]
-        // A teacher's view is their own classes' learners.
-        if (teacher) results = results.filter((r) => r.classId && ids.includes(r.classId))
-        setData({ year, school, classes, names: new Map(roster.map((l) => [l.id, l.full_name])), members: byClass, results })
-      },
-    )
+    fetchLevelData(profile).then((d) => live && setData(d))
     return () => {
       live = false
     }
-  }, [profile, teacher, named])
+  }, [profile])
 
   return (
     <div className="space-y-6">

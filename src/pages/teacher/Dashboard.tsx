@@ -12,6 +12,7 @@ import { formatDate } from '@/lib/utils'
 import { UsersIcon, BarChartIcon, SparkleIcon, ClipboardIcon, ChevronRightIcon } from '@/components/ui/Icons'
 
 // Loaded after the page: it brings the SBA programme with it.
+const DemoEarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard').then((m) => ({ default: m.DemoEarlyWarning })))
 const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 export function TeacherDashboard() {
@@ -31,6 +32,9 @@ export function TeacherDashboard() {
         <p className="mt-1 text-sm text-navy-600">Here's your class overview for this week.</p>
       </div>
 
+      <Suspense fallback={null}>
+        <DemoEarlyWarning scope="teacher" to="/app/teacher/levels" />
+      </Suspense>
       <Suspense fallback={null}>
         <DemoSbaAttention to="/app/teacher/markbook" />
       </Suspense>

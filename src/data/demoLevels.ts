@@ -141,3 +141,13 @@ export function demoMyLevels(now = new Date()): LevelResult[] {
     .results.filter((r) => r.learnerId === 'demo-12a:demo-learner-0')
     .map((r) => ({ ...r, learnerId: 'demo-karabo' }))
 }
+
+/**
+ * The demo's "today": a few days after its latest sample test. The sample
+ * tests stop at the real date, so the early warnings the demo shows are
+ * always current, whenever it is opened.
+ */
+export function demoToday(data: LevelData): Date {
+  const latest = data.results.reduce((m, r) => (r.date && r.date > m ? r.date : m), '')
+  return latest ? new Date(new Date(`${latest}T12:00:00Z`).getTime() + 3 * 86_400_000) : new Date()
+}

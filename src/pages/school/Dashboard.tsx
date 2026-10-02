@@ -9,6 +9,7 @@ import { UsersIcon, TrendingUpIcon, ClipboardIcon, AlertIcon, ChevronRightIcon }
 import { cn } from '@/lib/utils'
 
 // Loaded after the page: it brings the SBA programme with it.
+const DemoEarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard').then((m) => ({ default: m.DemoEarlyWarning })))
 const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 export function SchoolDashboard() {
@@ -20,6 +21,9 @@ export function SchoolDashboard() {
         <p className="mt-1 text-sm text-navy-600">A whole-school snapshot of participation and performance.</p>
       </div>
 
+      <Suspense fallback={null}>
+        <DemoEarlyWarning scope="school" to="/app/school/levels" />
+      </Suspense>
       <Suspense fallback={null}>
         <DemoSbaAttention to="/app/school/markbook" />
       </Suspense>

@@ -13,6 +13,7 @@ import { PendingStaff } from '@/components/account/PendingStaff'
 import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
 
 // Loaded after the page: it brings the SBA programme with it.
+const EarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard'))
 const SbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.SbaAttention })))
 
 /**
@@ -99,9 +100,14 @@ export function HodDashboard() {
       />
 
       {profile ? (
-        <Suspense fallback={null}>
-          <SbaAttention profile={profile} to="../markbook" />
-        </Suspense>
+        <>
+          <Suspense fallback={null}>
+            <EarlyWarning profile={profile} to="../levels" />
+          </Suspense>
+          <Suspense fallback={null}>
+            <SbaAttention profile={profile} to="../markbook" />
+          </Suspense>
+        </>
       ) : null}
 
       <TeachingSubject profile={profile} variant="hod" />

@@ -28,6 +28,7 @@ export function CallsToMakeCard({ data, onMark, me, note }: { data: LevelData; o
   const mine = useMemo(() => new Set([...data.members.values()].flat()), [data.members])
   const testOf = useMemo(() => new Map(data.results.filter((r) => r.source === 'weekly').map((r) => [`${r.learnerId}|${r.itemId}`, r])), [data.results])
   const className = (id: string | null) => data.classes.find((c) => c.id === id)?.name ?? ''
+  const contactOf = (parentId: string) => data.contacts?.find((c) => c.parent_id === parentId)
 
   const calls = replies.filter((r) => r.choice === 'call' && mine.has(r.learner_id))
   if (!calls.length) return null
@@ -84,6 +85,19 @@ export function CallsToMakeCard({ data, onMark, me, note }: { data: LevelData; o
                     About {a.test} · asked {shortDate(r.updated_at.slice(0, 10))}
                   </p>
                   {r.message ? <p className="mt-1 text-sm italic text-navy-700">“{r.message}”</p> : null}
+                  {(() => {
+                    const c = contactOf(r.parent_id)
+                    return c ? (
+                      <p className="mt-1 text-sm">
+                        <a href={`tel:${c.phone.replace(/[^0-9+]/g, '')}`} className="font-semibold text-navy-900 underline underline-offset-2">
+                          {c.phone}
+                        </a>
+                        {c.best_time ? <span className="text-navy-600"> · {c.best_time}</span> : null}
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-xs text-navy-500">No phone number given yet: use the number the school has on file.</p>
+                    )
+                  })()}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <input

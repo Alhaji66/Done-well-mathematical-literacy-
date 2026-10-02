@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { demoLearner } from '@/data/learner'
 import { demoMyLevels, demoToday } from '@/data/demoLevels'
 import { MyLevelsCard } from '@/components/levels/MyLevelsCard'
-import type { ReplyValue } from '@/components/levels/ReplyBox'
+import type { ContactValue, ReplyValue } from '@/components/levels/ReplyBox'
 
 /** The demo learner's levels card; the parent demo shows the same child, and can try replying. */
 export default function DemoMyLevels({ parent = false }: { parent?: boolean }) {
   const [results] = useState(() => demoMyLevels())
   const [today] = useState(() => demoToday({ results }))
   const [replies, setReplies] = useState<Map<string, ReplyValue>>(new Map())
+  const [contact, setContact] = useState<ContactValue | undefined>()
   const first = demoLearner.name.split(' ')[0]
   return (
     <MyLevelsCard
@@ -17,9 +18,11 @@ export default function DemoMyLevels({ parent = false }: { parent?: boolean }) {
       child={parent ? first : undefined}
       today={today}
       replies={replies}
+      contact={contact}
       onReply={
         parent
-          ? async (testId, choice, message) => {
+          ? async (testId, choice, message, c) => {
+              if (c) setContact(c)
               setReplies((m) => new Map(m).set(testId, { choice, message: message.trim() }))
               return undefined
             }

@@ -14,7 +14,7 @@ import {
 } from '@/lib/levels'
 import { shortDate } from '@/components/levels/warningText'
 import { LevelChip } from '@/components/levels/LevelChip'
-import { ReplyBox, type ReplyValue } from '@/components/levels/ReplyBox'
+import { ReplyBox, type ContactValue, type ReplyValue } from '@/components/levels/ReplyBox'
 import type { ReplyChoice } from '@/lib/parentReplyTypes'
 import { AlertIcon, LevelsIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
@@ -29,13 +29,15 @@ function WarningNote({
   w,
   child,
   reply,
+  contact,
   onReply,
   replyNote,
 }: {
   w: EarlyWarning
   child?: string
   reply?: ReplyValue
-  onReply?: (choice: ReplyChoice, message: string) => Promise<string | undefined>
+  contact?: ContactValue
+  onReply?: (choice: ReplyChoice, message: string, contact?: ContactValue) => Promise<string | undefined>
   replyNote?: string
 }) {
   const t = w.latest
@@ -74,7 +76,7 @@ function WarningNote({
           {child}’s teacher has been told too, and will give extra help with {topic}.
         </p>
       ) : null}
-      {child && onReply ? <ReplyBox reply={reply} onReply={onReply} note={replyNote} /> : null}
+      {child && onReply ? <ReplyBox reply={reply} contact={contact} onReply={onReply} note={replyNote} /> : null}
     </li>
   )
 }
@@ -92,6 +94,7 @@ export function MyLevelsCard({
   today = new Date(),
   child,
   replies,
+  contact,
   onReply,
   replyNote,
 }: {
@@ -103,7 +106,8 @@ export function MyLevelsCard({
   child?: string
   /** On a parent's card: their replies to early warnings, by test. */
   replies?: Map<string, ReplyValue>
-  onReply?: (testId: string, choice: ReplyChoice, message: string) => Promise<string | undefined>
+  contact?: ContactValue
+  onReply?: (testId: string, choice: ReplyChoice, message: string, contact?: ContactValue) => Promise<string | undefined>
   replyNote?: string
 }) {
   if (!results.length && !hiddenTests) return null
@@ -131,7 +135,8 @@ export function MyLevelsCard({
                 w={w}
                 child={child}
                 reply={replies?.get(w.latest.itemId)}
-                onReply={onReply ? (choice, message) => onReply(w.latest.itemId, choice, message) : undefined}
+                contact={contact}
+                onReply={onReply ? (choice, message, c) => onReply(w.latest.itemId, choice, message, c) : undefined}
                 replyNote={replyNote}
               />
             ))}

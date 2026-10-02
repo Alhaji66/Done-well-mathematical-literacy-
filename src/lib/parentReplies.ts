@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
-import type { ParentReply, ReplyChoice } from '@/lib/parentReplyTypes'
+import type { ParentContact, ParentReply, ReplyChoice } from '@/lib/parentReplyTypes'
 
 /**
  * Parents' replies to early warnings (STEP 31). A parent reads their own; a
@@ -54,6 +54,33 @@ export async function saveReply(r: { parentId: string; learnerId: string; testId
     return /parent_replies|schema cache|does not exist/i.test(error.message)
       ? 'Replies are not switched on yet: the school needs to run STEP 31 of the database update.'
       : error.message
+  }
+  return undefined
+}
+
+/** Phone numbers of parents: a parent's own, or (for staff) those of their learners' parents. Empty before STEP 33. */
+export async function fetchContacts(parentIds?: string[]): Promise<ParentContact[]> {
+  if (!supabase) return []
+  let q = supabase.from('parent_contacts').select('parent_id, phone, best_time')
+  if (parentIds) {
+    if (!parentIds.length) return []
+    q = q.in('parent_id', parentIds)
+  }
+  const { data, error } = await q
+  return error ? [] : ((data ?? []) as ParentContact[])
+}
+
+/** Save the parent's own phone number and best time to call. */
+export async function saveContact(parentId: string, phone: string, bestTime: string): Promise<string | undefined> {
+  if (!supabase) return 'Real accounts are not set up on this deployment.'
+  const { error } = await supabase
+    .from('parent_contacts')
+    .upsert({ parent_id: parentId, phone: phone.trim(), best_time: bestTime.trim().slice(0, 80) }, { onConflict: 'parent_id' })
+  if (error) {
+    console.error('Failed to save the phone number:', error)
+    if (/parent_contacts|schema cache|does not exist/i.test(error.message)) return 'Phone numbers are not switched on yet: the school needs to run STEP 33.'
+    if (/check/i.test(error.message)) return 'That phone number does not look right. Use digits, spaces and an optional + at the start.'
+    return error.message
   }
   return undefined
 }

@@ -193,7 +193,7 @@ export function ParentDashboard() {
             ))}
           </div>
           <Suspense fallback={null}>
-            <MyLevels learners={children.map((c) => ({ id: c.id, name: c.full_name.split(' ')[0] }))} />
+            <MyLevels learners={children.map((c) => ({ id: c.id, name: c.full_name.split(' ')[0] }))} parentId={profile.id} />
           </Suspense>
           {linkForm}
         </>

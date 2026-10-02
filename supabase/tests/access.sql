@@ -2102,5 +2102,83 @@ insert into results
   from public.notifications
   where kind = 'level.child_early_warning' and recipient_id <> '00000000-0000-0000-0000-0000000000a1';
 
+-- ===========================================================================
+-- PARENTS REPLY TO AN EARLY WARNING (STEP 31)
+-- ===========================================================================
+-- 102. Parent One replies about a test Learner One sat; the school is stamped and the teacher told.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into public.parent_replies (parent_id, learner_id, test_id, school_id, choice, message)
+  select auth.uid(), '00000000-0000-0000-0000-0000000000b1', id, null, 'seen', '  We will practise every evening.  '
+  from public.weekly_tests where title = 'Topic test: finance';
+reset role;
+insert into results
+  select '102. a linked parent replies; the school is stamped and the teacher told',
+         count(*)::text || ' reply, message "' || max(r.message) || '", '
+           || (select count(*) from public.notifications where kind = 'level.parent_reply' and recipient_id = '00000000-0000-0000-0000-00000000000a')::text || ' to the teacher',
+         count(*) = 1 and bool_and(r.school_id = (select school_id from s)) and max(r.message) = 'We will practise every evening.'
+           and (select count(*) from public.notifications where kind = 'level.parent_reply' and recipient_id = '00000000-0000-0000-0000-00000000000a') = 1
+  from public.parent_replies r;
+
+-- 103. Not about another child, nor a test the child did not sit, nor by an unlinked parent.
+select set_config('test.finance', id::text, false) from public.weekly_tests where title = 'Topic test: finance';
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+do $$
+begin
+  begin
+    insert into public.parent_replies (parent_id, learner_id, test_id, choice)
+      values (auth.uid(), '00000000-0000-0000-0000-0000000000b2', current_setting('test.finance')::uuid, 'call');
+    raise exception 'allowed';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.parent_replies (parent_id, learner_id, test_id, choice)
+      values (auth.uid(), '00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-00000000dead', 'call');
+    raise exception 'allowed';
+  exception when insufficient_privilege or foreign_key_violation then null;
+  end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000a7');
+set role authenticated;
+do $$
+begin
+  insert into public.parent_replies (parent_id, learner_id, test_id, choice)
+    values (auth.uid(), '00000000-0000-0000-0000-0000000000b1', current_setting('test.finance')::uuid, 'call');
+  raise exception 'allowed';
+exception when insufficient_privilege then null;
+end $$;
+reset role;
+insert into results
+  select '103. no reply about another child, an unsat test, or by an unlinked parent', count(*)::text || ' reply in all', count(*) = 1
+  from public.parent_replies;
+
+-- 104. The teacher reads it; the learner and another parent do not.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results select '104. the teacher reads the reply', count(*)::text || ' visible', count(*) = 1 from public.parent_replies;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results select '104b. the learner does not', count(*)::text || ' visible', count(*) = 0 from public.parent_replies;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000a7');
+set role authenticated;
+insert into results select '104c. another parent does not', count(*)::text || ' visible', count(*) = 0 from public.parent_replies;
+reset role;
+
+-- 105. The parent changes their answer: still one reply, and the teacher is told again.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+update public.parent_replies set choice = 'call', message = 'Please phone after 5pm.', school_id = null;
+reset role;
+insert into results
+  select '105. a changed reply stays one reply, re-stamped, and tells the teacher again',
+         count(*)::text || ' reply, ' || max(choice),
+         count(*) = 1 and max(choice) = 'call' and bool_and(school_id = (select school_id from s))
+           and (select count(*) from public.notifications where kind = 'level.parent_reply') = 2
+  from public.parent_replies;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

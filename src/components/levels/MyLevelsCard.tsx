@@ -14,6 +14,8 @@ import {
 } from '@/lib/levels'
 import { shortDate } from '@/components/levels/warningText'
 import { LevelChip } from '@/components/levels/LevelChip'
+import { ReplyBox, type ReplyValue } from '@/components/levels/ReplyBox'
+import type { ReplyChoice } from '@/lib/parentReplyTypes'
 import { AlertIcon, LevelsIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 
@@ -23,7 +25,19 @@ const subjectName = (id: string) => subjects.find((s) => s.id === id)?.name ?? i
  * An early warning in plain words, for the learner ("your") or a parent
  * (the child's first name): what the test showed and what helps.
  */
-function WarningNote({ w, child }: { w: EarlyWarning; child?: string }) {
+function WarningNote({
+  w,
+  child,
+  reply,
+  onReply,
+  replyNote,
+}: {
+  w: EarlyWarning
+  child?: string
+  reply?: ReplyValue
+  onReply?: (choice: ReplyChoice, message: string) => Promise<string | undefined>
+  replyNote?: string
+}) {
   const t = w.latest
   const pct = Math.round(t.percent)
   const topic = (t.topicIds ?? []).map((id) => getTopic(id)?.name).filter(Boolean).join(' and ') || 'this topic'
@@ -60,6 +74,7 @@ function WarningNote({ w, child }: { w: EarlyWarning; child?: string }) {
           {child}’s teacher has been told too, and will give extra help with {topic}.
         </p>
       ) : null}
+      {child && onReply ? <ReplyBox reply={reply} onReply={onReply} note={replyNote} /> : null}
     </li>
   )
 }
@@ -76,6 +91,9 @@ export function MyLevelsCard({
   hiddenTests = 0,
   today = new Date(),
   child,
+  replies,
+  onReply,
+  replyNote,
 }: {
   results: LevelResult[]
   title?: string
@@ -83,6 +101,10 @@ export function MyLevelsCard({
   today?: Date
   /** The child's first name, on a parent's card; absent on the learner's own. */
   child?: string
+  /** On a parent's card: their replies to early warnings, by test. */
+  replies?: Map<string, ReplyValue>
+  onReply?: (testId: string, choice: ReplyChoice, message: string) => Promise<string | undefined>
+  replyNote?: string
 }) {
   if (!results.length && !hiddenTests) return null
   const term = (startingTerm(results, today) || 1) as Term
@@ -104,7 +126,14 @@ export function MyLevelsCard({
           </p>
           <ul className="divide-y divide-rose-100">
             {warnings.map((w) => (
-              <WarningNote key={`${w.subjectId}|${w.grade}`} w={w} child={child} />
+              <WarningNote
+                key={`${w.subjectId}|${w.grade}`}
+                w={w}
+                child={child}
+                reply={replies?.get(w.latest.itemId)}
+                onReply={onReply ? (choice, message) => onReply(w.latest.itemId, choice, message) : undefined}
+                replyNote={replyNote}
+              />
             ))}
           </ul>
         </div>

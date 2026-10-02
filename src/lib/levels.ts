@@ -4,6 +4,7 @@ import type { SbaMarkRow } from '@/lib/sbaMarks'
 import type { TestAttempt, WeeklyTest } from '@/lib/weeklyTests'
 import type { TestKind } from '@/lib/testKinds'
 import type { Grade } from '@/types'
+import type { ParentReply } from '@/lib/parentReplyTypes'
 
 /**
  * Learners' CAPS achievement levels, 1 to 7, from the tests they have written:
@@ -61,6 +62,8 @@ export interface LevelData {
   names: Map<string, string>
   members: Map<string, string[]>
   results: LevelResult[]
+  /** Parents' replies to early warnings, where the database has them (STEP 31). */
+  replies?: ParentReply[]
 }
 
 export const levelOf = (percent: number) => capsLevel(Math.round(percent)).level

@@ -4483,3 +4483,141 @@ begin
   return new;
 end;
 $$;
+
+-- ============================================================================
+-- STEP 31: PARENTS REPLY TO AN EARLY WARNING
+-- ============================================================================
+--
+-- A parent told of an early warning (STEP 30) can answer in the app: "we
+-- have seen it and will practise at home", or "please call me", with a short
+-- message if they like. One reply per parent for each test, which they can
+-- change. The class teacher is told, and sees the reply beside the learner
+-- on the Levels page -- the reply slip of the printed letter, without the
+-- paper.
+--
+-- WHO CAN DO WHAT.
+--   * A parent writes, changes and deletes their own replies, and only about
+--     a test their linked child has handed in.
+--   * Approved staff at the test's school read the replies; nobody else does.
+--     The school is stamped from the test, never taken from the client.
+
+create table if not exists public.parent_replies (
+  parent_id uuid not null references public.profiles (id) on delete cascade,
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  test_id uuid not null references public.weekly_tests (id) on delete cascade,
+  school_id uuid references public.schools (id) on delete cascade,
+  choice text not null check (choice in ('seen', 'call')),
+  message text not null default '' check (length(message) <= 500),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (parent_id, learner_id, test_id)
+);
+
+create index if not exists parent_replies_school_idx on public.parent_replies (school_id, updated_at desc);
+
+-- One reply per parent, learner and test; the school is stamped from the test.
+alter table public.parent_replies enable row level security;
+grant select, insert, update, delete on public.parent_replies to authenticated;
+
+create or replace function public.parent_may_reply(p_learner uuid, p_test uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.parent_learner_links l
+    join public.weekly_test_attempts a on a.learner_id = l.learner_id
+    where l.parent_id = auth.uid()
+      and l.learner_id = p_learner
+      and a.test_id = p_test
+      and a.submitted_at is not null
+  );
+$$;
+
+drop policy if exists "Parents read their own replies" on public.parent_replies;
+create policy "Parents read their own replies"
+  on public.parent_replies for select
+  using (parent_id = auth.uid());
+
+drop policy if exists "Staff read replies at their school" on public.parent_replies;
+create policy "Staff read replies at their school"
+  on public.parent_replies for select
+  using (public.is_school_staff(school_id));
+
+drop policy if exists "Linked parents reply about a test their child sat" on public.parent_replies;
+create policy "Linked parents reply about a test their child sat"
+  on public.parent_replies for insert
+  with check (parent_id = auth.uid() and public.parent_may_reply(learner_id, test_id));
+
+drop policy if exists "Parents change their own replies" on public.parent_replies;
+create policy "Parents change their own replies"
+  on public.parent_replies for update
+  using (parent_id = auth.uid())
+  with check (parent_id = auth.uid() and public.parent_may_reply(learner_id, test_id));
+
+drop policy if exists "Parents delete their own replies" on public.parent_replies;
+create policy "Parents delete their own replies"
+  on public.parent_replies for delete
+  using (parent_id = auth.uid());
+
+create or replace function public.stamp_parent_reply()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if tg_op = 'UPDATE' then
+    new.parent_id := old.parent_id;
+    new.learner_id := old.learner_id;
+    new.test_id := old.test_id;
+    new.created_at := old.created_at;
+  end if;
+  new.school_id := (select school_id from public.weekly_tests where id = new.test_id);
+  new.message := btrim(new.message);
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_parent_reply on public.parent_replies;
+create trigger stamp_parent_reply
+  before insert or update on public.parent_replies
+  for each row execute function public.stamp_parent_reply();
+
+create or replace function public.notify_parent_reply()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  t public.weekly_tests;
+  v_teachers uuid[];
+begin
+  if tg_op = 'UPDATE' and new.choice = old.choice and new.message = old.message then
+    return new;
+  end if;
+  select * into t from public.weekly_tests where id = new.test_id;
+  select array_agg(distinct c.teacher_id) into v_teachers
+  from public.classes c
+  join public.class_members m on m.class_id = c.id
+  where m.learner_id = new.learner_id
+    and c.subject_id = t.subject_id
+    and c.grade = t.grade
+    and c.teacher_id is not null;
+  perform public.notify(v_teachers, 'level.parent_reply',
+    jsonb_build_object('learner_id', new.learner_id, 'test_id', t.id, 'title', t.title, 'subject', t.subject_id,
+                       'choice', new.choice, 'message', left(new.message, 140)),
+    'levels');
+  return new;
+end;
+$$;
+
+drop trigger if exists notify_parent_reply on public.parent_replies;
+create trigger notify_parent_reply
+  after insert or update on public.parent_replies
+  for each row execute function public.notify_parent_reply();

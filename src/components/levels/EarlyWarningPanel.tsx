@@ -6,6 +6,7 @@ import { TEST_KIND_LABEL } from '@/lib/testKinds'
 import { LevelChip, LEVEL_FILL } from '@/components/levels/LevelChip'
 import { CatchUpGroupForm, type StartGroupInput } from '@/components/levels/CatchUpGroupForm'
 import { EarlyWarningLetters } from '@/components/levels/EarlyWarningLetters'
+import { REPLY_FOR_TEACHER } from '@/lib/parentReplyTypes'
 import { printPart } from '@/lib/print'
 import { AlertIcon, PrinterIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
@@ -60,6 +61,12 @@ export function EarlyWarningPanel({
     ...[...hits.entries()].sort((a, b) => b[1] - a[1]).map(([id, n]) => ({ id, note: `in the last test of ${n} learner${n === 1 ? '' : 's'}` })),
     ...atpTopics.filter((id) => !hits.has(id)).map((id) => ({ id })),
   ]
+
+  // Parents' replies about the tests behind each warning, newest first.
+  const repliesFor = (w: EarlyWarning) =>
+    (data.replies ?? [])
+      .filter((r) => r.learner_id === w.learnerId && w.recent.some((x) => x.itemId === r.test_id))
+      .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
 
   // Letters home go to the learners chosen for the group, or to everyone flagged where there is no choosing.
   const lettersFor = onStartGroup ? chosen : warnings
@@ -121,6 +128,19 @@ export function EarlyWarningPanel({
                       </span>
                     ))}
                   </span>
+                  {repliesFor(w).map((r) => (
+                    <span key={`${r.parent_id}|${r.test_id}`} className="w-full text-xs">
+                      <span
+                        className={cn(
+                          'rounded-full px-2 py-0.5 text-[11px] font-semibold',
+                          r.choice === 'call' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-50 text-emerald-800',
+                        )}
+                      >
+                        {REPLY_FOR_TEACHER[r.choice]}
+                      </span>
+                      {r.message ? <span className="ml-2 italic text-navy-600">“{r.message}”</span> : null}
+                    </span>
+                  ))}
                 </li>
               ))}
             </ul>

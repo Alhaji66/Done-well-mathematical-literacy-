@@ -2008,5 +2008,68 @@ insert into results
   select '95. a catch-up reassessment raises no warning', count(*)::text || ' warning(s)', count(*) = 2
   from public.notifications where kind = 'level.early_warning';
 
+-- ===========================================================================
+-- THE WEEKLY EARLY-WARNING SUMMARY (STEP 29)
+-- ===========================================================================
+-- A principal at Gojela High joins the two HODs above. The week summarised
+-- is this one, so the tests handed in above fall inside it.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000f7');
+insert into public.profiles (id, role, full_name, school_id, staff_approved_at)
+  select '00000000-0000-0000-0000-0000000000f7', 'school', 'Principal', school_id, now() from s;
+
+-- 96. Nobody signed in can send the summary or work out the warnings behind it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f7');
+set role authenticated;
+do $$
+begin
+  begin perform public.send_early_warning_digest(); raise exception 'ran'; exception when insufficient_privilege then null; end;
+  begin perform * from public.early_warning_events((select school_id from public.profiles where id = auth.uid()), now() - interval '1 year', now() + interval '1 year');
+        raise exception 'ran'; exception when insufficient_privilege then null; end;
+end $$;
+insert into results values ('96. signed-in staff cannot send the summary or read the warnings behind it', 'refused', true);
+reset role;
+
+-- Learner Two scored 25% ten days ago, before this week, and 75% this week: back at Level 4 or above.
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, '00000000-0000-0000-0000-0000000000b2', now() - interval '10 days', 2, 8 from public.weekly_tests where title = 'Weekly test: tariffs';
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, '00000000-0000-0000-0000-0000000000b2', now() + interval '5 minutes', 6, 8 from public.weekly_tests where title = 'Weekly test: budgets';
+
+-- 97. The principal and the Mat Lit HOD each get one summary; a quiet subject gets none.
+select set_config('request.jwt.claim.sub', '', false);
+select public.send_early_warning_digest((date_trunc('week', now() at time zone 'Africa/Johannesburg'))::date) as digest_sent \gset
+insert into results
+  select '97. the principal and the Mat Lit HOD each get one summary, with a learner back at Level 4; Life Sciences none',
+         :'digest_sent' || ' sent; ' || coalesce(string_agg(p.full_name || ': ' || (n.data->>'flagged') || ' flagged, ' || (n.data->>'recovered') || ' recovered, '
+                                                 || (n.data->>'groups') || ' group(s), ' || (n.data->>'tests') || ' test(s), ' || (n.data->>'handed_in') || ' handed in, '
+                                                 || coalesce(n.data->>'subject', 'all') || ', ' || (n.data->'subjects')::text || ', ' || (n.data->'classes')::text, '; ' order by p.full_name), 'none'),
+         :digest_sent = 2
+           and count(*) = 2
+           and bool_and(n.link = 'levels')
+           and bool_or(p.id = '00000000-0000-0000-0000-0000000000f7' and n.data->>'subject' is null and (n.data->'subjects'->>'mat-lit')::int >= 1)
+           and bool_or(p.id = '00000000-0000-0000-0000-0000000000f5' and n.data->>'subject' = 'mat-lit' and (n.data->>'flagged')::int >= 1)
+           and bool_and((n.data->>'recovered')::int = 1)
+           and bool_and((n.data->>'flagged')::int = (select sum(v::int) from jsonb_each_text(n.data->'subjects') x(k, v)))
+  from public.notifications n join public.profiles p on p.id = n.recipient_id
+  where n.kind = 'level.weekly_digest';
+
+-- 98. The same week is never summarised twice.
+select public.send_early_warning_digest((date_trunc('week', now() at time zone 'Africa/Johannesburg'))::date) as digest_again \gset
+insert into results
+  select '98. running the summary again for the same week sends nothing',
+         :'digest_again' || ' sent; ' || count(*)::text || ' summaries in all',
+         :digest_again = 0 and count(*) = 2
+  from public.notifications where kind = 'level.weekly_digest';
+
+-- 99. Each person reads only their own summary, and nobody reads the record of what was sent.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f5');
+set role authenticated;
+insert into results
+  select '99. the HOD reads their own summary only; the sent record stays hidden',
+         count(*)::text || ' summary visible',
+         count(*) = 1 and (select count(*) from public.early_warning_digests_sent) = 0
+  from public.notifications where kind = 'level.weekly_digest';
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

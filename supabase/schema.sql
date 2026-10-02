@@ -4205,3 +4205,191 @@ begin
   return new;
 end;
 $$;
+
+-- ============================================================================
+-- STEP 29: A WEEKLY EARLY-WARNING SUMMARY FOR PRINCIPALS AND HODS
+-- ============================================================================
+--
+-- Every Monday morning each principal, and each head of department for their
+-- subject, is sent last week's early warnings in one notification: how many
+-- learners were flagged (by the same rule as STEP 28), how many flagged in
+-- the five weeks before are back at Level 4 or above, how many catch-up
+-- groups were started, how many tests were set and handed in, and the three
+-- classes with the most flags, with their teachers -- the ones to follow up.
+-- "Last week" is Monday to Sunday, South African time. A week is only ever
+-- summarised once for each person, and a quiet week sends nothing.
+--
+-- The summary is sent by send_early_warning_digest(), which the database's
+-- own timer (pg_cron, as in STEP 25) runs at 05:00 UTC on Mondays, 07:00 in
+-- South Africa. Nobody signed in can run it, or read the record of what was
+-- sent.
+
+create or replace function public.early_warning_events(p_school_id uuid, p_from timestamptz, p_to timestamptz)
+returns table (learner_id uuid, subject_id text, grade smallint, test_id uuid, submitted_at timestamptz, percent numeric, level smallint, previous_level smallint, reason text)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with scored as (
+    select a.learner_id, t.subject_id, t.grade, t.id as test_id, a.submitted_at,
+           100.0 * coalesce(a.marks_awarded, 0) / a.marks_total as pct,
+           lag(100.0 * coalesce(a.marks_awarded, 0) / a.marks_total)
+             over (partition by a.learner_id, t.subject_id, t.grade order by a.submitted_at) as prev
+    from public.weekly_test_attempts a
+    join public.weekly_tests t on t.id = a.test_id
+    where t.school_id = p_school_id
+      and t.intervention_id is null
+      and a.submitted_at is not null
+      and a.submitted_at < p_to
+      and coalesce(a.marks_total, 0) > 0
+  ),
+  levelled as (
+    select s.*, public.caps_level(s.pct) as lvl,
+           case when s.prev is null then null else public.caps_level(s.prev) end as prev_lvl
+    from scored s
+    where s.submitted_at >= p_from
+  )
+  select l.learner_id, l.subject_id, l.grade, l.test_id, l.submitted_at, round(l.pct), l.lvl, l.prev_lvl,
+         case when l.pct < 40 then 'below_40' else 'dropped' end
+  from levelled l
+  where l.pct < 40
+     or (l.prev_lvl is not null and l.lvl < l.prev_lvl and (l.lvl <= 4 or l.prev_lvl - l.lvl >= 2));
+$$;
+revoke execute on function public.early_warning_events(uuid, timestamptz, timestamptz) from public, anon, authenticated;
+
+create or replace function public.early_warning_learners(p_school_id uuid, p_subject_id text, p_from timestamptz, p_to timestamptz)
+returns table (learner_id uuid, subject_id text, grade smallint)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select distinct e.learner_id, e.subject_id, e.grade
+  from public.early_warning_events(p_school_id, p_from, p_to) e
+  where p_subject_id is null or e.subject_id = p_subject_id;
+$$;
+revoke execute on function public.early_warning_learners(uuid, text, timestamptz, timestamptz) from public, anon, authenticated;
+
+create table if not exists public.early_warning_digests_sent (
+  recipient_id uuid not null references public.profiles (id) on delete cascade,
+  week_start date not null,
+  sent_at timestamptz not null default now(),
+  primary key (recipient_id, week_start)
+);
+
+-- Only the summary function writes or reads this; nobody signed in sees it.
+alter table public.early_warning_digests_sent enable row level security;
+
+create or replace function public.send_early_warning_digest(p_week_start date default null)
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_start date := coalesce(p_week_start, date_trunc('week', now() at time zone 'Africa/Johannesburg')::date - 7);
+  v_from timestamptz := v_start::timestamp at time zone 'Africa/Johannesburg';
+  v_to timestamptz := (v_start + 7)::timestamp at time zone 'Africa/Johannesburg';
+  r record;
+  v_flagged integer;
+  v_recovered integer;
+  v_groups integer;
+  v_tests integer;
+  v_handed_in integer;
+  v_subjects jsonb;
+  v_classes jsonb;
+  v_subject text;
+  v_sent integer := 0;
+begin
+  for r in
+    select p.id, p.role::text as role, p.school_id, p.subject_id
+    from public.profiles p
+    where p.role::text in ('school', 'hod')
+      and p.school_id is not null
+      and p.staff_approved_at is not null
+      and (p.role::text = 'school' or p.subject_id is not null)
+  loop
+    v_subject := case when r.role = 'hod' then r.subject_id end;
+
+    select count(*) into v_flagged from public.early_warning_learners(r.school_id, v_subject, v_from, v_to);
+
+    select count(*) into v_recovered
+    from public.early_warning_learners(r.school_id, v_subject, v_from - interval '35 days', v_from) b
+    where not exists (select 1 from public.early_warning_learners(r.school_id, v_subject, v_from, v_to) n where n.learner_id = b.learner_id and n.subject_id = b.subject_id and n.grade = b.grade)
+      and (
+        select public.caps_level(100.0 * coalesce(a.marks_awarded, 0) / a.marks_total)
+        from public.weekly_test_attempts a
+        join public.weekly_tests t on t.id = a.test_id
+        where a.learner_id = b.learner_id and t.subject_id = b.subject_id and t.grade = b.grade
+          and t.intervention_id is null and coalesce(a.marks_total, 0) > 0
+          and a.submitted_at >= v_from and a.submitted_at < v_to
+        order by a.submitted_at desc
+        limit 1
+      ) >= 4;
+
+    select count(*) into v_groups
+    from public.interventions i
+    where i.school_id = r.school_id and i.created_at >= v_from and i.created_at < v_to
+      and (v_subject is null or i.subject_id = v_subject);
+
+    select count(*) into v_tests
+    from public.weekly_tests t
+    where t.school_id = r.school_id and t.intervention_id is null and t.created_at >= v_from and t.created_at < v_to
+      and (v_subject is null or t.subject_id = v_subject);
+
+    select count(*) into v_handed_in
+    from public.weekly_test_attempts a
+    join public.weekly_tests t on t.id = a.test_id
+    where t.school_id = r.school_id and t.intervention_id is null
+      and a.submitted_at >= v_from and a.submitted_at < v_to
+      and (v_subject is null or t.subject_id = v_subject);
+
+    if v_flagged + v_groups + v_tests + v_handed_in = 0 then
+      continue;
+    end if;
+
+    select coalesce(jsonb_object_agg(x.subject_id, x.n), '{}'::jsonb) into v_subjects
+    from (select n.subject_id, count(*) as n from public.early_warning_learners(r.school_id, v_subject, v_from, v_to) n group by n.subject_id) x;
+
+    select coalesce(jsonb_agg(jsonb_build_object('name', y.name, 'teacher', y.teacher, 'flagged', y.n) order by y.n desc, y.name), '[]'::jsonb)
+    into v_classes
+    from (
+      select c.name, tp.full_name as teacher, count(distinct n.learner_id) as n
+      from public.early_warning_learners(r.school_id, v_subject, v_from, v_to) n
+      join public.class_members m on m.learner_id = n.learner_id
+      join public.classes c on c.id = m.class_id and c.subject_id = n.subject_id and c.grade = n.grade and c.school_id = r.school_id
+      left join public.profiles tp on tp.id = c.teacher_id
+      group by c.id, c.name, tp.full_name
+      order by count(distinct n.learner_id) desc, c.name
+      limit 3
+    ) y;
+
+    insert into public.early_warning_digests_sent (recipient_id, week_start)
+    values (r.id, v_start)
+    on conflict do nothing;
+    if not found then
+      continue;
+    end if;
+
+    perform public.notify(array[r.id], 'level.weekly_digest',
+      jsonb_build_object('week_start', v_start, 'flagged', v_flagged, 'recovered', v_recovered, 'groups', v_groups,
+                         'tests', v_tests, 'handed_in', v_handed_in,
+                         'subject', v_subject,
+                         'subjects', v_subjects, 'classes', v_classes),
+      'levels');
+    v_sent := v_sent + 1;
+  end loop;
+  return v_sent;
+end;
+$$;
+revoke execute on function public.send_early_warning_digest(date) from public, anon, authenticated;
+
+-- Mondays at 05:00 UTC, where pg_cron is switched on (see STEP 25). Without
+-- it, send_early_warning_digest() can be run by hand.
+do $$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('early-warning-digest', '0 5 * * 1', 'select public.send_early_warning_digest()');
+  end if;
+end $$;

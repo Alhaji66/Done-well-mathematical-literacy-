@@ -4,13 +4,15 @@ import type { AccountProfile } from '@/context/AccountAuthContext'
 import { getSubject } from '@/data/subjects'
 import { demoLevelData, demoToday } from '@/data/demoLevels'
 import { fetchLevelData } from '@/lib/levelData'
-import { earlyWarnings, levelOf, type LevelData } from '@/lib/levels'
+import { earlyWarnings, levelOf, warningWeek, type LevelData } from '@/lib/levels'
 import { reasonText } from '@/components/levels/warningText'
 import { LevelChip } from '@/components/levels/LevelChip'
 import { AlertIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 
 const SHOWN = 4
+const DAY = 86_400_000
+const isoDay = (t: number) => new Date(t).toISOString().slice(0, 10)
 
 /**
  * "Early warning" for a staff dashboard: how many learners their recent weekly
@@ -20,6 +22,8 @@ const SHOWN = 4
  */
 export function EarlyWarningCard({ data, today, to, named }: { data: LevelData; today: Date; to: string; named: boolean }) {
   const warnings = useMemo(() => earlyWarnings(data.results, {}, today), [data.results, today])
+  // The last seven days, counted as the Monday summary to principals and HODs counts its week.
+  const week = useMemo(() => warningWeek(data.results, {}, isoDay(today.getTime() - 6 * DAY), isoDay(today.getTime() + DAY)), [data.results, today])
   if (!data.results.some((r) => r.source === 'weekly')) return null
   const className = new Map(data.classes.map((c) => [c.id, c.name]))
   const perSubject = new Map<string, number>()
@@ -73,6 +77,12 @@ export function EarlyWarningCard({ data, today, to, named }: { data: LevelData; 
             ))}
         </ul>
       )}
+
+      <p className="mt-3 border-t border-navy-100 pt-3 text-xs text-navy-500">
+        Last 7 days: <span className="font-semibold tabular-nums text-navy-800">{week.handedIn}</span> test{week.handedIn === 1 ? '' : 's'} handed in ·{' '}
+        <span className={cn('font-semibold tabular-nums', week.flagged ? 'text-rose-700' : 'text-navy-800')}>{week.flagged}</span> flagged ·{' '}
+        <span className={cn('font-semibold tabular-nums', week.recovered ? 'text-emerald-700' : 'text-navy-800')}>{week.recovered}</span> back at Level 4 or above
+      </p>
     </section>
   )
 }

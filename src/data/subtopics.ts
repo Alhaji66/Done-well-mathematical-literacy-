@@ -629,7 +629,7 @@ const rules: Record<string, SubtopicRule[]> = {
         /\b(adaptive (significance|advantage)|survival (value|advantage)|why (this|the) (response|adaptation)|benefit to the plant|maximis\w* the light|advantage(ous)? (to|for) the (plant|seedling|root|shoot))\b/i,
     },
     { name: 'Auxin action', match: /\b(auxin|shaded side|elongat\w*|shoot tip|growing tip|hormone)\b/i },
-    { name: 'Types of tropism', match: /\b(\w*tropism|\w*tropic|nastic|tendril)\b/i },
+    { name: 'Types of tropism', match: /\b(\w*tropism|\w*tropic|nastic|tendril\w*)\b/i },
   ],
   'life-sci-animal-nutrition': [
     {

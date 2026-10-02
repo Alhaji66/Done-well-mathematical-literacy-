@@ -16,11 +16,47 @@ import {
   type Term,
 } from '@/lib/levels'
 import { cn } from '@/lib/utils'
+import { downloadCsv } from '@/lib/csv'
+import { printPart } from '@/lib/print'
+import { DownloadIcon, PrinterIcon } from '@/components/ui/Icons'
 import type { Grade } from '@/types'
 
 const subjectName = (id: string) => subjects.find((s) => s.id === id)?.name ?? id
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const shortDate = (iso: string) => `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`
+const periodLabel = (term: Term | null, year: number) => (term ? `Term ${term} ${year}` : `${year}`)
+const sourceLabel = (source: LevelSource | 'all') => (source === 'all' ? 'weekly tests and SBA tasks' : source === 'weekly' ? 'weekly tests' : 'SBA tasks')
+const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+const testHeading = (t: { source: LevelSource; title: string; date: string | null; term: Term }) =>
+  `${t.title} (${t.source === 'sba' ? `SBA, T${t.term}` : t.date ? shortDate(t.date) : `T${t.term}`})`
+
+/** Print and download buttons, side by side. */
+function ExportButtons({ onPrint, onCsv, printLabel }: { onPrint: () => void; onCsv: () => void; printLabel: string }) {
+  return (
+    <div className="flex flex-wrap gap-2 print:hidden">
+      <button type="button" className="btn-outline btn-sm inline-flex items-center gap-1.5" onClick={onPrint}>
+        <PrinterIcon className="h-4 w-4" /> {printLabel}
+      </button>
+      <button type="button" className="btn-outline btn-sm inline-flex items-center gap-1.5" onClick={onCsv}>
+        <DownloadIcon className="h-4 w-4" /> Download CSV
+      </button>
+    </div>
+  )
+}
+
+/** The level key printed under each table, with the rule a level follows. */
+function PrintedKey() {
+  return (
+    <p className="mt-3 text-[10px] text-navy-500">
+      Levels: {LEVELS.map((l) => `${l} ${LEVEL_NAMES[l]} (${LEVEL_RANGES[l]})`).join(' · ')}. A learner’s level is the level of their average over the tests
+      they wrote; a missed or excused test is left out.
+    </p>
+  )
+}
 
 /** Fill for a level in a bar, and the chip's colours -- red at the bottom, green at the top. */
 const FILL: Record<number, string> = {
@@ -199,93 +235,186 @@ function ClassLevels({ data, source, term }: { data: LevelData; source: LevelSou
   const withLevel = levels.size
 
   return (
-    <section className="card space-y-4 p-4 sm:p-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <label className="block">
-          <span className="text-xs font-semibold text-navy-600">Class</span>
-          <select className="input mt-1" value={classId} onChange={(e) => setClassId(e.target.value)}>
-            {data.classes.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <p className="text-sm text-navy-600">
-          {subjectName(cls.subject_id)} · Grade {cls.grade} · {withLevel} of {ids.length} learners with a level
-        </p>
-      </div>
-
-      <TallyCells counts={counts} />
-
-      {tests.length === 0 ? (
-        <p className="text-sm text-navy-500">No tests written {term ? `in Term ${term}` : 'this year'} yet{source === 'all' ? '' : ' of this kind'}.</p>
-      ) : (
-        <>
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs text-navy-500">
-              {tests.length} {tests.length === 1 ? 'test' : 'tests'}. Hover or tap a level to see its name.
+    <>
+      <section className="card space-y-4 p-4 sm:p-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <label className="block">
+            <span className="text-xs font-semibold text-navy-600">Class</span>
+            <select className="input mt-1" value={classId} onChange={(e) => setClassId(e.target.value)}>
+              {data.classes.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="text-sm text-navy-600">
+              {subjectName(cls.subject_id)} · Grade {cls.grade} · {withLevel} of {ids.length} learners with a level
             </p>
-            <Segmented
-              label="Sort"
-              value={sort}
-              options={[
-                { value: 'name', label: 'By name' },
-                { value: 'level', label: 'By level' },
-              ]}
-              onChange={setSort}
+            <ExportButtons
+              printLabel="Print class list"
+              onPrint={() => printPart('levels')}
+              onCsv={() =>
+                downloadCsv(
+                  `levels-${slug(cls.name)}-${slug(periodLabel(term, data.year))}.csv`,
+                  ['Learner', ...tests.map(testHeading), 'Average %', 'Level', 'Level name'],
+                  rows.map((id) => {
+                    const l = levels.get(id)
+                    const by = new Map(l?.results.map((r) => [`${r.source}|${r.itemId}`, r]))
+                    return [
+                      name(id),
+                      ...tests.map((t) => {
+                        const r = by.get(`${t.source}|${t.itemId}`)
+                        return r ? Math.round(r.percent) : null
+                      }),
+                      l ? l.percent : null,
+                      l ? l.level : null,
+                      l ? LEVEL_NAMES[l.level] : 'No tests',
+                    ]
+                  }),
+                )
+              }
             />
           </div>
-          <div className="-mx-4 overflow-x-auto sm:mx-0">
-            <table className="w-full min-w-max border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-navy-200 text-left align-bottom text-xs text-navy-600">
-                  <th className="sticky left-0 z-10 bg-white py-2 pl-4 pr-3 font-semibold sm:pl-0">Learner</th>
-                  {tests.map((t) => (
-                    <th key={`${t.source}|${t.itemId}`} className="max-w-[7rem] px-2 py-2 font-semibold">
-                      <span className="line-clamp-2">{t.title}</span>
-                      <span className="block font-normal text-navy-400">
-                        {t.source === 'sba' ? `SBA · T${t.term}` : t.date ? shortDate(t.date) : `T${t.term}`}
-                      </span>
+        </div>
+
+        <TallyCells counts={counts} />
+
+        {tests.length === 0 ? (
+          <p className="text-sm text-navy-500">
+            No tests written {term ? `in Term ${term}` : 'this year'} yet
+            {source === 'all' ? '' : ' of this kind'}.
+          </p>
+        ) : (
+          <>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs text-navy-500">
+                {tests.length} {tests.length === 1 ? 'test' : 'tests'}. Hover or tap a level to see its name.
+              </p>
+              <Segmented
+                label="Sort"
+                value={sort}
+                options={[
+                  { value: 'name', label: 'By name' },
+                  { value: 'level', label: 'By level' },
+                ]}
+                onChange={setSort}
+              />
+            </div>
+            <div className="-mx-4 overflow-x-auto sm:mx-0">
+              <table className="w-full min-w-max border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-navy-200 text-left align-bottom text-xs text-navy-600">
+                    <th className="sticky left-0 z-10 bg-white py-2 pl-4 pr-3 font-semibold sm:pl-0">Learner</th>
+                    {tests.map((t) => (
+                      <th key={`${t.source}|${t.itemId}`} className="max-w-[7rem] px-2 py-2 font-semibold">
+                        <span className="line-clamp-2">{t.title}</span>
+                        <span className="block font-normal text-navy-400">
+                          {t.source === 'sba' ? `SBA · T${t.term}` : t.date ? shortDate(t.date) : `T${t.term}`}
+                        </span>
+                      </th>
+                    ))}
+                    <th className="px-2 py-2 font-semibold">Average</th>
+                    <th className="py-2 pl-2 pr-4 font-semibold sm:pr-0">Level</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((id) => {
+                    const l = levels.get(id)
+                    const by = new Map(l?.results.map((r) => [`${r.source}|${r.itemId}`, r]))
+                    return (
+                      <tr key={id} className="border-b border-navy-100">
+                        <td className="sticky left-0 z-10 bg-white py-2 pl-4 pr-3 font-medium text-navy-900 sm:pl-0">{name(id)}</td>
+                        {tests.map((t) => {
+                          const r = by.get(`${t.source}|${t.itemId}`)
+                          return (
+                            <td key={`${t.source}|${t.itemId}`} className="px-2 py-2 tabular-nums">
+                              {r ? (
+                                <span className="flex items-center gap-1.5">
+                                  <span className="w-9 text-right text-navy-700">{Math.round(r.percent)}%</span>
+                                  <LevelChip level={levelOf(r.percent)} className="min-w-0 px-1 text-[11px] font-semibold" />
+                                </span>
+                              ) : (
+                                <span className="text-navy-300">—</span>
+                              )}
+                            </td>
+                          )
+                        })}
+                        <td className="px-2 py-2 font-semibold tabular-nums text-navy-900">{l ? `${l.percent}%` : '—'}</td>
+                        <td className="py-2 pl-2 pr-4 sm:pr-0">
+                          {l ? <LevelChip level={l.level} /> : <span className="text-xs text-navy-400">No tests</span>}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </section>
+      <div className="levels-print print-area hidden text-[11px] text-navy-900 print:block">
+        <div className="flex items-start justify-between gap-4">
+          <p className="font-bold">{data.school ?? ''}</p>
+          <p>{periodLabel(term, data.year)}</p>
+        </div>
+        <p className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-gold-700">Learner levels</p>
+        <h2 className="text-lg font-bold">{cls.name}</h2>
+        <p className="text-navy-600">
+          {subjectName(cls.subject_id)} · Grade {cls.grade} · from {sourceLabel(source)}
+        </p>
+        <table className="mt-3 w-full border-collapse">
+          <thead>
+            <tr className="border-b-2 border-navy-300 text-left align-bottom">
+              <th className="py-1 pr-2 font-semibold">Learner</th>
+              {tests.length <= 8
+                ? tests.map((t) => (
+                    <th key={`${t.source}|${t.itemId}`} className="px-1 py-1 text-right font-semibold">
+                      {testHeading(t)}
                     </th>
-                  ))}
-                  <th className="px-2 py-2 font-semibold">Average</th>
-                  <th className="py-2 pl-2 pr-4 font-semibold sm:pr-0">Level</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((id) => {
-                  const l = levels.get(id)
-                  const by = new Map(l?.results.map((r) => [`${r.source}|${r.itemId}`, r]))
-                  return (
-                    <tr key={id} className="border-b border-navy-100">
-                      <td className="sticky left-0 z-10 bg-white py-2 pl-4 pr-3 font-medium text-navy-900 sm:pl-0">{name(id)}</td>
-                      {tests.map((t) => {
+                  ))
+                : null}
+              <th className="px-1 py-1 text-right font-semibold">Average</th>
+              <th className="py-1 pl-1 text-right font-semibold">Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((id) => {
+              const l = levels.get(id)
+              const by = new Map(l?.results.map((r) => [`${r.source}|${r.itemId}`, r]))
+              return (
+                <tr key={id} className="border-b border-navy-100">
+                  <td className="whitespace-nowrap py-1 pr-2">{name(id)}</td>
+                  {tests.length <= 8
+                    ? tests.map((t) => {
                         const r = by.get(`${t.source}|${t.itemId}`)
                         return (
-                          <td key={`${t.source}|${t.itemId}`} className="px-2 py-2 tabular-nums">
-                            {r ? (
-                              <span className="flex items-center gap-1.5">
-                                <span className="w-9 text-right text-navy-700">{Math.round(r.percent)}%</span>
-                                <LevelChip level={levelOf(r.percent)} className="min-w-0 px-1 text-[11px] font-semibold" />
-                              </span>
-                            ) : (
-                              <span className="text-navy-300">—</span>
-                            )}
+                          <td key={`${t.source}|${t.itemId}`} className="px-1 py-1 text-right tabular-nums">
+                            {r ? `${Math.round(r.percent)}%` : '—'}
                           </td>
                         )
-                      })}
-                      <td className="px-2 py-2 font-semibold tabular-nums text-navy-900">{l ? `${l.percent}%` : '—'}</td>
-                      <td className="py-2 pl-2 pr-4 sm:pr-0">{l ? <LevelChip level={l.level} /> : <span className="text-xs text-navy-400">No tests</span>}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
-    </section>
+                      })
+                    : null}
+                  <td className="px-1 py-1 text-right font-semibold tabular-nums">{l ? `${l.percent}%` : '—'}</td>
+                  <td className="whitespace-nowrap py-1 pl-1 text-right">{l ? `${l.level} ${LEVEL_NAMES[l.level]}` : 'No tests'}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+        <p className="mt-3">Learners at each level: {LEVELS.map((l) => `L${l}: ${counts[l]}`).join(' · ')}</p>
+        <PrintedKey />
+        <div className="mt-8 grid grid-cols-2 gap-6">
+          {['Teacher', 'HOD'].map((who) => (
+            <div key={who}>
+              <div className="h-8 border-b border-navy-400" />
+              <p className="mt-1 text-navy-600">{who} · signature and date</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -303,7 +432,15 @@ interface Row {
 function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSource | 'all'; term: Term | null }) {
   const [subjectId, setSubjectId] = useState('')
   const [open, setOpen] = useState<string | null>(null)
-  const results = useMemo(() => filterResults(data.results, { subjectId: subjectId || undefined, term, source }), [data.results, subjectId, term, source])
+  const results = useMemo(
+    () =>
+      filterResults(data.results, {
+        subjectId: subjectId || undefined,
+        term,
+        source,
+      }),
+    [data.results, subjectId, term, source],
+  )
   const levels = useMemo(() => learnerLevels(results), [results])
   const inView = [...new Set(data.classes.map((c) => c.subject_id).concat(data.results.map((r) => r.subjectId)))]
 
@@ -326,12 +463,37 @@ function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSou
   const total = levels.length
   const low = all[1] + all[2]
 
+  // The printed schedule and the CSV: each subject and grade, then its classes.
+  const scheduleRows = rows.flatMap((r) => [
+    {
+      subjectId: r.subjectId,
+      grade: r.grade,
+      className: '',
+      n: r.learners,
+      counts: r.counts,
+      average: r.average,
+    },
+    ...classTallies(
+      data,
+      results.filter((x) => x.subjectId === r.subjectId && x.grade === r.grade),
+    ).map((c) => ({
+      subjectId: r.subjectId,
+      grade: r.grade,
+      className: c.name,
+      n: c.n,
+      counts: c.counts,
+      average: c.average,
+    })),
+  ])
+
   return (
     <div className="space-y-5">
       <section className="card space-y-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h3 className="font-bold text-navy-900">{subjectId ? subjectName(subjectId) : inView.length > 1 ? 'All subjects' : subjectName(inView[0] ?? '')}</h3>
+            <h3 className="font-bold text-navy-900">
+              {subjectId ? subjectName(subjectId) : inView.length > 1 ? 'All subjects' : subjectName(inView[0] ?? '')}
+            </h3>
             <p className="text-sm text-navy-600">
               {total} learner {total === 1 ? 'level' : 'levels'}
               {total ? ` · ${low} at Level 1 or 2 (${Math.round((low / total) * 100)}%)` : ''}
@@ -352,11 +514,101 @@ function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSou
           ) : null}
         </div>
         <TallyCells counts={all} />
-        <p className="text-xs text-navy-500">A learner who takes two subjects is counted once in each.</p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-xs text-navy-500">A learner who takes two subjects is counted once in each.</p>
+          {rows.length ? (
+            <ExportButtons
+              printLabel="Print schedule"
+              onPrint={() => printPart('levels')}
+              onCsv={() =>
+                downloadCsv(
+                  `levels-schedule-${slug(periodLabel(term, data.year))}.csv`,
+                  ['Subject', 'Grade', 'Class', 'Learners', ...LEVELS.map((l) => `Level ${l}`), 'Level 1-2 %', 'Average %'],
+                  scheduleRows.map((r) => [
+                    subjectName(r.subjectId),
+                    r.grade,
+                    r.className,
+                    r.n,
+                    ...LEVELS.map((l) => r.counts[l]),
+                    r.n ? Math.round(((r.counts[1] + r.counts[2]) / r.n) * 100) : null,
+                    r.average,
+                  ]),
+                )
+              }
+            />
+          ) : null}
+        </div>
       </section>
 
+      <div className="levels-print print-area hidden text-[11px] text-navy-900 print:block">
+        <div className="flex items-start justify-between gap-4">
+          <p className="font-bold">{data.school ?? ''}</p>
+          <p>{periodLabel(term, data.year)}</p>
+        </div>
+        <p className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-gold-700">Schedule of learner levels</p>
+        <h2 className="text-lg font-bold">{subjectId ? subjectName(subjectId) : 'All subjects'}</h2>
+        <p className="text-navy-600">
+          From {sourceLabel(source)} · {total} learner {total === 1 ? 'level' : 'levels'}
+          {total ? ` · ${low} at Level 1 or 2 (${Math.round((low / total) * 100)}%)` : ''}
+        </p>
+        <table className="mt-3 w-full border-collapse">
+          <thead>
+            <tr className="border-b-2 border-navy-300 text-left align-bottom">
+              <th className="py-1 pr-2 font-semibold">Subject and class</th>
+              <th className="px-1 py-1 text-right font-semibold">Learners</th>
+              {LEVELS.map((l) => (
+                <th key={l} className="px-1 py-1 text-right font-semibold">
+                  L{l}
+                </th>
+              ))}
+              <th className="px-1 py-1 text-right font-semibold">L1–2</th>
+              <th className="py-1 pl-1 text-right font-semibold">Average</th>
+            </tr>
+          </thead>
+          <tbody>
+            {scheduleRows.map((r) => (
+              <tr key={`${r.subjectId}|${r.grade}|${r.className}`} className={cn('border-b border-navy-100', r.className ? '' : 'bg-navy-50 font-semibold')}>
+                <td className={cn('py-1 pr-2', r.className ? 'pl-4' : '')}>{r.className || `${subjectName(r.subjectId)} · Grade ${r.grade}`}</td>
+                <td className="px-1 py-1 text-right tabular-nums">{r.n}</td>
+                {LEVELS.map((l) => (
+                  <td key={l} className="px-1 py-1 text-right tabular-nums">
+                    {r.counts[l]}
+                  </td>
+                ))}
+                <td className="px-1 py-1 text-right tabular-nums">{r.n ? `${Math.round(((r.counts[1] + r.counts[2]) / r.n) * 100)}%` : '—'}</td>
+                <td className="py-1 pl-1 text-right tabular-nums">{r.average}%</td>
+              </tr>
+            ))}
+            <tr className="border-t-2 border-navy-300 font-bold">
+              <td className="py-1 pr-2">Total</td>
+              <td className="px-1 py-1 text-right tabular-nums">{total}</td>
+              {LEVELS.map((l) => (
+                <td key={l} className="px-1 py-1 text-right tabular-nums">
+                  {all[l]}
+                </td>
+              ))}
+              <td className="px-1 py-1 text-right tabular-nums">{total ? `${Math.round((low / total) * 100)}%` : '—'}</td>
+              <td className="py-1 pl-1" />
+            </tr>
+          </tbody>
+        </table>
+        <p className="mt-2 text-[10px] text-navy-500">A learner who takes two subjects is counted once in each.</p>
+        <PrintedKey />
+        <div className="mt-8 grid grid-cols-2 gap-6">
+          {['Principal', 'Date'].map((who) => (
+            <div key={who}>
+              <div className="h-8 border-b border-navy-400" />
+              <p className="mt-1 text-navy-600">{who}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {rows.length === 0 ? (
-        <p className="card p-5 text-sm text-navy-600">No tests written {term ? `in Term ${term}` : 'this year'} yet{source === 'all' ? '' : ' of this kind'}.</p>
+        <p className="card p-5 text-sm text-navy-600">
+          No tests written {term ? `in Term ${term}` : 'this year'} yet
+          {source === 'all' ? '' : ' of this kind'}.
+        </p>
       ) : (
         <section className="card divide-y divide-navy-100">
           {rows.map((r) => {
@@ -390,16 +642,26 @@ function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSou
   )
 }
 
-/** One subject and grade opened up: the tally for each class, then for each test. */
-function RowDetail({ data, results }: { data: LevelData; results: LevelResult[] }) {
+/** The tally for each class among some results, by class name. */
+function classTallies(data: LevelData, results: LevelResult[]) {
   const levels = learnerLevels(results)
-  const classIds = [...new Set(levels.map((l) => l.classId))]
-  const byClass = classIds
+  return [...new Set(levels.map((l) => l.classId))]
     .map((id) => {
       const ls = levels.filter((l) => l.classId === id)
-      return { id, name: data.classes.find((c) => c.id === id)?.name ?? 'Not in a class', counts: tally(ls.map((l) => l.percent)), n: ls.length }
+      return {
+        id,
+        name: data.classes.find((c) => c.id === id)?.name ?? 'Not in a class',
+        counts: tally(ls.map((l) => l.percent)),
+        n: ls.length,
+        average: Math.round(ls.reduce((s, l) => s + l.percent, 0) / ls.length),
+      }
     })
     .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+/** One subject and grade opened up: the tally for each class, then for each test. */
+function RowDetail({ data, results }: { data: LevelData; results: LevelResult[] }) {
+  const byClass = classTallies(data, results)
   const tests = testTallies(results)
 
   return (

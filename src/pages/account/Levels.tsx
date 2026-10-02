@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { classesInView, fetchClassMembers, fetchClasses } from '@/lib/classes'
 import { fetchSchoolLearners } from '@/lib/teacherRoster'
+import { fetchSchoolName } from '@/lib/schools'
 import { fetchMarksFor } from '@/lib/sbaMarks'
 import { fetchAttemptsForTests, fetchTestsForSchool } from '@/lib/weeklyTests'
 import { sbaResults, weeklyResults, type LevelData } from '@/lib/levels'
@@ -27,8 +28,13 @@ export function Levels() {
     let live = true
     const schoolId = profile.school_id
     const year = new Date().getFullYear()
-    Promise.all([fetchClasses(schoolId), fetchTestsForSchool(schoolId), named ? fetchSchoolLearners(schoolId) : Promise.resolve([])]).then(
-      async ([{ classes: all }, allTests, roster]) => {
+    Promise.all([
+      fetchClasses(schoolId),
+      fetchTestsForSchool(schoolId),
+      named ? fetchSchoolLearners(schoolId) : Promise.resolve([]),
+      fetchSchoolName(schoolId),
+    ]).then(
+      async ([{ classes: all }, allTests, roster, school]) => {
         const classes = classesInView(profile, all)
         const ids = classes.map((c) => c.id)
         const subjectsInView = new Set(classes.map((c) => c.subject_id))
@@ -46,7 +52,7 @@ export function Levels() {
         let results = [...weeklyResults(tests, attempts, classes, byClass, year), ...sbaResults(rows ?? [], classes)]
         // A teacher's view is their own classes' learners.
         if (teacher) results = results.filter((r) => r.classId && ids.includes(r.classId))
-        setData({ year, classes, names: new Map(roster.map((l) => [l.id, l.full_name])), members: byClass, results })
+        setData({ year, school, classes, names: new Map(roster.map((l) => [l.id, l.full_name])), members: byClass, results })
       },
     )
     return () => {

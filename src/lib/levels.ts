@@ -388,3 +388,43 @@ export function earlyWarnings(results: LevelResult[], f: { classId?: string; sub
   return out.sort((a, b) => b.reasons.length - a.reasons.length || a.latest.percent - b.latest.percent)
 }
 
+
+export interface WarningWeek {
+  /** Learners flagged by a test in the window. */
+  flagged: number
+  /** Learners flagged in the five weeks before it whose latest test in the window is at Level 4 or above. */
+  recovered: number
+  /** Tests handed in during the window. */
+  handedIn: number
+}
+
+/**
+ * A window of days in early warnings, counted the way the Monday summary to
+ * principals and HODs counts its week: a test flags a learner when it is
+ * below 40% or a worrying() fall from their previous test. Dates are
+ * yyyy-mm-dd; the window runs from `from` up to, not including, `to`.
+ */
+export function warningWeek(results: LevelResult[], f: { subjectId?: string }, from: string, to: string): WarningWeek {
+  const before = new Date(new Date(`${from}T00:00:00Z`).getTime() - FRESH_DAYS * DAY).toISOString().slice(0, 10)
+  const groups = new Map<string, LevelResult[]>()
+  for (const r of results) {
+    if (r.source !== 'weekly' || !r.date || r.date >= to) continue
+    if (f.subjectId && r.subjectId !== f.subjectId) continue
+    const key = `${r.learnerId}|${r.subjectId}|${r.grade}`
+    groups.set(key, [...(groups.get(key) ?? []), r])
+  }
+  let flagged = 0
+  let recovered = 0
+  let handedIn = 0
+  for (const rs of groups.values()) {
+    const sorted = [...rs].sort((a, b) => a.date!.localeCompare(b.date!))
+    const flags = sorted.map((r, i) => Math.round(r.percent) < 40 || (i > 0 && worrying(levelOf(sorted[i - 1].percent), levelOf(r.percent))))
+    const inWeek = sorted.filter((r) => r.date! >= from)
+    handedIn += inWeek.length
+    const now = sorted.some((r, i) => flags[i] && r.date! >= from)
+    const earlier = sorted.some((r, i) => flags[i] && r.date! >= before && r.date! < from)
+    if (now) flagged += 1
+    else if (earlier && inWeek.length && levelOf(inWeek[inWeek.length - 1].percent) >= 4) recovered += 1
+  }
+  return { flagged, recovered, handedIn }
+}

@@ -103,6 +103,27 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       const what = d.reason === 'below_40' ? `scored ${String(d.percent)}% (Level ${String(d.level)})` : `dropped from Level ${String(d.previous_level)} to Level ${String(d.level)} (${String(d.percent)}%)`
       return `Early warning: ${who} ${what} on “${String(d.title ?? '')}”. Open Levels to start a catch-up group.`
     }
+    case 'level.weekly_digest': {
+      const n = (k: string) => Number(d[k] ?? 0)
+      const plural = (x: number, one: string, many: string) => `${x} ${x === 1 ? one : many}`
+      const subject = d.subject ? ` in ${getSubject(String(d.subject))?.name ?? 'your subject'}` : ''
+      const bySubject = d.subject
+        ? ''
+        : Object.entries((d.subjects ?? {}) as Record<string, number>)
+            .sort((a, b) => b[1] - a[1])
+            .map(([id, x]) => `${getSubject(id)?.name ?? id} ${x}`)
+            .join(', ')
+      const classes = ((d.classes ?? []) as { name: string; teacher: string | null; flagged: number }[])
+        .map((c) => `${c.name}${c.teacher ? ` (${c.teacher})` : ''} ${c.flagged}`)
+        .join(', ')
+      return (
+        `Early warnings for the week of ${dayOf(d.week_start)}${subject}: ${plural(n('flagged'), 'learner', 'learners')} flagged, ` +
+        `${n('recovered')} back at Level 4 or above, ${plural(n('groups'), 'catch-up group', 'catch-up groups')} started; ` +
+        `${plural(n('tests'), 'test', 'tests')} set and ${n('handed_in')} handed in.` +
+        (bySubject ? ` By subject: ${bySubject}.` : '') +
+        (classes ? ` Most flags: ${classes}.` : '')
+      )
+    }
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

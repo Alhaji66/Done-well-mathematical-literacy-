@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test:rls": "bash tools/test-rls.sh",
+    "check:security-headers": "tsx tools/check-security-headers.mts",
     "check:reachability": "tsx tools/reachability.mts",
     "check:subtopics": "tsx tools/subtopic-coverage.mts",
     "check:subtopic-rules": "tsx tools/subtopic-rules.mts",
@@ -42,8 +43,7 @@
     "check:matlit-level": "tsx tools/matlit-level-eval.mts",
     "check:matlit-method": "tsx tools/check-matlit-method.mts",
     "check:math-level": "tsx tools/math-level-eval.mts",
-    "check:matlit-judgement": "tsx tools/matlit-judgement-eval.mts",
-    "check:security-headers": "tsx tools/check-security-headers.mts"
+    "check:matlit-judgement": "tsx tools/matlit-judgement-eval.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

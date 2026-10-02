@@ -1,0 +1,28 @@
+# Security headers for the hosts that read this file (Cloudflare Pages, Netlify).
+# vercel.json carries the same headers for Vercel; `npm run check:security-headers`
+# fails if the two drift apart. GitHub Pages cannot send headers at all.
+#
+# Content-Security-Policy, line by line:
+#   script-src   only this site's own files, plus Cloudflare Turnstile (the
+#                sign-in CAPTCHA). No inline script runs, so a script that an
+#                attacker smuggles into a page is refused by the browser.
+#   connect-src  the app talks to Supabase and nothing else.
+#   frame-src    the Turnstile widget is the only frame.
+#   frame-ancestors 'none'  no other site can show DONE WELL inside a frame
+#                (stops "clickjacking": a fake page over a real sign-in).
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src https://challenges.cloudflare.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# Built files are named by their contents, so they never change: cache for a year.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The service worker must always be re-checked, or an update never reaches anyone.
+/sw.js
+  Cache-Control: no-cache

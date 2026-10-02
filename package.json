@@ -42,7 +42,8 @@
     "check:matlit-level": "tsx tools/matlit-level-eval.mts",
     "check:matlit-method": "tsx tools/check-matlit-method.mts",
     "check:math-level": "tsx tools/math-level-eval.mts",
-    "check:matlit-judgement": "tsx tools/matlit-judgement-eval.mts"
+    "check:matlit-judgement": "tsx tools/matlit-judgement-eval.mts",
+    "check:security-headers": "tsx tools/check-security-headers.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

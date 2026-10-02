@@ -12,7 +12,7 @@ import { supabase } from '@/lib/supabaseClient'
  * in a way that changes what people are agreeing to, bump this, because a
  * consent is only a consent to the text that was actually shown.
  */
-export const POPIA_NOTICE_VERSION = '2026-09-12'
+export const POPIA_NOTICE_VERSION = '2026-10-02'
 
 export type ConsentKind = 'guardian' | 'self'
 
@@ -81,6 +81,8 @@ export interface PersonalDataExport {
   /** A parent's phone number for the school, and their replies to early warnings. */
   contact_details: Record<string, unknown>[]
   replies_to_school: Record<string, unknown>[]
+  /** The devices this account is signed in on (STEP 35): name, first and last used. */
+  devices_signed_in: Record<string, unknown>[]
   /** What this export does not and cannot contain, stated rather than left to be discovered. */
   not_included: string[]
 }
@@ -94,7 +96,7 @@ export interface PersonalDataExport {
  */
 export async function exportMyData(profileId: string): Promise<PersonalDataExport> {
   if (!supabase) throw new Error('Accounts are unavailable right now.')
-  const [{ data: userData }, { data: profile }, { data: progress }, { data: links }, consents, contacts, replies] = await Promise.all([
+  const [{ data: userData }, { data: profile }, { data: progress }, { data: links }, consents, contacts, replies, devices] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from('profiles').select('*').eq('id', profileId).maybeSingle(),
     supabase.from('learner_progress').select('*').eq('learner_id', profileId),
@@ -103,6 +105,8 @@ export async function exportMyData(profileId: string): Promise<PersonalDataExpor
     // Before STEP 31 and 33 these tables do not exist; the export carries on without them.
     supabase.from('parent_contacts').select('*').eq('parent_id', profileId),
     supabase.from('parent_replies').select('*').eq('parent_id', profileId),
+    // Before STEP 35 this table does not exist either.
+    supabase.from('account_devices').select('label, first_seen, last_seen'),
   ])
 
   return {
@@ -115,6 +119,7 @@ export async function exportMyData(profileId: string): Promise<PersonalDataExpor
     consents,
     contact_details: contacts.error ? [] : ((contacts.data as Record<string, unknown>[]) ?? []),
     replies_to_school: replies.error ? [] : ((replies.data as Record<string, unknown>[]) ?? []),
+    devices_signed_in: devices.error ? [] : ((devices.data as Record<string, unknown>[]) ?? []),
     not_included: [
       'Sign-in history and the technical logs Supabase keeps to operate the service.',
       'The curriculum itself — subjects, topics, notes, questions and papers are the same for everyone and are not personal information.',

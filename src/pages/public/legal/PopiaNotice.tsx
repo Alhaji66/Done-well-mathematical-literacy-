@@ -78,7 +78,7 @@ export function PopiaNotice() {
             <tbody className="align-top">
               <tr className="border-b border-navy-100">
                 <td className="py-2.5 pr-4">Your email address</td>
-                <td className="py-2.5 pr-4">To sign you in. We use a sign-in link rather than a password.</td>
+                <td className="py-2.5 pr-4">To sign you in, with a password or a one-time sign-in link.</td>
               </tr>
               <tr className="border-b border-navy-100">
                 <td className="py-2.5 pr-4">Your full name</td>
@@ -99,6 +99,10 @@ export function PopiaNotice() {
               <tr className="border-b border-navy-100">
                 <td className="py-2.5 pr-4">Which topics you have practised, and a mastery percentage for each</td>
                 <td className="py-2.5 pr-4">To show your progress and to suggest what to work on next.</td>
+              </tr>
+              <tr className="border-b border-navy-100">
+                <td className="py-2.5 pr-4">The devices you are signed in on: the browser and system name (such as "Chrome on Android") and when each was last used</td>
+                <td className="py-2.5 pr-4">An account can be used on a limited number of devices at a time, so that one paid account is not shared. You can see and sign out these devices yourself.</td>
               </tr>
               <tr className="border-b border-navy-100">
                 <td className="py-2.5 pr-4">A record of the consent given for this account</td>
@@ -193,7 +197,11 @@ export function PopiaNotice() {
             Access is enforced in the database itself, row by row, so one account cannot read another's records even
             if the app were asked to.
           </li>
-          <li>We sign in with a one-time link, so there is no password for us to store or for anyone to steal.</li>
+          <li>
+            Passwords are never stored by us in readable form; our sign-in provider keeps only a scrambled (hashed) version.
+            You can change yours, and sign out any device, from the Privacy &amp; data page.
+          </li>
+          <li>An account is signed in on a limited number of devices at a time, so a shared password stops working for the extra devices.</li>
         </ul>
       </section>
 

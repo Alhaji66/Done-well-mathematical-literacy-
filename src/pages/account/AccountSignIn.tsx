@@ -5,6 +5,7 @@ import { useAccountAuth } from '@/context/AccountAuthContext'
 import { describeAuthError } from '@/lib/authErrors'
 import { MessageIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { SIGNED_OUT_REASON_KEY } from '@/lib/devices'
 
 /**
  * WHY THERE IS A PASSWORD OPTION AT ALL.
@@ -34,6 +35,16 @@ export function AccountSignIn() {
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState<'idle' | 'working' | 'sent' | 'confirm' | 'error'>('idle')
   const [error, setError] = useState('')
+  // Set by the device check (STEP 35) when another device took this one's place.
+  const [signedOutElsewhere] = useState(() => {
+    try {
+      const reason = sessionStorage.getItem(SIGNED_OUT_REASON_KEY)
+      sessionStorage.removeItem(SIGNED_OUT_REASON_KEY)
+      return reason === 'device'
+    } catch {
+      return false
+    }
+  })
 
   if (!loading && session) {
     return <Navigate to="/account" replace />
@@ -114,6 +125,17 @@ export function AccountSignIn() {
             </span>
           </Link>
         </div>
+
+        {signedOutElsewhere ? (
+          <div role="status" className="mb-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <p className="font-semibold">You were signed out on this device</p>
+            <p className="mt-1 text-xs leading-relaxed">
+              Your account was signed in on another device. A learner account works on 2 devices at a time, and any other
+              account on 3, so the one used least recently is signed out. If that was not you, sign in and change your
+              password under Privacy &amp; data.
+            </p>
+          </div>
+        ) : null}
 
         <div className="card p-6 sm:p-8">
           {!configured ? (

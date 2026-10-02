@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient'
+import { checkDevice, deviceId, forgetClaim, sessionKey, SIGNED_OUT_REASON_KEY } from '@/lib/devices'
 import type { Grade } from '@/types'
 
 export type AccountRole = 'learner' | 'parent' | 'teacher' | 'school' | 'hod'
@@ -104,6 +105,43 @@ export function AccountAuthProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // The device limit (STEP 35). Checked when a session appears, every few
+  // minutes, and whenever the app comes back to the foreground -- the moment a
+  // shared account is most likely to have been picked up elsewhere. Kept out of
+  // onAuthStateChange on purpose: awaiting a Supabase call inside that callback
+  // can stall the client.
+  const sessionId = session ? sessionKey(session) : null
+  useEffect(() => {
+    if (!supabase || !session) return
+    let active = true
+    const check = async () => {
+      const ok = await checkDevice(session)
+      if (ok || !active || !supabase) return
+      try {
+        sessionStorage.setItem(SIGNED_OUT_REASON_KEY, 'device')
+      } catch {
+        // The sign-in page then shows no reason; the sign-out still happens.
+      }
+      forgetClaim()
+      // Local only: the device that signed this one out must stay signed in.
+      await supabase.auth.signOut({ scope: 'local' })
+      setProfile(null)
+    }
+    void check()
+    const timer = setInterval(() => void check(), 5 * 60_000)
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void check()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      active = false
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+    // Re-run per sign-in, not per token refresh: the session id is stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId])
+
   const value = useMemo<AccountAuthValue>(
     () => ({
       configured: isSupabaseConfigured,
@@ -114,7 +152,16 @@ export function AccountAuthProvider({ children }: { children: ReactNode }) {
         if (session?.user) await loadProfile(session.user.id)
       },
       signOut: async () => {
-        if (supabase) await supabase.auth.signOut()
+        if (supabase) {
+          // Free this device's place first, while still signed in to do it.
+          await supabase.rpc('sign_out_device', { p_device: deviceId() }).then(
+            () => undefined,
+            () => undefined,
+          )
+          forgetClaim()
+          // Only this device: signing out of the phone should not sign out the laptop.
+          await supabase.auth.signOut({ scope: 'local' })
+        }
         setProfile(null)
       },
     }),

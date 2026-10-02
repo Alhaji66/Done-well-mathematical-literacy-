@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { demoLevelData, demoToday } from '@/data/demoLevels'
 import { LevelsView } from '@/components/levels/LevelsView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { CatchUpImpactPanel } from '@/components/interventions/CatchUpImpact'
+import { demoImpactGroups } from '@/data/demoCatchUp'
 
 /**
  * The demo levels page. The teacher sees each learner in their three sample
@@ -12,6 +15,12 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 export function DemoLevels({ scope }: { scope: 'teacher' | 'hod' | 'school' }) {
   const [data] = useState(() => demoLevelData(scope))
   const [today] = useState(() => demoToday(data))
+  const [groups] = useState(() => demoImpactGroups(scope))
+  const { hash } = useLocation()
+  // Arriving from the dashboard's catch-up card opens at the breakdown.
+  useEffect(() => {
+    if (hash === '#catch-up') document.getElementById('catch-up')?.scrollIntoView()
+  }, [hash])
   const teacher = scope === 'teacher'
   return (
     <div className="space-y-6">
@@ -34,6 +43,13 @@ export function DemoLevels({ scope }: { scope: 'teacher' | 'hod' | 'school' }) {
         onStartGroup={async () => undefined}
         groupsLink={<span className="text-emerald-800">(Demo: the group is not saved.)</span>}
       />
+      <div id="catch-up" className="scroll-mt-20">
+        <CatchUpImpactPanel
+          groups={groups}
+          teacherName={(name) => name ?? 'A former member of staff'}
+          views={scope === 'school' ? ['subject', 'teacher', 'topic'] : scope === 'hod' ? ['teacher', 'topic'] : ['topic']}
+        />
+      </div>
     </div>
   )
 }

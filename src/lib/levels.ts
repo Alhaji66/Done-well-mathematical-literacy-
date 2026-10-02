@@ -258,3 +258,33 @@ export function sbaResults(
   }
   return out
 }
+
+export interface Movement {
+  learnerId: string
+  classId: string | null
+  subjectId: string
+  grade: Grade
+  /** Average and level in the term before. */
+  before: number
+  from: number
+  /** Average and level in the term chosen. */
+  after: number
+  to: number
+}
+
+/**
+ * How each learner's level changed from the term before to the term given,
+ * for learners with tests in both. A learner with no tests in one of the
+ * terms has no movement to report, rather than a fall to nothing.
+ */
+export function levelMovement(results: LevelResult[], term: Term, f: Omit<Filter, 'term'>): Movement[] {
+  if (term === 1) return []
+  const key = (l: LearnerLevel) => `${l.learnerId}|${l.subjectId}|${l.grade}`
+  const prev = new Map(learnerLevels(filterResults(results, { ...f, term: (term - 1) as Term })).map((l) => [key(l), l]))
+  return learnerLevels(filterResults(results, { ...f, term })).flatMap((l) => {
+    const p = prev.get(key(l))
+    return p
+      ? [{ learnerId: l.learnerId, classId: l.classId, subjectId: l.subjectId, grade: l.grade, before: p.percent, from: p.level, after: l.percent, to: l.level }]
+      : []
+  })
+}

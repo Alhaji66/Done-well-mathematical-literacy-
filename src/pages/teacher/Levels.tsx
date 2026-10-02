@@ -25,7 +25,13 @@ export function DemoLevels({ scope }: { scope: 'teacher' | 'hod' | 'school' }) {
               : 'How many learners are at each level, 1 to 7, by subject and grade. Open a row to see each class and each test.'
         }
       />
-      <LevelsView data={data} mode={teacher ? 'learners' : scope === 'hod' ? 'both' : 'tally'} />
+      <LevelsView
+        data={data}
+        mode={teacher ? 'learners' : scope === 'hod' ? 'both' : 'tally'}
+        // The demo has no database: the group is not saved, and says so.
+        onStartGroup={async () => undefined}
+        groupsLink={<span className="text-emerald-800">(Demo: the group is not saved.)</span>}
+      />
     </div>
   )
 }

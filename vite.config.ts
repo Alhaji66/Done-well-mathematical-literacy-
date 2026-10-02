@@ -8,46 +8,24 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   base: process.env.GITHUB_PAGES ? '/Done-well-mathematical-literacy-/' : '/',
-  // The exam-paper dataset (papers.ts) is deliberately one large lazy-loaded
-  // chunk per subject, fetched only when a learner opens Assessments -- not
-  // part of the initial load, so it's exempt from the default 500kB warning.
   build: {
-    chunkSizeWarningLimit: 2000,
+    chunkSizeWarningLimit: 600,
   },
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      // All learner/teacher content (subjects, topics, questions, resources) is
-      // static data bundled into the JS — there's no API to go stale, so once
-      // installed the app works fully offline, not just app-shell-offline.
+      // The app shell, notes and resources are bundled and precached. The
+      // question bank is downloaded per subject and saved on the device (see
+      // src/lib/contentPacks.ts), so a saved subject also works offline.
       workbox: {
         navigateFallback: 'index.html',
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-        // The per-subject paper chunks are big and a learner studies one or two
-        // of them, so precaching all four would make every install download
-        // roughly 1.4 MB gzipped of papers nobody in that browser will open.
-        // They are cached on first use instead, by the runtime rule below, and
-        // are then available offline exactly as before -- for the subjects that
-        // learner actually uses.
-        //
-        // This also removes a hard build failure: Life Sciences crossed
-        // workbox's 2 MiB precache ceiling when its Level 4 content landed, and
-        // an asset over the ceiling fails the build rather than being skipped.
-        globIgnores: ['**/{life-sciences,physical-sciences,mathematics,mat-lit}-*.js'],
+        // The question bank is not part of the build any more: each subject is
+        // a content pack downloaded from Supabase Storage for a signed-in
+        // account and saved on the device by src/lib/contentPacks.ts, which is
+        // what keeps practice and papers working offline.
         runtimeCaching: [
-          {
-            urlPattern: /\/assets\/(life-sciences|physical-sciences|mathematics|mat-lit)-[\w-]+\.js$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'subject-papers',
-              // Content-hashed filenames, so a cached entry is never stale --
-              // a new build simply requests a new name. The cap is a housekeeping
-              // limit, not a freshness one.
-              expiration: { maxEntries: 8 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
           {
             // The maths fonts. Not precached (they are only needed once a page
             // shows maths), but kept once fetched: without them an offline
@@ -83,8 +61,12 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: {
-      '@': path.resolve(dirname, 'src'),
-    },
+    alias: [
+      // The browser gets the question bank from downloaded content packs, never
+      // from the source modules -- see src/data/contentSource.ts. Must come
+      // before the general '@' entry, which would otherwise match first.
+      { find: /^@\/data\/contentSource$/, replacement: path.resolve(dirname, 'src/data/contentSource.client.ts') },
+      { find: '@', replacement: path.resolve(dirname, 'src') },
+    ],
   },
 })

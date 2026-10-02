@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { ContentNotice } from '@/components/content/ContentNotice'
 import { useSearchParams } from 'react-router-dom'
 import { subjects } from '@/data/subjects'
 import { topicsForSubject, getTopic } from '@/data/topics'
@@ -154,6 +155,8 @@ export function LearnerPractise() {
         title="Practise a topic"
         description={`Grade ${grade} — choose a subject, topic and difficulty to begin.`}
       />
+
+      <ContentNotice subjectId={subjectId} />
 
       <div className="card flex flex-col gap-4 p-4">
         <div>

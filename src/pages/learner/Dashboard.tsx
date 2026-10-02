@@ -88,7 +88,7 @@ export function LearnerDashboard() {
         exampleDate={demoExampleExamDate()}
       />
 
-      <SaveOffline subjectId={demoLearner.subjectId} />
+      <SaveOffline subjectId={demoLearner.subjectId} demo />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard

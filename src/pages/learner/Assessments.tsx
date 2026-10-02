@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { PaperListItem } from '@/components/assessments/PaperListItem'
 import { ClipboardIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { ContentNotice } from '@/components/content/ContentNotice'
 
 const subjectOptions = [
   { id: 'mat-lit', name: 'Mathematical Literacy' },
@@ -54,8 +55,10 @@ export function LearnerAssessments() {
       <SectionHeading
         eyebrow="Assessments"
         title="Practice papers"
-        description="Full-length practice papers written by DONE WELL, in the style of the real exam -- the same real content every DONE WELL learner uses."
+        description="Full-length practice papers written by DONE WELL, in the style of the real exam."
       />
+
+      <ContentNotice subjectId={subjectId} />
 
       <div className="card flex flex-col gap-4 p-4">
         <div>
@@ -130,8 +133,8 @@ export function LearnerAssessments() {
         ) : predicted.length === 0 ? (
           <EmptyState
             icon={<ClipboardIcon className="h-6 w-6" />}
-            title="Coming soon"
-            description="Predicted papers for this subject and paper are being written and will appear here soon."
+            title="With an account"
+            description="The demo includes one Paper 1 per grade. All three predicted sets of both papers come with an account."
           />
         ) : (
           <div className="space-y-3">
@@ -150,8 +153,8 @@ export function LearnerAssessments() {
         ) : past.length === 0 ? (
           <EmptyState
             icon={<ClipboardIcon className="h-6 w-6" />}
-            title="Coming soon"
-            description="Past-exam-style papers for 2020–2025 are being written and will be added here in batches."
+            title="With an account"
+            description="Past-exam-style papers for 2020–2025 come with an account."
           />
         ) : (
           <div className="space-y-3">

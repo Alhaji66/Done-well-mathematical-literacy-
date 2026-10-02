@@ -24,11 +24,21 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      # The question bank goes to private storage FIRST (STEP 36): if the upload
+      # fails, nothing is built or deployed and the current site keeps working.
+      # SUPABASE_SERVICE_ROLE_KEY is a repository secret and is never given to
+      # the build below -- only VITE_ variables reach the website.
+      - run: npm run content:upload
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       - run: npm run build
         env:
           GITHUB_PAGES: true
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+      # Stops the deploy if the question bank has leaked back into the website.
+      - run: npm run verify:bundle
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

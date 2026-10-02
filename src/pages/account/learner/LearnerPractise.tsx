@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { ContentNotice } from '@/components/content/ContentNotice'
 import { useSearchParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { topicsForSubject, getTopic } from '@/data/topics'
@@ -162,6 +163,8 @@ export function LearnerPractise() {
         title="Practise a topic"
         description={`Grade ${profile.grade} — every answer here is saved to your real account.`}
       />
+
+      <ContentNotice subjectId={subjectId} />
 
       {/* Grade, subject and topic stated explicitly: the same topic name appears in
           more than one subject and every grade, so the heading alone is ambiguous. */}

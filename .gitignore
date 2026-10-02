@@ -9,3 +9,6 @@ npm-debug.log*
 .env
 .env.*
 !.env.example
+
+# Full content packs: built and uploaded by the deploy, never committed.
+content-packs/

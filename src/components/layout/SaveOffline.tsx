@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { subjects } from '@/data/subjects'
 import { CheckCircleIcon, DownloadIcon } from '@/components/ui/Icons'
+import { savedSubjects, subjectPack } from '@/lib/contentPacks'
 
 /**
  * "Use DONE WELL offline": every subject, each with its own Save button, so a
  * learner taking Mathematics and Physical Sciences can keep both on the phone.
- * Saving downloads the subject's papers and questions once; the service worker
- * keeps the file (see vite.config.ts) and practice, papers and the revision
- * plan then work with no signal. Nothing is downloaded until they tap -- on a
+ * Saving downloads the subject's content pack once and keeps it on the device
+ * (see src/lib/contentPacks.ts); practice, papers and the revision plan then
+ * work with no signal. Nothing is downloaded until they tap -- on a
  * data bundle that choice is theirs.
  *
  * A subject also becomes available offline on its own the first time it is
@@ -16,22 +17,22 @@ import { CheckCircleIcon, DownloadIcon } from '@/components/ui/Icons'
  */
 
 /**
- * What saving each subject downloads, in MB: the gzipped size of its paper
- * chunk in the build, rounded up. Approximate on purpose -- it grows slowly as
- * content is added. Re-measure with: gzip -c dist/assets/<subject>-*.js | wc -c
+ * What saving each subject downloads, in MB: the gzipped size of its content
+ * pack, rounded up. Approximate on purpose -- it grows slowly as content is
+ * added. `npx tsx tools/content-packs.mts --build` prints the current sizes.
  */
 const SIZE_MB: Record<string, number> = {
-  'mat-lit': 0.3,
-  mathematics: 0.3,
-  'physical-sciences': 0.5,
-  'life-sciences': 0.7,
+  'mat-lit': 0.4,
+  mathematics: 0.4,
+  'physical-sciences': 0.6,
+  'life-sciences': 0.8,
 }
 
 type State = 'saved' | 'not_saved' | 'saving' | 'failed'
 
 const mb = (n: number) => `${n.toFixed(1).replace('.', ',')} MB`
 
-export function SaveOffline({ subjectId }: { subjectId: string }) {
+export function SaveOffline({ subjectId, demo = false }: { subjectId: string; demo?: boolean }) {
   const [supported, setSupported] = useState<boolean | null>(null)
   const [state, setState] = useState<Record<string, State>>({})
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true
@@ -42,13 +43,12 @@ export function SaveOffline({ subjectId }: { subjectId: string }) {
   const check = async () => {
     if (!('caches' in window) || !navigator.serviceWorker?.controller) return setSupported(false)
     try {
-      const cache = await caches.open('subject-papers')
-      const paths = (await cache.keys()).map((r) => new URL(r.url).pathname)
+      const saved = await savedSubjects()
       setSupported(true)
       setState((prev) => {
         const next = { ...prev }
         for (const s of subjects) {
-          if (paths.some((p) => p.includes(`/${s.id}-`))) next[s.id] = 'saved'
+          if (saved.has(s.id)) next[s.id] = 'saved'
           else if (next[s.id] !== 'saving' && next[s.id] !== 'failed') next[s.id] = 'not_saved'
         }
         return next
@@ -65,10 +65,10 @@ export function SaveOffline({ subjectId }: { subjectId: string }) {
   const save = async (id: string) => {
     setState((prev) => ({ ...prev, [id]: 'saving' }))
     try {
-      const { questionsForSubject } = await import('@/data/questionBank')
-      await questionsForSubject(id)
-      // The service worker stores the file as it passes through; give it a moment.
+      await subjectPack(id)
+      // Saving happens just after the download; give it a moment.
       await new Promise((r) => setTimeout(r, 500))
+      if (!(await savedSubjects()).has(id)) throw new Error('not saved')
       setState((prev) => ({ ...prev, [id]: 'not_saved' }))
       await check()
     } catch {
@@ -105,6 +105,12 @@ export function SaveOffline({ subjectId }: { subjectId: string }) {
         </div>
       </div>
 
+      {demo ? (
+        <p className="mt-2 rounded-lg bg-navy-50 p-2.5 text-xs text-navy-600">
+          The demo does not save subjects: the full question bank comes with an account. Signed in, each subject saves in one tap.
+        </p>
+      ) : null}
+
       <ul className="mt-3 divide-y divide-navy-100">
         {ordered.map((s) => {
           const st = state[s.id] ?? 'not_saved'
@@ -126,7 +132,7 @@ export function SaveOffline({ subjectId }: { subjectId: string }) {
               {st === 'saved' ? (
                 <CheckCircleIcon className="h-5 w-5 shrink-0 text-emerald-600" aria-label={`${s.name} saved`} />
               ) : (
-                <button type="button" className="btn-outline btn-sm shrink-0" disabled={busy || !online} onClick={() => void save(s.id)}>
+                <button type="button" className="btn-outline btn-sm shrink-0" disabled={demo || busy || !online} onClick={() => void save(s.id)}>
                   {st === 'saving' ? 'Saving…' : 'Save'}
                 </button>
               )}
@@ -136,7 +142,7 @@ export function SaveOffline({ subjectId }: { subjectId: string }) {
       </ul>
 
       {unsaved.length > 1 ? (
-        <button type="button" className="btn-primary btn-sm mt-2 w-full" disabled={busy || !online} onClick={() => void saveAll()}>
+        <button type="button" className="btn-primary btn-sm mt-2 w-full" disabled={demo || busy || !online} onClick={() => void saveAll()}>
           Save all {unsaved.length} (about {mb(unsaved.reduce((n, s) => n + (SIZE_MB[s.id] ?? 1), 0))})
         </button>
       ) : null}

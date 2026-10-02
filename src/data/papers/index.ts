@@ -16,12 +16,7 @@ export type { Paper, PaperSection, PaperQuestionItem, PaperKind } from './types'
  * so getPaper() can pick the right module to load without needing an
  * upfront id -> subject index (which would itself have to list all ids).
  */
-const subjectLoaders: Record<string, () => Promise<{ default: Paper[] }>> = {
-  'mat-lit': () => import('./mat-lit'),
-  mathematics: () => import('./mathematics'),
-  'physical-sciences': () => import('./physical-sciences'),
-  'life-sciences': () => import('./life-sciences'),
-}
+import { subjectContent } from '@/data/contentSource'
 
 const idPrefixToSubject: [prefix: string, subjectId: string][] = [
   ['ml-', 'mat-lit'],
@@ -30,16 +25,19 @@ const idPrefixToSubject: [prefix: string, subjectId: string][] = [
   ['lifesci-', 'life-sciences'],
 ]
 
+/**
+ * A subject's papers, through '@/data/contentSource': the source modules for
+ * the content tools, the downloaded content pack in the browser (see
+ * contentSource.ts for why the two differ).
+ */
 export async function papersForSubject(subjectId: string, paperNumber?: 1 | 2, grade?: Grade): Promise<Paper[]> {
-  const loadSubject = subjectLoaders[subjectId]
-  if (!loadSubject) return []
-  const { default: papers } = await loadSubject()
+  const { papers } = await subjectContent(subjectId)
   return papers.filter((p) => (paperNumber === undefined || p.paperNumber === paperNumber) && (grade === undefined || p.grade === grade))
 }
 
 export async function getPaper(id: string): Promise<Paper | undefined> {
   const match = idPrefixToSubject.find(([prefix]) => id.startsWith(prefix))
   if (!match) return undefined
-  const { default: papers } = await subjectLoaders[match[1]]()
+  const { papers } = await subjectContent(match[1])
   return papers.find((p) => p.id === id)
 }

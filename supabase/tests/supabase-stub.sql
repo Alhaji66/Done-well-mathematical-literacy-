@@ -14,3 +14,16 @@ create role authenticated nologin;
 create role anon nologin;
 grant usage on schema public, auth to authenticated;
 alter default privileges in schema public grant select, insert, update, delete on tables to authenticated;
+
+-- Storage: just enough for STEP 36's private bucket and its read rule.
+create schema storage;
+create table storage.buckets (id text primary key, name text not null, public boolean default false);
+create table storage.objects (
+  id uuid primary key default gen_random_uuid(),
+  bucket_id text references storage.buckets (id),
+  name text,
+  owner uuid
+);
+alter table storage.objects enable row level security;
+grant usage on schema storage to authenticated, anon;
+grant select on storage.objects to authenticated, anon;

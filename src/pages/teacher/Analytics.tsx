@@ -1,6 +1,8 @@
 import { classTopicPerformance, questionPerformance, classLearners, demoTeacher } from '@/data/teacherSchool'
 import { getTopic } from '@/data/topics'
-import { questions } from '@/data/questions'
+// The demo's question list names questions from the bundled Mat Lit sample;
+// the full bank is not part of the website (see src/lib/contentPacks.ts).
+import matLitSample from '@/data/samples/mat-lit.json'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { StatCard } from '@/components/ui/StatCard'
@@ -45,7 +47,7 @@ export function TeacherAnalytics() {
         <p className="mt-1 text-sm text-navy-500">Percentage of learners who answered each question correctly.</p>
         <div className="mt-4 space-y-3">
           {questionPerformance.map((qp) => {
-            const q = questions.find((x) => x.id === qp.questionId)
+            const q = (matLitSample.questions as { id: string; prompt: string }[]).find((x) => x.id === qp.questionId)
             return (
               <div key={qp.questionId}>
                 <div className="flex justify-between gap-3 text-sm">

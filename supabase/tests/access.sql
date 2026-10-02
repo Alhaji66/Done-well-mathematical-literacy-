@@ -2642,5 +2642,48 @@ insert into results
   from public.account_devices;
 reset role;
 
+-- ===========================================================================
+-- THE QUESTION BANK IN PRIVATE STORAGE (STEP 36)
+-- ===========================================================================
+insert into storage.objects (bucket_id, name) values
+  ('content', 'manifest.json'),
+  ('content', 'packs/mat-lit-0123456789abcdef.json.gz');
+
+-- 127. The bucket is private, and a signed-in account can read the packs.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '127. a signed-in account reads the question bank; the bucket is not public',
+         count(*)::text || ' object(s) visible',
+         count(*) = 2
+  from storage.objects where bucket_id = 'content';
+reset role;
+insert into results
+  select '127b. ...and the bucket is private', public::text, not public from storage.buckets where id = 'content';
+
+-- 128. Nobody who is not signed in can read it.
+grant all on results to anon;
+select set_config('request.jwt.claim.sub', '', false);
+set role anon;
+insert into results
+  select '128. a visitor who is not signed in reads nothing', count(*)::text || ' object(s) visible', count(*) = 0
+  from storage.objects where bucket_id = 'content';
+reset role;
+
+-- 129. A signed-in account cannot add to or change the bank.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+create temp table t129 (refused boolean);
+do $$
+begin
+  begin
+    insert into storage.objects (bucket_id, name) values ('content', 'manifest.json');
+    insert into t129 values (false);
+  exception when others then insert into t129 values (true);
+  end;
+end $$;
+reset role;
+insert into results select '129. nobody signed in to the app can upload to the bank', case when refused then 'refused' else 'ALLOWED' end, refused from t129;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

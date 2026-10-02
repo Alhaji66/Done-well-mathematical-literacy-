@@ -14,6 +14,7 @@ import { physicsGapQuestions } from '@/data/physicsGapQuestions'
 import { lifeSciGapQuestions } from '@/data/lifeSciGapQuestions'
 import { mathThinGaps } from '@/data/mathThinGaps'
 import { thinSubtopicQuestions } from '@/data/thinSubtopicQuestions'
+import { lifeSciThinQuestions } from '@/data/lifeSciThinQuestions'
 
 /*
  * Taxation and compound-interest items live in taxQuestions.ts, and the Grade
@@ -36,6 +37,7 @@ export const questions: Question[] = [
   ...lifeSciGapQuestions,
   ...mathThinGaps,
   ...thinSubtopicQuestions,
+  ...lifeSciThinQuestions,
   // Finance
   {
     id: 'fin-e1',

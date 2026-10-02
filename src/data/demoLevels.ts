@@ -3,6 +3,7 @@ import { markBookTasks, programmeFor } from '@/data/sba'
 import { CLASSES, learners as markBookLearners, sampleMarks, tasksOf } from '@/data/demoMarkBook'
 import { earlyWarnings, sbaResults, termOfDate, type LevelClass, type LevelData, type LevelResult, type Term } from '@/lib/levels'
 import { TEST_KIND_LABEL, type TestKind } from '@/lib/testKinds'
+import type { ParentReply } from '@/lib/parentReplyTypes'
 import type { Grade } from '@/types'
 
 /**
@@ -143,7 +144,21 @@ export function demoLevelData(scope: 'teacher' | 'hod' | 'school', now = new Dat
       results.push(...sbaResults(rows, [c]), ...weeklyFor(c, ids, ability, today, 100 + ci * 13))
     })
 
-  return { year: now.getFullYear(), school: 'Gojela High School', classes, names: scope === 'school' ? new Map() : names, members, results }
+  // Two parents in 11A have answered the early warning about their child.
+  const latest = results.reduce((m, r) => (r.date && r.date > m ? r.date : m), '')
+  const warnDay = new Date(new Date(`${latest}T12:00:00Z`).getTime() + 3 * 86_400_000)
+  const replies: ParentReply[] = earlyWarnings(results, { classId: 'demo-11a' }, warnDay)
+    .slice(0, 2)
+    .map((w, i) => ({
+      parent_id: `demo-parent-${i}`,
+      learner_id: w.learnerId,
+      test_id: w.latest.itemId,
+      choice: i === 0 ? 'seen' : 'call',
+      message: i === 0 ? 'We have started practising every evening after supper.' : 'I work shifts; please phone after 5 pm.',
+      updated_at: `${w.latest.date}T18:00:00Z`,
+    }))
+
+  return { year: now.getFullYear(), school: 'Gojela High School', classes, names: scope === 'school' ? new Map() : names, members, results, replies }
 }
 
 /**

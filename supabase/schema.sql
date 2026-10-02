@@ -4393,3 +4393,93 @@ begin
     perform cron.schedule('early-warning-digest', '0 5 * * 1', 'select public.send_early_warning_digest()');
   end if;
 end $$;
+
+-- ============================================================================
+-- STEP 30: PARENTS HEAR OF AN EARLY WARNING TOO
+-- ============================================================================
+--
+-- The early warning of STEP 28 now reaches a learner's linked parents as
+-- well as their class teacher, the moment the test is handed in: which test,
+-- the result and its CAPS level, and why it is a concern. The parent's app
+-- shows what it means and what helps at home. The learner is not notified
+-- about themselves, and catch-up reassessments still never warn.
+--
+-- WHO CAN DO WHAT.
+--   * Nothing new to read or write: the warning is written by the database,
+--     to the parents linked to the learner (STEP 15), who already see the
+--     tests their child sat (STEP 27).
+
+create or replace function public.flag_early_warning()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  t public.weekly_tests;
+  v_pct numeric;
+  v_prev numeric;
+  v_level smallint;
+  v_prev_level smallint;
+  v_reason text;
+  v_teachers uuid[];
+  v_parents uuid[];
+  v_data jsonb;
+begin
+  if new.submitted_at is null or coalesce(new.marks_total, 0) = 0 then
+    return new;
+  end if;
+  if tg_op = 'UPDATE' and old.submitted_at is not null then
+    return new;
+  end if;
+  select * into t from public.weekly_tests where id = new.test_id;
+  if t.id is null or t.intervention_id is not null then
+    return new;
+  end if;
+
+  v_pct := 100.0 * coalesce(new.marks_awarded, 0) / new.marks_total;
+  select 100.0 * coalesce(a.marks_awarded, 0) / a.marks_total into v_prev
+  from public.weekly_test_attempts a
+  join public.weekly_tests p on p.id = a.test_id
+  where a.learner_id = new.learner_id
+    and a.id <> new.id
+    and a.submitted_at is not null
+    and a.submitted_at < new.submitted_at
+    and coalesce(a.marks_total, 0) > 0
+    and p.subject_id = t.subject_id
+    and p.grade = t.grade
+    and p.intervention_id is null
+  order by a.submitted_at desc
+  limit 1;
+
+  v_level := public.caps_level(v_pct);
+  v_prev_level := case when v_prev is null then null else public.caps_level(v_prev) end;
+  if v_pct < 40 then
+    v_reason := 'below_40';
+  elsif v_prev_level is not null and v_level < v_prev_level and (v_level <= 4 or v_prev_level - v_level >= 2) then
+    v_reason := 'dropped';
+  else
+    return new;
+  end if;
+
+  select array_agg(distinct c.teacher_id) into v_teachers
+  from public.classes c
+  join public.class_members m on m.class_id = c.id
+  where m.learner_id = new.learner_id
+    and c.subject_id = t.subject_id
+    and c.grade = t.grade
+    and c.teacher_id is not null;
+
+  v_data := jsonb_build_object('learner_id', new.learner_id, 'test_id', t.id, 'title', t.title, 'kind', t.kind,
+                               'subject', t.subject_id, 'grade', t.grade, 'percent', round(v_pct),
+                               'level', v_level, 'previous_level', v_prev_level, 'reason', v_reason,
+                               'topics', to_jsonb(t.topic_ids));
+  perform public.notify(v_teachers, 'level.early_warning', v_data, 'levels');
+
+  select array_agg(pl.parent_id) into v_parents
+  from public.parent_learner_links pl
+  where pl.learner_id = new.learner_id;
+  perform public.notify(v_parents, 'level.child_early_warning', v_data, 'dashboard');
+  return new;
+end;
+$$;

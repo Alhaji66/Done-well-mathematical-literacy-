@@ -124,6 +124,13 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
         (classes ? ` Most flags: ${classes}.` : '')
       )
     }
+    case 'level.child_early_warning': {
+      const who = names.get(String(d.learner_id))?.split(' ')[0] ?? 'Your child'
+      const subject = getSubject(String(d.subject ?? ''))?.name ?? 'a subject'
+      const why =
+        d.reason === 'below_40' ? 'below 40%' : `down from Level ${String(d.previous_level)} on the test before`
+      return `Early warning: ${who} scored ${String(d.percent)}% (Level ${String(d.level)}) on “${String(d.title ?? '')}” in ${subject}, ${why}. See what it means and how you can help at home.`
+    }
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

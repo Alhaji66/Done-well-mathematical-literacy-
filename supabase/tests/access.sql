@@ -2071,5 +2071,36 @@ insert into results
   from public.notifications where kind = 'level.weekly_digest';
 reset role;
 
+-- ===========================================================================
+-- PARENTS HEAR OF AN EARLY WARNING (STEP 30)
+-- ===========================================================================
+-- 100. Parent One, linked to Learner One, is told of every warning about Learner One.
+insert into results
+  select '100. a linked parent hears of every early warning about their child',
+         count(*) filter (where kind = 'level.child_early_warning')::text || ' to the parent, '
+           || count(*) filter (where kind = 'level.early_warning' and data->>'learner_id' = '00000000-0000-0000-0000-0000000000b1')::text || ' to the teacher',
+         count(*) filter (where kind = 'level.child_early_warning') > 0
+           and count(*) filter (where kind = 'level.child_early_warning' and recipient_id = '00000000-0000-0000-0000-0000000000a1')
+             = count(*) filter (where kind = 'level.early_warning' and data->>'learner_id' = '00000000-0000-0000-0000-0000000000b1')
+           and bool_and(link = 'dashboard' and data->>'learner_id' = '00000000-0000-0000-0000-0000000000b1' and data ? 'topics')
+             filter (where kind = 'level.child_early_warning')
+  from public.notifications;
+
+-- 101. Only the linked parent: not another parent, and not the learner.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results
+  select '101. the linked parent reads their warnings',
+         count(*)::text || ' visible',
+         count(*) > 0
+  from public.notifications where kind = 'level.child_early_warning';
+reset role;
+insert into results
+  select '101b. no other parent, and not the learner, is told',
+         count(*)::text || ' elsewhere',
+         count(*) = 0
+  from public.notifications
+  where kind = 'level.child_early_warning' and recipient_id <> '00000000-0000-0000-0000-0000000000a1';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

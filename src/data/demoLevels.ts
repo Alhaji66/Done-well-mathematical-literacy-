@@ -1,7 +1,7 @@
 import { atpFor, termWeeks } from '@/data/atp'
 import { markBookTasks, programmeFor } from '@/data/sba'
 import { CLASSES, learners as markBookLearners, sampleMarks, tasksOf } from '@/data/demoMarkBook'
-import { sbaResults, termOfDate, type LevelClass, type LevelData, type LevelResult, type Term } from '@/lib/levels'
+import { earlyWarnings, sbaResults, termOfDate, type LevelClass, type LevelData, type LevelResult, type Term } from '@/lib/levels'
 import { TEST_KIND_LABEL, type TestKind } from '@/lib/testKinds'
 import type { Grade } from '@/types'
 
@@ -148,12 +148,18 @@ export function demoLevelData(scope: 'teacher' | 'hod' | 'school', now = new Dat
 
 /**
  * The demo learner's own levels, for the learner and parent demo dashboards:
- * one learner of the sample 12A class, standing in for Karabo.
+ * one learner of the sample 12A class, standing in for Karabo -- one an early
+ * warning has flagged, where there is one, so the demo shows what a learner
+ * and a parent see then.
  */
 export function demoMyLevels(now = new Date()): LevelResult[] {
-  return demoLevelData('teacher', now)
-    .results.filter((r) => r.learnerId === 'demo-12a:demo-learner-0')
-    .map((r) => ({ ...r, learnerId: 'demo-karabo' }))
+  const data = demoLevelData('teacher', now)
+  const flagged = earlyWarnings(data.results, { classId: 'demo-12a' }, demoToday(data))
+  // From the latest test, and the mildest case: a fall in level rather than a very low mark.
+  const pick =
+    [...flagged].sort((a, b) => b.latest.date!.localeCompare(a.latest.date!) || b.latest.percent - a.latest.percent)[0]?.learnerId ??
+    'demo-12a:demo-learner-0'
+  return data.results.filter((r) => r.learnerId === pick).map((r) => ({ ...r, learnerId: 'demo-karabo' }))
 }
 
 /**
@@ -161,7 +167,7 @@ export function demoMyLevels(now = new Date()): LevelResult[] {
  * tests stop at the real date, so the early warnings the demo shows are
  * always current, whenever it is opened.
  */
-export function demoToday(data: LevelData): Date {
+export function demoToday(data: Pick<LevelData, 'results'>): Date {
   const latest = data.results.reduce((m, r) => (r.date && r.date > m ? r.date : m), '')
   return latest ? new Date(new Date(`${latest}T12:00:00Z`).getTime() + 3 * 86_400_000) : new Date()
 }

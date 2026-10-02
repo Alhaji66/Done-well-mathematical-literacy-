@@ -2,6 +2,9 @@ import { supabase } from '@/lib/supabaseClient'
 import { fetchMyClassIds } from '@/lib/classes'
 import { fetchMyInterventionIds } from '@/lib/interventions'
 import type { Grade, Question } from '@/types'
+import type { TestKind } from '@/lib/testKinds'
+
+export { TEST_KIND_LABEL, type TestKind } from '@/lib/testKinds'
 
 /**
  * Weekly tests: a teacher sets one, a learner sits it, the result comes back.
@@ -42,6 +45,8 @@ export interface WeeklyTest {
    * in that group sit it. Absent on a database without STEP 15.
    */
   intervention_id?: string | null
+  /** Absent on a database without STEP 28, where every test is a weekly test. */
+  kind?: TestKind
 }
 
 export interface PerQuestionMark {
@@ -177,6 +182,7 @@ export async function createTest(input: {
   classId?: string | null
   /** A catch-up group, when this is its reassessment. */
   interventionId?: string | null
+  kind?: TestKind
 }): Promise<{ test?: WeeklyTest; error?: string }> {
   if (!supabase) return { error: 'Real accounts are not set up on this deployment.' }
   const { data, error } = await supabase
@@ -195,6 +201,9 @@ export async function createTest(input: {
       // accepts whole-grade tests.
       ...(input.classId ? { class_id: input.classId } : {}),
       ...(input.interventionId ? { intervention_id: input.interventionId } : {}),
+      // Only sent for a topic test or monthly check, so a database without
+      // STEP 28 still accepts weekly tests.
+      ...(input.kind && input.kind !== 'weekly' ? { kind: input.kind } : {}),
     })
     .select('*')
     .single()

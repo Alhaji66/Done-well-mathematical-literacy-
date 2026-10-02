@@ -1910,5 +1910,103 @@ insert into results
   select '91c. a learner still reads their school''s tests', count(*)::text || ' visible', count(*) >= 2 from public.weekly_tests;
 reset role;
 
+-- ===========================================================================
+-- TEST KINDS AND EARLY WARNINGS (STEP 28)
+-- ===========================================================================
+
+-- 92. A test carries a kind: weekly unless set otherwise, and only weekly, topic or monthly.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at, kind)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Topic test: finance', 'mat-lit', 12, array['finance'], 8, now(), 'topic'
+  from public.profiles where id = '00000000-0000-0000-0000-00000000000a';
+do $$ begin
+  begin
+    insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at, kind)
+      select school_id, auth.uid(), 'Quiz that should not save', 'mat-lit', 12, array['finance'], 8, now(), 'quiz'
+      from public.profiles where id = auth.uid();
+  exception when others then null; end;
+end $$;
+reset role;
+insert into results
+  select '92. tests carry a kind, weekly by default, and only weekly, topic or monthly',
+         string_agg(title || ' = ' || kind, '; ' order by title),
+         bool_or(title = 'Topic test: finance' and kind = 'topic')
+           and bool_or(title = 'Grade 12 measurement' and kind = 'weekly')
+           and not bool_or(title like 'Quiz%')
+  from public.weekly_tests;
+insert into results
+  select '92b. the new-test notice says which kind', coalesce(max(data->>'kind'), 'none'), max(data->>'kind') = 'topic'
+  from public.notifications where kind = 'weekly_test.set' and data->>'title' = 'Topic test: finance';
+
+-- 93. A result below 40% warns the class teacher the moment it is handed in.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, auth.uid(), now() + interval '1 minute', 3, 8 from public.weekly_tests where title = 'Topic test: finance';
+reset role;
+insert into results
+  select '93. a result below 40% warns the class teacher at once',
+         coalesce(string_agg((data->>'reason') || ' ' || (data->>'percent') || '%', ', '), 'none'),
+         count(*) = 1 and bool_and(data->>'reason' = 'below_40' and recipient_id = '00000000-0000-0000-0000-00000000000a')
+  from public.notifications where kind = 'level.early_warning';
+
+-- 94. Rising is quiet; a lower level than the previous test warns.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at, kind)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Monthly check: October', 'mat-lit', 12, array['finance'], 8, now(), 'monthly'
+  from public.profiles where id = '00000000-0000-0000-0000-00000000000a';
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Weekly test: rates', 'mat-lit', 12, array['finance'], 8, now()
+  from public.profiles where id = '00000000-0000-0000-0000-00000000000a';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, auth.uid(), now() + interval '2 minutes', 5, 8 from public.weekly_tests where title = 'Monthly check: October';
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, auth.uid(), now() + interval '3 minutes', 4, 8 from public.weekly_tests where title = 'Weekly test: rates';
+reset role;
+insert into results
+  select '94. rising is quiet; dropping a level since the last test warns',
+         string_agg((data->>'reason') || ' L' || coalesce(data->>'previous_level', '-') || '->L' || (data->>'level'), ', ' order by id),
+         count(*) = 2 and bool_or(data->>'reason' = 'dropped' and data->>'previous_level' = '5' and data->>'level' = '4')
+  from public.notifications where kind = 'level.early_warning';
+
+-- 94b. A slip from Level 7 to Level 6 is left alone.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Weekly test: tariffs', 'mat-lit', 12, array['finance'], 8, now()
+  from public.profiles where id = '00000000-0000-0000-0000-00000000000a';
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Weekly test: budgets', 'mat-lit', 12, array['finance'], 8, now()
+  from public.profiles where id = '00000000-0000-0000-0000-00000000000a';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, auth.uid(), now() + interval '210 seconds', 8, 8 from public.weekly_tests where title = 'Weekly test: tariffs';
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, auth.uid(), now() + interval '225 seconds', 6, 8 from public.weekly_tests where title = 'Weekly test: budgets';
+reset role;
+insert into results
+  select '94b. a slip from Level 7 to Level 6 raises no warning', count(*)::text || ' warning(s)', count(*) = 2
+  from public.notifications where kind = 'level.early_warning';
+
+-- 95. A catch-up reassessment never warns; the learner is told nothing.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, auth.uid(), now() + interval '4 minutes', 0, 6 from public.weekly_tests where title = 'Reassessment: finance';
+insert into results
+  select '95b. the learner receives no warning about themselves', count(*)::text || ' visible', count(*) = 0
+  from public.notifications where kind = 'level.early_warning';
+reset role;
+insert into results
+  select '95. a catch-up reassessment raises no warning', count(*)::text || ' warning(s)', count(*) = 2
+  from public.notifications where kind = 'level.early_warning';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

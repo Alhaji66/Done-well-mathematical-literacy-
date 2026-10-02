@@ -2,6 +2,7 @@ import { capsLevel } from '@/lib/capsScale'
 import { markBookTasks, programmeFor } from '@/data/sba'
 import type { SbaMarkRow } from '@/lib/sbaMarks'
 import type { TestAttempt, WeeklyTest } from '@/lib/weeklyTests'
+import type { TestKind } from '@/lib/testKinds'
 import type { Grade } from '@/types'
 
 /**
@@ -37,6 +38,9 @@ export interface LevelResult {
   date: string | null
   term: Term
   percent: number
+  /** For a weekly test: its kind and topics. */
+  kind?: TestKind
+  topicIds?: string[]
 }
 
 export interface LevelClass {
@@ -230,6 +234,8 @@ export function weeklyResults(
       date: t.due_at.slice(0, 10),
       term: termOfDate(t.due_at.slice(0, 10)),
       percent: ((a.marks_awarded ?? 0) / a.marks_total) * 100,
+      kind: t.kind ?? 'weekly',
+      topicIds: t.topic_ids,
     })
   }
   return out
@@ -296,3 +302,89 @@ export function levelMovement(results: LevelResult[], term: Term, f: Omit<Filter
       : []
   })
 }
+
+// ------------------------------------------------------------ early warning
+
+export type WarningReason = 'below_40' | 'dropped' | 'month_drop' | 'falling'
+
+export interface EarlyWarning {
+  learnerId: string
+  classId: string | null
+  subjectId: string
+  grade: Grade
+  reasons: WarningReason[]
+  latest: LevelResult
+  previous: LevelResult | null
+  /** This month's and last month's averages, where both have tests. */
+  month: { now: number; before: number } | null
+  /** The learner's recent tests, oldest first, for a sparkline. */
+  recent: LevelResult[]
+}
+
+const DAY = 86_400_000
+
+/**
+ * A fall in level that needs action: to Level 4 (Adequate) or below, or by
+ * two levels or more. A slip from 7 to 6 is left alone.
+ */
+export const worrying = (from: number, to: number) => to < from && (to <= 4 || from - to >= 2)
+/** A learner whose latest test is older than this is not "early" any more. */
+const FRESH_DAYS = 35
+
+/**
+ * Learners to catch now, test by test, rather than at the end of the term:
+ * those whose latest weekly test, topic test or monthly check was below 40%,
+ * who dropped a level since their previous test, whose average this month is
+ * a level below last month's, or whose last three tests each fell (by ten
+ * points or more in all) -- a fall counting only when it is worrying(): to
+ * Level 4 or below, or by two levels or more. Only tests set in the app count -- they carry a
+ * date -- and only learners with a test in the last five weeks.
+ */
+export function earlyWarnings(results: LevelResult[], f: { classId?: string; subjectId?: string }, today: Date): EarlyWarning[] {
+  const now = today.getTime()
+  const groups = new Map<string, LevelResult[]>()
+  for (const r of results) {
+    if (r.source !== 'weekly' || !r.date) continue
+    if (f.classId && r.classId !== f.classId) continue
+    if (f.subjectId && r.subjectId !== f.subjectId) continue
+    const key = `${r.learnerId}|${r.subjectId}|${r.grade}`
+    groups.set(key, [...(groups.get(key) ?? []), r])
+  }
+  const out: EarlyWarning[] = []
+  for (const rs of groups.values()) {
+    const sorted = [...rs].sort((a, b) => a.date!.localeCompare(b.date!))
+    const latest = sorted[sorted.length - 1]
+    const age = (now - new Date(`${latest.date}T00:00:00Z`).getTime()) / DAY
+    if (age > FRESH_DAYS || age < -1) continue
+    const previous = sorted.length > 1 ? sorted[sorted.length - 2] : null
+    const reasons: WarningReason[] = []
+    if (Math.round(latest.percent) < 40) reasons.push('below_40')
+    if (previous && worrying(levelOf(previous.percent), levelOf(latest.percent))) reasons.push('dropped')
+
+    const end = new Date(`${latest.date}T00:00:00Z`).getTime()
+    const inWindow = (r: LevelResult, from: number, to: number) => {
+      const t = new Date(`${r.date}T00:00:00Z`).getTime()
+      return t > end - to * DAY && t <= end - from * DAY
+    }
+    const avg = (xs: LevelResult[]) => xs.reduce((s, r) => s + r.percent, 0) / xs.length
+    const thisMonth = sorted.filter((r) => inWindow(r, 0, 28))
+    const lastMonth = sorted.filter((r) => inWindow(r, 28, 56))
+    const month = thisMonth.length && lastMonth.length ? { now: Math.round(avg(thisMonth)), before: Math.round(avg(lastMonth)) } : null
+    if (month && worrying(levelOf(month.before), levelOf(month.now))) reasons.push('month_drop')
+
+    const last3 = sorted.slice(-3)
+    if (
+      last3.length === 3 &&
+      last3[0].percent > last3[1].percent &&
+      last3[1].percent > last3[2].percent &&
+      last3[0].percent - last3[2].percent >= 10 &&
+      worrying(levelOf(last3[0].percent), levelOf(last3[2].percent))
+    )
+      reasons.push('falling')
+
+    if (reasons.length)
+      out.push({ learnerId: latest.learnerId, classId: latest.classId, subjectId: latest.subjectId, grade: latest.grade, reasons, latest, previous, month, recent: sorted.slice(-6) })
+  }
+  return out.sort((a, b) => b.reasons.length - a.reasons.length || a.latest.percent - b.latest.percent)
+}
+

@@ -2,6 +2,7 @@ import { atpFor, termWeeks } from '@/data/atp'
 import { markBookTasks, programmeFor } from '@/data/sba'
 import { CLASSES, learners as markBookLearners, sampleMarks, tasksOf } from '@/data/demoMarkBook'
 import { sbaResults, termOfDate, type LevelClass, type LevelData, type LevelResult, type Term } from '@/lib/levels'
+import { TEST_KIND_LABEL, type TestKind } from '@/lib/testKinds'
 import type { Grade } from '@/types'
 
 /**
@@ -33,14 +34,25 @@ const clamp = (p: number) => Math.max(8, Math.min(98, p))
 /** Up to three weekly tests a term, on the ATP's topics, set on the Friday of weeks 3, 6 and 9. */
 function weeklyTestsFor(subjectId: string, grade: Grade, today: string) {
   const atp = atpFor(subjectId, grade)
-  const out: { id: string; title: string; date: string; term: Term }[] = []
+  const out: { id: string; title: string; date: string; term: Term; kind: TestKind; topicIds: string[] }[] = []
+  // Each term: a weekly test, then a topic test, then a monthly check.
+  const kinds: TestKind[] = ['weekly', 'topic', 'monthly']
   for (const term of [1, 2, 3, 4] as Term[]) {
-    const labels = [...new Set((atp?.weeks ?? []).filter((w) => w.term === term && w.topicId).map((w) => w.label))].slice(0, 3)
+    const weeksWithTopics = [...new Map((atp?.weeks ?? []).filter((w) => w.term === term && w.topicId).map((w) => [w.label, w])).values()].slice(0, 3)
     const weeks = termWeeks(term)
-    labels.forEach((label, i) => {
+    weeksWithTopics.forEach((w, i) => {
       const week = weeks[Math.min(weeks.length - 1, 2 + i * 3)]
       const date = week.end.toISOString().slice(0, 10)
-      if (date <= today) out.push({ id: `demo-wt-${subjectId}-${grade}-${term}-${i}`, title: `Weekly test: ${label.split(/[:(]/)[0].trim()}`, date, term })
+      const kind = kinds[i]
+      if (date <= today)
+        out.push({
+          id: `demo-wt-${subjectId}-${grade}-${term}-${i}`,
+          title: `${TEST_KIND_LABEL[kind]}: ${w.label.split(/[:(]/)[0].trim()}`,
+          date,
+          term,
+          kind,
+          topicIds: [w.topicId!],
+        })
     })
   }
   return out
@@ -63,6 +75,8 @@ function weeklyFor(c: LevelClass, learnerIds: string[], ability: (i: number) => 
           date: t.date,
           term: termOfDate(t.date),
           percent: Math.round(clamp(ability(li) + (seeded(li + seed, ti) - 0.5) * 24)),
+          kind: t.kind,
+          topicIds: t.topicIds,
         },
       ]
     }),

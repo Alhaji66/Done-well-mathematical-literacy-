@@ -11,6 +11,12 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
  */
 export function DemoLevels({ scope }: { scope: 'teacher' | 'hod' | 'school' }) {
   const [data] = useState(() => demoLevelData(scope))
+  // The sample tests stop at today's date; the demo is seen a few days after
+  // its latest one, so the early warnings it shows are always current.
+  const [today] = useState(() => {
+    const latest = data.results.reduce((m, r) => (r.date && r.date > m ? r.date : m), '')
+    return latest ? new Date(new Date(`${latest}T12:00:00Z`).getTime() + 3 * 86_400_000) : new Date()
+  })
   const teacher = scope === 'teacher'
   return (
     <div className="space-y-6">
@@ -28,6 +34,7 @@ export function DemoLevels({ scope }: { scope: 'teacher' | 'hod' | 'school' }) {
       <LevelsView
         data={data}
         mode={teacher ? 'learners' : scope === 'hod' ? 'both' : 'tally'}
+        today={today}
         // The demo has no database: the group is not saved, and says so.
         onStartGroup={async () => undefined}
         groupsLink={<span className="text-emerald-800">(Demo: the group is not saved.)</span>}

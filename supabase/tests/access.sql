@@ -2550,5 +2550,97 @@ insert into results
   from public.admin_school_overview();
 reset role;
 
+-- ===========================================================================
+-- DEVICE LIMITS (STEP 35)
+-- ===========================================================================
+-- Learner Two (b2) signs in on three devices in turn, each with its own session.
+insert into auth.sessions values
+  ('00000000-0000-0000-0000-00000000d001', '00000000-0000-0000-0000-0000000000b2'),
+  ('00000000-0000-0000-0000-00000000d002', '00000000-0000-0000-0000-0000000000b2'),
+  ('00000000-0000-0000-0000-00000000d003', '00000000-0000-0000-0000-0000000000b2');
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+select set_config('request.jwt.claims', '{"session_id":"00000000-0000-0000-0000-00000000d001"}', false);
+select public.claim_device('phone-of-learner-two', 'Chrome on Android');
+select set_config('request.jwt.claims', '{"session_id":"00000000-0000-0000-0000-00000000d002"}', false);
+select public.claim_device('laptop-at-home', 'Firefox on Windows');
+select set_config('request.jwt.claims', '{"session_id":"00000000-0000-0000-0000-00000000d003"}', false);
+create temp table t122 as select public.claim_device('friends-phone-1', 'Chrome on Android') as removed;
+reset role;
+
+-- 122. A learner's third device signs out the one used least recently, and ends its session.
+insert into results
+  select '122. a learner''s third device signs out the oldest, and its session is ended',
+         (select string_agg(device_id, ', ' order by device_id) from public.account_devices where user_id = '00000000-0000-0000-0000-0000000000b2')
+           || '; removed ' || (select removed from t122) || '; sessions left ' || (select count(*) from auth.sessions where user_id = '00000000-0000-0000-0000-0000000000b2'),
+         (select count(*) from public.account_devices where user_id = '00000000-0000-0000-0000-0000000000b2') = 2
+           and not exists (select 1 from public.account_devices where device_id = 'phone-of-learner-two')
+           and not exists (select 1 from auth.sessions where id = '00000000-0000-0000-0000-00000000d001')
+           and (select count(*) from auth.sessions where user_id = '00000000-0000-0000-0000-0000000000b2') = 2
+           and (select removed from t122) = 1;
+
+-- 123. The signed-out device is told so; the others are still signed in.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+insert into results
+  select '123. the removed device learns it was signed out; the current one is still in',
+         'removed: ' || public.device_still_signed_in('phone-of-learner-two')::text || ', current: ' || public.device_still_signed_in('friends-phone-1')::text,
+         not public.device_still_signed_in('phone-of-learner-two') and public.device_still_signed_in('friends-phone-1');
+reset role;
+
+-- 124. Nobody reads, adds or changes another person's devices, or writes the table directly.
+create temp table t124 (what text, refused boolean);
+grant all on t124 to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$
+begin
+  begin
+    insert into public.account_devices (user_id, device_id) values (auth.uid(), 'sneaky-device-01');
+    insert into t124 values ('writing the table', false);
+  exception when others then insert into t124 values ('writing the table', true);
+  end;
+  begin
+    delete from public.account_devices where user_id = '00000000-0000-0000-0000-0000000000b2';
+    insert into t124 values ('deleting another''s rows', not found);
+  exception when others then insert into t124 values ('deleting another''s rows', true);
+  end;
+  perform public.sign_out_device('friends-phone-1');
+end $$;
+insert into results
+  select '124. nobody sees, writes or signs out someone else''s devices',
+         (select string_agg(what || case when refused then ' refused' else ' ALLOWED' end, '; ') from t124)
+           || '; visible: ' || (select count(*) from public.account_devices)::text,
+         (select bool_and(refused) from t124) and (select count(*) from public.account_devices) = 0;
+reset role;
+insert into results
+  select '124b. ...and Learner Two''s devices are untouched',
+         count(*)::text || ' device(s)', count(*) = 2
+  from public.account_devices where user_id = '00000000-0000-0000-0000-0000000000b2';
+
+-- 125. A person signs out one of their own devices.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+select public.sign_out_device('laptop-at-home');
+insert into results
+  select '125. a person signs out one of their own devices',
+         string_agg(device_id, ', '), count(*) = 1 and bool_and(device_id = 'friends-phone-1')
+  from public.account_devices;
+reset role;
+
+-- 126. A teacher may use three devices.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select set_config('request.jwt.claims', '{}', false);
+select public.claim_device('teacher-device-01');
+select public.claim_device('teacher-device-02');
+select public.claim_device('teacher-device-03');
+select public.claim_device('teacher-device-04');
+insert into results
+  select '126. a teacher keeps three devices',
+         count(*)::text || ' device(s)', count(*) = 3 and not bool_or(device_id = 'teacher-device-01')
+  from public.account_devices;
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

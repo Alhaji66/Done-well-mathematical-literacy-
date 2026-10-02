@@ -6,6 +6,8 @@
 -- A stand-in for the parts of Supabase the schema relies on.
 create schema auth;
 create table auth.users (id uuid primary key, email text);
+-- Sign-in sessions: STEP 35 ends the session of a device it signs out.
+create table auth.sessions (id uuid primary key, user_id uuid);
 create function auth.uid() returns uuid language sql stable as
   $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
 create role authenticated nologin;

@@ -5288,3 +5288,169 @@ end;
 $$;
 revoke execute on function public.admin_school_overview() from public, anon;
 grant execute on function public.admin_school_overview() to authenticated;
+
+-- ============================================================================
+-- STEP 35: AN ACCOUNT IS USED ON A LIMITED NUMBER OF DEVICES
+-- ============================================================================
+--
+-- WHAT WAS WRONG. Nothing stopped one paid account being used by a whole
+-- group: sign in on every phone in the class and share it.
+--
+-- THE FIX. Each browser the app runs in has its own random device id, kept in
+-- that browser. When someone signs in, claim_device() records the device; if
+-- that takes them over their limit -- 2 devices for a learner, 3 for anyone
+-- else, none for a platform administrator -- the least recently used device is
+-- signed out: its row is removed, and its Supabase session is ended, so its
+-- refresh token stops working and it cannot quietly sign itself back in. The
+-- app on that device notices (device_still_signed_in() says no) and signs out
+-- with a message.
+--
+-- Signing in again on the removed device works, and signs out the oldest of the
+-- others in turn: two people sharing one account keep throwing each other out.
+--
+-- People see their own devices and can sign any of them out from the privacy
+-- page; nobody can write the table directly.
+
+create table if not exists public.account_devices (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  device_id text not null check (length(device_id) between 8 and 64),
+  label text not null default '' check (length(label) <= 120),
+  session_id uuid,
+  first_seen timestamptz not null default now(),
+  last_seen timestamptz not null default now(),
+  primary key (user_id, device_id)
+);
+
+alter table public.account_devices enable row level security;
+revoke insert, update, delete, truncate on public.account_devices from authenticated, anon;
+grant select on public.account_devices to authenticated;
+
+drop policy if exists "People see their own devices" on public.account_devices;
+create policy "People see their own devices"
+  on public.account_devices for select
+  using (user_id = auth.uid());
+
+create or replace function public.device_limit()
+returns integer
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select case
+    when public.is_platform_admin() then null
+    when (select role::text from public.profiles where id = auth.uid()) = 'learner' then 2
+    else 3
+  end;
+$$;
+grant execute on function public.device_limit() to authenticated;
+
+create or replace function public.current_session_id()
+returns uuid
+language plpgsql
+stable
+set search_path = public
+as $$
+begin
+  return nullif(current_setting('request.jwt.claims', true)::json ->> 'session_id', '')::uuid;
+exception when others then
+  return null;
+end;
+$$;
+
+create or replace function public.end_device_session(p_session uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if p_session is null then
+    return;
+  end if;
+  begin
+    execute 'delete from auth.sessions where id = $1' using p_session;
+  exception when others then
+    null;
+  end;
+end;
+$$;
+revoke execute on function public.end_device_session(uuid) from public, authenticated, anon;
+
+create or replace function public.claim_device(p_device text, p_label text default '')
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_limit integer;
+  v_old record;
+  v_removed integer := 0;
+begin
+  if v_uid is null then
+    raise exception 'Not signed in.';
+  end if;
+  insert into public.account_devices (user_id, device_id, label, session_id, first_seen, last_seen)
+  values (v_uid, p_device, left(btrim(coalesce(p_label, '')), 120), public.current_session_id(), clock_timestamp(), clock_timestamp())
+  on conflict (user_id, device_id) do update
+    set label = excluded.label,
+        session_id = coalesce(excluded.session_id, account_devices.session_id),
+        last_seen = clock_timestamp();
+
+  v_limit := public.device_limit();
+  if v_limit is null then
+    return 0;
+  end if;
+  for v_old in
+    select device_id, session_id from public.account_devices
+    where user_id = v_uid and device_id <> p_device
+    order by last_seen desc
+    offset greatest(v_limit - 1, 0)
+  loop
+    delete from public.account_devices where user_id = v_uid and device_id = v_old.device_id;
+    perform public.end_device_session(v_old.session_id);
+    v_removed := v_removed + 1;
+  end loop;
+  return v_removed;
+end;
+$$;
+revoke execute on function public.claim_device(text, text) from public, anon;
+grant execute on function public.claim_device(text, text) to authenticated;
+
+create or replace function public.device_still_signed_in(p_device text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_found boolean;
+begin
+  update public.account_devices set last_seen = now()
+  where user_id = auth.uid() and device_id = p_device and last_seen < now() - interval '5 minutes';
+  select exists (select 1 from public.account_devices where user_id = auth.uid() and device_id = p_device) into v_found;
+  return v_found;
+end;
+$$;
+revoke execute on function public.device_still_signed_in(text) from public, anon;
+grant execute on function public.device_still_signed_in(text) to authenticated;
+
+create or replace function public.sign_out_device(p_device text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_session uuid;
+begin
+  delete from public.account_devices
+  where user_id = auth.uid() and device_id = p_device
+  returning session_id into v_session;
+  perform public.end_device_session(v_session);
+end;
+$$;
+revoke execute on function public.sign_out_device(text) from public, anon;
+grant execute on function public.sign_out_device(text) to authenticated;

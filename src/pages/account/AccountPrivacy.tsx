@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ParentContactCard } from '@/components/account/ParentContactCard'
+import { DevicesCard } from '@/components/account/DevicesCard'
 import {
   deleteMyAccount,
   downloadExport,
@@ -46,6 +47,7 @@ export function AccountPrivacy() {
     ...(profile.grade ? [{ label: 'Your grade', value: `Grade ${profile.grade}` }] : []),
     ...(profile.subject_id ? [{ label: 'Your subject', value: profile.subject_id }] : []),
     { label: 'Topics you have practised', value: 'One row per topic, with a mastery percentage' },
+    { label: 'Devices you are signed in on', value: 'The browser and system name, and when each was last used: see below' },
     ...(profile.role === 'parent'
       ? [
           { label: 'Your phone number for the school', value: 'If you gave one: see below' },
@@ -150,6 +152,8 @@ export function AccountPrivacy() {
       </section>
 
       {profile.role === 'parent' ? <ParentContactCard parentId={profile.id} /> : null}
+
+      <DevicesCard role={profile.role} />
 
       <section className="card p-5">
         <h2 className="text-base font-bold text-navy-900">Who can see your progress</h2>

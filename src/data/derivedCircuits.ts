@@ -563,6 +563,17 @@ export const derivedCircuits: Record<string, CircuitSpec> = {
         "ohms": 6
       }
     ]
+  },
+  "tsq-ps11-terminal-pd": {
+    "title": "The circuit described in this question",
+    "emf": 12,
+    "internalResistance": 0.5,
+    "elements": [
+      {
+        "kind": "resistor",
+        "ohms": 5.5
+      }
+    ]
   }
 }
 

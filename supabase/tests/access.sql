@@ -32,6 +32,10 @@ select pg_temp.act('00000000-0000-0000-0000-00000000000a');
 set role authenticated;
 create temp table s as select * from public.create_school('Gojela High');
 reset role;
+-- Since STEP 34 a new school approves each learner by hand. The tests written
+-- before that assume learners join directly, so the two test schools start in
+-- automatic mode; the STEP 34 tests at the end switch Gojela High back.
+update public.schools set learner_approval = 'auto';
 grant select on s to authenticated;
 
 set role authenticated;
@@ -364,6 +368,10 @@ insert into auth.users values ('00000000-0000-0000-0000-0000000000f1');
 select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
 set role authenticated;
 create temp table other as select * from public.create_school('Another High');
+reset role;
+update public.schools set learner_approval = 'auto';
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
 insert into public.profiles (id, role, full_name, school_id, subject_id)
   select '00000000-0000-0000-0000-0000000000f1', 'teacher', 'Teacher F', school_id, 'mat-lit' from other;
 insert into results
@@ -2302,6 +2310,244 @@ insert into results
   select '112b. another parent reads only their own', count(*)::text || ' visible',
          count(*) = 1 and bool_and(parent_id = '00000000-0000-0000-0000-0000000000a7')
   from public.parent_contacts;
+reset role;
+
+-- ===========================================================================
+-- LEARNER APPROVAL AND PAID PLACES (STEP 34)
+-- ===========================================================================
+-- Gojela High goes back to approving each learner, with room for one more.
+update public.schools set learner_approval = 'manual' where id = (select school_id from s);
+update public.subscriptions set learner_seats = public.school_learners_approved((select school_id from s)) + 1
+  where school_id = (select school_id from s);
+insert into auth.users values
+  ('00000000-0000-0000-0000-0000000000ba'),
+  ('00000000-0000-0000-0000-0000000000bb'),
+  ('00000000-0000-0000-0000-0000000000bc');
+
+-- 113. A learner who joins with the code waits, and sees nothing of the school meanwhile.
+select pg_temp.act('00000000-0000-0000-0000-0000000000ba');
+set role authenticated;
+insert into public.profiles (id, role, full_name, school_id, grade, subject_id)
+  select '00000000-0000-0000-0000-0000000000ba', 'learner', 'Learner Waiting', school_id, 12, 'mat-lit' from s;
+insert into public.learner_progress (learner_id, topic_id, mastery_percent, questions_attempted)
+  values ('00000000-0000-0000-0000-0000000000ba', 'finance', 55, 10);
+insert into results
+  select '113. a learner joining with the code waits and sees no tests, staff or school',
+         (select count(*) from public.weekly_tests)::text || ' tests, '
+           || (select count(*) from public.profiles where id <> auth.uid())::text || ' people, '
+           || (select count(*) from public.schools)::text || ' schools; request: '
+           || coalesce((select school_name || ' / ' || approved::text from public.my_school_request()), 'none'),
+         (select count(*) from public.weekly_tests) = 0
+           and (select count(*) from public.profiles where id <> auth.uid()) = 0
+           and (select count(*) from public.schools) = 0
+           and (select learner_approved_at from public.profiles where id = auth.uid()) is null
+           and (select school_name = 'Gojela High' and not approved from public.my_school_request());
+reset role;
+
+-- 114. Staff see the waiting learner's name, but not their results, and cannot put them in a class.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+create temp table t114 (refused boolean);
+grant all on t114 to authenticated;
+do $$
+begin
+  begin
+    insert into public.class_members (class_id, learner_id)
+      select id, '00000000-0000-0000-0000-0000000000ba' from public.classes limit 1;
+    insert into t114 values (false);
+  exception when others then insert into t114 values (true);
+  end;
+end $$;
+insert into results
+  select '114. staff see a waiting learner but not their progress, and cannot add them to a class',
+         (select count(*) from public.profiles where id = '00000000-0000-0000-0000-0000000000ba')::text || ' profile, '
+           || (select count(*) from public.learner_progress where learner_id = '00000000-0000-0000-0000-0000000000ba')::text || ' progress rows',
+         (select count(*) from public.profiles where id = '00000000-0000-0000-0000-0000000000ba') = 1
+           and (select count(*) from public.learner_progress where learner_id = '00000000-0000-0000-0000-0000000000ba') = 0
+           and (select bool_and(refused) from t114);
+reset role;
+
+-- 115. Nobody approves a learner except staff at that school.
+create temp table t115 (who text, refused boolean);
+grant all on t115 to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000ba');
+set role authenticated;
+do $$
+begin
+  begin
+    update public.profiles set learner_approved_at = now() where id = auth.uid();
+    insert into t115 values ('self, by writing the column', false);
+  exception when others then insert into t115 values ('self, by writing the column', true);
+  end;
+  begin
+    perform public.approve_learner(auth.uid(), true);
+    insert into t115 values ('self, by the function', false);
+  exception when others then insert into t115 values ('self, by the function', true);
+  end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+do $$
+begin
+  begin
+    perform public.approve_learner('00000000-0000-0000-0000-0000000000ba', true);
+    insert into t115 values ('another school''s teacher', false);
+  exception when others then insert into t115 values ('another school''s teacher', true);
+  end;
+end $$;
+reset role;
+insert into results
+  select '115. a learner cannot approve themselves, nor can another school',
+         string_agg(who || case when refused then ' refused' else ' ALLOWED' end, '; '),
+         bool_and(refused) and count(*) = 3
+  from t115;
+
+-- 116. The school's teacher approves them; they then see the school's tests and the teacher sees their progress.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.approve_learner('00000000-0000-0000-0000-0000000000ba', true);
+insert into results
+  select '116a. once approved, the teacher reads their progress',
+         count(*)::text || ' row(s)', count(*) = 1
+  from public.learner_progress where learner_id = '00000000-0000-0000-0000-0000000000ba';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000ba');
+set role authenticated;
+insert into results
+  select '116b. ...and the learner sees the school and is told',
+         (select count(*) from public.schools)::text || ' school, '
+           || (select count(*) from public.notifications where kind = 'learner.approved')::text || ' notification',
+         (select count(*) from public.schools) = 1
+           and (select count(*) from public.notifications where kind = 'learner.approved') = 1;
+reset role;
+
+-- 117. With every paid place taken, the next learner waits and cannot be approved.
+select pg_temp.act('00000000-0000-0000-0000-0000000000bb');
+set role authenticated;
+insert into public.profiles (id, role, full_name, school_id, grade, subject_id)
+  select '00000000-0000-0000-0000-0000000000bb', 'learner', 'Learner Over', school_id, 12, 'mat-lit' from s;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+create temp table t117 (message text);
+grant all on t117 to authenticated;
+do $$
+begin
+  begin
+    perform public.approve_learner('00000000-0000-0000-0000-0000000000bb', true);
+    insert into t117 values ('ALLOWED');
+  exception when others then insert into t117 values (sqlerrm);
+  end;
+end $$;
+insert into results
+  select '117. no learner is approved past the paid places',
+         (select message from t117) || ' / seats: ' || (select seats || ' of which ' || used || ' used, ' || pending || ' waiting' from public.school_seat_status()),
+         (select message from t117) like 'All % paid learner places%'
+           and (select learner_approved_at from public.profiles where id = '00000000-0000-0000-0000-0000000000bb') is null
+           and (select used = seats and pending = 1 from public.school_seat_status());
+reset role;
+
+-- 118. Removing a learner who has left frees the place for the one waiting.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.remove_learner('00000000-0000-0000-0000-0000000000ba');
+select public.approve_learner('00000000-0000-0000-0000-0000000000bb', true);
+reset role;
+insert into results
+  select '118. removing a learner frees a place for the next',
+         string_agg(full_name || ': ' || coalesce(school_id::text, 'no school') || case when learner_approved_at is null then ', waiting' else ', approved' end, '; ' order by full_name),
+         bool_and(case when id = '00000000-0000-0000-0000-0000000000ba' then school_id is null and learner_approved_at is null
+                       else school_id = (select school_id from s) and learner_approved_at is not null end)
+  from public.profiles where id in ('00000000-0000-0000-0000-0000000000ba', '00000000-0000-0000-0000-0000000000bb');
+
+-- 119. Only the school account or an HOD switches to automatic approval; then a learner with a free place joins at once.
+create temp table t119 (refused boolean);
+grant all on t119 to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$
+begin
+  begin
+    perform public.set_learner_approval('auto');
+    insert into t119 values (false);
+  exception when others then insert into t119 values (true);
+  end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f7');
+set role authenticated;
+select public.set_learner_approval('auto');
+reset role;
+update public.subscriptions set learner_seats = learner_seats + 5 where school_id = (select school_id from s);
+select pg_temp.act('00000000-0000-0000-0000-0000000000bc');
+set role authenticated;
+insert into public.profiles (id, role, full_name, grade, subject_id)
+  values ('00000000-0000-0000-0000-0000000000bc', 'learner', 'Learner Later', 12, 'mat-lit');
+create temp table t119b as select * from public.request_school((select join_code from s));
+reset role;
+insert into results
+  select '119. a teacher cannot switch to automatic approval; the school can, and a learner then joins at once',
+         (select learner_approval from public.schools where id = (select school_id from s)) || ', joined approved: ' || (select approved::text from t119b),
+         (select bool_and(refused) from t119)
+           and (select learner_approval from public.schools where id = (select school_id from s)) = 'auto'
+           and (select approved from t119b);
+
+-- 120. A changed school code stops the old one working.
+create temp table t120 (who text, refused boolean);
+grant all on t120 to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$
+begin
+  begin
+    perform public.rotate_join_code();
+    insert into t120 values ('teacher changes the code', false);
+  exception when others then insert into t120 values ('teacher changes the code', true);
+  end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f7');
+set role authenticated;
+create temp table t120code as select public.rotate_join_code() as code;
+reset role;
+grant select on t120code to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000ba');
+set role authenticated;
+do $$
+begin
+  begin
+    perform public.request_school((select join_code from s));
+    insert into t120 values ('the old code', false);
+  exception when others then insert into t120 values ('the old code', true);
+  end;
+end $$;
+create temp table t120b as select * from public.request_school((select code from t120code));
+reset role;
+insert into results
+  select '120. only the school changes its code, and the old code stops working',
+         (select string_agg(who || case when refused then ' refused' else ' ALLOWED' end, '; ') from t120)
+           || '; new code joins ' || (select school_name from t120b),
+         (select bool_and(refused) and count(*) = 2 from t120)
+           and (select school_name from t120b) = 'Gojela High';
+
+-- 121. Staff are told when a waiting list starts -- twice above, each time it
+-- went from empty to one -- not about every learner on it; the administrator
+-- sees the queue.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '121a. a "learners waiting" notice each time the list starts',
+         count(*)::text || ' notice(s)', count(*) = 2
+  from public.notifications where kind = 'learner.pending';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+insert into results
+  select '121b. the administrator sees approved and waiting learners and the approval mode',
+         string_agg(name || ': ' || learners || ' approved, ' || pending_learners || ' waiting, ' || learner_approval, '; ' order by name),
+         bool_or(name = 'Gojela High' and pending_learners = 0 and learner_approval = 'auto')
+  from public.admin_school_overview();
 reset role;
 
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;

@@ -102,7 +102,7 @@ export function HodLearners() {
           description={
             learners.length > 0
               ? `You have ${learners.length} learner${learners.length === 1 ? '' : 's'} in ${subjectName}, but none in the grades above.`
-              : `Give them your school's join code. A learner who signs up and picks ${subjectName} appears here automatically.`
+              : `Give them your school's join code. A learner who signs up with it, picks ${subjectName} and is approved appears here.`
           }
         />
       ) : (

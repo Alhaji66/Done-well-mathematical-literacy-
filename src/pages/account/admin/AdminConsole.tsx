@@ -221,9 +221,15 @@ export function AdminConsole() {
                           Joined {shortDate(s.created_at)}
                           {s.suspended_at ? <span className="ml-2 font-semibold text-rose-700">Paused {shortDate(s.suspended_at)}</span> : null}
                           {s.pending_staff ? <span className="ml-2 text-amber-700">{s.pending_staff} awaiting approval</span> : null}
+                          {s.learner_approval ? (
+                            <span className="ml-2">{s.learner_approval === 'auto' ? 'Learners let in while places remain' : 'Learners approved by staff'}</span>
+                          ) : null}
                         </p>
                       </td>
-                      <td className="p-3 text-right">{s.learners}</td>
+                      <td className="p-3 text-right">
+                        {s.learners}
+                        {s.pending_learners ? <span className="block text-xs text-amber-700">+{s.pending_learners} waiting</span> : null}
+                      </td>
                       <td className="p-3 text-right">{s.staff}</td>
                       <td className="p-3 text-right">{s.active_7d}</td>
                       <td className="p-3">

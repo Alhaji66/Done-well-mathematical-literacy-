@@ -1,27 +1,12 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { atpFor } from '@/data/atp'
-import { earlyWarnings, levelOf, type EarlyWarning, type LevelClass, type LevelData, type WarningReason } from '@/lib/levels'
+import { earlyWarnings, levelOf, type EarlyWarning, type LevelClass, type LevelData } from '@/lib/levels'
+import { reasonText, shortDate } from '@/components/levels/warningText'
 import { TEST_KIND_LABEL } from '@/lib/testKinds'
 import { LevelChip, LEVEL_FILL } from '@/components/levels/LevelChip'
 import { CatchUpGroupForm, type StartGroupInput } from '@/components/levels/CatchUpGroupForm'
 import { AlertIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
-
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const shortDate = (iso: string) => `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`
-
-function reasonText(w: EarlyWarning, r: WarningReason): string {
-  switch (r) {
-    case 'below_40':
-      return `Below 40% · ${Math.round(w.latest.percent)}%`
-    case 'dropped':
-      return `L${levelOf(w.previous!.percent)} → L${levelOf(w.latest.percent)} since the last test`
-    case 'month_drop':
-      return `This month ${w.month!.now}%, last month ${w.month!.before}%`
-    case 'falling':
-      return 'Down three tests in a row'
-  }
-}
 
 /** The learner's recent tests as small bars, oldest on the left. */
 function Spark({ w }: { w: EarlyWarning }) {

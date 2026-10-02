@@ -7,6 +7,7 @@ import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
 import { SchoolIcon, UsersIcon, BarChartIcon } from '@/components/ui/Icons'
 
 // Loaded after the page: it brings the SBA programme with it.
+const DemoEarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard').then((m) => ({ default: m.DemoEarlyWarning })))
 const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 /**
@@ -52,6 +53,9 @@ export function HodDashboard() {
 
       <PlanSignoffCard waiting={DEMO_WAITING} />
 
+      <Suspense fallback={null}>
+        <DemoEarlyWarning scope="hod" to="/app/hod/levels" />
+      </Suspense>
       <Suspense fallback={null}>
         <DemoSbaAttention to="/app/hod/markbook" />
       </Suspense>

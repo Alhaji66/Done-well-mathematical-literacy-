@@ -10,7 +10,8 @@ import type { LevelResult } from '@/lib/levels'
  * not -- as in a real school.
  */
 
-const TEACHERS: Record<string, string> = {
+/** Who teaches each demo class. The demo teacher is Alhaji T. */
+export const DEMO_CLASS_TEACHER: Record<string, string> = {
   'demo-11a': 'Alhaji T',
   'demo-11b': 'Mangyani T.S',
   'demo-12a': 'Alhaji T',
@@ -43,7 +44,8 @@ export function demoImpactGroups(scope: 'teacher' | 'hod' | 'school', now = new 
         subjectId: c.subject_id,
         grade: c.grade,
         topicId: rs[0].topicIds?.[0] ?? '',
-        createdBy: TEACHERS[c.id] ?? null,
+        classId: c.id,
+        createdBy: DEMO_CLASS_TEACHER[c.id] ?? null,
         status: running ? 'active' : 'completed',
         createdAt: rs[0].date!,
         outcomes: behind.map((r, li) => ({

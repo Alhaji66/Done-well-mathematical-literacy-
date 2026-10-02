@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { demoLevelData, demoToday } from '@/data/demoLevels'
 import { LevelsView } from '@/components/levels/LevelsView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -48,6 +48,11 @@ export function DemoLevels({ scope }: { scope: 'teacher' | 'hod' | 'school' }) {
           groups={groups}
           teacherName={(name) => name ?? 'A former member of staff'}
           views={scope === 'school' ? ['subject', 'teacher', 'topic'] : scope === 'hod' ? ['teacher', 'topic'] : ['topic']}
+          action={
+            <Link to={`/app/${scope}/intervention-report`} className="text-sm font-semibold text-navy-700 underline-offset-2 hover:underline">
+              Print the term report →
+            </Link>
+          }
         />
       </div>
     </div>

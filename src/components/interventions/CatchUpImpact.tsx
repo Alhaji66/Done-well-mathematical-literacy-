@@ -19,7 +19,7 @@ function Tile({ value, label, note, tone }: { value: ReactNode; label: string; n
   )
 }
 
-function Tiles({ t }: { t: ImpactTotals }) {
+export function Tiles({ t }: { t: ImpactTotals }) {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       <Tile value={`${t.measured}/${t.learners}`} label="learners reassessed" note={`in ${t.groups} group${t.groups === 1 ? '' : 's'}`} />
@@ -40,7 +40,66 @@ function Tiles({ t }: { t: ImpactTotals }) {
   )
 }
 
-type View = 'topic' | 'teacher' | 'subject'
+export type View = 'topic' | 'teacher' | 'subject'
+
+export const VIEW_LABEL: Record<View, string> = { topic: 'By topic', teacher: 'By teacher', subject: 'By subject' }
+
+/** The groups added up by topic, teacher or subject, one row each. */
+export function ImpactTable({ groups, view, teacherName }: { groups: ImpactGroup[]; view: View; teacherName: (id: string | null) => string }) {
+  const label = (k: string) =>
+    view === 'topic' ? (getTopic(k)?.name ?? k) : view === 'subject' ? (getSubject(k)?.name ?? k) : teacherName(k === '' ? null : k)
+  const rows = impactBy(groups, (g) => (view === 'topic' ? g.topicId : view === 'subject' ? g.subjectId : (g.createdBy ?? '')))
+  return (
+    <div className="overflow-x-auto print:overflow-visible">
+      <table className="w-full min-w-[34rem] text-sm print:min-w-0 print:text-xs">
+        <thead>
+          <tr className="text-left text-xs text-navy-500">
+            <th className="pb-2 font-medium">{VIEW_LABEL[view].replace('By ', '').replace(/^./, (c) => c.toUpperCase())}</th>
+            <th className="pb-2 text-right font-medium">Groups</th>
+            <th className="pb-2 text-right font-medium">Reassessed</th>
+            <th className="pb-2 pl-3 font-medium">Improved</th>
+            <th className="pb-2 text-right font-medium">Up a level</th>
+            <th className="pb-2 text-right font-medium">To Level 4</th>
+            <th className="pb-2 text-right font-medium">Average</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-navy-100 tabular-nums">
+          {rows.map(({ key, totals: r }) => (
+            <tr key={key}>
+              <td className="py-2 pr-2 text-navy-900">{label(key)}</td>
+              <td className="py-2 text-right text-navy-700">{r.groups}</td>
+              <td className="py-2 text-right text-navy-700">
+                {r.measured}/{r.learners}
+              </td>
+              <td className="py-2 pl-3">
+                {r.measured ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-1.5 w-16 overflow-hidden rounded-full bg-navy-100">
+                      <span className="block h-full rounded-full bg-emerald-500" style={{ width: `${pct(r.improved, r.measured)}%` }} />
+                    </span>
+                    <span className="text-navy-800">{pct(r.improved, r.measured)}%</span>
+                  </span>
+                ) : (
+                  <span className="text-navy-400">—</span>
+                )}
+              </td>
+              <td className="py-2 text-right text-navy-700">{r.measured ? r.movedUp : '—'}</td>
+              <td className="py-2 text-right text-navy-700">{r.startedBelow4 ? `${r.reached4}/${r.startedBelow4}` : '—'}</td>
+              <td
+                className={cn(
+                  'py-2 text-right font-semibold',
+                  r.averageChange === null ? 'text-navy-400' : r.averageChange > 0 ? 'text-emerald-700' : r.averageChange < 0 ? 'text-rose-700' : 'text-navy-600',
+                )}
+              >
+                {r.averageChange === null ? '—' : signed(r.averageChange)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
 
 /**
  * "Are the catch-up groups working?" for the Catch-up groups page: the
@@ -52,26 +111,28 @@ export function CatchUpImpactPanel({
   groups: all,
   teacherName,
   views,
+  action,
 }: {
   groups: ImpactGroup[]
   teacherName: (id: string | null) => string
   views: View[]
+  /** A link beside the heading, e.g. to the printable report. */
+  action?: ReactNode
 }) {
   const groups = counted(all)
   const [view, setView] = useState<View>(views[0] ?? 'topic')
   if (!groups.length) return null
   const t = impactTotals(groups)
-  const label = (k: string) =>
-    view === 'topic' ? (getTopic(k)?.name ?? k) : view === 'subject' ? (getSubject(k)?.name ?? k) : teacherName(k === '' ? null : k)
-  const rows = impactBy(groups, (g) => (view === 'topic' ? g.topicId : view === 'subject' ? g.subjectId : (g.createdBy ?? '')))
-  const VIEW_LABEL: Record<View, string> = { topic: 'By topic', teacher: 'By teacher', subject: 'By subject' }
 
   return (
     <section className="card space-y-4 p-5">
       <div>
-        <h2 className="flex items-center gap-2 text-base font-bold text-navy-900">
-          <TargetIcon className="h-5 w-5 text-navy-500" /> Are the catch-up groups working?
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="flex items-center gap-2 text-base font-bold text-navy-900">
+            <TargetIcon className="h-5 w-5 text-navy-500" /> Are the catch-up groups working?
+          </h2>
+          {action}
+        </div>
         <p className="mt-1 text-xs text-navy-500">
           Each learner’s starting point against their latest reassessment, over every group still counted (cancelled groups are left out).
         </p>
@@ -106,54 +167,7 @@ export function CatchUpImpactPanel({
               ))}
             </div>
           ) : null}
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[34rem] text-sm">
-              <thead>
-                <tr className="text-left text-xs text-navy-500">
-                  <th className="pb-2 font-medium">{VIEW_LABEL[view].replace('By ', '').replace(/^./, (c) => c.toUpperCase())}</th>
-                  <th className="pb-2 text-right font-medium">Groups</th>
-                  <th className="pb-2 text-right font-medium">Reassessed</th>
-                  <th className="pb-2 pl-3 font-medium">Improved</th>
-                  <th className="pb-2 text-right font-medium">Up a level</th>
-                  <th className="pb-2 text-right font-medium">To Level 4</th>
-                  <th className="pb-2 text-right font-medium">Average</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-navy-100 tabular-nums">
-                {rows.map(({ key, totals: r }) => (
-                  <tr key={key}>
-                    <td className="py-2 pr-2 text-navy-900">{label(key)}</td>
-                    <td className="py-2 text-right text-navy-700">{r.groups}</td>
-                    <td className="py-2 text-right text-navy-700">
-                      {r.measured}/{r.learners}
-                    </td>
-                    <td className="py-2 pl-3">
-                      {r.measured ? (
-                        <span className="flex items-center gap-2">
-                          <span className="h-1.5 w-16 overflow-hidden rounded-full bg-navy-100">
-                            <span className="block h-full rounded-full bg-emerald-500" style={{ width: `${pct(r.improved, r.measured)}%` }} />
-                          </span>
-                          <span className="text-navy-800">{pct(r.improved, r.measured)}%</span>
-                        </span>
-                      ) : (
-                        <span className="text-navy-400">—</span>
-                      )}
-                    </td>
-                    <td className="py-2 text-right text-navy-700">{r.measured ? r.movedUp : '—'}</td>
-                    <td className="py-2 text-right text-navy-700">{r.startedBelow4 ? `${r.reached4}/${r.startedBelow4}` : '—'}</td>
-                    <td
-                      className={cn(
-                        'py-2 text-right font-semibold',
-                        r.averageChange === null ? 'text-navy-400' : r.averageChange > 0 ? 'text-emerald-700' : r.averageChange < 0 ? 'text-rose-700' : 'text-navy-600',
-                      )}
-                    >
-                      {r.averageChange === null ? '—' : signed(r.averageChange)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ImpactTable groups={groups} view={view} teacherName={teacherName} />
         </div>
       ) : null}
     </section>

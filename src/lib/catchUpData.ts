@@ -22,6 +22,7 @@ export function toImpactGroups(
     subjectId: iv.subject_id,
     grade: iv.grade,
     topicId: iv.topic_id,
+    classId: iv.class_id,
     createdBy: iv.created_by,
     status: iv.status,
     createdAt: iv.created_at,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { subjects } from '@/data/subjects'
 import { getTopic, topicsForSubject } from '@/data/topics'
@@ -647,6 +647,11 @@ export function Interventions() {
         groups={toImpactGroups(visible, members, tests, attempts)}
         teacherName={(id) => (id === profile.id ? 'You' : (staff.find((s) => s.id === id)?.full_name ?? 'A former member of staff'))}
         views={profile.role === 'school' ? ['subject', 'teacher', 'topic'] : profile.role === 'hod' ? ['teacher', 'topic'] : ['topic']}
+        action={
+          <Link to="../reports?kind=interventions" className="text-sm font-semibold text-navy-700 underline-offset-2 hover:underline">
+            Print the term report →
+          </Link>
+        }
       />
 
       {running.length ? (

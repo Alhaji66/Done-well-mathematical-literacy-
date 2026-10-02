@@ -404,8 +404,8 @@ export interface WarningWeek {
  * below 40% or a worrying() fall from their previous test. Dates are
  * yyyy-mm-dd; the window runs from `from` up to, not including, `to`.
  */
-export function warningWeek(results: LevelResult[], f: { subjectId?: string }, from: string, to: string): WarningWeek {
-  const before = new Date(new Date(`${from}T00:00:00Z`).getTime() - FRESH_DAYS * DAY).toISOString().slice(0, 10)
+/** Each learner's weekly results in a subject, oldest first, up to `to`, with which of them flag the learner. */
+function flaggedSeries(results: LevelResult[], f: { subjectId?: string }, to: string) {
   const groups = new Map<string, LevelResult[]>()
   for (const r of results) {
     if (r.source !== 'weekly' || !r.date || r.date >= to) continue
@@ -413,12 +413,19 @@ export function warningWeek(results: LevelResult[], f: { subjectId?: string }, f
     const key = `${r.learnerId}|${r.subjectId}|${r.grade}`
     groups.set(key, [...(groups.get(key) ?? []), r])
   }
+  return [...groups.values()].map((rs) => {
+    const sorted = [...rs].sort((a, b) => a.date!.localeCompare(b.date!))
+    const flags = sorted.map((r, i) => Math.round(r.percent) < 40 || (i > 0 && worrying(levelOf(sorted[i - 1].percent), levelOf(r.percent))))
+    return { sorted, flags }
+  })
+}
+
+export function warningWeek(results: LevelResult[], f: { subjectId?: string }, from: string, to: string): WarningWeek {
+  const before = new Date(new Date(`${from}T00:00:00Z`).getTime() - FRESH_DAYS * DAY).toISOString().slice(0, 10)
   let flagged = 0
   let recovered = 0
   let handedIn = 0
-  for (const rs of groups.values()) {
-    const sorted = [...rs].sort((a, b) => a.date!.localeCompare(b.date!))
-    const flags = sorted.map((r, i) => Math.round(r.percent) < 40 || (i > 0 && worrying(levelOf(sorted[i - 1].percent), levelOf(r.percent))))
+  for (const { sorted, flags } of flaggedSeries(results, f, to)) {
     const inWeek = sorted.filter((r) => r.date! >= from)
     handedIn += inWeek.length
     const now = sorted.some((r, i) => flags[i] && r.date! >= from)
@@ -427,4 +434,25 @@ export function warningWeek(results: LevelResult[], f: { subjectId?: string }, f
     else if (earlier && inWeek.length && levelOf(inWeek[inWeek.length - 1].percent) >= 4) recovered += 1
   }
   return { flagged, recovered, handedIn }
+}
+
+/** The learners an early warning flagged in a window of days, by the same rule -- once each per subject. */
+export function flaggedBetween(
+  results: LevelResult[],
+  f: { subjectId?: string },
+  from: string,
+  to: string,
+): { learnerId: string; subjectId: string; grade: Grade; classId: string | null }[] {
+  return flaggedSeries(results, f, to).flatMap(({ sorted, flags }) => {
+    const i = sorted.findIndex((r, j) => flags[j] && r.date! >= from)
+    if (i < 0) return []
+    const r = sorted[i]
+    return [{ learnerId: r.learnerId, subjectId: r.subjectId, grade: r.grade, classId: r.classId }]
+  })
+}
+
+/** A term's dates in a year, yyyy-mm-dd, as the app counts terms: from its first day up to, not including, the next term's. */
+export function termRange(term: Term, year: number): { from: string; to: string } {
+  const start = (t: Term) => TERM_STARTS.find(([x]) => x === t)![1]
+  return { from: `${year}-${start(term)}`, to: term === 4 ? `${year + 1}-01-01` : `${year}-${start((term + 1) as Term)}` }
 }

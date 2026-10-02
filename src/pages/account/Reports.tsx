@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { downloadCsv } from '@/lib/csv'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { supabase } from '@/lib/supabaseClient'
@@ -27,8 +28,13 @@ import {
   type Intervention,
   type InterventionLearner,
 } from '@/lib/interventions'
+import { fetchLevelData } from '@/lib/levelData'
+import { flaggedBetween, termOfDate, type LevelData } from '@/lib/levels'
+import { interventionsInView, toImpactGroups } from '@/lib/catchUpData'
+import { groupsIn, periodLabel, periodRange, type Period } from '@/lib/catchUpImpact'
+import { InterventionReport } from '@/components/interventions/InterventionReport'
 
-type Kind = 'school' | 'class' | 'learner'
+type Kind = 'school' | 'class' | 'learner' | 'interventions'
 
 const subjectName = (id: string) => subjects.find((s) => s.id === id)?.name ?? id
 const pctText = (v: number | null | undefined) => (v === null || v === undefined ? '—' : `${v}%`)
@@ -48,7 +54,9 @@ export function Reports() {
   const schoolId = profile?.school_id ?? null
   const leader = profile?.role === 'school' || profile?.role === 'hod'
 
-  const [kind, setKind] = useState<Kind>(leader ? 'school' : 'class')
+  const [params] = useSearchParams()
+  // "?kind=interventions" opens on the intervention report (from the Catch-up groups page).
+  const [kind, setKind] = useState<Kind>(params.get('kind') === 'interventions' ? 'interventions' : leader ? 'school' : 'class')
   const [classId, setClassId] = useState('')
   const [learnerId, setLearnerId] = useState('')
 
@@ -65,6 +73,20 @@ export function Reports() {
   const [groups, setGroups] = useState<Intervention[]>([])
   const [groupMembers, setGroupMembers] = useState<InterventionLearner[]>([])
   const [loading, setLoading] = useState(true)
+  const [period, setPeriod] = useState<Period>(() => termOfDate(new Date().toISOString().slice(0, 10)))
+  const [levelData, setLevelData] = useState<LevelData | null>(null)
+
+  // The intervention report also needs the year's test results, for the early warnings; they load when it is chosen.
+  useEffect(() => {
+    if (kind !== 'interventions' || levelData || !profile) return
+    let active = true
+    fetchLevelData(profile).then(
+      (d) => active && setLevelData(d ?? { year: new Date().getFullYear(), classes: [], names: new Map(), members: new Map(), results: [] }),
+    )
+    return () => {
+      active = false
+    }
+  }, [kind, levelData, profile])
 
   useEffect(() => {
     if (!schoolId || !profile) {
@@ -152,8 +174,22 @@ export function Reports() {
           {leader ? <option value="school">{profile.role === 'hod' ? 'Department summary' : 'School summary'}</option> : null}
           <option value="class">Class report</option>
           <option value="learner">Learner report</option>
+          <option value="interventions">Intervention report</option>
         </select>
       </label>
+      {kind === 'interventions' ? (
+        <label className="text-xs font-medium text-navy-500">
+          Period
+          <select className="select mt-1" value={String(period)} onChange={(e) => setPeriod(e.target.value === 'year' ? 'year' : (Number(e.target.value) as Period))}>
+            {[1, 2, 3, 4].map((t) => (
+              <option key={t} value={t}>
+                Term {t}
+              </option>
+            ))}
+            <option value="year">The whole year</option>
+          </select>
+        </label>
+      ) : null}
       {kind === 'class' ? (
         <label className="text-xs font-medium text-navy-500">
           Class
@@ -509,6 +545,31 @@ export function Reports() {
         </div>
       )
     }
+  }
+
+  if (kind === 'interventions') {
+    const year = new Date().getFullYear()
+    const scope = scopeSubjectFor(profile)
+    const all = toImpactGroups(interventionsInView(profile, groups), groupMembers, tests, attempts)
+    const { from, to } = periodRange(period, year)
+    const names = new Map([...(levelData?.names ?? []), ...learners.map((l) => [l.id, l.full_name] as const)])
+    report = !levelData ? (
+      <p className="text-sm text-navy-500">Gathering the test results…</p>
+    ) : (
+      <InterventionReport
+        school={schoolName}
+        scopeLabel={profile.role === 'teacher' ? `${profile.full_name}’s catch-up groups` : scope ? `${subjectName(scope)} department` : 'Whole school'}
+        period={periodLabel(period, year)}
+        groups={groupsIn(all, period, year)}
+        flagged={flaggedBetween(levelData.results, { subjectId: profile.role === 'hod' ? (scope ?? undefined) : undefined }, from, to)}
+        named={profile.role !== 'school'}
+        learnerName={(id) => names.get(id) ?? 'A learner who has left'}
+        teacherName={(id) => (id === profile.id ? profile.full_name : (staff.find((t) => t.id === id)?.full_name ?? 'A former member of staff'))}
+        className={(id, grade, subject) => classes.find((c) => c.id === id)?.name ?? `Grade ${grade} ${subjectName(subject)}`}
+        views={profile.role === 'school' ? ['subject', 'teacher'] : profile.role === 'hod' ? ['teacher', 'topic'] : ['topic']}
+        csvName={`intervention-report-${period === 'year' ? year : `term-${period}-${year}`}.csv`}
+      />
+    )
   }
 
   return (

@@ -1,4 +1,4 @@
-import { levelOf } from '@/lib/levels'
+import { levelOf, termOfDate, termRange, type Term } from '@/lib/levels'
 import type { Grade } from '@/types'
 
 /**
@@ -12,6 +12,8 @@ export interface ImpactGroup {
   subjectId: string
   grade: Grade
   topicId: string
+  /** The class the group was drawn from, if one. */
+  classId?: string | null
   /** Who started the group: a teacher's id, or their name in the demo. */
   createdBy: string | null
   status: 'active' | 'completed' | 'cancelled'
@@ -80,3 +82,16 @@ export function impactBy(groups: ImpactGroup[], key: (g: ImpactGroup) => string)
 
 /** "+4.5" or "−2" -- a change in points, signed. */
 export const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0')
+
+/** A report's period: one term, or the whole year. */
+export type Period = Term | 'year'
+
+export const periodLabel = (p: Period, year: number) => (p === 'year' ? `${year}` : `Term ${p}, ${year}`)
+
+/** The period's dates, yyyy-mm-dd, from its first day up to, not including, the day after it ends. */
+export const periodRange = (p: Period, year: number) => (p === 'year' ? { from: `${year}-01-01`, to: `${year + 1}-01-01` } : termRange(p, year))
+
+/** The groups started in a period. */
+export function groupsIn(groups: ImpactGroup[], p: Period, year: number): ImpactGroup[] {
+  return groups.filter((g) => g.createdAt.slice(0, 4) === String(year) && (p === 'year' || termOfDate(g.createdAt.slice(0, 10)) === p))
+}

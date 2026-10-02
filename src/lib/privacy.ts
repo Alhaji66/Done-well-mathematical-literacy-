@@ -78,6 +78,9 @@ export interface PersonalDataExport {
   progress: Record<string, unknown>[]
   people_linked_to_you: Record<string, unknown>[]
   consents: ConsentRow[]
+  /** A parent's phone number for the school, and their replies to early warnings. */
+  contact_details: Record<string, unknown>[]
+  replies_to_school: Record<string, unknown>[]
   /** What this export does not and cannot contain, stated rather than left to be discovered. */
   not_included: string[]
 }
@@ -91,12 +94,15 @@ export interface PersonalDataExport {
  */
 export async function exportMyData(profileId: string): Promise<PersonalDataExport> {
   if (!supabase) throw new Error('Accounts are unavailable right now.')
-  const [{ data: userData }, { data: profile }, { data: progress }, { data: links }, consents] = await Promise.all([
+  const [{ data: userData }, { data: profile }, { data: progress }, { data: links }, consents, contacts, replies] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from('profiles').select('*').eq('id', profileId).maybeSingle(),
     supabase.from('learner_progress').select('*').eq('learner_id', profileId),
     supabase.from('parent_learner_links').select('*').or(`parent_id.eq.${profileId},learner_id.eq.${profileId}`),
     fetchConsents(profileId),
+    // Before STEP 31 and 33 these tables do not exist; the export carries on without them.
+    supabase.from('parent_contacts').select('*').eq('parent_id', profileId),
+    supabase.from('parent_replies').select('*').eq('parent_id', profileId),
   ])
 
   return {
@@ -107,6 +113,8 @@ export async function exportMyData(profileId: string): Promise<PersonalDataExpor
     progress: (progress as Record<string, unknown>[]) ?? [],
     people_linked_to_you: (links as Record<string, unknown>[]) ?? [],
     consents,
+    contact_details: contacts.error ? [] : ((contacts.data as Record<string, unknown>[]) ?? []),
+    replies_to_school: replies.error ? [] : ((replies.data as Record<string, unknown>[]) ?? []),
     not_included: [
       'Sign-in history and the technical logs Supabase keeps to operate the service.',
       'The curriculum itself — subjects, topics, notes, questions and papers are the same for everyone and are not personal information.',

@@ -1,9 +1,14 @@
 import { useState } from 'react'
-import { REPLY_TEXT, type ReplyChoice } from '@/lib/parentReplyTypes'
+import { PHONE_PATTERN, REPLY_TEXT, type ReplyChoice } from '@/lib/parentReplyTypes'
 
 export interface ReplyValue {
   choice: ReplyChoice
   message: string
+}
+
+export interface ContactValue {
+  phone: string
+  best_time: string
 }
 
 /**
@@ -14,23 +19,31 @@ export interface ReplyValue {
  */
 export function ReplyBox({
   reply,
+  contact,
   onReply,
   note,
 }: {
   reply?: ReplyValue
-  onReply: (choice: ReplyChoice, message: string) => Promise<string | undefined>
+  /** The parent's saved phone number, offered again for a call. */
+  contact?: ContactValue
+  onReply: (choice: ReplyChoice, message: string, contact?: ContactValue) => Promise<string | undefined>
   /** A line under the box, e.g. that the demo does not send. */
   note?: string
 }) {
   const [editing, setEditing] = useState(!reply)
   const [message, setMessage] = useState(reply?.message ?? '')
+  const [phone, setPhone] = useState(contact?.phone ?? '')
+  const [bestTime, setBestTime] = useState(contact?.best_time ?? '')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
   const send = async (choice: ReplyChoice) => {
-    setBusy(true)
     setError('')
-    const e = await onReply(choice, message)
+    const p = phone.trim()
+    if (choice === 'call' && !PHONE_PATTERN.test(p))
+      return setError(p ? 'That phone number does not look right. Use digits, spaces and an optional + at the start.' : 'Add a phone number so the teacher can call you.')
+    setBusy(true)
+    const e = await onReply(choice, message, p && PHONE_PATTERN.test(p) ? { phone: p, best_time: bestTime.trim() } : undefined)
     setBusy(false)
     if (e) setError(e)
     else setEditing(false)
@@ -41,6 +54,13 @@ export function ReplyBox({
       <div className="rounded-md bg-white/70 px-2.5 py-2 text-xs text-navy-700">
         <span className="font-semibold text-emerald-800">You replied:</span> {REPLY_TEXT[reply.choice]}
         {reply.message ? <span className="italic"> · “{reply.message}”</span> : null}
+        {reply.choice === 'call' && contact?.phone ? (
+          <span>
+            {' '}
+            · on {contact.phone}
+            {contact.best_time ? `, ${contact.best_time}` : ''}
+          </span>
+        ) : null}
         <button type="button" onClick={() => setEditing(true)} className="ml-2 font-semibold text-navy-700 underline underline-offset-2">
           Change
         </button>
@@ -61,6 +81,34 @@ export function ReplyBox({
           className="input mt-1 w-full text-sm font-normal"
         />
       </label>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <label className="block text-xs text-navy-700">
+          Your phone number, for a call
+          <input
+            type="tel"
+            inputMode="tel"
+            maxLength={20}
+            value={phone}
+            onChange={(e) => {
+              setPhone(e.target.value)
+              setError('')
+            }}
+            placeholder="e.g. 082 555 0123"
+            className="input mt-1 w-full text-sm"
+          />
+        </label>
+        <label className="block text-xs text-navy-700">
+          Best time to call
+          <input
+            maxLength={80}
+            value={bestTime}
+            onChange={(e) => setBestTime(e.target.value)}
+            placeholder="e.g. after 5 pm"
+            className="input mt-1 w-full text-sm"
+          />
+        </label>
+      </div>
+      <p className="text-[11px] text-navy-500">Only staff at your child’s school see your number.</p>
       <div className="flex flex-wrap gap-2">
         <button type="button" disabled={busy} onClick={() => send('seen')} className="btn-primary btn-sm">
           {REPLY_TEXT.seen}

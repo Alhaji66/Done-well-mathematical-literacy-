@@ -4712,3 +4712,73 @@ end;
 $$;
 revoke execute on function public.mark_reply_handled(uuid, uuid, uuid, text, boolean) from public, anon;
 grant execute on function public.mark_reply_handled(uuid, uuid, uuid, text, boolean) to authenticated;
+
+-- ============================================================================
+-- STEP 33: A PARENT'S PHONE NUMBER FOR THE SCHOOL
+-- ============================================================================
+--
+-- A parent who asks for a call (STEP 31) gives a phone number and the best
+-- time to call, kept on its own so that it is shared only as far as it must
+-- be. It shows on the teacher's "Calls to make" list (STEP 32).
+--
+-- WHO CAN DO WHAT.
+--   * A parent reads, writes and deletes only their own contact details.
+--   * Approved staff at the school of a child the parent is linked to read
+--     them, and nobody else does -- not the learner, not other parents, not
+--     another school. Deleting the account deletes them.
+
+create table if not exists public.parent_contacts (
+  parent_id uuid primary key references public.profiles (id) on delete cascade,
+  phone text not null check (phone ~ '^\+?[0-9][0-9 ()-]{6,19}$'),
+  best_time text not null default '' check (length(best_time) <= 80),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.parent_contacts enable row level security;
+grant select, insert, update, delete on public.parent_contacts to authenticated;
+
+create or replace function public.staff_sees_parent(p_parent uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.parent_learner_links l
+    join public.profiles c on c.id = l.learner_id
+    where l.parent_id = p_parent
+      and c.school_id is not null
+      and public.is_school_staff(c.school_id)
+  );
+$$;
+
+drop policy if exists "Parents keep their own contact details" on public.parent_contacts;
+create policy "Parents keep their own contact details"
+  on public.parent_contacts for all
+  using (parent_id = auth.uid())
+  with check (parent_id = auth.uid());
+
+drop policy if exists "Staff read contact details of their learners' parents" on public.parent_contacts;
+create policy "Staff read contact details of their learners' parents"
+  on public.parent_contacts for select
+  using (public.staff_sees_parent(parent_id));
+
+create or replace function public.stamp_parent_contact()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  new.phone := btrim(new.phone);
+  new.best_time := btrim(new.best_time);
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists stamp_parent_contact on public.parent_contacts;
+create trigger stamp_parent_contact
+  before insert or update on public.parent_contacts
+  for each row execute function public.stamp_parent_contact();

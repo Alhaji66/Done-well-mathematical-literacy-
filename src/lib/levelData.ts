@@ -3,7 +3,7 @@ import { classesInView, fetchClassMembers, fetchClasses } from '@/lib/classes'
 import { fetchSchoolLearners } from '@/lib/teacherRoster'
 import { fetchSchoolName } from '@/lib/schools'
 import { fetchSchoolTeachers } from '@/lib/schoolStaff'
-import { fetchReplies } from '@/lib/parentReplies'
+import { fetchContacts, fetchReplies } from '@/lib/parentReplies'
 import { fetchMarksFor } from '@/lib/sbaMarks'
 import { fetchAttemptsForTests, fetchTestsForSchool } from '@/lib/weeklyTests'
 import { sbaResults, weeklyResults, type LevelData } from '@/lib/levels'
@@ -49,5 +49,7 @@ export async function fetchLevelData(profile: AccountProfile): Promise<LevelData
   let results = [...weeklyResults(tests, attempts, classes, byClass, year), ...sbaResults(rows ?? [], classes)]
   // A teacher's view is their own classes' learners.
   if (teacher) results = results.filter((r) => r.classId && ids.includes(r.classId))
-  return { year, school, classes, names: new Map(roster.map((l) => [l.id, l.full_name])), members: byClass, results, replies }
+  const callers = [...new Set(replies.filter((r) => r.choice === 'call').map((r) => r.parent_id))]
+  const contacts = callers.length ? await fetchContacts(callers) : []
+  return { year, school, classes, names: new Map(roster.map((l) => [l.id, l.full_name])), members: byClass, results, replies, contacts }
 }

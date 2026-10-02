@@ -158,7 +158,9 @@ export function demoLevelData(scope: 'teacher' | 'hod' | 'school', now = new Dat
       updated_at: `${w.latest.date}T18:00:00Z`,
     }))
 
-  return { year: now.getFullYear(), school: 'Gojela High School', classes, names: scope === 'school' ? new Map() : names, members, results, replies }
+  const contacts = replies.filter((r) => r.choice === 'call').map((r) => ({ parent_id: r.parent_id, phone: '082 555 0147', best_time: 'after 5 pm on weekdays' }))
+
+  return { year: now.getFullYear(), school: 'Gojela High School', classes, names: scope === 'school' ? new Map() : names, members, results, replies, contacts }
 }
 
 /**

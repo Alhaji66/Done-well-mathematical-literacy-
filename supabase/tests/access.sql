@@ -2249,5 +2249,60 @@ insert into results
   select '109. marking done can be undone', case when handled_at is null then 'open' else 'marked' end, handled_at is null
   from public.parent_replies;
 
+-- ===========================================================================
+-- A PARENT'S PHONE NUMBER (STEP 33)
+-- ===========================================================================
+-- 110. A parent saves their own number; a malformed one is refused, and nobody else's can be written.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into public.parent_contacts (parent_id, phone, best_time) values (auth.uid(), ' 082 555 0123 ', ' after 5 pm ');
+do $$
+begin
+  begin
+    update public.parent_contacts set phone = 'call me maybe' where parent_id = auth.uid();
+    raise exception 'allowed';
+  exception when check_violation then null;
+  end;
+  begin
+    insert into public.parent_contacts (parent_id, phone) values ('00000000-0000-0000-0000-0000000000a7', '0825550199');
+    raise exception 'allowed';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;
+-- The unlinked parent keeps a number too.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a7');
+set role authenticated;
+insert into public.parent_contacts (parent_id, phone) values (auth.uid(), '+27 82 555 0199');
+reset role;
+insert into results
+  select '110. a parent keeps their own number, trimmed; a malformed one or someone else''s is refused',
+         string_agg(phone || ' / ' || best_time, '; ' order by phone),
+         count(*) = 2 and bool_or(parent_id = '00000000-0000-0000-0000-0000000000a1' and phone = '082 555 0123' and best_time = 'after 5 pm')
+  from public.parent_contacts;
+
+-- 111. The teacher at the child's school reads the linked parent's number, and only that one.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '111. staff read the numbers of their learners'' parents only',
+         count(*)::text || ' visible',
+         count(*) = 1 and bool_and(parent_id = '00000000-0000-0000-0000-0000000000a1')
+  from public.parent_contacts;
+reset role;
+
+-- 112. The learner and the other parent read none of it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results select '112. the learner reads no parent''s number', count(*)::text || ' visible', count(*) = 0 from public.parent_contacts;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000a7');
+set role authenticated;
+insert into results
+  select '112b. another parent reads only their own', count(*)::text || ' visible',
+         count(*) = 1 and bool_and(parent_id = '00000000-0000-0000-0000-0000000000a7')
+  from public.parent_contacts;
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

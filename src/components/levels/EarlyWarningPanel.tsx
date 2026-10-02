@@ -139,6 +139,7 @@ export function EarlyWarningPanel({
                         {REPLY_FOR_TEACHER[r.choice]}
                       </span>
                       {r.message ? <span className="ml-2 italic text-navy-600">“{r.message}”</span> : null}
+                      {r.handled_at ? <span className="ml-2 font-semibold text-emerald-700">✓ Called{r.handled_note ? `: ${r.handled_note}` : ''}</span> : null}
                     </span>
                   ))}
                 </li>

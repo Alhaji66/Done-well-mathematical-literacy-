@@ -4621,3 +4621,94 @@ drop trigger if exists notify_parent_reply on public.parent_replies;
 create trigger notify_parent_reply
   after insert or update on public.parent_replies
   for each row execute function public.notify_parent_reply();
+
+-- ============================================================================
+-- STEP 32: CALLS TO MAKE
+-- ============================================================================
+--
+-- A parent's "please call me" (STEP 31) becomes a call on the teacher's list
+-- until someone at the school marks it done, with a short note of what was
+-- agreed. If the parent changes their reply, it is a new request and goes
+-- back on the list.
+--
+-- WHO CAN DO WHAT.
+--   * Approved staff at the reply's school mark it done, or not done, with
+--     mark_reply_handled(); nobody can write the three new columns directly.
+--   * A parent still changes only their own choice and message, and cannot
+--     mark their own request done.
+
+alter table public.parent_replies add column if not exists handled_at timestamptz;
+alter table public.parent_replies add column if not exists handled_by uuid references public.profiles (id) on delete set null;
+alter table public.parent_replies add column if not exists handled_note text not null default '';
+
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'parent_replies_handled_note_check') then
+    alter table public.parent_replies add constraint parent_replies_handled_note_check check (length(handled_note) <= 300);
+  end if;
+end $$;
+
+create or replace function public.stamp_parent_reply()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    new.handled_at := null;
+    new.handled_by := null;
+    new.handled_note := '';
+  else
+    new.parent_id := old.parent_id;
+    new.learner_id := old.learner_id;
+    new.test_id := old.test_id;
+    new.created_at := old.created_at;
+    if not (coalesce(current_setting('app.marking_reply', true), '') = 'on' and public.is_school_staff(old.school_id)) then
+      if new.choice is distinct from old.choice or btrim(new.message) is distinct from old.message then
+        new.handled_at := null;
+        new.handled_by := null;
+        new.handled_note := '';
+      else
+        new.handled_at := old.handled_at;
+        new.handled_by := old.handled_by;
+        new.handled_note := old.handled_note;
+      end if;
+    end if;
+  end if;
+  new.school_id := (select school_id from public.weekly_tests where id = new.test_id);
+  new.message := btrim(new.message);
+  if tg_op = 'INSERT' or new.choice is distinct from old.choice or new.message is distinct from old.message then
+    new.updated_at := now();
+  else
+    new.updated_at := old.updated_at;
+  end if;
+  return new;
+end;
+$$;
+
+create or replace function public.mark_reply_handled(p_parent uuid, p_learner uuid, p_test uuid, p_note text default '', p_done boolean default true)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.parent_replies;
+begin
+  select * into r from public.parent_replies
+  where parent_id = p_parent and learner_id = p_learner and test_id = p_test;
+  if r.parent_id is null or not public.is_school_staff(r.school_id) then
+    raise exception 'Only staff at the school can mark this reply.' using errcode = '42501';
+  end if;
+  perform set_config('app.marking_reply', 'on', true);
+  update public.parent_replies
+  set handled_at = case when p_done then now() end,
+      handled_by = case when p_done then auth.uid() end,
+      handled_note = case when p_done then left(btrim(coalesce(p_note, '')), 300) else '' end
+  where parent_id = p_parent and learner_id = p_learner and test_id = p_test;
+  perform set_config('app.marking_reply', 'off', true);
+end;
+$$;
+revoke execute on function public.mark_reply_handled(uuid, uuid, uuid, text, boolean) from public, anon;
+grant execute on function public.mark_reply_handled(uuid, uuid, uuid, text, boolean) to authenticated;

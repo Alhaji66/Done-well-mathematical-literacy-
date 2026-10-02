@@ -14,6 +14,7 @@ import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
 
 // Loaded after the page: it brings the SBA programme with it.
 const EarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard'))
+const CallsToMake = lazy(() => import('@/components/levels/CallsToMake'))
 const CatchUpImpact = lazy(() => import('@/components/interventions/CatchUpImpactCard'))
 const SbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.SbaAttention })))
 
@@ -104,6 +105,9 @@ export function HodDashboard() {
         <>
           <Suspense fallback={null}>
             <EarlyWarning profile={profile} to="../levels" />
+          </Suspense>
+          <Suspense fallback={null}>
+            <CallsToMake profile={profile} />
           </Suspense>
           <Suspense fallback={null}>
             <CatchUpImpact profile={profile} to="../interventions" />

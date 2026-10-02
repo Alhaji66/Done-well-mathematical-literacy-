@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { classesInView, fetchClassMembers, fetchClasses } from '@/lib/classes'
 import { fetchSchoolLearners } from '@/lib/teacherRoster'
@@ -8,6 +9,7 @@ import { fetchAttemptsForTests, fetchTestsForSchool } from '@/lib/weeklyTests'
 import { sbaResults, weeklyResults, type LevelData } from '@/lib/levels'
 import { LevelsView } from '@/components/levels/LevelsView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { startIntervention } from '@/lib/interventions'
 
 /**
  * Learners' levels, 1 to 7, from weekly tests and SBA tasks. A class teacher
@@ -73,7 +75,36 @@ export function Levels() {
               : 'How many learners are at each level, 1 to 7, in every subject and grade, then by class and by test.'
         }
       />
-      {data ? <LevelsView data={data} mode={teacher ? 'learners' : hod ? 'both' : 'tally'} /> : <p className="text-sm text-navy-500">Loading levels…</p>}
+      {data ? (
+        <LevelsView
+          data={data}
+          mode={teacher ? 'learners' : hod ? 'both' : 'tally'}
+          onStartGroup={async ({ classId, learners, topicId, plan }) => {
+            const cls = data.classes.find((c) => c.id === classId)
+            if (!profile?.school_id || !cls) return 'Your account is not linked to a school.'
+            const result = await startIntervention({
+              schoolId: profile.school_id,
+              createdBy: profile.id,
+              classId,
+              subjectId: cls.subject_id,
+              grade: cls.grade,
+              topicId,
+              subtopic: null,
+              plan,
+              diagnosticTestId: null,
+              learners,
+            })
+            return result.error
+          }}
+          groupsLink={
+            <Link to="../interventions" relative="path" className="font-semibold underline">
+              Open Catch-up groups
+            </Link>
+          }
+        />
+      ) : (
+        <p className="text-sm text-navy-500">Loading levels…</p>
+      )}
     </div>
   )
 }

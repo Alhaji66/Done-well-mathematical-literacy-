@@ -1,8 +1,11 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo, useState, type ReactNode } from 'react'
 import { subjects } from '@/data/subjects'
+import { atpFor } from '@/data/atp'
+import { getTopic } from '@/data/topics'
 import {
   filterResults,
   learnerLevels,
+  levelMovement,
   levelOf,
   LEVEL_NAMES,
   LEVEL_RANGES,
@@ -178,7 +181,20 @@ function startingTerm(results: LevelResult[], today: Date): Term | 0 {
  *   both     -- a head of department's view: the tally for their subject, and
  *               a switch to each learner's level class by class.
  */
-export function LevelsView({ data, mode, today = new Date() }: { data: LevelData; mode: 'learners' | 'tally' | 'both'; today?: Date }) {
+export interface StartGroup {
+  /** Start a catch-up group for some learners in one class; resolves to an error message, if any. */
+  onStartGroup?: (input: { classId: string; learners: { id: string; baseline: number }[]; topicId: string; plan: string }) => Promise<string | undefined>
+  /** Where the catch-up groups are, shown once one has been started. */
+  groupsLink?: ReactNode
+}
+
+export function LevelsView({
+  data,
+  mode,
+  today = new Date(),
+  onStartGroup,
+  groupsLink,
+}: { data: LevelData; mode: 'learners' | 'tally' | 'both'; today?: Date } & StartGroup) {
   const [source, setSource] = useState<LevelSource | 'all'>('all')
   const [show, setShow] = useState<'tally' | 'learners'>(mode === 'learners' ? 'learners' : 'tally')
   const [period, setPeriod] = useState<Term | 0>(() => startingTerm(data.results, today))
@@ -209,14 +225,14 @@ export function LevelsView({ data, mode, today = new Date() }: { data: LevelData
         </p>
       </section>
 
-      {show === 'learners' ? <ClassLevels data={data} source={source} term={term} /> : <SchoolTally data={data} source={source} term={term} />}
+      {show === 'learners' ? <ClassLevels data={data} source={source} term={term} onStartGroup={onStartGroup} groupsLink={groupsLink} /> : <SchoolTally data={data} source={source} term={term} />}
     </div>
   )
 }
 
 // ------------------------------------------------------------- teacher view
 
-function ClassLevels({ data, source, term }: { data: LevelData; source: LevelSource | 'all'; term: Term | null }) {
+function ClassLevels({ data, source, term, onStartGroup, groupsLink }: { data: LevelData; source: LevelSource | 'all'; term: Term | null } & StartGroup) {
   const [classId, setClassId] = useState(data.classes[0]?.id ?? '')
   const [sort, setSort] = useState<'name' | 'level'>('name')
   const cls = data.classes.find((c) => c.id === classId)
@@ -354,6 +370,18 @@ function ClassLevels({ data, source, term }: { data: LevelData; source: LevelSou
           </>
         )}
       </section>
+      {term && term > 1 ? (
+        <MovementPanel
+          key={`${cls.id}|${term}|${source}`}
+          data={data}
+          cls={cls}
+          term={term}
+          source={source}
+          name={name}
+          onStartGroup={onStartGroup}
+          groupsLink={groupsLink}
+        />
+      ) : null}
       <div className="levels-print print-area hidden text-[11px] text-navy-900 print:block">
         <div className="flex items-start justify-between gap-4">
           <p className="font-bold">{data.school ?? ''}</p>
@@ -418,6 +446,155 @@ function ClassLevels({ data, source, term }: { data: LevelData; source: LevelSou
   )
 }
 
+// ---------------------------------------------------------- level movement
+
+/**
+ * Since the term before: how many learners in the class moved down, up or
+ * stayed at the same level, and who moved down -- with a catch-up group one
+ * step away for the ones the teacher picks.
+ */
+function MovementPanel({
+  data,
+  cls,
+  term,
+  source,
+  name,
+  onStartGroup,
+  groupsLink,
+}: {
+  data: LevelData
+  cls: LevelData['classes'][number]
+  term: Term
+  source: LevelSource | 'all'
+  name: (id: string) => string
+} & StartGroup) {
+  const moves = useMemo(() => levelMovement(data.results, term, { classId: cls.id, source }), [data.results, term, cls.id, source])
+  const down = moves.filter((m) => m.to < m.from).sort((a, b) => a.to - a.from - (b.to - b.from) || a.after - b.after)
+  const up = moves.filter((m) => m.to > m.from).length
+  const same = moves.length - down.length - up
+  const [picked, setPicked] = useState<Set<string>>(() => new Set(down.map((m) => m.learnerId)))
+  const [grouping, setGrouping] = useState(false)
+  const termTopics = [...new Set((atpFor(cls.subject_id, cls.grade)?.weeks ?? []).filter((w) => w.term === term && w.topicId).map((w) => w.topicId!))]
+  const allTopics = [...new Set((atpFor(cls.subject_id, cls.grade)?.weeks ?? []).map((w) => w.topicId).filter((x): x is string => !!x))]
+  const topicChoices = [...termTopics, ...allTopics.filter((t) => !termTopics.includes(t))]
+  const [topicId, setTopicId] = useState(topicChoices[0] ?? '')
+  const [plan, setPlan] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const [started, setStarted] = useState('')
+  const chosen = down.filter((m) => picked.has(m.learnerId))
+
+  if (!moves.length) return null
+
+  const openForm = () => {
+    setPlan(`Levels dropped since Term ${term - 1}: re-teach ${getTopic(topicId)?.name ?? 'the topic'} in small steps, practise together, then set a reassessment.`)
+    setError('')
+    setStarted('')
+    setGrouping(true)
+  }
+  const start = async () => {
+    if (!onStartGroup) return
+    if (!topicId) return setError('Choose the topic the group needs help with.')
+    setBusy(true)
+    setError('')
+    const problem = await onStartGroup({ classId: cls.id, learners: chosen.map((m) => ({ id: m.learnerId, baseline: m.after })), topicId, plan })
+    setBusy(false)
+    if (problem) return setError(problem)
+    setStarted(`Started a catch-up group on ${getTopic(topicId)?.name ?? 'the topic'} for ${chosen.length} learner${chosen.length === 1 ? '' : 's'}.`)
+    setGrouping(false)
+  }
+
+  return (
+    <section className="card space-y-3 p-4 sm:p-5 print:hidden">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h3 className="font-bold text-navy-900">Since Term {term - 1}</h3>
+        <p className="text-sm text-navy-600">
+          <span className={cn('font-semibold', down.length ? 'text-rose-700' : 'text-navy-500')}>▼ {down.length} down</span> ·{' '}
+          <span className={cn('font-semibold', up ? 'text-emerald-700' : 'text-navy-500')}>▲ {up} up</span> · {same} the same
+        </p>
+      </div>
+      <p className="text-xs text-navy-500">Compares each learner’s level in Term {term} with Term {term - 1}, for learners with tests in both terms.</p>
+
+      {down.length ? (
+        <>
+          <ul className="divide-y divide-navy-100">
+            {down.map((m) => (
+              <li key={m.learnerId} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
+                {onStartGroup ? (
+                  <input
+                    type="checkbox"
+                    aria-label={`Choose ${name(m.learnerId)}`}
+                    checked={picked.has(m.learnerId)}
+                    onChange={() =>
+                      setPicked((p) => {
+                        const next = new Set(p)
+                        if (next.has(m.learnerId)) next.delete(m.learnerId)
+                        else next.add(m.learnerId)
+                        return next
+                      })
+                    }
+                  />
+                ) : null}
+                <span className="min-w-[10rem] flex-1 text-sm font-medium text-navy-900">{name(m.learnerId)}</span>
+                <span className="flex items-center gap-1.5 text-sm tabular-nums text-navy-600">
+                  <LevelChip level={m.from} /> → <LevelChip level={m.to} />
+                  <span className="w-24 text-xs">
+                    {m.before}% → {m.after}%
+                  </span>
+                  <span className="w-8 text-right text-xs font-semibold text-rose-700">▼{m.from - m.to}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          {onStartGroup ? (
+            <div className="space-y-2">
+              <button type="button" className="btn-outline btn-sm" disabled={!chosen.length} onClick={openForm}>
+                Start a catch-up group with {chosen.length} learner{chosen.length === 1 ? '' : 's'}
+              </button>
+              {grouping ? (
+                <div className="space-y-2 border-t border-navy-100 pt-3">
+                  <label className="block text-xs font-medium text-navy-500">
+                    Topic
+                    <select className="select mt-1 block w-full max-w-full sm:w-auto" value={topicId} onChange={(e) => setTopicId(e.target.value)}>
+                      {topicChoices.map((id) => (
+                        <option key={id} value={id}>
+                          {getTopic(id)?.name ?? id}
+                          {termTopics.includes(id) ? ` · Term ${term}` : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block text-xs font-medium text-navy-500">
+                    Plan
+                    <textarea className="input mt-1 min-h-[4rem]" maxLength={2000} value={plan} onChange={(e) => setPlan(e.target.value)} />
+                  </label>
+                  <p className="text-xs text-navy-500">Each learner’s Term {term} average is kept as their starting point, to measure the group against.</p>
+                  <div className="flex gap-2">
+                    <button type="button" className="btn-primary btn-sm" disabled={busy} onClick={start}>
+                      {busy ? 'Starting…' : 'Start the group'}
+                    </button>
+                    <button type="button" className="btn-outline btn-sm" onClick={() => setGrouping(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-900">No learner in this class has dropped a level since Term {term - 1}.</p>
+      )}
+      {error ? <p className="text-sm text-rose-600">{error}</p> : null}
+      {started ? (
+        <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-900">
+          {started} {groupsLink}
+        </p>
+      ) : null}
+    </section>
+  )
+}
+
 // ------------------------------------------------------ principal / HOD view
 
 interface Row {
@@ -462,6 +639,13 @@ function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSou
   const all = tally(levels.map((l) => l.percent))
   const total = levels.length
   const low = all[1] + all[2]
+
+  // Movement since the term before, as counts only.
+  const moves = useMemo(() => {
+    if (!term || term === 1) return null
+    const m = levelMovement(data.results, term, { subjectId: subjectId || undefined, source })
+    return m.length ? { up: m.filter((x) => x.to > x.from).length, down: m.filter((x) => x.to < x.from).length } : null
+  }, [data.results, term, subjectId, source])
 
   // The printed schedule and the CSV: each subject and grade, then its classes.
   const scheduleRows = rows.flatMap((r) => [
@@ -515,7 +699,10 @@ function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSou
         </div>
         <TallyCells counts={all} />
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-xs text-navy-500">A learner who takes two subjects is counted once in each.</p>
+          <p className="text-xs text-navy-500">
+            A learner who takes two subjects is counted once in each.
+            {moves ? ` Since Term ${term! - 1}: ${moves.up} moved up a level or more, ${moves.down} moved down.` : ''}
+          </p>
           {rows.length ? (
             <ExportButtons
               printLabel="Print schedule"

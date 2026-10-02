@@ -5454,3 +5454,45 @@ end;
 $$;
 revoke execute on function public.sign_out_device(text) from public, anon;
 grant execute on function public.sign_out_device(text) to authenticated;
+
+-- ============================================================================
+-- STEP 36: THE QUESTION BANK LIVES IN PRIVATE STORAGE, NOT IN THE WEBSITE
+-- ============================================================================
+--
+-- WHAT WAS WRONG. Every paper and question was part of the website's own
+-- files. Anyone who opened the site -- the demo included, no account needed --
+-- had the whole bank, memos and all, in their browser.
+--
+-- THE FIX. The bank is built into one content pack per subject
+-- (tools/content-packs.mts) and uploaded by the deploy into a PRIVATE storage
+-- bucket, `content`. Only a signed-in account can download from it. The
+-- website keeps just a small sample of each subject for the demo.
+--
+-- WHO MAY DOWNLOAD is decided in one place, has_content_access(). For now that
+-- is any signed-in account, because individual learners do not pay through
+-- the app yet. When they do, this function narrows to paying accounts and
+-- learners at a licensed school -- one change, no new policy.
+--
+-- Uploads are made with the service-role key, which bypasses these rules, so
+-- nobody signed in to the app can add or change content.
+
+insert into storage.buckets (id, name, public)
+values ('content', 'content', false)
+on conflict (id) do update set public = false;
+
+create or replace function public.has_content_access()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select auth.uid() is not null;
+$$;
+grant execute on function public.has_content_access() to authenticated;
+
+drop policy if exists "Signed-in accounts read the question bank" on storage.objects;
+create policy "Signed-in accounts read the question bank"
+  on storage.objects for select
+  to authenticated
+  using (bucket_id = 'content' and public.has_content_access());

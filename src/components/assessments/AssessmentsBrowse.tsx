@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ContentNotice } from '@/components/content/ContentNotice'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { papersForSubject, type Paper } from '@/data/papers'
 import type { Grade } from '@/types'
@@ -69,6 +70,8 @@ export function AssessmentsBrowse() {
   return (
     <div className="space-y-6">
       <SectionHeading eyebrow="Assessments" title={copy.title} description={copy.description} />
+
+      <ContentNotice subjectId={subjectId} />
 
       <div className="card flex flex-col gap-4 p-4">
         <div>

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Session } from '@supabase/supabase-js'
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient'
 import { checkDevice, deviceId, forgetClaim, sessionKey, SIGNED_OUT_REASON_KEY } from '@/lib/devices'
+import { forgetSavedPacks } from '@/lib/contentPacks'
 import type { Grade } from '@/types'
 
 export type AccountRole = 'learner' | 'parent' | 'teacher' | 'school' | 'hod'
@@ -123,6 +124,7 @@ export function AccountAuthProvider({ children }: { children: ReactNode }) {
         // The sign-in page then shows no reason; the sign-out still happens.
       }
       forgetClaim()
+      await forgetSavedPacks()
       // Local only: the device that signed this one out must stay signed in.
       await supabase.auth.signOut({ scope: 'local' })
       setProfile(null)
@@ -159,6 +161,9 @@ export function AccountAuthProvider({ children }: { children: ReactNode }) {
             () => undefined,
           )
           forgetClaim()
+          // The question bank saved for offline use goes too: on a shared
+          // school computer the next person should not inherit it.
+          await forgetSavedPacks()
           // Only this device: signing out of the phone should not sign out the laptop.
           await supabase.auth.signOut({ scope: 'local' })
         }

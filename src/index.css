@@ -140,6 +140,14 @@
     display: none !important;
   }
 
+  /* A levels schedule or class list from the Levels page, the same way. */
+  body[data-print='levels'] .print-area:not(.levels-print) {
+    display: none !important;
+  }
+  body:not([data-print='levels']) .levels-print {
+    display: none !important;
+  }
+
   /* Letters home from the learners-at-risk list, the same way. */
   body[data-print='letters'] .print-area:not(.parent-letters) {
     display: none !important;

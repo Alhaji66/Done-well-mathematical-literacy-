@@ -48,6 +48,8 @@ export interface LevelClass {
 
 export interface LevelData {
   year: number
+  /** The school's name, for printed headings, where known. */
+  school?: string | null
   classes: LevelClass[]
   /** Learner id to name. Empty where names are not shown. */
   names: Map<string, string>

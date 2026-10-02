@@ -79,3 +79,10 @@ export async function fetchJoinCode(schoolId: string): Promise<{ name: string; j
   }
   return { name: data.name, joinCode: data.join_code }
 }
+
+/** The name of a school, for headings on printed pages. */
+export async function fetchSchoolName(schoolId: string): Promise<string | null> {
+  if (!supabase) return null
+  const { data } = await supabase.from('schools').select('name').eq('id', schoolId).maybeSingle()
+  return (data?.name as string | undefined) ?? null
+}

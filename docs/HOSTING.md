@@ -41,7 +41,7 @@ only.
 
    | Name | Value | Encrypt? |
    |---|---|---|
-   | `NODE_VERSION` | `20` | no |
+   | `NODE_VERSION` | `22` | no |
    | `VITE_SUPABASE_URL` | the project URL (Supabase → Project Settings → API) | no |
    | `VITE_SUPABASE_PUBLISHABLE_KEY` | the publishable key | no |
    | `VITE_SUPABASE_REGION` | e.g. `af-south-1` | no |

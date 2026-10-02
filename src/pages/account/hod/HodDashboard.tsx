@@ -10,6 +10,8 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon, SchoolIcon } from '@/components/ui/Icons'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
 import { PendingStaff } from '@/components/account/PendingStaff'
+import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
+import { PendingLearners } from '@/components/account/PendingLearners'
 import { PlanSignoffCard } from '@/components/lessons/PlanSignoffCard'
 
 // Loaded after the page: it brings the SBA programme with it.
@@ -121,6 +123,8 @@ export function HodDashboard() {
       <TeachingSubject profile={profile} variant="hod" />
 
       <PendingStaff schoolId={profile?.school_id ?? null} />
+      <PendingLearners schoolId={profile?.school_id ?? null} />
+      <SchoolJoinCode schoolId={profile?.school_id ?? null} canManage />
 
       <PlanSignoffCard schoolId={profile?.school_id} subjectId={subjectId} />
 
@@ -130,7 +134,7 @@ export function HodDashboard() {
         <EmptyState
           icon={<UsersIcon className="h-6 w-6" />}
           title="Nobody in this department yet"
-          description={`Once teachers and learners sign up with your school's join code and choose ${subjectName}, they'll appear here automatically.`}
+          description={`Once teachers and learners sign up with your school's join code and choose ${subjectName}, and are approved, they'll appear here.`}
         />
       ) : (
         <>

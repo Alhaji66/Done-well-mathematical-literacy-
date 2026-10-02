@@ -28,7 +28,10 @@ export interface SchoolOverview {
   name: string
   created_at: string
   suspended_at: string | null
+  /** Approved learners: those who use a paid place. */
   learners: number
+  /** Learners waiting for the school to approve them (absent before STEP 34). */
+  pending_learners?: number
   staff: number
   pending_staff: number
   active_7d: number
@@ -36,6 +39,8 @@ export interface SchoolOverview {
   status: SubscriptionStatus | null
   learner_seats: number | null
   ends_on: string | null
+  /** How the school lets learners in (absent before STEP 34). */
+  learner_approval?: 'manual' | 'auto'
 }
 
 export interface Subscription {

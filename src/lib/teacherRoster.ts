@@ -15,18 +15,25 @@ export interface RosterProgressRow {
   questions_attempted: number
 }
 
+/**
+ * The school's learners -- only those the school has approved (STEP 34). A
+ * learner still waiting is listed on the approval card instead, and the
+ * database would not show their results anyway.
+ */
 export async function fetchSchoolLearners(schoolId: string): Promise<RosterLearner[]> {
   if (!supabase) return []
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id, full_name, grade, subject_id')
-    .eq('school_id', schoolId)
-    .eq('role', 'learner')
+  const query = (columns: string) =>
+    supabase!.from('profiles').select(columns).eq('school_id', schoolId).eq('role', 'learner')
+  let { data, error } = await query('id, full_name, grade, subject_id, learner_approved_at')
+  // 42703: the column is not there yet (STEP 34 not run). Every learner counts.
+  if (error?.code === '42703') ({ data, error } = await query('id, full_name, grade, subject_id'))
   if (error) {
     console.error('Failed to load school learners:', error)
     return []
   }
-  return data ?? []
+  return ((data ?? []) as unknown as (RosterLearner & { learner_approved_at?: string | null })[])
+    .filter((l) => l.learner_approved_at !== null)
+    .map(({ id, full_name, grade, subject_id }) => ({ id, full_name, grade, subject_id }))
 }
 
 export async function fetchProgressForLearners(learnerIds: string[]): Promise<RosterProgressRow[]> {

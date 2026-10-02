@@ -18,6 +18,11 @@ export interface AccountProfile {
    * See src/lib/staffApproval.ts.
    */
   staff_approved_at?: string | null
+  /**
+   * When staff at the school approved this learner. `null` for a learner still
+   * waiting; absent on a database without STEP 34. See src/lib/learnerApproval.ts.
+   */
+  learner_approved_at?: string | null
 }
 
 interface AccountAuthValue {

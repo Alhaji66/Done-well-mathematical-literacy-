@@ -2509,6 +2509,9 @@ create trigger audit_subscriptions
 
 -- Administrator overview: every school, in counts only. -----------------------
 
+-- Dropped first because STEP 34 widens what it returns, and a re-run of this
+-- whole file must not trip over the newer shape.
+drop function if exists public.admin_school_overview();
 create or replace function public.admin_school_overview()
 returns table (
   school_id uuid, name text, created_at timestamptz, suspended_at timestamptz,
@@ -4782,3 +4785,506 @@ drop trigger if exists stamp_parent_contact on public.parent_contacts;
 create trigger stamp_parent_contact
   before insert or update on public.parent_contacts
   for each row execute function public.stamp_parent_contact();
+
+-- ============================================================================
+-- STEP 34: LEARNERS ARE APPROVED, AND PAID PLACES ARE A LIMIT
+-- ============================================================================
+--
+-- WHAT WAS WRONG. Every learner is given the school's join code, and the code
+-- was all it took: anyone holding it -- a friend at another school, a learner
+-- who had left -- joined, saw the school's tests and teachers, and counted
+-- against nothing. The licence's learner seats were shown, but going over them
+-- was only flagged.
+--
+-- THE FIX.
+--
+--   A learner who joins is WAITING until staff at the school approve them --
+--   the same idea as STEP 12 for staff. While waiting, current_school_id()
+--   returns nothing for them, so every rule built on it shows them nothing of
+--   the school; and is_learner_at() says no, so they cannot be put in a class
+--   or catch-up group, and staff cannot read their results.
+--
+--   The school chooses: approve every learner by hand ('manual', the default),
+--   or let learners in automatically while paid places remain ('auto'). Either
+--   way, once the places on the current licence are used, the next learner
+--   waits, and approve_learner() refuses until a place is free. A school with
+--   no current licence row has no limit -- the administrator sets one by
+--   recording the licence.
+--
+--   Staff can remove a learner who has left, which frees their place; the
+--   learner keeps their account and their own progress. A learner can ask to
+--   join (or move to) a school with request_school(). The school account or an
+--   HOD can change the join code, so a code that has leaked stops working.
+--
+-- EXISTING LEARNERS are approved as of their sign-up date, ONCE, when the
+-- column is first added. Existing schools start in 'manual' mode: switch a
+-- school with
+--   update public.schools set learner_approval = 'auto' where name = '...';
+-- or from the school's own dashboard.
+
+alter table public.schools add column if not exists learner_approval text not null default 'manual';
+
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'schools_learner_approval_check') then
+    alter table public.schools add constraint schools_learner_approval_check check (learner_approval in ('manual', 'auto'));
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'profiles' and column_name = 'learner_approved_at'
+  ) then
+    alter table public.profiles add column learner_approved_at timestamptz;
+    update public.profiles set learner_approved_at = created_at
+      where role::text = 'learner' and school_id is not null;
+  end if;
+end $$;
+
+create or replace function public.school_learner_seats(p_school uuid)
+returns integer
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select s.learner_seats from public.subscriptions s
+  where s.school_id = p_school
+    and s.status = 'active'
+    and s.starts_on <= current_date
+    and (s.ends_on is null or s.ends_on >= current_date)
+  order by s.starts_on desc, s.created_at desc
+  limit 1;
+$$;
+
+create or replace function public.school_learners_approved(p_school uuid)
+returns integer
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select count(*)::integer from public.profiles
+  where school_id = p_school and role::text = 'learner' and learner_approved_at is not null;
+$$;
+
+create or replace function public.school_has_free_seat(p_school uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select coalesce(public.school_learner_seats(p_school) > public.school_learners_approved(p_school), true);
+$$;
+
+revoke execute on function public.school_learner_seats(uuid) from public, anon;
+revoke execute on function public.school_learners_approved(uuid) from public, anon;
+revoke execute on function public.school_has_free_seat(uuid) from public, anon;
+grant execute on function public.school_has_free_seat(uuid) to authenticated;
+
+create or replace function public.learner_join_is_approved(p_school uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_mode text;
+begin
+  select learner_approval into v_mode from public.schools where id = p_school for update;
+  return v_mode = 'auto' and public.school_has_free_seat(p_school);
+end;
+$$;
+revoke execute on function public.learner_join_is_approved(uuid) from public, anon;
+grant execute on function public.learner_join_is_approved(uuid) to authenticated;
+
+create or replace function public.current_school_id()
+returns uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select school_id from public.profiles
+  where id = auth.uid()
+    and (role::text <> 'learner' or learner_approved_at is not null);
+$$;
+
+create or replace function public.is_learner_at(p_profile uuid, p_school uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = p_profile and school_id = p_school and role::text = 'learner'
+      and learner_approved_at is not null
+  );
+$$;
+
+drop policy if exists "Staff can view progress within their school" on public.learner_progress;
+create policy "Staff can view progress within their school"
+  on public.learner_progress for select
+  using (
+    public.is_school_staff(public.current_school_id())
+    and public.is_learner_at(learner_id, public.current_school_id())
+  );
+
+drop policy if exists "Staff can view mistakes within their school" on public.learner_mistakes;
+create policy "Staff can view mistakes within their school"
+  on public.learner_mistakes for select
+  using (
+    public.is_school_staff(public.current_school_id())
+    and public.is_learner_at(learner_id, public.current_school_id())
+  );
+
+create or replace function public.guard_profile()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_staff constant text[] := array['teacher', 'school', 'hod'];
+  v_caller text;
+begin
+  if current_user not in ('authenticated', 'anon') then
+    if tg_op = 'INSERT' and new.role::text = 'learner' and new.school_id is not null and new.learner_approved_at is null then
+      new.learner_approved_at := now();
+    end if;
+    return new;
+  end if;
+
+  if tg_op = 'INSERT' then
+    new.staff_approved_at := null;
+    new.learner_approved_at := null;
+    if new.role::text = any (v_staff) and new.school_id is not null
+       and not public.school_has_approved_staff(new.school_id) then
+      new.staff_approved_at := now();
+    end if;
+    if new.role::text = 'learner' and new.school_id is not null
+       and public.learner_join_is_approved(new.school_id) then
+      new.learner_approved_at := now();
+    end if;
+    return new;
+  end if;
+
+  if new.staff_approved_at is distinct from old.staff_approved_at then
+    raise exception 'Staff approval is given by a colleague, through approve_staff().';
+  end if;
+
+  if new.learner_approved_at is distinct from old.learner_approved_at then
+    raise exception 'A learner is approved by staff at the school, through approve_learner().';
+  end if;
+
+  if new.id = v_uid then
+    if new.role is distinct from old.role then
+      raise exception 'You cannot change your own role. Ask your school to correct it.';
+    end if;
+    if new.school_id is distinct from old.school_id then
+      raise exception 'You cannot move your own account to another school.';
+    end if;
+    return new;
+  end if;
+
+  if new.role is distinct from old.role then
+    v_caller := public.approved_role_at(old.school_id);
+    if v_caller is null then
+      raise exception 'Only approved staff at this school can change a role.';
+    end if;
+    if (new.role::text = 'school' or old.role::text = 'school') and v_caller <> 'school' then
+      raise exception 'Only the school account can give or remove the school role.';
+    end if;
+    new.staff_approved_at := case when new.role::text = any (v_staff) then now() else null end;
+    if new.role::text = 'learner' then
+      if old.role::text <> 'learner' and not public.school_has_free_seat(new.school_id) then
+        raise exception 'All paid learner places at this school are in use.';
+      end if;
+      new.learner_approved_at := coalesce(old.learner_approved_at, now());
+    else
+      new.learner_approved_at := null;
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists guard_profile on public.profiles;
+create trigger guard_profile
+  before insert or update on public.profiles
+  for each row execute function public.guard_profile();
+
+create or replace function public.approve_learner(p_profile uuid, p_approve boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_target public.profiles;
+  v_seats integer;
+begin
+  select * into v_target from public.profiles where id = p_profile;
+  if v_target.id is null or v_target.school_id is null or v_target.role::text <> 'learner' then
+    raise exception 'That learner was not found at your school.';
+  end if;
+  if not public.is_school_staff(v_target.school_id) then
+    raise exception 'Only approved staff at this school can approve learners.' using errcode = '42501';
+  end if;
+  if v_target.learner_approved_at is not null then
+    raise exception 'That learner is already approved.';
+  end if;
+
+  if p_approve then
+    perform 1 from public.schools where id = v_target.school_id for update;
+    v_seats := public.school_learner_seats(v_target.school_id);
+    if v_seats is not null and public.school_learners_approved(v_target.school_id) >= v_seats then
+      raise exception 'All % paid learner places at this school are in use. Remove a learner who has left, or ask DONE WELL for more places.', v_seats;
+    end if;
+    update public.profiles set learner_approved_at = now() where id = p_profile;
+  else
+    update public.profiles set school_id = null where id = p_profile;
+  end if;
+end;
+$$;
+revoke execute on function public.approve_learner(uuid, boolean) from public, anon;
+grant execute on function public.approve_learner(uuid, boolean) to authenticated;
+
+create or replace function public.remove_learner(p_profile uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_target public.profiles;
+begin
+  select * into v_target from public.profiles where id = p_profile;
+  if v_target.id is null or v_target.school_id is null or v_target.role::text <> 'learner' then
+    raise exception 'That learner was not found at your school.';
+  end if;
+  if not public.is_school_staff(v_target.school_id) then
+    raise exception 'Only approved staff at this school can remove a learner.' using errcode = '42501';
+  end if;
+  update public.profiles set school_id = null, learner_approved_at = null where id = p_profile;
+end;
+$$;
+revoke execute on function public.remove_learner(uuid) from public, anon;
+grant execute on function public.remove_learner(uuid) to authenticated;
+
+create or replace function public.request_school(p_code text)
+returns table (school_id uuid, school_name text, approved boolean)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_code text := upper(regexp_replace(coalesce(p_code, ''), '[^A-Za-z0-9]', '', 'g'));
+  v_me public.profiles;
+  v_school public.schools;
+  v_approved timestamptz;
+begin
+  select * into v_me from public.profiles where id = auth.uid();
+  if v_me.id is null or v_me.role::text <> 'learner' then
+    raise exception 'Only a learner account can ask to join a school this way.';
+  end if;
+  select * into v_school from public.schools where join_code = v_code;
+  if v_school.id is null then
+    raise exception 'No school found with the code %. Check it with your teacher.', v_code;
+  end if;
+  if v_me.school_id = v_school.id then
+    return query select v_school.id, v_school.name, v_me.learner_approved_at is not null;
+    return;
+  end if;
+  v_approved := case when public.learner_join_is_approved(v_school.id) then now() end;
+  update public.profiles set school_id = v_school.id, learner_approved_at = v_approved where id = v_me.id;
+  return query select v_school.id, v_school.name, v_approved is not null;
+end;
+$$;
+revoke execute on function public.request_school(text) from public, anon;
+grant execute on function public.request_school(text) to authenticated;
+
+create or replace function public.my_school_request()
+returns table (school_name text, approved boolean)
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select s.name, p.learner_approved_at is not null
+  from public.profiles p
+  join public.schools s on s.id = p.school_id
+  where p.id = auth.uid() and p.role::text = 'learner';
+$$;
+revoke execute on function public.my_school_request() from public, anon;
+grant execute on function public.my_school_request() to authenticated;
+
+create or replace function public.school_seat_status()
+returns table (seats integer, used integer, pending integer, approval text)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+declare
+  v_school uuid := public.current_school_id();
+begin
+  if v_school is null or not public.is_school_staff(v_school) then
+    raise exception 'Only approved staff at the school can see its learner places.' using errcode = '42501';
+  end if;
+  return query
+  select public.school_learner_seats(v_school),
+         public.school_learners_approved(v_school),
+         (select count(*)::integer from public.profiles
+           where profiles.school_id = v_school and role::text = 'learner' and learner_approved_at is null),
+         (select s.learner_approval from public.schools s where s.id = v_school);
+end;
+$$;
+revoke execute on function public.school_seat_status() from public, anon;
+grant execute on function public.school_seat_status() to authenticated;
+
+create or replace function public.set_learner_approval(p_mode text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_school uuid := public.current_school_id();
+begin
+  if p_mode not in ('manual', 'auto') then
+    raise exception 'Choose manual or automatic approval.';
+  end if;
+  if v_school is null or coalesce(public.approved_role_at(v_school), '') not in ('school', 'hod') then
+    raise exception 'Only the school account or a head of department can change how learners are approved.' using errcode = '42501';
+  end if;
+  update public.schools set learner_approval = p_mode where id = v_school;
+  perform public.write_audit(v_school, 'school.learner_approval_changed', 'schools', v_school::text,
+    jsonb_build_object('mode', p_mode));
+end;
+$$;
+revoke execute on function public.set_learner_approval(text) from public, anon;
+grant execute on function public.set_learner_approval(text) to authenticated;
+
+create or replace function public.rotate_join_code()
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_school uuid := public.current_school_id();
+  v_code text;
+begin
+  if v_school is null or coalesce(public.approved_role_at(v_school), '') not in ('school', 'hod') then
+    raise exception 'Only the school account or a head of department can change the school code.' using errcode = '42501';
+  end if;
+  v_code := public.generate_join_code();
+  update public.schools set join_code = v_code where id = v_school;
+  perform public.write_audit(v_school, 'school.join_code_changed', 'schools', v_school::text, '{}'::jsonb);
+  return v_code;
+end;
+$$;
+revoke execute on function public.rotate_join_code() from public, anon;
+grant execute on function public.rotate_join_code() to authenticated;
+
+create or replace function public.learner_approval_events()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.role::text = 'learner' and new.school_id is not null and new.learner_approved_at is null
+     and (tg_op = 'INSERT' or old.school_id is distinct from new.school_id)
+     and not exists (
+       select 1 from public.profiles
+       where school_id = new.school_id and role::text = 'learner' and learner_approved_at is null and id <> new.id
+     ) then
+    perform public.notify(
+      (select array_agg(id) from public.profiles
+        where school_id = new.school_id and role::text in ('teacher', 'school', 'hod') and staff_approved_at is not null),
+      'learner.pending', '{}'::jsonb, 'dashboard');
+  end if;
+  if tg_op = 'UPDATE' and old.learner_approved_at is null and new.learner_approved_at is not null
+     and new.school_id is not distinct from old.school_id then
+    perform public.write_audit(new.school_id, 'learner.approved', 'profiles', new.id::text, '{}'::jsonb);
+    perform public.notify(array[new.id], 'learner.approved',
+      jsonb_build_object('school', (select name from public.schools where id = new.school_id)), 'dashboard');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists learner_approval_events on public.profiles;
+create trigger learner_approval_events
+  after insert or update on public.profiles
+  for each row execute function public.learner_approval_events();
+
+create or replace function public.notify_weekly_test()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_learners uuid[];
+begin
+  if new.intervention_id is not null then
+    select array_agg(learner_id) into v_learners from public.intervention_learners where intervention_id = new.intervention_id;
+  elsif new.class_id is not null then
+    select array_agg(learner_id) into v_learners from public.class_members where class_id = new.class_id;
+  else
+    select array_agg(id) into v_learners from public.profiles
+      where school_id = new.school_id and role::text = 'learner' and grade = new.grade
+        and learner_approved_at is not null
+        and (subject_id is null or subject_id = new.subject_id);
+  end if;
+  perform public.notify(v_learners, 'weekly_test.set',
+    jsonb_build_object('test_id', new.id, 'title', new.title, 'due_at', new.due_at,
+                       'catch_up', new.intervention_id is not null, 'kind', new.kind),
+    'tests');
+  return new;
+end;
+$$;
+
+drop function if exists public.admin_school_overview();
+create function public.admin_school_overview()
+returns table (
+  school_id uuid, name text, created_at timestamptz, suspended_at timestamptz,
+  learners bigint, pending_learners bigint, staff bigint, pending_staff bigint, active_7d bigint,
+  plan text, status text, learner_seats integer, ends_on date, learner_approval text
+)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a platform administrator can see every school.';
+  end if;
+  return query
+  select s.id, s.name, s.created_at, s.suspended_at,
+    (select count(*) from public.profiles p where p.school_id = s.id and p.role::text = 'learner' and p.learner_approved_at is not null),
+    (select count(*) from public.profiles p where p.school_id = s.id and p.role::text = 'learner' and p.learner_approved_at is null),
+    (select count(*) from public.profiles p where p.school_id = s.id and p.role::text in ('teacher', 'school', 'hod') and p.staff_approved_at is not null),
+    (select count(*) from public.profiles p where p.school_id = s.id and p.role::text in ('teacher', 'school', 'hod') and p.staff_approved_at is null),
+    (select count(distinct e.actor_id) from public.activity_events e
+       join public.profiles p on p.id = e.actor_id and p.role::text = 'learner'
+       where e.school_id = s.id and e.at > now() - interval '7 days'),
+    sub.plan, sub.status, sub.learner_seats, sub.ends_on, s.learner_approval
+  from public.schools s
+  left join lateral (
+    select * from public.subscriptions x where x.school_id = s.id order by x.starts_on desc, x.created_at desc limit 1
+  ) sub on true
+  order by s.name;
+end;
+$$;
+revoke execute on function public.admin_school_overview() from public, anon;
+grant execute on function public.admin_school_overview() to authenticated;

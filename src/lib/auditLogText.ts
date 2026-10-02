@@ -48,8 +48,17 @@ export function describeEntry(e: AuditEntry, names: Map<string, string>): string
       return `${actor} changed ${self ? 'their own' : `${target}'s`} role from ${String(d.from)} to ${String(d.to)}.`
     case 'staff.approved':
       return `${actor} approved ${target} as ${ROLE[String(d.role)] ?? 'staff'}.`
+    case 'learner.approved':
+      return `${actor} approved ${target} as a learner at the school.`
+    case 'school.learner_approval_changed':
+      return d.mode === 'auto'
+        ? `${actor} set learners to be let in automatically while paid places remain.`
+        : `${actor} set every new learner to wait for staff approval.`
+    case 'school.join_code_changed':
+      return `${actor} changed the school code. The old code no longer works.`
     case 'profile.school_changed':
       if (d.staff_request_declined) return `${actor} turned away ${target}'s request to join as staff.`
+      if (d.direction === 'left' && e.actor_id && e.actor_id !== e.target_id) return `${actor} removed ${target} from the school.`
       return d.direction === 'joined' ? `${who(e.target_id)} joined the school.` : `${who(e.target_id)} left the school.`
     case 'profile.updated': {
       const fields = (Array.isArray(d.fields) ? d.fields : []).map((f) => FIELD[String(f)] ?? String(f))

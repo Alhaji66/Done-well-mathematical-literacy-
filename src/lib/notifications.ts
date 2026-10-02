@@ -76,6 +76,10 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `${names.get(String(d.profile_id)) ?? 'Someone'} is waiting for you to approve them as staff.`
     case 'staff.approved':
       return 'A colleague has approved you as staff. You can now see your school’s learners.'
+    case 'learner.pending':
+      return 'Learners have joined with your school code and are waiting for you to approve them.'
+    case 'learner.approved':
+      return `${d.school ? String(d.school) : 'Your school'} has approved you. Your school’s tests and classes now appear here.`
     case 'lesson_plan.submitted':
       return `${names.get(String(d.profile_id)) ?? 'A teacher'} submitted a Grade ${String(d.grade)} week for sign-off: “${String(d.title ?? '')}”.`
     case 'lesson_plan.signed':

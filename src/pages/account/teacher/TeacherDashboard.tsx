@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
 import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
 import { PendingStaff } from '@/components/account/PendingStaff'
+import { PendingLearners } from '@/components/account/PendingLearners'
 import { TeachingSubject } from '@/components/account/TeachingSubject'
 import { TeachingGrades } from '@/components/account/TeachingGrades'
 import { ParticipationPanel } from '@/components/account/ParticipationPanel'
@@ -149,6 +150,7 @@ export function TeacherDashboard() {
       ) : null}
 
       <PendingStaff schoolId={profile.school_id} />
+      <PendingLearners schoolId={profile.school_id} />
       <SchoolJoinCode schoolId={profile.school_id} />
 
       <TeachingSubject profile={profile} />
@@ -166,7 +168,7 @@ export function TeacherDashboard() {
           description={
             learners.length > 0
               ? `You have ${learners.length} learner${learners.length === 1 ? '' : 's'}, but none in the grades above. Turn a grade back on to see them.`
-              : `Give the join code above to your students at ${schoolName ?? 'your school'} -- once they sign up and enter it, they'll show up here automatically.`
+              : `Give the join code above to your students at ${schoolName ?? 'your school'} -- once they sign up with it and are approved, they'll show up here.`
           }
         />
       ) : (

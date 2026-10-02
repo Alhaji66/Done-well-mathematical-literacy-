@@ -9,6 +9,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PlanShortcuts } from '@/components/revision/PlanShortcuts'
 import { SaveOffline } from '@/components/layout/SaveOffline'
+import { SchoolMembership } from '@/components/account/SchoolMembership'
 import { fetchLearnerDates, upcoming, type TaskDate } from '@/lib/sbaSchedule'
 
 // Loaded only when something is coming up: it brings the SBA programme with it.
@@ -101,6 +102,8 @@ export function LearnerDashboard() {
         title={`Welcome, ${profile.full_name}`}
         description={`Grade ${profile.grade} — ${profile.subject_id ? subjectNames[profile.subject_id] ?? profile.subject_id : ''}${schoolName ? ` · ${schoolName}` : ''}`}
       />
+
+      <SchoolMembership />
 
       {soon.length ? (
         <Suspense fallback={null}>

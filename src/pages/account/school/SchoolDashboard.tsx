@@ -12,6 +12,7 @@ import { fetchSchoolTeachers, type SchoolTeacher } from '@/lib/schoolStaff'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { SchoolJoinCode } from '@/components/account/SchoolJoinCode'
 import { PendingStaff } from '@/components/account/PendingStaff'
+import { PendingLearners } from '@/components/account/PendingLearners'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UsersIcon } from '@/components/ui/Icons'
@@ -111,7 +112,8 @@ export function SchoolDashboard() {
       ) : null}
 
       <PendingStaff schoolId={profile?.school_id ?? null} />
-      <SchoolJoinCode schoolId={profile?.school_id ?? null} />
+      <PendingLearners schoolId={profile?.school_id ?? null} />
+      <SchoolJoinCode schoolId={profile?.school_id ?? null} canManage />
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading school overview…</p>
@@ -119,7 +121,7 @@ export function SchoolDashboard() {
         <EmptyState
           icon={<UsersIcon className="h-6 w-6" />}
           title="No one has joined yet"
-          description={`Give the join code above to learners and teachers at ${schoolName ?? 'your school'} -- once they sign up and enter it, they'll show up here automatically.`}
+          description={`Give the join code above to learners and teachers at ${schoolName ?? 'your school'} -- once they sign up with it and are approved, they'll show up here.`}
         />
       ) : (
         <>

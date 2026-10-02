@@ -14,8 +14,10 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 
 /**
  * The school's own licence: plan, status, seats used and when it ends, and any
- * sponsored programme it is part of. Going over the seat count never locks a
- * learner out -- it is flagged here so the school can sort it out with DONE WELL.
+ * sponsored programme it is part of. Since STEP 34 the seats are a limit: once
+ * they are used, new learners wait for approval. A school can still be over
+ * if seats were reduced after learners were approved -- nobody already in is
+ * locked out, and it is flagged here.
  */
 export function SchoolLicence({ schoolId, learners }: { schoolId: string | null; learners: number }) {
   const [sub, setSub] = useState<Subscription | null | undefined>(undefined)
@@ -78,10 +80,15 @@ export function SchoolLicence({ schoolId, learners }: { schoolId: string | null;
                 className="mt-1"
                 label="Learner seats used"
               />
+              {!over && learners === sub.learner_seats ? (
+                <p className="mt-2 text-xs text-amber-800">
+                  Every paid place is in use. New learners will wait until a place is freed or more are added.
+                </p>
+              ) : null}
               {over ? (
                 <p className="mt-2 text-xs text-rose-700">
-                  More learners have joined than the licence covers. Nobody has been locked out — contact DONE WELL to
-                  add seats.
+                  More learners are approved than the licence covers. Nobody already in has been locked out, but no
+                  new learner can be approved — contact DONE WELL to add seats, or remove learners who have left.
                 </p>
               ) : null}
             </div>

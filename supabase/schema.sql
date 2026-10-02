@@ -4060,3 +4060,148 @@ drop policy if exists "Linked parents can view tests their child sat" on public.
 create policy "Linked parents can view tests their child sat"
   on public.weekly_tests for select
   using (public.parent_sees_test(id));
+
+-- ============================================================================
+-- STEP 28: TEST KINDS AND EARLY WARNINGS
+-- ============================================================================
+--
+-- Tracking a learner should not wait for the end of term. A teacher sets a
+-- weekly test, a topic test or a monthly check, and the moment a learner
+-- hands one in, the class teacher is told if it shows trouble: a result below
+-- 40% (Level 1 or 2), or a fall in CAPS level since the learner's previous
+-- test in that subject that lands at Level 4 or below, or drops two levels or
+-- more. (A slip from Level 7 to 6 is left alone.) The app's Levels page lists the same learners with a
+-- catch-up group one step away.
+--
+-- WHO CAN DO WHAT.
+--   * Nothing new to read or write: the kind is one more column of a test,
+--     under the same rules as the rest of it. The warning is written by the
+--     database, to the teacher of the learner's class in that subject.
+--   * Catch-up reassessments never raise a warning: they are sat by learners
+--     already being helped.
+
+alter table public.weekly_tests add column if not exists kind text not null default 'weekly';
+
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'weekly_tests_kind_check') then
+    alter table public.weekly_tests add constraint weekly_tests_kind_check check (kind in ('weekly', 'topic', 'monthly'));
+  end if;
+end $$;
+
+-- The CAPS seven-point scale, on a percentage rounded to a whole number.
+create or replace function public.caps_level(p_percent numeric)
+returns smallint
+language sql
+immutable
+as $$
+  select (case
+    when round(p_percent) >= 80 then 7
+    when round(p_percent) >= 70 then 6
+    when round(p_percent) >= 60 then 5
+    when round(p_percent) >= 50 then 4
+    when round(p_percent) >= 40 then 3
+    when round(p_percent) >= 30 then 2
+    else 1
+  end)::smallint;
+$$;
+
+create or replace function public.flag_early_warning()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  t public.weekly_tests;
+  v_pct numeric;
+  v_prev numeric;
+  v_level smallint;
+  v_prev_level smallint;
+  v_reason text;
+  v_teachers uuid[];
+begin
+  if new.submitted_at is null or coalesce(new.marks_total, 0) = 0 then
+    return new;
+  end if;
+  if tg_op = 'UPDATE' and old.submitted_at is not null then
+    return new;
+  end if;
+  select * into t from public.weekly_tests where id = new.test_id;
+  if t.id is null or t.intervention_id is not null then
+    return new;
+  end if;
+
+  v_pct := 100.0 * coalesce(new.marks_awarded, 0) / new.marks_total;
+  select 100.0 * coalesce(a.marks_awarded, 0) / a.marks_total into v_prev
+  from public.weekly_test_attempts a
+  join public.weekly_tests p on p.id = a.test_id
+  where a.learner_id = new.learner_id
+    and a.id <> new.id
+    and a.submitted_at is not null
+    and a.submitted_at < new.submitted_at
+    and coalesce(a.marks_total, 0) > 0
+    and p.subject_id = t.subject_id
+    and p.grade = t.grade
+    and p.intervention_id is null
+  order by a.submitted_at desc
+  limit 1;
+
+  v_level := public.caps_level(v_pct);
+  v_prev_level := case when v_prev is null then null else public.caps_level(v_prev) end;
+  if v_pct < 40 then
+    v_reason := 'below_40';
+  elsif v_prev_level is not null and v_level < v_prev_level and (v_level <= 4 or v_prev_level - v_level >= 2) then
+    v_reason := 'dropped';
+  else
+    return new;
+  end if;
+
+  select array_agg(distinct c.teacher_id) into v_teachers
+  from public.classes c
+  join public.class_members m on m.class_id = c.id
+  where m.learner_id = new.learner_id
+    and c.subject_id = t.subject_id
+    and c.grade = t.grade
+    and c.teacher_id is not null;
+
+  perform public.notify(v_teachers, 'level.early_warning',
+    jsonb_build_object('learner_id', new.learner_id, 'test_id', t.id, 'title', t.title, 'kind', t.kind,
+                       'subject', t.subject_id, 'grade', t.grade, 'percent', round(v_pct),
+                       'level', v_level, 'previous_level', v_prev_level, 'reason', v_reason),
+    'levels');
+  return new;
+end;
+$$;
+
+drop trigger if exists flag_early_warning on public.weekly_test_attempts;
+create trigger flag_early_warning
+  after insert or update of submitted_at on public.weekly_test_attempts
+  for each row execute function public.flag_early_warning();
+
+-- A test is set: the notification now says which kind of test it is.
+create or replace function public.notify_weekly_test()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_learners uuid[];
+begin
+  if new.intervention_id is not null then
+    select array_agg(learner_id) into v_learners from public.intervention_learners where intervention_id = new.intervention_id;
+  elsif new.class_id is not null then
+    select array_agg(learner_id) into v_learners from public.class_members where class_id = new.class_id;
+  else
+    select array_agg(id) into v_learners from public.profiles
+      where school_id = new.school_id and role::text = 'learner' and grade = new.grade
+        and (subject_id is null or subject_id = new.subject_id);
+  end if;
+  perform public.notify(v_learners, 'weekly_test.set',
+    jsonb_build_object('test_id', new.id, 'title', new.title, 'due_at', new.due_at,
+                       'catch_up', new.intervention_id is not null, 'kind', new.kind),
+    'tests');
+  return new;
+end;
+$$;

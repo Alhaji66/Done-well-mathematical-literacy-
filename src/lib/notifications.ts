@@ -65,7 +65,8 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
   switch (n.kind) {
     case 'weekly_test.set': {
       const due = d.due_at ? new Date(String(d.due_at)).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' }) : ''
-      return `${d.catch_up ? 'New catch-up test' : 'New weekly test'}: “${String(d.title ?? '')}”${due ? `, due ${due}` : ''}.`
+      const what = d.catch_up ? 'New catch-up test' : d.kind === 'topic' ? 'New topic test' : d.kind === 'monthly' ? 'New monthly check' : 'New weekly test'
+      return `${what}: “${String(d.title ?? '')}”${due ? `, due ${due}` : ''}.`
     }
     case 'intervention.joined':
       return `Your teacher has put you in a catch-up group on ${topicOf(d)}.`
@@ -97,6 +98,11 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `Reminder: ${names.get(String(d.learner_id)) ?? 'Your child'}’s ${sbaTaskOf(d)} is tomorrow.${d.note ? ` ${String(d.note).replace(/\.$/, '')}.` : ''}`
     case 'sba_date.child_set':
       return `${names.get(String(d.learner_id)) ?? 'Your child'}’s ${sbaTaskOf(d)} ${d.moved ? 'has moved to' : 'is on'} ${dayOf(d.due_on)}.`
+    case 'level.early_warning': {
+      const who = names.get(String(d.learner_id)) ?? 'A learner'
+      const what = d.reason === 'below_40' ? `scored ${String(d.percent)}% (Level ${String(d.level)})` : `dropped from Level ${String(d.previous_level)} to Level ${String(d.level)} (${String(d.percent)}%)`
+      return `Early warning: ${who} ${what} on “${String(d.title ?? '')}”. Open Levels to start a catch-up group.`
+    }
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

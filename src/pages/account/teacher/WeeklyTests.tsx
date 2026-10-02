@@ -8,6 +8,8 @@ import {
   deleteTest,
   fetchTestsForSchool,
   fetchAttemptsForTest,
+  TEST_KIND_LABEL,
+  type TestKind,
   type WeeklyTest,
   type TestAttempt,
 } from '@/lib/weeklyTests'
@@ -50,6 +52,7 @@ export function WeeklyTests() {
   const [classId, setClassId] = useState('')
 
   const [title, setTitle] = useState('')
+  const [kind, setKind] = useState<TestKind>('weekly')
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? 'mat-lit')
   const [grade, setGrade] = useState<Grade>(12)
   const [topicIds, setTopicIds] = useState<string[]>([])
@@ -167,7 +170,7 @@ export function WeeklyTests() {
     if (!week?.topicId) return
     setTopicIds([week.topicId])
     setSubtopics((week.subtopics ?? []).map((n) => qualify(week.topicId!, n)))
-    if (!title.trim()) setTitle(`Weekly Test: ${week.label}`)
+    if (!title.trim()) setTitle(`${TEST_KIND_LABEL[kind]}: ${week.label}`)
   }
 
   /*
@@ -205,6 +208,7 @@ export function WeeklyTests() {
       // is due at the end of Friday, which is what a learner expects.
       dueAt: new Date(`${dueDate}T23:59:59`).toISOString(),
       classId: classId || null,
+      kind,
     })
     setSaving(false)
     if (createError) {
@@ -267,7 +271,32 @@ export function WeeklyTests() {
         </button>
       ) : (
         <form onSubmit={submit} className="card space-y-4 p-5">
-          <h2 className="text-base font-bold text-navy-900">New weekly test</h2>
+          <h2 className="text-base font-bold text-navy-900">New {TEST_KIND_LABEL[kind].toLowerCase()}</h2>
+
+          <div>
+            <p className="text-xs font-medium text-navy-500">Kind of test</p>
+            <div className="mt-1 flex flex-wrap gap-2" role="group" aria-label="Kind of test">
+              {(['weekly', 'topic', 'monthly'] as TestKind[]).map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  aria-pressed={kind === k}
+                  onClick={() => {
+                    // Keep a title the teacher typed; swap only the kind at its start.
+                    setTitle((t) => (t.startsWith(`${TEST_KIND_LABEL[kind]}: `) ? `${TEST_KIND_LABEL[k]}: ${t.slice(TEST_KIND_LABEL[kind].length + 2)}` : t))
+                    setKind(k)
+                  }}
+                  className={kind === k ? 'btn-primary btn-sm' : 'btn-outline btn-sm'}
+                >
+                  {TEST_KIND_LABEL[k]}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1 text-xs text-navy-400">
+              Every kind counts towards learners’ levels, and a learner who hands one in below 40%, or who falls to Level 4 or below since their last test,
+              is flagged to you straight away.
+            </p>
+          </div>
 
           {atp ? (
             <div>
@@ -556,7 +585,12 @@ export function WeeklyTests() {
               <article key={test.id} className="card p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h3 className="text-base font-bold text-navy-900">{test.title}</h3>
+                    <h3 className="text-base font-bold text-navy-900">
+                      {test.title}
+                      {test.kind && test.kind !== 'weekly' ? (
+                        <span className="ml-2 rounded-full bg-gold-50 px-2 py-0.5 align-middle text-[11px] font-semibold text-gold-800">{TEST_KIND_LABEL[test.kind]}</span>
+                      ) : null}
+                    </h3>
                     <p className="mt-0.5 text-xs text-navy-500">
                       {test.intervention_id
                         ? 'Catch-up group'

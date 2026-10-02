@@ -1,7 +1,18 @@
 import { LEVEL_NAMES, LEVEL_RANGES } from '@/lib/levels'
 import { cn } from '@/lib/utils'
 
-/** The chip's colours -- red at the bottom, green at the top. */
+/** Fill for a level in a bar or sparkline -- red at the bottom, green at the top. */
+export const LEVEL_FILL: Record<number, string> = {
+  7: 'bg-emerald-700',
+  6: 'bg-emerald-500',
+  5: 'bg-emerald-300',
+  4: 'bg-navy-300',
+  3: 'bg-amber-300',
+  2: 'bg-rose-300',
+  1: 'bg-rose-600',
+}
+
+/** The chip's colours, on the same scale. */
 const CHIP: Record<number, string> = {
   7: 'bg-emerald-100 text-emerald-900',
   6: 'bg-emerald-50 text-emerald-800',

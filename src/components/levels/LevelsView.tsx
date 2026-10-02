@@ -4,6 +4,7 @@ import { atpFor } from '@/data/atp'
 import { getTopic } from '@/data/topics'
 import {
   filterResults,
+  earlyWarnings,
   learnerLevels,
   levelMovement,
   startingTerm,
@@ -20,7 +21,9 @@ import {
   type Term,
 } from '@/lib/levels'
 import { cn } from '@/lib/utils'
-import { LevelChip } from '@/components/levels/LevelChip'
+import { LevelChip, LEVEL_FILL } from '@/components/levels/LevelChip'
+import { EarlyWarningPanel } from '@/components/levels/EarlyWarningPanel'
+import { CatchUpGroupForm, type StartGroupInput } from '@/components/levels/CatchUpGroupForm'
 import { downloadCsv } from '@/lib/csv'
 import { printPart } from '@/lib/print'
 import { DownloadIcon, PrinterIcon } from '@/components/ui/Icons'
@@ -63,16 +66,7 @@ function PrintedKey() {
   )
 }
 
-/** Fill for a level in a bar, and the chip's colours -- red at the bottom, green at the top. */
-const FILL: Record<number, string> = {
-  7: 'bg-emerald-700',
-  6: 'bg-emerald-500',
-  5: 'bg-emerald-300',
-  4: 'bg-navy-300',
-  3: 'bg-amber-300',
-  2: 'bg-rose-300',
-  1: 'bg-rose-600',
-}
+const FILL = LEVEL_FILL
 /** A bar split by level, 7 on the left. */
 function TallyBar({ counts, total }: { counts: Record<number, number>; total: number }) {
   return (
@@ -157,7 +151,7 @@ const PERIODS: { value: Term | 0; label: string }[] = [
  */
 export interface StartGroup {
   /** Start a catch-up group for some learners in one class; resolves to an error message, if any. */
-  onStartGroup?: (input: { classId: string; learners: { id: string; baseline: number }[]; topicId: string; plan: string }) => Promise<string | undefined>
+  onStartGroup?: (input: StartGroupInput) => Promise<string | undefined>
   /** Where the catch-up groups are, shown once one has been started. */
   groupsLink?: ReactNode
 }
@@ -199,14 +193,25 @@ export function LevelsView({
         </p>
       </section>
 
-      {show === 'learners' ? <ClassLevels data={data} source={source} term={term} onStartGroup={onStartGroup} groupsLink={groupsLink} /> : <SchoolTally data={data} source={source} term={term} />}
+      {show === 'learners' ? (
+        <ClassLevels data={data} source={source} term={term} today={today} onStartGroup={onStartGroup} groupsLink={groupsLink} />
+      ) : (
+        <SchoolTally data={data} source={source} term={term} today={today} />
+      )}
     </div>
   )
 }
 
 // ------------------------------------------------------------- teacher view
 
-function ClassLevels({ data, source, term, onStartGroup, groupsLink }: { data: LevelData; source: LevelSource | 'all'; term: Term | null } & StartGroup) {
+function ClassLevels({
+  data,
+  source,
+  term,
+  today,
+  onStartGroup,
+  groupsLink,
+}: { data: LevelData; source: LevelSource | 'all'; term: Term | null; today: Date } & StartGroup) {
   const [classId, setClassId] = useState(data.classes[0]?.id ?? '')
   const [sort, setSort] = useState<'name' | 'level'>('name')
   const cls = data.classes.find((c) => c.id === classId)
@@ -270,6 +275,11 @@ function ClassLevels({ data, source, term, onStartGroup, groupsLink }: { data: L
         </div>
 
         <TallyCells counts={counts} />
+      </section>
+
+      <EarlyWarningPanel key={cls.id} data={data} cls={cls} today={today} name={name} onStartGroup={onStartGroup} groupsLink={groupsLink} />
+
+      <section className="card space-y-4 p-4 sm:p-5">
 
         {tests.length === 0 ? (
           <p className="text-sm text-navy-500">
@@ -447,36 +457,12 @@ function MovementPanel({
   const up = moves.filter((m) => m.to > m.from).length
   const same = moves.length - down.length - up
   const [picked, setPicked] = useState<Set<string>>(() => new Set(down.map((m) => m.learnerId)))
-  const [grouping, setGrouping] = useState(false)
   const termTopics = [...new Set((atpFor(cls.subject_id, cls.grade)?.weeks ?? []).filter((w) => w.term === term && w.topicId).map((w) => w.topicId!))]
   const allTopics = [...new Set((atpFor(cls.subject_id, cls.grade)?.weeks ?? []).map((w) => w.topicId).filter((x): x is string => !!x))]
-  const topicChoices = [...termTopics, ...allTopics.filter((t) => !termTopics.includes(t))]
-  const [topicId, setTopicId] = useState(topicChoices[0] ?? '')
-  const [plan, setPlan] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
-  const [started, setStarted] = useState('')
+  const topics = [...termTopics.map((id) => ({ id, note: `Term ${term}` })), ...allTopics.filter((t) => !termTopics.includes(t)).map((id) => ({ id }))]
   const chosen = down.filter((m) => picked.has(m.learnerId))
 
   if (!moves.length) return null
-
-  const openForm = () => {
-    setPlan(`Levels dropped since Term ${term - 1}: re-teach ${getTopic(topicId)?.name ?? 'the topic'} in small steps, practise together, then set a reassessment.`)
-    setError('')
-    setStarted('')
-    setGrouping(true)
-  }
-  const start = async () => {
-    if (!onStartGroup) return
-    if (!topicId) return setError('Choose the topic the group needs help with.')
-    setBusy(true)
-    setError('')
-    const problem = await onStartGroup({ classId: cls.id, learners: chosen.map((m) => ({ id: m.learnerId, baseline: m.after })), topicId, plan })
-    setBusy(false)
-    if (problem) return setError(problem)
-    setStarted(`Started a catch-up group on ${getTopic(topicId)?.name ?? 'the topic'} for ${chosen.length} learner${chosen.length === 1 ? '' : 's'}.`)
-    setGrouping(false)
-  }
 
   return (
     <section className="card space-y-3 p-4 sm:p-5 print:hidden">
@@ -521,50 +507,20 @@ function MovementPanel({
             ))}
           </ul>
           {onStartGroup ? (
-            <div className="space-y-2">
-              <button type="button" className="btn-outline btn-sm" disabled={!chosen.length} onClick={openForm}>
-                Start a catch-up group with {chosen.length} learner{chosen.length === 1 ? '' : 's'}
-              </button>
-              {grouping ? (
-                <div className="space-y-2 border-t border-navy-100 pt-3">
-                  <label className="block text-xs font-medium text-navy-500">
-                    Topic
-                    <select className="select mt-1 block w-full max-w-full sm:w-auto" value={topicId} onChange={(e) => setTopicId(e.target.value)}>
-                      {topicChoices.map((id) => (
-                        <option key={id} value={id}>
-                          {getTopic(id)?.name ?? id}
-                          {termTopics.includes(id) ? ` · Term ${term}` : ''}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="block text-xs font-medium text-navy-500">
-                    Plan
-                    <textarea className="input mt-1 min-h-[4rem]" maxLength={2000} value={plan} onChange={(e) => setPlan(e.target.value)} />
-                  </label>
-                  <p className="text-xs text-navy-500">Each learner’s Term {term} average is kept as their starting point, to measure the group against.</p>
-                  <div className="flex gap-2">
-                    <button type="button" className="btn-primary btn-sm" disabled={busy} onClick={start}>
-                      {busy ? 'Starting…' : 'Start the group'}
-                    </button>
-                    <button type="button" className="btn-outline btn-sm" onClick={() => setGrouping(false)}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : null}
-            </div>
+            <CatchUpGroupForm
+              classId={cls.id}
+              chosen={chosen.map((m) => ({ id: m.learnerId, baseline: m.after }))}
+              topics={topics}
+              planFor={(topic) => `Levels dropped since Term ${term - 1}: re-teach ${topic} in small steps, practise together, then set a reassessment.`}
+              baselineNote={`Each learner’s Term ${term} average is kept as their starting point, to measure the group against.`}
+              onStartGroup={onStartGroup}
+              groupsLink={groupsLink}
+            />
           ) : null}
         </>
       ) : (
         <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-900">No learner in this class has dropped a level since Term {term - 1}.</p>
       )}
-      {error ? <p className="text-sm text-rose-600">{error}</p> : null}
-      {started ? (
-        <p className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-900">
-          {started} {groupsLink}
-        </p>
-      ) : null}
     </section>
   )
 }
@@ -580,7 +536,7 @@ interface Row {
   average: number
 }
 
-function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSource | 'all'; term: Term | null }) {
+function SchoolTally({ data, source, term, today }: { data: LevelData; source: LevelSource | 'all'; term: Term | null; today: Date }) {
   const [subjectId, setSubjectId] = useState('')
   const [open, setOpen] = useState<string | null>(null)
   const results = useMemo(
@@ -613,6 +569,9 @@ function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSou
   const all = tally(levels.map((l) => l.percent))
   const total = levels.length
   const low = all[1] + all[2]
+
+  // Learners flagged by their recent tests, as a count only.
+  const warned = useMemo(() => earlyWarnings(data.results, { subjectId: subjectId || undefined }, today).length, [data.results, subjectId, today])
 
   // Movement since the term before, as counts only.
   const moves = useMemo(() => {
@@ -676,6 +635,10 @@ function SchoolTally({ data, source, term }: { data: LevelData; source: LevelSou
           <p className="text-xs text-navy-500">
             A learner who takes two subjects is counted once in each.
             {moves ? ` Since Term ${term! - 1}: ${moves.up} moved up a level or more, ${moves.down} moved down.` : ''}
+          </p>
+          <p className={cn('w-full text-sm font-semibold', warned ? 'text-rose-700' : 'text-navy-500')}>
+            Early warning: {warned} learner{warned === 1 ? '' : 's'} flagged by their recent weekly tests, topic tests and monthly checks
+            {warned ? '; their teachers see who they are.' : '.'}
           </p>
           {rows.length ? (
             <ExportButtons

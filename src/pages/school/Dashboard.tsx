@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 
 // Loaded after the page: it brings the SBA programme with it.
 const DemoEarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard').then((m) => ({ default: m.DemoEarlyWarning })))
+const DemoCatchUpImpact = lazy(() => import('@/components/interventions/CatchUpImpactCard').then((m) => ({ default: m.DemoCatchUpImpact })))
 const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 export function SchoolDashboard() {
@@ -23,6 +24,9 @@ export function SchoolDashboard() {
 
       <Suspense fallback={null}>
         <DemoEarlyWarning scope="school" to="/app/school/levels" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DemoCatchUpImpact scope="school" to="/app/school/levels#catch-up" />
       </Suspense>
       <Suspense fallback={null}>
         <DemoSbaAttention to="/app/school/markbook" />

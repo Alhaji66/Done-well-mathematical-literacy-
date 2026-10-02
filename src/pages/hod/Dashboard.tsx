@@ -8,6 +8,7 @@ import { SchoolIcon, UsersIcon, BarChartIcon } from '@/components/ui/Icons'
 
 // Loaded after the page: it brings the SBA programme with it.
 const DemoEarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard').then((m) => ({ default: m.DemoEarlyWarning })))
+const DemoCatchUpImpact = lazy(() => import('@/components/interventions/CatchUpImpactCard').then((m) => ({ default: m.DemoCatchUpImpact })))
 const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 /**
@@ -55,6 +56,9 @@ export function HodDashboard() {
 
       <Suspense fallback={null}>
         <DemoEarlyWarning scope="hod" to="/app/hod/levels" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DemoCatchUpImpact scope="hod" to="/app/hod/levels#catch-up" />
       </Suspense>
       <Suspense fallback={null}>
         <DemoSbaAttention to="/app/hod/markbook" />

@@ -22,6 +22,8 @@ import {
   type Intervention,
   type InterventionLearner,
 } from '@/lib/interventions'
+import { interventionsInView, toImpactGroups } from '@/lib/catchUpData'
+import { CatchUpImpactPanel } from '@/components/interventions/CatchUpImpact'
 import type { Grade } from '@/types'
 
 const GRADES: Grade[] = [10, 11, 12]
@@ -315,13 +317,7 @@ export function Interventions() {
   const learnerName = (id: string) => learners.find((l) => l.id === id)?.full_name ?? 'A learner who has left'
   const canManage = (iv: Intervention) => leader || iv.created_by === profile.id
 
-  const visible = interventions.filter((iv) =>
-    profile.role === 'teacher'
-      ? iv.created_by === profile.id
-      : profile.role === 'hod' && profile.subject_id
-        ? iv.subject_id === profile.subject_id
-        : true,
-  )
+  const visible = interventionsInView(profile, interventions)
   const running = visible.filter((iv) => iv.status === 'active')
   const closed = visible.filter((iv) => iv.status !== 'active')
 
@@ -646,6 +642,12 @@ export function Interventions() {
           description="Start one from a topic your class is struggling with, or from a weekly test's results."
         />
       ) : null}
+
+      <CatchUpImpactPanel
+        groups={toImpactGroups(visible, members, tests, attempts)}
+        teacherName={(id) => (id === profile.id ? 'You' : (staff.find((s) => s.id === id)?.full_name ?? 'A former member of staff'))}
+        views={profile.role === 'school' ? ['subject', 'teacher', 'topic'] : profile.role === 'hod' ? ['teacher', 'topic'] : ['topic']}
+      />
 
       {running.length ? (
         <section className="space-y-3">

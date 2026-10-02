@@ -13,6 +13,7 @@ import { UsersIcon, BarChartIcon, SparkleIcon, ClipboardIcon, ChevronRightIcon }
 
 // Loaded after the page: it brings the SBA programme with it.
 const DemoEarlyWarning = lazy(() => import('@/components/levels/EarlyWarningCard').then((m) => ({ default: m.DemoEarlyWarning })))
+const DemoCatchUpImpact = lazy(() => import('@/components/interventions/CatchUpImpactCard').then((m) => ({ default: m.DemoCatchUpImpact })))
 const DemoSbaAttention = lazy(() => import('@/components/markbook/SbaAttention').then((m) => ({ default: m.DemoSbaAttention })))
 
 export function TeacherDashboard() {
@@ -34,6 +35,9 @@ export function TeacherDashboard() {
 
       <Suspense fallback={null}>
         <DemoEarlyWarning scope="teacher" to="/app/teacher/levels" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <DemoCatchUpImpact scope="teacher" to="/app/teacher/levels#catch-up" />
       </Suspense>
       <Suspense fallback={null}>
         <DemoSbaAttention to="/app/teacher/markbook" />

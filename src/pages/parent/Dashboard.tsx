@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { demoLearner } from '@/data/learner'
 import { getSubject } from '@/data/subjects'
@@ -10,6 +11,8 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { StatusBadge } from '@/components/ui/Badges'
 import { formatDate } from '@/lib/utils'
 import { TrendingUpIcon, ClipboardIcon, HeartHandshakeIcon, ChevronRightIcon } from '@/components/ui/Icons'
+
+const DemoMyLevels = lazy(() => import('@/components/levels/DemoMyLevels'))
 
 export function ParentDashboard() {
   const subject = getSubject(demoLearner.subjectId)!
@@ -38,6 +41,10 @@ export function ParentDashboard() {
         />
         <StatCard label="Practice streak" value={`${demoLearner.streakDays} days`} icon={<HeartHandshakeIcon className="h-4 w-4" />} tone="green" />
       </div>
+
+      <Suspense fallback={null}>
+        <DemoMyLevels parent />
+      </Suspense>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="card p-5">

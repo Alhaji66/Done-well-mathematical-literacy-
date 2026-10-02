@@ -93,6 +93,14 @@ export function termOfDate(iso: string): Term {
   return TERM_STARTS.find(([, start]) => md >= start)![0]
 }
 
+/** The term to open on: today's, or the latest one anything has been written in (0 for none). */
+export function startingTerm(results: LevelResult[], today: Date): Term | 0 {
+  const now = termOfDate(today.toISOString().slice(0, 10))
+  if (results.some((r) => r.term === now)) return now
+  const latest = Math.max(0, ...results.map((r) => r.term))
+  return (latest || now) as Term
+}
+
 /** How many of a set of percentages fall at each level. */
 export function tally(percents: number[]): Record<number, number> {
   const out: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }

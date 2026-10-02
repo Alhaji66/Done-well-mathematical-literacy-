@@ -1867,5 +1867,48 @@ set role authenticated;
 insert into results select '89b. a classmate does not', count(*)::text || ' visible', count(*) = 0 from public.sba_term_comments;
 reset role;
 
+-- ===========================================================================
+-- PARENTS SEE THE TESTS THEIR CHILD SAT (STEP 27)
+-- ===========================================================================
+
+-- Learner One hands in the Grade 12 measurement test; another test they never sat.
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, '00000000-0000-0000-0000-0000000000b1', now(), 6, 8 from public.weekly_tests where title = 'Grade 12 measurement';
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Not sat by Learner One', 'mat-lit', 12, array['finance'], 5, now()
+  from public.profiles where id = '00000000-0000-0000-0000-00000000000a';
+insert into auth.users values ('00000000-0000-0000-0000-0000000000a7');
+insert into public.profiles (id, role, full_name) values ('00000000-0000-0000-0000-0000000000a7', 'parent', 'Unlinked Parent');
+
+-- 90. A linked parent reads the test their child sat, and no other.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+insert into results
+  select '90. a linked parent reads only the tests their child sat',
+         coalesce(string_agg(title, ', '), 'none'),
+         count(*) = 1 and bool_and(title = 'Grade 12 measurement')
+  from public.weekly_tests;
+insert into results
+  select '90b. and their child''s attempt at it', count(*)::text || ' attempt(s)', count(*) = 1 from public.weekly_test_attempts;
+reset role;
+
+-- 91. A parent with no linked child reads no tests; staff and learners read as before.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a7');
+set role authenticated;
+insert into results select '91. an unlinked parent reads no tests', count(*)::text || ' visible', count(*) = 0 from public.weekly_tests;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '91b. a teacher still reads the school''s tests and attempts',
+         (select count(*) from public.weekly_tests)::text || ' tests, ' || (select count(*) from public.weekly_test_attempts)::text || ' attempt(s)',
+         (select count(*) from public.weekly_tests) >= 2 and (select count(*) from public.weekly_test_attempts) >= 1;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '91c. a learner still reads their school''s tests', count(*)::text || ' visible', count(*) >= 2 from public.weekly_tests;
+reset role;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

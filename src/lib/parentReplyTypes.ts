@@ -8,6 +8,10 @@ export interface ParentReply {
   choice: ReplyChoice
   message: string
   updated_at: string
+  /** When someone at the school dealt with it -- for a call, made the call (STEP 32). */
+  handled_at?: string | null
+  handled_by?: string | null
+  handled_note?: string
 }
 
 /** What each answer says, in the parent's words. */

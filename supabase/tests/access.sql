@@ -2180,5 +2180,74 @@ insert into results
            and (select count(*) from public.notifications where kind = 'level.parent_reply') = 2
   from public.parent_replies;
 
+-- ===========================================================================
+-- CALLS TO MAKE (STEP 32)
+-- ===========================================================================
+-- 106. The teacher marks the parent's call done, with a note; the parent's reply is untouched and nobody is re-notified.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.mark_reply_handled('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000b1',
+                                 current_setting('test.finance')::uuid, 'Spoke to mom; extra lessons on Tuesdays.');
+reset role;
+insert into results
+  select '106. staff mark a call done with a note; the reply itself is untouched',
+         coalesce(handled_note, '-') || ' / ' || choice,
+         handled_at is not null and handled_by = '00000000-0000-0000-0000-00000000000a'
+           and handled_note = 'Spoke to mom; extra lessons on Tuesdays.' and choice = 'call' and message = 'Please phone after 5pm.'
+           and (select count(*) from public.notifications where kind = 'level.parent_reply') = 2
+  from public.parent_replies;
+
+-- 107. Neither the parent nor the learner can mark it, and the parent cannot write the new columns.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+do $$
+begin
+  begin
+    perform public.mark_reply_handled('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000b1',
+                                      current_setting('test.finance')::uuid, '', false);
+    raise exception 'allowed';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+update public.parent_replies set handled_at = null, handled_by = null, handled_note = 'hacked';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$
+begin
+  perform public.mark_reply_handled('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000b1',
+                                    current_setting('test.finance')::uuid);
+  raise exception 'allowed';
+exception when insufficient_privilege then null;
+end $$;
+reset role;
+insert into results
+  select '107. the parent and the learner cannot mark a call, nor write its marking',
+         coalesce(handled_note, '-'),
+         handled_at is not null and handled_note = 'Spoke to mom; extra lessons on Tuesdays.'
+  from public.parent_replies;
+
+-- 108. The parent changes their message: a new request, back on the list, and the teacher is told.
+select pg_temp.act('00000000-0000-0000-0000-0000000000a1');
+set role authenticated;
+update public.parent_replies set message = 'Please call again after the test next week.';
+reset role;
+insert into results
+  select '108. a changed reply goes back on the list and tells the teacher',
+         case when handled_at is null then 'open' else 'still marked' end,
+         handled_at is null and handled_by is null and handled_note = ''
+           and (select count(*) from public.notifications where kind = 'level.parent_reply') = 3
+  from public.parent_replies;
+
+-- 109. Staff can mark it done and then undo that.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.mark_reply_handled('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000b1', current_setting('test.finance')::uuid, 'Called.');
+select public.mark_reply_handled('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000b1', current_setting('test.finance')::uuid, '', false);
+reset role;
+insert into results
+  select '109. marking done can be undone', case when handled_at is null then 'open' else 'marked' end, handled_at is null
+  from public.parent_replies;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

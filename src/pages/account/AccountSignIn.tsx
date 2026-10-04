@@ -39,6 +39,8 @@ export function AccountSignIn() {
   // The sign-in CAPTCHA's single-use token (see components/auth/Captcha.tsx).
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [captchaRound, setCaptchaRound] = useState(0)
+  // The widget failed to run: don't hold the button hostage to it.
+  const [captchaDown, setCaptchaDown] = useState(false)
   // Set by the device check (STEP 35) when another device took this one's place.
   const [signedOutElsewhere] = useState(() => {
     try {
@@ -114,7 +116,7 @@ export function AccountSignIn() {
   }
 
   const busy = status === 'working'
-  const waitingForCaptcha = captchaEnabled && !captchaToken
+  const waitingForCaptcha = captchaEnabled && !captchaToken && !captchaDown
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-navy-50 px-4 py-12">
@@ -244,7 +246,7 @@ export function AccountSignIn() {
                   </div>
                 ) : null}
 
-                <Captcha onToken={setCaptchaToken} round={captchaRound} />
+                <Captcha onToken={setCaptchaToken} round={captchaRound} onUnavailable={setCaptchaDown} />
 
                 {status === 'error' ? <p className="text-sm text-rose-600">{error}</p> : null}
 

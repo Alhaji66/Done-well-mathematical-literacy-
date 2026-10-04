@@ -67,7 +67,20 @@ function loadTurnstile(): Promise<TurnstileApi> {
  * `round` is bumped by the form after each attempt: the used token is thrown
  * away and the widget fetches a new one.
  */
-export function Captcha({ onToken, round }: { onToken: (token: string | null) => void; round: number }) {
+/**
+ * `onUnavailable` hears when the widget cannot run at all (blocked, offline,
+ * misconfigured), so the form can still be sent rather than locking everyone
+ * out: Supabase decides whether a token is required, and says so if it is.
+ */
+export function Captcha({
+  onToken,
+  round,
+  onUnavailable,
+}: {
+  onToken: (token: string | null) => void
+  round: number
+  onUnavailable?: (unavailable: boolean) => void
+}) {
   const box = useRef<HTMLDivElement>(null)
   const widget = useRef<string | null>(null)
   const report = useRef(onToken)
@@ -75,6 +88,11 @@ export function Captcha({ onToken, round }: { onToken: (token: string | null) =>
   // false, or what went wrong: Cloudflare's error code where it gives one
   // (e.g. 110200 = this site's address is not on the widget's hostname list).
   const [failed, setFailed] = useState<false | string>(false)
+  const unavailable = useRef(onUnavailable)
+  unavailable.current = onUnavailable
+  useEffect(() => {
+    unavailable.current?.(failed !== false)
+  }, [failed])
 
   useEffect(() => {
     if (!captchaEnabled) return
@@ -119,7 +137,7 @@ export function Captcha({ onToken, round }: { onToken: (token: string | null) =>
       <div ref={box} className="min-h-[65px]" />
       {failed ? (
         <p role="alert" className="mt-1 text-xs text-rose-600">
-          The security check could not load. Check your connection and refresh the page.
+          The security check could not load, but you can still try to sign in.
           <span className="mt-0.5 block text-[11px] text-rose-500">Details for DONE WELL support: {failed}</span>
         </p>
       ) : null}

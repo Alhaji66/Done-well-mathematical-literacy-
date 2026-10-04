@@ -16,7 +16,9 @@ import { useEffect, useRef, useState } from 'react'
  * token, so the screen works exactly as before until both halves are set up.
  */
 
-const SITE_KEY = (import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined) || ''
+// Trimmed: a key pasted into the host's settings with a stray space or line
+// break is otherwise a key Cloudflare does not recognise.
+const SITE_KEY = ((import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined) ?? '').trim()
 export const captchaEnabled = SITE_KEY !== ''
 
 interface TurnstileApi {
@@ -26,7 +28,7 @@ interface TurnstileApi {
       sitekey: string
       callback: (token: string) => void
       'expired-callback': () => void
-      'error-callback': () => void
+      'error-callback': (code?: string) => void
       theme?: 'light' | 'dark' | 'auto'
       size?: 'normal' | 'flexible' | 'compact'
     },
@@ -70,7 +72,9 @@ export function Captcha({ onToken, round }: { onToken: (token: string | null) =>
   const widget = useRef<string | null>(null)
   const report = useRef(onToken)
   report.current = onToken
-  const [failed, setFailed] = useState(false)
+  // false, or what went wrong: Cloudflare's error code where it gives one
+  // (e.g. 110200 = this site's address is not on the widget's hostname list).
+  const [failed, setFailed] = useState<false | string>(false)
 
   useEffect(() => {
     if (!captchaEnabled) return
@@ -85,16 +89,16 @@ export function Captcha({ onToken, round }: { onToken: (token: string | null) =>
             report.current(token)
           },
           'expired-callback': () => report.current(null),
-          'error-callback': () => {
+          'error-callback': (code) => {
             report.current(null)
-            setFailed(true)
+            setFailed(code ? `Cloudflare error ${code}` : 'Cloudflare error')
           },
           theme: 'light',
           size: 'flexible',
         })
       })
       .catch(() => {
-        if (!gone) setFailed(true)
+        if (!gone) setFailed('the security check script could not be downloaded')
       })
     return () => {
       gone = true
@@ -116,6 +120,7 @@ export function Captcha({ onToken, round }: { onToken: (token: string | null) =>
       {failed ? (
         <p role="alert" className="mt-1 text-xs text-rose-600">
           The security check could not load. Check your connection and refresh the page.
+          <span className="mt-0.5 block text-[11px] text-rose-500">Details for DONE WELL support: {failed}</span>
         </p>
       ) : null}
     </div>

@@ -47,6 +47,14 @@ export function describeAuthError(raw: unknown): string {
     return 'Could not reach the server. Check your connection and try again.'
   }
 
+  // The email-link tab only signs in an account that already exists (it used
+  // to create one for any address typed, and a typo became an email bounced
+  // back to Supabase). Supabase's wording for that refusal also says "not
+  // allowed", so it is caught before the redirect case below.
+  if (lower.includes('signups not allowed') || lower.includes('otp_disabled') || lower.includes('signup is disabled')) {
+    return 'There is no account with this email yet. Check the spelling, or choose Password and then Create one.'
+  }
+
   if (lower.includes('redirect') || lower.includes('not allowed')) {
     return 'This site is not on the list of addresses the sign-in link is allowed to return to, so the link would not work. Please report this — it is a setting on our side.'
   }

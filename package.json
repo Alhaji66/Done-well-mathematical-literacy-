@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test:rls": "bash tools/test-rls.sh",
     "check:security-headers": "tsx tools/check-security-headers.mts",
+    "check:email": "tsx tools/check-email.mts",
     "check:reachability": "tsx tools/reachability.mts",
     "check:subtopics": "tsx tools/subtopic-coverage.mts",
     "check:subtopic-rules": "tsx tools/subtopic-rules.mts",

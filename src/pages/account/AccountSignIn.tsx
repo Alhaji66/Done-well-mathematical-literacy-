@@ -7,6 +7,7 @@ import { MessageIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { SIGNED_OUT_REASON_KEY } from '@/lib/devices'
 import { Captcha, captchaEnabled } from '@/components/auth/Captcha'
+import { checkEmailShape, domainExists, suggestEmail } from '@/lib/emailCheck'
 
 /**
  * WHY THERE IS A PASSWORD OPTION AT ALL.
@@ -40,6 +41,9 @@ export function AccountSignIn() {
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState<'idle' | 'working' | 'sent' | 'confirm' | 'error'>('idle')
   const [error, setError] = useState('')
+  // "Did you mean …@gmail.com?" -- and the address the person said was right anyway.
+  const [suggestion, setSuggestion] = useState<string | null>(null)
+  const [keptEmail, setKeptEmail] = useState('')
   // The sign-in CAPTCHA's single-use token (see components/auth/Captcha.tsx).
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [captchaRound, setCaptchaRound] = useState(0)
@@ -65,6 +69,34 @@ export function AccountSignIn() {
     setError('')
   }
 
+  /**
+   * Before anything that makes Supabase send an email (creating an account, an
+   * email link), check the address can receive one. Returns the cleaned
+   * address, or null with the problem shown. Signing in with a password sends
+   * no email, so it is not checked.
+   */
+  const vetEmail = async (): Promise<string | null> => {
+    const shape = checkEmailShape(email)
+    if (!shape.ok) {
+      setStatus('error')
+      setError(shape.message)
+      return null
+    }
+    const better = suggestEmail(shape.email)
+    if (better && keptEmail !== shape.email) {
+      setSuggestion(better)
+      setStatus('idle')
+      return null
+    }
+    const domain = shape.email.slice(shape.email.lastIndexOf('@') + 1)
+    if (!(await domainExists(domain))) {
+      setStatus('error')
+      setError(`We could not find "${domain}". Check the part after the @ -- it may be misspelt.`)
+      return null
+    }
+    return shape.email
+  }
+
   const withPassword = async (e: FormEvent) => {
     e.preventDefault()
     if (!supabase) return
@@ -75,8 +107,10 @@ export function AccountSignIn() {
     }
     setStatus('working')
     setError('')
+    const address = creating ? await vetEmail() : email.trim()
+    if (!address) return
 
-    const credentials = { email: email.trim(), password, options: { captchaToken: captchaToken ?? undefined } }
+    const credentials = { email: address, password, options: { captchaToken: captchaToken ?? undefined } }
     const { data, error: authError } = creating
       ? await supabase.auth.signUp(credentials)
       : await supabase.auth.signInWithPassword(credentials)
@@ -105,10 +139,15 @@ export function AccountSignIn() {
     if (!supabase) return
     setStatus('working')
     setError('')
+    const address = await vetEmail()
+    if (!address) return
     const redirectTo = `${window.location.origin}${import.meta.env.BASE_URL}account/sign-in`
+    // shouldCreateUser: false -- the link is for an account that already
+    // exists. Creating one for any address typed here turned every typo into
+    // an email that bounced.
     const { error: sendError } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: { emailRedirectTo: redirectTo, captchaToken: captchaToken ?? undefined },
+      email: address,
+      options: { emailRedirectTo: redirectTo, captchaToken: captchaToken ?? undefined, shouldCreateUser: false },
     })
     setCaptchaRound((r) => r + 1)
     if (sendError) {
@@ -191,7 +230,7 @@ export function AccountSignIn() {
                   ? creating
                     ? 'Choose a password you will remember. You will use it every time you sign in.'
                     : 'Use the email and password you signed up with.'
-                  : "We'll email you a one-time link -- no password needed."}
+                  : "For an account you already have: we'll email you a one-time link, no password needed."}
               </p>
 
               <div className="mt-5 flex rounded-lg border border-navy-200 p-0.5">
@@ -225,10 +264,42 @@ export function AccountSignIn() {
                     required
                     autoComplete="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setSuggestion(null)
+                    }}
                     placeholder="you@example.com"
                     className="input mt-1"
                   />
+                  {suggestion ? (
+                    <div role="status" className="mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                      <p>
+                        Did you mean <strong className="break-all">{suggestion}</strong>?
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          className="btn-primary btn-sm"
+                          onClick={() => {
+                            setEmail(suggestion)
+                            setSuggestion(null)
+                          }}
+                        >
+                          Yes, use that
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-outline btn-sm"
+                          onClick={() => {
+                            setKeptEmail(email.trim().toLowerCase())
+                            setSuggestion(null)
+                          }}
+                        >
+                          No, mine is right
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
 
                 {mode === 'password' ? (

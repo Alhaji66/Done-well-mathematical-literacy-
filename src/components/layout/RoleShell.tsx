@@ -4,6 +4,7 @@ import { useDemoAuth, type DemoRole } from '@/context/DemoAuthContext'
 import { LogOutIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { OfflineNotice } from '@/components/layout/OfflineNotice'
+import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 
 export interface RoleNavItem {
   to: string
@@ -105,6 +106,8 @@ export function RoleShell({ role, basePath, navItems }: RoleShellProps) {
           <Outlet />
         </main>
       </div>
+
+      <FeedbackButton role={`demo:${role}`} aboveTabBar />
 
       <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-navy-100 bg-white/95 backdrop-blur md:hidden">
         {navItems.filter((item) => item.phone !== false).map((item) => (

@@ -4,6 +4,7 @@ import { useAccountAuth, type AccountRole } from '@/context/AccountAuthContext'
 import { LogOutIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { OfflineNotice } from '@/components/layout/OfflineNotice'
+import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 import type { RoleNavItem } from '@/components/layout/RoleShell'
 import { NotificationBell } from '@/components/account/NotificationBell'
 import { logSignedIn } from '@/lib/activity'
@@ -163,6 +164,7 @@ export function AccountShell({ basePath, navItems }: AccountShellProps) {
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 pb-24 md:pb-6">
           <OfflineNotice account />
           <Outlet />
+          <FeedbackButton role={profile?.role ?? 'account'} aboveTabBar />
         </main>
       </div>
 

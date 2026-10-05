@@ -2685,5 +2685,122 @@ end $$;
 reset role;
 insert into results select '129. nobody signed in to the app can upload to the bank', case when refused then 'refused' else 'ALLOWED' end, refused from t129;
 
+-- ===========================================================================
+-- FEEDBACK (STEP 37)
+-- ===========================================================================
+
+-- 130. A visitor who is not signed in can send feedback.
+select set_config('request.jwt.claim.sub', '', false);
+set role anon;
+select public.submit_feedback('/app/learner/practise', 'demo:learner', 4, '  The demo is easy to use.  ', null);
+reset role;
+insert into results
+  select '130. a visitor can send feedback; it is trimmed and kept as a demo comment',
+         role || ' / ' || message, role = 'demo:learner' and message = 'The demo is easy to use.' and user_id is null
+  from public.feedback order by created_at limit 1;
+
+-- 131. A visitor cannot read feedback.
+set role anon;
+create temp table t131 (refused boolean);
+grant all on t131 to anon;
+do $$
+begin
+  begin
+    perform 1 from public.feedback;
+    insert into t131 values (false);
+  exception when others then insert into t131 values (true);
+  end;
+end $$;
+reset role;
+insert into results select '131. a visitor cannot read feedback', case when refused then 'refused' else 'ALLOWED' end, refused from t131;
+
+-- 132. A signed-in account's role comes from its profile, not from the page.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.submit_feedback('/account/teacher/markbook', 'administrator', 9, 'Mark book is great.', 'teacher@example.com');
+reset role;
+insert into results
+  select '132. a teacher''s comment is recorded as from a teacher, with a bad rating dropped',
+         role || ' / rating ' || coalesce(rating::text, 'none'), role = 'teacher' and rating is null and contact = 'teacher@example.com'
+  from public.feedback where user_id = '00000000-0000-0000-0000-00000000000a';
+
+-- 133. A teacher (not an administrator) cannot read anyone's feedback, their own included.
+set role authenticated;
+insert into results
+  select '133. a teacher sees no feedback', count(*)::text || ' visible', count(*) = 0 from public.feedback;
+reset role;
+
+-- 134. Nobody can write to the table directly.
+set role authenticated;
+create temp table t134 (refused boolean);
+do $$
+begin
+  begin
+    insert into public.feedback (role, page, message) values ('teacher', '/', 'direct');
+    insert into t134 values (false);
+  exception when others then insert into t134 values (true);
+  end;
+end $$;
+reset role;
+insert into results select '134. feedback cannot be written around the function', case when refused then 'refused' else 'ALLOWED' end, refused from t134;
+
+-- 135. An empty comment is refused.
+set role authenticated;
+create temp table t135 (refused boolean);
+do $$
+begin
+  begin
+    perform public.submit_feedback('/', 'teacher', 3, '   ', null);
+    insert into t135 values (false);
+  exception when others then insert into t135 values (true);
+  end;
+end $$;
+reset role;
+insert into results select '135. an empty comment is refused', case when refused then 'refused' else 'ALLOWED' end, refused from t135;
+
+-- 136. One account cannot flood: the eleventh comment in ten minutes is refused.
+set role authenticated;
+create temp table t136 (refused boolean);
+do $$
+begin
+  for i in 1..9 loop
+    perform public.submit_feedback('/', 'teacher', 3, 'comment ' || i, null);
+  end loop;
+  begin
+    perform public.submit_feedback('/', 'teacher', 3, 'one too many', null);
+    insert into t136 values (false);
+  exception when others then insert into t136 values (true);
+  end;
+end $$;
+reset role;
+insert into results
+  select '136. the eleventh comment in ten minutes is refused',
+         case when refused then 'refused' else 'ALLOWED' end
+           || ' (' || (select count(*) from public.feedback where user_id = '00000000-0000-0000-0000-00000000000a') || ' kept)',
+         refused and (select count(*) from public.feedback where user_id = '00000000-0000-0000-0000-00000000000a') = 10
+  from t136;
+
+-- 137. An administrator reads every comment and can mark one done, but cannot rewrite it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+insert into results
+  select '137. an administrator reads all feedback', count(*)::text || ' visible', count(*) = 11 from public.feedback;
+update public.feedback set status = 'done' where role = 'demo:learner';
+create temp table t137 (refused boolean);
+do $$
+begin
+  begin
+    update public.feedback set message = 'rewritten' where role = 'demo:learner';
+    insert into t137 values (false);
+  exception when others then insert into t137 values (true);
+  end;
+end $$;
+reset role;
+insert into results
+  select '137b. ...marks it done but cannot rewrite it',
+         status || ' / ' || case when (select refused from t137) then 'rewrite refused' else 'REWRITE ALLOWED' end,
+         status = 'done' and message = 'The demo is easy to use.' and (select refused from t137)
+  from public.feedback where role = 'demo:learner';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { PublicHeader } from '@/components/layout/PublicHeader'
 import { PublicFooter } from '@/components/layout/PublicFooter'
+import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 
 export function PublicLayout() {
   return (
@@ -13,6 +14,7 @@ export function PublicLayout() {
         <Outlet />
       </main>
       <PublicFooter />
+      <FeedbackButton role="visitor" />
     </div>
   )
 }

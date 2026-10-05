@@ -5496,3 +5496,99 @@ create policy "Signed-in accounts read the question bank"
   on storage.objects for select
   to authenticated
   using (bucket_id = 'content' and public.has_content_access());
+
+-- ============================================================================
+-- STEP 37: FEEDBACK FROM ANYONE, READ ONLY BY DONE WELL
+-- ============================================================================
+--
+-- A "Send feedback" button on every page. Anyone may use it -- a signed-in
+-- learner, a teacher, a visitor trying the demo -- so DONE WELL hears from the
+-- people it shows the app to. Only DONE WELL's own administrators can read what
+-- was sent (the Platform console), and nobody can change or delete a comment
+-- except to mark it read or dealt with.
+--
+-- Comments arrive through one function, submit_feedback(), never by writing
+-- to the table directly. It trims and caps every field, takes a signed-in
+-- person's role from their profile rather than from the page, and refuses a
+-- flood: at most 10 comments in 10 minutes from one account, and 30 in 10
+-- minutes from all visitors who are not signed in, together.
+
+create table if not exists public.feedback (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  user_id uuid references auth.users (id) on delete set null,
+  role text not null,
+  page text not null,
+  rating smallint check (rating between 1 and 5),
+  message text not null check (char_length(message) between 1 and 2000),
+  contact text check (contact is null or char_length(contact) <= 200),
+  status text not null default 'new' check (status in ('new', 'read', 'done'))
+);
+create index if not exists feedback_created_at_idx on public.feedback (created_at desc);
+
+alter table public.feedback enable row level security;
+revoke all on public.feedback from anon, authenticated;
+grant select on public.feedback to authenticated;
+grant update (status) on public.feedback to authenticated;
+
+drop policy if exists "Administrators read feedback" on public.feedback;
+create policy "Administrators read feedback"
+  on public.feedback for select
+  to authenticated
+  using (public.is_platform_admin());
+
+drop policy if exists "Administrators mark feedback as read or done" on public.feedback;
+create policy "Administrators mark feedback as read or done"
+  on public.feedback for update
+  to authenticated
+  using (public.is_platform_admin())
+  with check (public.is_platform_admin());
+
+create or replace function public.submit_feedback(p_page text, p_role text, p_rating integer, p_message text, p_contact text)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_id uuid;
+  v_recent integer;
+  v_message text := btrim(coalesce(p_message, ''));
+  v_role text;
+begin
+  if v_message = '' then
+    raise exception 'Please write a comment before sending.';
+  end if;
+
+  if auth.uid() is null then
+    select count(*) into v_recent from public.feedback
+      where user_id is null and created_at > now() - interval '10 minutes';
+    if v_recent >= 30 then
+      raise exception 'A lot of comments have arrived in the last few minutes. Please try again shortly.';
+    end if;
+  else
+    select count(*) into v_recent from public.feedback
+      where user_id = auth.uid() and created_at > now() - interval '10 minutes';
+    if v_recent >= 10 then
+      raise exception 'You have sent several comments in the last few minutes. Please try again shortly.';
+    end if;
+  end if;
+
+  select role::text into v_role from public.profiles where id = auth.uid();
+  v_role := coalesce(v_role, left(nullif(btrim(coalesce(p_role, '')), ''), 40), 'visitor');
+
+  insert into public.feedback (user_id, role, page, rating, message, contact)
+  values (
+    auth.uid(),
+    v_role,
+    left(coalesce(p_page, ''), 200),
+    case when p_rating between 1 and 5 then p_rating end,
+    left(v_message, 2000),
+    nullif(left(btrim(coalesce(p_contact, '')), 200), '')
+  )
+  returning id into v_id;
+  return v_id;
+end;
+$$;
+revoke all on function public.submit_feedback(text, text, integer, text, text) from public;
+grant execute on function public.submit_feedback(text, text, integer, text, text) to anon, authenticated;

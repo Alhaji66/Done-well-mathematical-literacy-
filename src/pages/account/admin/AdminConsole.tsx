@@ -5,6 +5,7 @@ import { ConsoleShell } from '@/components/layout/ConsoleShell'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { cn } from '@/lib/utils'
 import { addContentEditor } from '@/lib/content'
+import { FeedbackInbox } from '@/components/feedback/FeedbackInbox'
 import {
   PLAN_LABEL,
   STATUS_LABEL,
@@ -186,6 +187,8 @@ export function AdminConsole() {
             </div>
           ))}
         </dl>
+
+        <FeedbackInbox />
 
         <section className="space-y-3">
           <input

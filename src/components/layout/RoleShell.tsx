@@ -18,6 +18,11 @@ export interface RoleNavItem {
   end?: boolean
   /** False to leave it out of the phone's bottom bar (it stays in the sidebar). */
   phone?: boolean
+  /**
+   * Signed-in accounts: one of the three destinations that sit on the phone's
+   * bottom bar beside Dashboard. Everything else is one tap away under More.
+   */
+  bar?: boolean
 }
 
 const roleLabels: Record<DemoRole, string> = {

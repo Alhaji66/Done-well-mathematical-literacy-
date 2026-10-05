@@ -91,13 +91,13 @@ export const schoolNav: RoleNavItem[] = [
 // signed-in account to save it against.
 export const accountLearnerNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
-  { to: '/practise', label: 'Practise', icon: PencilIcon },
+  { to: '/practise', label: 'Practise', icon: PencilIcon, bar: true },
   { to: '/mistakes', label: 'My Mistakes', shortLabel: 'Mistakes', icon: AlertIcon },
   { to: '/countdown', label: 'Exam countdown', shortLabel: 'Countdown', icon: CalendarIcon },
   { to: '/tutor', label: 'Check my working', shortLabel: 'Tutor', icon: SparkleIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
-  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
-  { to: '/progress', label: 'Progress', icon: TrendingUpIcon },
+  { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon, bar: true },
+  { to: '/progress', label: 'Progress', icon: TrendingUpIcon, bar: true },
   { to: '/marks', label: 'My SBA marks', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
 ]
@@ -108,15 +108,15 @@ export const accountLearnerNav: RoleNavItem[] = [
 // school's roster (no per-class data exists yet, so it's school-wide).
 export const accountTeacherNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
-  { to: '/classes', label: 'Classes', icon: UsersIcon },
+  { to: '/classes', label: 'Classes', icon: UsersIcon, bar: true },
   { to: '/interventions', label: 'Catch-up groups', shortLabel: 'Catch-up', icon: TargetIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
-  { to: '/lesson-plans', label: 'Lesson plans', shortLabel: 'Plans', icon: CalendarIcon },
+  { to: '/lesson-plans', label: 'Lesson plans', shortLabel: 'Plans', icon: CalendarIcon, bar: true },
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },
   { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon },
-  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon, bar: true },
   { to: '/levels', label: 'Levels', icon: LevelsIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },
@@ -142,11 +142,11 @@ export const accountParentNav: RoleNavItem[] = [
 // the authoring tools an HOD does not need and plus the two department rolls.
 export const accountHodNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
-  { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
+  { to: '/teachers', label: 'Teachers', icon: SchoolIcon, bar: true },
   { to: '/learners', label: 'Learners', icon: UsersIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
-  { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
-  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
+  { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon, bar: true },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon, bar: true },
   { to: '/levels', label: 'Levels', icon: LevelsIcon },
   { to: '/classes', label: 'Classes', icon: LayoutIcon },
   { to: '/interventions', label: 'Catch-up groups', shortLabel: 'Catch-up', icon: TargetIcon },
@@ -162,13 +162,13 @@ export const accountHodNav: RoleNavItem[] = [
 
 export const accountSchoolNav: RoleNavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
-  { to: '/learners', label: 'Learners', icon: UsersIcon },
+  { to: '/learners', label: 'Learners', icon: UsersIcon, bar: true },
   { to: '/classes', label: 'Classes', icon: LayoutIcon },
   { to: '/interventions', label: 'Catch-up groups', shortLabel: 'Catch-up', icon: TargetIcon },
-  { to: '/teachers', label: 'Teachers', icon: SchoolIcon },
+  { to: '/teachers', label: 'Teachers', icon: SchoolIcon, bar: true },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/plan-signoff', label: 'Plan sign-off', shortLabel: 'Sign-off', icon: CalendarIcon },
-  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon },
+  { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon, bar: true },
   { to: '/levels', label: 'Levels', icon: LevelsIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },

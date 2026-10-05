@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { MenuIcon, CloseIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
+import { hasSavedSession } from '@/lib/savedSession'
 
 const navLinks = [
   { to: '/', label: 'Home', end: true },
@@ -14,6 +15,9 @@ const navLinks = [
 
 export function PublicHeader() {
   const [open, setOpen] = useState(false)
+  // Someone already signed in goes straight back to their dashboard, rather
+  // than through Sign In and a redirect.
+  const [signedIn] = useState(hasSavedSession)
 
   return (
     <header className="sticky top-0 z-40 border-b border-navy-100 bg-white/95 backdrop-blur">
@@ -49,14 +53,27 @@ export function PublicHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Link to="/account/sign-in" className="btn-outline btn-sm">
-            Sign In
-          </Link>
-          <Link to="/sign-in" className="btn-primary btn-sm">
-            Try the demo
-          </Link>
+          {signedIn ? (
+            <Link to="/account" className="btn-primary btn-sm">
+              My dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/account/sign-in" className="btn-outline btn-sm">
+                Sign In
+              </Link>
+              <Link to="/sign-in" className="btn-primary btn-sm">
+                Try the demo
+              </Link>
+            </>
+          )}
         </div>
 
+        {signedIn ? (
+          <Link to="/account" className="btn-primary btn-sm ml-auto mr-1 lg:hidden">
+            Dashboard
+          </Link>
+        ) : null}
         <button
           type="button"
           className="flex h-10 w-10 items-center justify-center rounded-md text-navy-700 lg:hidden"
@@ -87,12 +104,20 @@ export function PublicHeader() {
               </NavLink>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-navy-100 pt-3">
-              <Link to="/account/sign-in" className="btn-outline w-full" onClick={() => setOpen(false)}>
-                Sign In
-              </Link>
-              <Link to="/sign-in" className="btn-primary w-full" onClick={() => setOpen(false)}>
-                Try the demo
-              </Link>
+              {signedIn ? (
+                <Link to="/account" className="btn-primary w-full" onClick={() => setOpen(false)}>
+                  My dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link to="/account/sign-in" className="btn-outline w-full" onClick={() => setOpen(false)}>
+                    Sign In
+                  </Link>
+                  <Link to="/sign-in" className="btn-primary w-full" onClick={() => setOpen(false)}>
+                    Try the demo
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>

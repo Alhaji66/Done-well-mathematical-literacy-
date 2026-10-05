@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { supabase } from '@/lib/supabaseClient'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { describeAuthError } from '@/lib/authErrors'
@@ -30,6 +30,10 @@ type Mode = 'password' | 'link'
 
 export function AccountSignIn() {
   const { configured, loading, session } = useAccountAuth()
+  // A link into the account (a notification, a bookmark) that needed signing
+  // in first: go on to that page afterwards, not back to the dashboard.
+  const from = (useLocation().state as { from?: { pathname?: string; search?: string } } | null)?.from
+  const after = from?.pathname?.startsWith('/account/') && from.pathname !== '/account/sign-in' ? `${from.pathname}${from.search ?? ''}` : '/account'
   const [mode, setMode] = useState<Mode>('password')
   const [creating, setCreating] = useState(false)
   const [email, setEmail] = useState('')
@@ -53,7 +57,7 @@ export function AccountSignIn() {
   })
 
   if (!loading && session) {
-    return <Navigate to="/account" replace />
+    return <Navigate to={after} replace />
   }
 
   const reset = () => {

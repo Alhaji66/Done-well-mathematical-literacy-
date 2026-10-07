@@ -380,7 +380,8 @@ out.push({
   const coverage = 8
   const litres = sa / coverage
   out.push({
-    ...({ topicId: 'measurement', grade: 10 } as const),
+    // Surface area is new in Grade 11 (WCED ATP 2026, Grade 11 Term 1 Measurement).
+    ...({ topicId: 'measurement', grade: 11 } as const),
     id: 'gap-ml-surface-g10-paint-box',
     difficulty: 'Moderate',
     cognitiveLevel: 3,

@@ -51,6 +51,9 @@ const out: Question[] = []
 /* ===================================================================== */
 
 const tax10 = { topicId: 'finance', grade: 10 } as const
+// UIF is new in Grade 11 (WCED ATP 2026, Grade 11 Term 2 Finance), so the UIF
+// questions below are Grade 11 even though they sit with the Grade 10 VAT work.
+const uif11 = { topicId: 'finance', grade: 11 } as const
 
 {
   const price = 95
@@ -133,7 +136,7 @@ out.push({
   const gross = 8450
   const uif = gross * UIF
   out.push({
-    ...tax10,
+    ...uif11,
     id: 'lg-ml10-uif-monthly',
     difficulty: 'Easy',
     cognitiveLevel: 2,
@@ -153,7 +156,7 @@ out.push({
   const each = gross * UIF
   const year = each * 2 * 12
   out.push({
-    ...tax10,
+    ...uif11,
     id: 'lg-ml10-uif-year',
     difficulty: 'Moderate',
     cognitiveLevel: 3,
@@ -170,7 +173,7 @@ out.push({
 }
 
 out.push({
-  ...tax10,
+  ...uif11,
   id: 'lg-ml10-uif-meaning',
   difficulty: 'Easy',
   cognitiveLevel: 1,

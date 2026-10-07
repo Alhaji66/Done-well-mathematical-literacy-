@@ -236,7 +236,8 @@ const scatterContext =
 
 out.push({
   topicId: 'math-statistics',
-  grade: 11,
+  // Bivariate data (scatter plots, lines of best fit) is CAPS Grade 12.
+  grade: 12,
   id: 'gap-g11-scatter-describe',
   difficulty: 'Moderate',
   cognitiveLevel: 2,
@@ -258,7 +259,8 @@ out.push({
 
 out.push({
   topicId: 'math-statistics',
-  grade: 11,
+  // Bivariate data (scatter plots, lines of best fit) is CAPS Grade 12.
+  grade: 12,
   id: 'gap-g11-line-of-best-fit',
   difficulty: 'Challenge',
   cognitiveLevel: 3,

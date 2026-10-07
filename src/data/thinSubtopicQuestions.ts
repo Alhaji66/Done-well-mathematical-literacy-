@@ -689,16 +689,20 @@ const motion = { topicId: 'phys-motion-1d', grade: 10 } as const
 }
 
 /* ===================================================================== */
-/* Internal resistance and power (Grade 11)                               */
+/* Internal resistance (Grade 12) and power (Grade 11)                    */
 /* ===================================================================== */
 
 const circ = { topicId: 'phys-electric-circuits-g11', grade: 11 } as const
+// Internal resistance is CAPS Grade 12 (Electric circuits, Term 3); Grade 11
+// circuits stop at Ohm's law, power and energy. These three were filed under
+// Grade 11 and appeared on Grade 11 worksheets.
+const circ12 = { topicId: 'phys-electric-circuits', grade: 12 } as const
 
 {
   const [emf, r, rExt] = [12, 0.5, 5.5]
   const i = emf / (rExt + r)
   out.push({
-    ...circ,
+    ...circ12,
     id: 'tsq-ps11-terminal-pd',
     difficulty: 'Moderate',
     cognitiveLevel: 2,
@@ -718,7 +722,7 @@ const circ = { topicId: 'phys-electric-circuits-g11', grade: 11 } as const
   const [emf, v, i] = [9, 8.1, 1.5]
   const r = (emf - v) / i
   out.push({
-    ...circ,
+    ...circ12,
     id: 'tsq-ps11-find-internal-resistance',
     difficulty: 'Moderate',
     cognitiveLevel: 3,
@@ -754,7 +758,7 @@ const circ = { topicId: 'phys-electric-circuits-g11', grade: 11 } as const
   })
 }
 out.push({
-  ...circ,
+  ...circ12,
   id: 'tsq-ps11-headlights-dim',
   difficulty: 'Challenge',
   cognitiveLevel: 4,

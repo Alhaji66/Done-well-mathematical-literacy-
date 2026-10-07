@@ -5232,13 +5232,13 @@ export const topicNotes: TopicNote[] = [
   },
   {
     topicId: 'phys-electric-circuits-g11',
-    summary: 'Current, potential difference and resistance, how they combine in series and parallel, and the effect of the internal resistance of a battery.',
+    summary: 'Current, potential difference and resistance, how they combine in series and parallel, and the power and energy a circuit transfers. (Internal resistance is Grade 12.)',
     keyIdeas: [
       'Current is the rate of flow of charge; potential difference is the energy transferred per coulomb',
       'Ohm\'s law: V = I R, for an ohmic conductor at constant temperature',
       'In series the current is the same everywhere and the potential differences add',
       'In parallel the potential difference is the same across each branch and the currents add',
-      'Emf is the total energy per coulomb supplied by the cell, and some of it is lost across the internal resistance',
+      'Electrical power is the rate at which electrical energy is transferred: P = V I',
     ],
     subtopics: [
       {
@@ -5260,11 +5260,10 @@ export const topicNotes: TopicNote[] = [
         ],
       },
       {
-        name: 'Internal resistance and power',
+        name: 'Power and energy',
         points: [
-          'emf = I(R + r), so the terminal potential difference V = emf - I r',
-          'The terminal potential difference falls as the current drawn increases',
-          'Power: P = V I = I^2 R = V^2 / R',
+          'Power is the rate at which electrical energy is converted: P = W / Δt',
+          'For a resistor, P = V I = I^2 R = V^2 / R',
           'Energy: E = P t, measured in joules, or in kilowatt hours for electricity accounts',
         ],
       },
@@ -5273,12 +5272,12 @@ export const topicNotes: TopicNote[] = [
       'V = I R',
       'Rs = R1 + R2 + R3',
       '1 / Rp = 1 / R1 + 1 / R2',
-      'emf = I(R + r); V(terminal) = emf - I r',
       'P = V I = I^2 R = V^2 / R',
+      'E = P t',
     ],
     commonMistakes: [
       'Adding a resistor in parallel decreases the total resistance, because it adds another path for the current',
-      'The terminal potential difference is less than the emf whenever current flows, because of internal resistance',
+      'Power uses the current through and the potential difference across the SAME component, not values from different parts of the circuit',
       'In parallel the potential difference is the same across each branch; it is not divided between them',
     ],
     example: {
@@ -5293,14 +5292,14 @@ export const topicNotes: TopicNote[] = [
     },
     moreExamples: [
       {
-        problem: 'A battery of emf 9 V and internal resistance 0.5 ohm is connected to a 4 ohm resistor. Calculate the current and the terminal potential difference, and explain why the terminal potential difference is less than the emf.',
+        problem: 'A 6 ohm resistor carries a current of 2 A. Calculate the potential difference across it, the power it dissipates, and the electrical energy it converts in 5 minutes.',
         steps: [
-          'Use emf = I(R + r): 9 = I(4 + 0.5) = I(4.5).',
-          'Therefore I = 9 / 4.5 = 2 A.',
-          'Terminal potential difference V = emf - I r = 9 - (2 x 0.5) = 9 - 1 = 8 V.',
-          'The terminal value is lower because the current also passes through the internal resistance of the cell, so 1 V of energy per coulomb is used inside the battery itself.',
+          'Ohm\'s law: V = I R = 2 x 6 = 12 V.',
+          'Power: P = V I = 12 x 2 = 24 W. Check with P = I^2 R = 4 x 6 = 24 W.',
+          'Time in seconds: 5 minutes = 300 s.',
+          'Energy: E = P t = 24 x 300 = 7 200 J.',
         ],
-        answer: 'I = 2 A and V = 8 V; the missing 1 V is lost across the internal resistance inside the battery.',
+        answer: 'V = 12 V, P = 24 W and E = 7 200 J (7,2 kJ).',
       },
     ],
   },

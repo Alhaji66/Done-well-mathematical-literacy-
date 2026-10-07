@@ -25,6 +25,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Before anything is uploaded: no question may ask a grade for a concept
+      # CAPS teaches only later (e.g. the SARS tax table in Grade 11).
+      - run: npm run check:caps-concepts
       # The question bank goes to private storage FIRST (STEP 36): if the upload
       # fails, nothing is built or deployed and the current site keeps working.
       # SUPABASE_SERVICE_ROLE_KEY is a repository secret and is never given to

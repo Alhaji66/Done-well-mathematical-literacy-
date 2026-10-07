@@ -560,10 +560,12 @@ out.push({
 })
 
 /* ===================================================================== */
-/* Tree diagrams and two-way tables (Grade 10)                           */
+/* Tree diagrams and two-way tables (Grade 11)                           */
 /* ===================================================================== */
 
-const prob10 = { topicId: 'math-counting-probability', grade: 10 } as const
+// CAPS puts tree diagrams and contingency (two-way) tables in Grade 11
+// Probability; Grade 10 works with Venn diagrams. The ids keep their old names.
+const prob10 = { topicId: 'math-counting-probability', grade: 11 } as const
 
 out.push({
   ...prob10,

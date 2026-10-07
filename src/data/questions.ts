@@ -97,7 +97,7 @@ export const questions: Question[] = [
   {
     id: 'fin-e3',
     topicId: 'finance',
-    grade: 10,
+    grade: 11,
     difficulty: 'Easy',
     marks: 2,
     prompt: "Sipho's payslip shows a UIF deduction of 1% of his gross salary. If his gross salary is R6 500, how much is deducted for UIF?",
@@ -1290,7 +1290,7 @@ export const questions: Question[] = [
   {
     id: 'ms-time-2',
     topicId: 'measurement',
-    grade: 10,
+    grade: 11,
     difficulty: 'Moderate',
     marks: 4,
     context: 'A recipe from an American website says to bake at 350 °F. The formula for converting is °C = (°F − 32) × 5 ÷ 9. A South African oven is marked in °C with settings every 10 degrees.',
@@ -1415,10 +1415,12 @@ export const questions: Question[] = [
   },
 
   // --- Data Handling: box-and-whisker diagrams -------------------------------
+  // Quartiles, the inter-quartile range and box-and-whisker plots are
+  // introduced in Grade 12 (WCED ATP 2026, Grade 12 Term 1 Data Handling).
   {
     id: 'dh-box-1',
     topicId: 'data-handling',
-    grade: 10,
+    grade: 12,
     difficulty: 'Moderate',
     marks: 4,
     context: 'A box-and-whisker diagram of test marks out of 50 has its left whisker starting at 12, the box running from 24 to 38 with a line at 30, and the right whisker ending at 47.',
@@ -1429,7 +1431,7 @@ export const questions: Question[] = [
   {
     id: 'dh-box-2',
     topicId: 'data-handling',
-    grade: 11,
+    grade: 12,
     difficulty: 'Moderate',
     marks: 5,
     context: 'Twelve learners scored the following marks, already arranged in order: 8, 11, 14, 16, 19, 21, 23, 26, 29, 33, 38, 45.',

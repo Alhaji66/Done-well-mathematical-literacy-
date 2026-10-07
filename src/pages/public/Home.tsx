@@ -63,7 +63,7 @@ const steps = [
 ]
 
 const pricingTiers = [
-  { name: 'Free', price: 'R0', desc: 'Explore sample resources and try demo dashboards.', features: ['Sample practice questions', 'Public publications preview', 'Demo dashboards'], cta: 'Get started', highlight: false },
+  { name: 'Free', price: 'R0', desc: 'A sample of every topic, and 14 days of the full question bank when you sign up.', features: ['Sample practice questions', '14-day free trial with an account', 'Demo dashboards'], cta: 'Get started', highlight: false },
   { name: 'Learner', price: 'R49', period: '/month', desc: 'Full practice, tests and progress tracking for one learner.', features: ['Unlimited practice questions', 'Weekly & revision tests', 'Progress tracking'], cta: 'Try the demo', highlight: true },
   { name: 'Teacher', price: 'R99', period: '/month', desc: 'Resources, question bank and class analytics.', features: ['Downloadable resources', 'Worksheet generator', 'Class analytics'], cta: 'Try the demo', highlight: false },
   { name: 'School', price: 'Custom', desc: 'School-wide access, support and reporting.', features: ['Whole-school analytics', 'Multiple teacher seats', 'Priority support'], cta: 'Contact us', highlight: false },

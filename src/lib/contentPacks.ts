@@ -1,6 +1,7 @@
 import type { Question } from '@/types'
 import type { Paper } from '@/data/papers/types'
 import { supabase } from '@/lib/supabaseClient'
+import { fetchMyAccess, forgetMyAccess } from '@/lib/access'
 
 /**
  * The question bank, downloaded rather than bundled.
@@ -18,6 +19,11 @@ import { supabase } from '@/lib/supabaseClient'
  * version. Only with nothing saved does a signed-in account fall back to the
  * sample -- and that is reported, so a page can say so rather than quietly
  * showing three questions a topic.
+ *
+ * Since STEP 39 the full bank is for paid access: a school with a current
+ * licence, a personal plan, or the free trial. An account with none of these
+ * gets the sample ('locked'), and any copy saved on the device earlier -- in a
+ * trial that has since ended -- is removed.
  */
 
 export interface SubjectPack {
@@ -27,8 +33,12 @@ export interface SubjectPack {
   questions: Question[]
 }
 
-/** full: downloaded now; saved: this device's copy (offline); sample: not signed in; unavailable: signed in, but only the sample could be had. */
-export type PackSource = 'full' | 'saved' | 'sample' | 'unavailable'
+/**
+ * full: downloaded now; saved: this device's copy (offline); sample: not signed
+ * in; locked: signed in without paid access or a trial; unavailable: signed in,
+ * but only the sample could be had.
+ */
+export type PackSource = 'full' | 'saved' | 'sample' | 'locked' | 'unavailable'
 
 interface Manifest {
   subjects: Record<string, { version: string; file: string; gzip: string; bytes: number }>
@@ -94,10 +104,19 @@ export async function savedSubjects(): Promise<Set<string>> {
   return saved
 }
 
+async function forgetSaved(subject: string) {
+  try {
+    if ('caches' in window) await (await caches.open(CACHE)).delete(cacheKey(subject))
+  } catch {
+    // Nothing more to do.
+  }
+}
+
 /** Called on sign-out: a shared school computer should not keep the bank for the next person. */
 export async function forgetSavedPacks() {
   memo.clear()
   manifestPromise = null
+  forgetMyAccess()
   try {
     if ('caches' in window) await caches.delete(CACHE)
   } catch {
@@ -149,10 +168,26 @@ async function signedIn(): Promise<string | null> {
   }
 }
 
+/** False when the signed-in account has only the sample (STEP 39); null when not signed in or not known. */
+export async function hasFullAccess(): Promise<boolean | null> {
+  const userId = await signedIn()
+  if (!userId) return null
+  const access = await fetchMyAccess(userId)
+  return access ? access.reason !== null : null
+}
+
 async function load(subject: string): Promise<SubjectPack> {
   if (!sampleLoaders[subject]) return { subject, papers: [], questions: [] }
-  if (!(await signedIn())) {
+  const userId = await signedIn()
+  if (!userId) {
     setSource(subject, 'sample')
+    return sample(subject)
+  }
+  // Unknown access (offline, say) is not a "no": the steps below decide.
+  const access = await fetchMyAccess(userId)
+  if (access && access.reason === null) {
+    void forgetSaved(subject)
+    setSource(subject, 'locked')
     return sample(subject)
   }
   const [m, saved] = await Promise.all([manifest(), readSaved(subject)])

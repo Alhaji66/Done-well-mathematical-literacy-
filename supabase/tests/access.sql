@@ -2973,5 +2973,212 @@ insert into results
          bool_and(refused) and count(*) = 3
   from t149;
 
+-- ===========================================================================
+-- PAID ACCESS AND ENDED LICENCES (STEP 39)
+-- ===========================================================================
+insert into auth.users values
+  ('00000000-0000-0000-0000-0000000000ca', 'thandi@example.org'),
+  ('00000000-0000-0000-0000-0000000000cb', null);
+
+-- 150. A new account gets a 14-day trial whatever it sends, and cannot lengthen it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000ca');
+set role authenticated;
+insert into public.profiles (id, role, full_name, grade, subject_id, trial_ends_at)
+  values ('00000000-0000-0000-0000-0000000000ca', 'learner', 'Thandi', 12, 'mathematics', now() + interval '10 years');
+update public.profiles set trial_ends_at = now() + interval '10 years' where id = auth.uid();
+insert into results
+  select '150. a new account gets a 14-day trial it cannot lengthen',
+         extract(day from trial_ends_at - now())::text || ' day(s) left',
+         trial_ends_at between now() + interval '13 days 23 hours' and now() + interval '14 days'
+  from public.profiles where id = auth.uid();
+reset role;
+
+-- 151. On the trial the bank is open, and my_access says why.
+select pg_temp.act('00000000-0000-0000-0000-0000000000ca');
+set role authenticated;
+insert into results
+  select '151. a learner on the free trial reads the bank',
+         (select reason from public.my_access()) || ', ' || count(*)::text || ' object(s)',
+         count(*) = 2 and (select reason from public.my_access()) = 'trial'
+  from storage.objects where bucket_id = 'content';
+reset role;
+
+-- 152. When the trial is over, an account with no school and no plan reads nothing of the bank.
+update public.profiles set trial_ends_at = now() - interval '1 minute' where id = '00000000-0000-0000-0000-0000000000ca';
+select pg_temp.act('00000000-0000-0000-0000-0000000000ca');
+set role authenticated;
+insert into results
+  select '152. after the trial, an account with no school or plan reads nothing of the bank',
+         coalesce((select reason from public.my_access()), 'no access') || ', ' || count(*)::text || ' object(s)',
+         count(*) = 0 and (select reason from public.my_access()) is null
+  from storage.objects where bucket_id = 'content';
+reset role;
+
+-- 153. A learner cannot give themselves a plan.
+select pg_temp.act('00000000-0000-0000-0000-0000000000ca');
+set role authenticated;
+create temp table t153 (how text, refused boolean);
+do $$
+begin
+  begin perform public.admin_grant_plan('thandi@example.org', 'year', current_date + 365, 'self'); insert into t153 values ('function', false);
+  exception when others then insert into t153 values ('function', true); end;
+  begin insert into public.personal_plans (user_id, plan, ends_on) values (auth.uid(), 'year', current_date + 365); insert into t153 values ('table', false);
+  exception when others then insert into t153 values ('table', true); end;
+end $$;
+reset role;
+insert into results
+  select '153. a learner cannot give themselves a plan',
+         string_agg(how || '=' || case when refused then 'refused' else 'ALLOWED' end, ', ' order by how),
+         bool_and(refused) and count(*) = 2
+  from t153;
+
+-- 154. The administrator records a paid year by email; the learner reads the bank again and sees the plan.
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+create temp table t154 as
+  select public.admin_grant_plan(' Thandi@Example.org ', 'year', current_date + 365, 'EFT 0042') as found,
+         public.admin_grant_plan('nobody@example.org', 'month', current_date + 30, null) as missing;
+grant select on t154 to authenticated;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000ca');
+set role authenticated;
+insert into results
+  select '154. an administrator records a plan by email; the learner reads the bank and sees their plan',
+         (select 'found=' || found || ' unknown=' || missing from t154) || ', ' || (select reason from public.my_access())
+           || ', ' || count(*)::text || ' object(s), ' || (select count(*) from public.personal_plans)::text || ' plan(s) visible',
+         count(*) = 2 and (select found and not missing from t154) and (select reason from public.my_access()) = 'plan'
+           and (select count(*) from public.personal_plans) = 1
+  from storage.objects where bucket_id = 'content';
+reset role;
+
+-- 155. Nobody else sees the plan.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '155. another learner sees no one else''s plan', count(*)::text || ' visible', count(*) = 0 from public.personal_plans;
+reset role;
+
+-- 156. A plan the administrator ends stops the access, and is in the audit log.
+select pg_temp.act('00000000-0000-0000-0000-0000000000e9');
+set role authenticated;
+select public.admin_end_plan((select id from public.personal_plans where user_id = '00000000-0000-0000-0000-0000000000ca'));
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000ca');
+set role authenticated;
+insert into results
+  select '156. a plan the administrator ends stops the access',
+         coalesce((select reason from public.my_access()), 'no access') || ', ' || count(*)::text || ' object(s)',
+         count(*) = 0 and (select reason from public.my_access()) is null
+  from storage.objects where bucket_id = 'content';
+reset role;
+insert into results
+  select '156b. granting and ending the plan are both in the audit log',
+         string_agg(action, ', ' order by id),
+         count(*) = 2 and bool_and(actor_id = '00000000-0000-0000-0000-0000000000e9')
+  from public.audit_log where target_table = 'personal_plans';
+
+-- 157. Learners at a school with a current licence read the bank after their trial.
+update public.profiles set trial_ends_at = now() - interval '1 minute' where id in ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-00000000000a');
+update public.schools set suspended_at = null where id = (select school_id from s);
+update public.subscriptions set status = 'active', starts_on = current_date - 30, ends_on = current_date + 300
+  where school_id = (select school_id from s);
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '157. a learner at a licensed school reads the bank after their trial',
+         (select reason || '/' || school_state from public.my_access()) || ', ' || count(*)::text || ' object(s)',
+         count(*) = 2 and (select reason = 'school' and school_state = 'current' from public.my_access())
+  from storage.objects where bucket_id = 'content';
+reset role;
+
+-- 158. Payment overdue keeps the access and the seat limit.
+update public.subscriptions set status = 'past_due' where school_id = (select school_id from s);
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+insert into results
+  select '158. payment overdue: the school keeps its access and its seat limit',
+         (select reason || '/' || school_state from public.my_access()) || ', seats '
+           || coalesce(public.school_learner_seats((select school_id from s))::text, 'no limit'),
+         (select reason = 'school' and school_state = 'overdue' from public.my_access())
+           and public.school_learner_seats((select school_id from s)) is not null;
+
+-- 159. A licence that has ended: no free places, a new learner waits, and approval says why.
+update public.subscriptions set status = 'active', starts_on = current_date - 400, ends_on = current_date - 1
+  where school_id = (select school_id from s);
+update public.schools set learner_approval = 'auto' where id = (select school_id from s);
+create temp table jc as select join_code from public.schools where id = (select school_id from s);
+grant select on jc to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000cb');
+set role authenticated;
+insert into public.profiles (id, role, full_name, grade, subject_id)
+  values ('00000000-0000-0000-0000-0000000000cb', 'learner', 'Late Joiner', 11, 'mat-lit');
+create temp table t159 as select * from public.request_school((select join_code from jc));
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f7');
+set role authenticated;
+create temp table t159b (message text);
+do $$
+begin
+  begin perform public.approve_learner('00000000-0000-0000-0000-0000000000cb', true); insert into t159b values ('APPROVED');
+  exception when others then insert into t159b values (sqlerrm); end;
+end $$;
+reset role;
+insert into results
+  select '159. an ended licence: no free places, the new learner waits, and approval says the licence has ended',
+         'seats ' || coalesce(public.school_learner_seats((select school_id from s))::text, 'no limit')
+           || ', approved on joining=' || (select approved::text from t159) || ', ' || (select message from t159b),
+         public.school_learner_seats((select school_id from s)) = 0 and not (select approved from t159)
+           and (select message like '%licence has ended%' from t159b);
+
+-- 160. ...and the school's learners, their trial over, read nothing of the bank.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into results
+  select '160. after the licence ends, its learners read nothing of the bank; my_access says it ended',
+         coalesce((select reason from public.my_access()), 'no access') || ', '
+           || (select school_state || ' ' || licence_ends_on::text from public.my_access()) || ', ' || count(*)::text || ' object(s)',
+         count(*) = 0 and (select reason is null and school_state = 'ended' and licence_ends_on = current_date - 1 from public.my_access())
+  from storage.objects where bucket_id = 'content';
+reset role;
+
+-- 161. The school sees the same on its places.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f7');
+set role authenticated;
+insert into results
+  select '161. the school''s places say the licence ended',
+         licence || ' ' || licence_ends_on::text || ', seats ' || seats::text,
+         licence = 'ended' and licence_ends_on = current_date - 1 and seats = 0
+  from public.school_seat_status();
+reset role;
+
+-- 162. A school that has never had a licence keeps no limit on places; its staff are on the trial.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+insert into results
+  select '162. a school that never had a licence has no limit on places, and its staff are on the trial',
+         coalesce(public.school_learner_seats((select school_id from other))::text, 'no limit') || ', '
+           || (select coalesce(reason, 'no access') || '/' || school_state from public.my_access()),
+         public.school_learner_seats((select school_id from other)) is null
+           and (select reason = 'trial' and school_state = 'none' from public.my_access());
+
+-- 163. Reminders: a licence ending in 7 days tells the principal and the administrators, not teachers or learners;
+-- a trial ending in 2 days tells its owner.
+update public.subscriptions set status = 'active', starts_on = current_date - 30, ends_on = current_date + 7
+  where school_id = (select school_id from s);
+update public.profiles set trial_ends_at = current_date + 2 + interval '12 hours' where id = '00000000-0000-0000-0000-0000000000ca';
+delete from public.notifications where kind like 'licence.%' or kind like 'trial.%' or kind like 'plan.%';
+insert into public.profiles (id, role, full_name) values ('00000000-0000-0000-0000-0000000000e9', 'teacher', 'DONE WELL admin')
+  on conflict (id) do nothing;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+select public.send_licence_reminders();
+insert into results
+  select '163. a licence ending in 7 days reminds the principal and the administrators; a trial ending in 2 days reminds its owner',
+         string_agg(distinct coalesce(p.role::text, 'admin') || ':' || n.kind, ', '),
+         bool_or(n.kind = 'licence.ending' and n.recipient_id = '00000000-0000-0000-0000-0000000000f7')
+           and bool_or(n.kind = 'licence.admin_ending' and n.recipient_id = '00000000-0000-0000-0000-0000000000e9')
+           and bool_or(n.kind = 'trial.ending' and n.recipient_id = '00000000-0000-0000-0000-0000000000ca')
+           and not bool_or(n.kind = 'licence.ending' and p.role::text not in ('school', 'hod'))
+  from public.notifications n
+  left join public.profiles p on p.id = n.recipient_id
+  where n.kind like 'licence.%' or n.kind like 'trial.%';
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

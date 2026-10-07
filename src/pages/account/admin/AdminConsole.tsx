@@ -6,6 +6,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { cn } from '@/lib/utils'
 import { addContentEditor } from '@/lib/content'
 import { FeedbackInbox } from '@/components/feedback/FeedbackInbox'
+import { PersonalPlans } from '@/components/admin/PersonalPlans'
 import {
   PLAN_LABEL,
   STATUS_LABEL,
@@ -36,9 +37,11 @@ const shortDate = (d: string | null) =>
  *
  * Schools in counts -- learners, staff, active this week, licence and seats --
  * with the two things an administrator does to a school: pause it, and set its
- * licence. Below that, sponsors and their programmes. There are no learner
- * names anywhere on this page, by design: nothing an administrator needs to
- * run the platform requires them.
+ * licence. Licences that are overdue, ended or ending within 30 days are
+ * listed first, so a renewal is not missed. Then personal plans (an
+ * individual who paid by EFT, found by sign-in email), sponsors and their
+ * programmes. There are no learner names anywhere on this page, by design:
+ * nothing an administrator needs to run the platform requires them.
  */
 export function AdminConsole() {
   const { session } = useAccountAuth()
@@ -155,6 +158,20 @@ export function AdminConsole() {
   }
 
   const shown = schools.filter((s) => s.name.toLowerCase().includes(filter.trim().toLowerCase()))
+  const today = new Date().toISOString().slice(0, 10)
+  const in30 = new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10)
+  const followUp = schools
+    .map((s) => {
+      if (!s.plan || !s.status) return null
+      if (s.status === 'cancelled' || s.status === 'expired' || (s.ends_on && s.ends_on < today)) {
+        return { school: s, label: s.ends_on ? `Ended ${shortDate(s.ends_on)}` : STATUS_LABEL[s.status], tone: 'ended' as const }
+      }
+      if (s.status === 'past_due') return { school: s, label: 'Payment overdue', tone: 'overdue' as const }
+      if (s.ends_on && s.ends_on <= in30) return { school: s, label: `Ends ${shortDate(s.ends_on)}`, tone: 'ending' as const }
+      return null
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null)
+    .sort((a, b) => (a.school.ends_on ?? '').localeCompare(b.school.ends_on ?? ''))
   const totals = {
     schools: schools.length,
     learners: schools.reduce((a, s) => a + s.learners, 0),
@@ -187,6 +204,35 @@ export function AdminConsole() {
             </div>
           ))}
         </dl>
+
+        {followUp.length ? (
+          <section aria-labelledby="follow-up" className="card p-5">
+            <h2 id="follow-up" className="text-sm font-bold text-navy-900">
+              Licences to follow up
+            </h2>
+            <p className="mt-1 text-xs text-navy-500">
+              Overdue, ended, or ending within 30 days. An ended licence means the school’s new learners wait and its
+              learners and teachers see only the sample. Renew by opening Licence on the school and moving the end date.
+            </p>
+            <ul className="mt-3 divide-y divide-navy-50 text-sm">
+              {followUp.map((f) => (
+                <li key={f.school.school_id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                  <span className="font-semibold text-navy-900">{f.school.name}</span>
+                  <span
+                    className={cn(
+                      'rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                      f.tone === 'ended' && 'bg-rose-50 text-rose-700',
+                      f.tone === 'overdue' && 'bg-amber-50 text-amber-800',
+                      f.tone === 'ending' && 'bg-navy-50 text-navy-700',
+                    )}
+                  >
+                    {f.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <FeedbackInbox />
 
@@ -341,6 +387,8 @@ export function AdminConsole() {
             </table>
           </div>
         </section>
+
+        <PersonalPlans />
 
         <section className="space-y-4">
           <SectionHeading

@@ -25,6 +25,9 @@ export interface SeatStatus {
   used: number
   pending: number
   approval: ApprovalMode
+  /** The school's licence today (STEP 39): absent on a database without it. */
+  licence?: 'current' | 'overdue' | 'ended' | 'none'
+  licenceEndsOn?: string | null
 }
 
 export interface PendingLearner {
@@ -68,7 +71,14 @@ export async function fetchSeatStatus(): Promise<SeatStatus | null> {
   if (error) return null
   const row = Array.isArray(data) ? data[0] : data
   if (!row) return null
-  return { seats: row.seats ?? null, used: row.used ?? 0, pending: row.pending ?? 0, approval: row.approval === 'auto' ? 'auto' : 'manual' }
+  return {
+    seats: row.seats ?? null,
+    used: row.used ?? 0,
+    pending: row.pending ?? 0,
+    approval: row.approval === 'auto' ? 'auto' : 'manual',
+    licence: row.licence ?? undefined,
+    licenceEndsOn: row.licence_ends_on ?? null,
+  }
 }
 
 /** Approve one waiting learner, or turn them away. Returns an error message, if any. */

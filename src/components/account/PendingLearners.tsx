@@ -5,6 +5,12 @@ import { UsersIcon } from '@/components/ui/Icons'
 
 /** "12 of 300 places used", or "no limit" for a school without one. */
 export function placesLine(seats: SeatStatus): string {
+  if (seats.licence === 'ended') {
+    const on = seats.licenceEndsOn
+      ? ` on ${new Date(`${seats.licenceEndsOn}T00:00:00`).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })}`
+      : ''
+    return `${seats.used} learner${seats.used === 1 ? '' : 's'} · the school's licence ended${on}, so new learners wait until it is renewed`
+  }
   if (seats.seats === null) return `${seats.used} learner${seats.used === 1 ? '' : 's'} · no limit on this licence`
   const free = Math.max(0, seats.seats - seats.used)
   return `${seats.used} of ${seats.seats} paid places used · ${free} free`

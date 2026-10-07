@@ -6242,6 +6242,7 @@ begin
   for r in
     select pp.user_id, max(pp.ends_on) as ends_on
     from public.personal_plans pp
+    join public.profiles pr on pr.id = pp.user_id
     group by pp.user_id
     having max(pp.ends_on) = current_date + 3
   loop

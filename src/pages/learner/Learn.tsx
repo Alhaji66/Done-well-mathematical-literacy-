@@ -127,7 +127,7 @@ export function LearnerLearn() {
                 grade={grade}
                 counts={subtopicCounts[topic.id] ?? {}}
               />
-              <TopicNotes topicId={topic.id} defaultOpen={false} />
+              <TopicNotes topicId={topic.id} defaultOpen={false} grade={grade} />
               <Link
                 to={`/app/learner/practise?subject=${subjectId}&grade=${grade}&topic=${topic.id}`}
                 className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-navy-700 hover:text-navy-900"

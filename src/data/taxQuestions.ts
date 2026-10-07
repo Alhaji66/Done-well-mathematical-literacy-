@@ -57,7 +57,9 @@ const PEOPLE: Person[] = [
   { name: 'Sipho', gross: 512_000, pensionPct: 6, age: 52, grade: 12 },
   { name: 'Mrs Adams', gross: 286_800, pensionPct: 5, age: 67, grade: 12 },
   { name: 'Mr Khumalo', gross: 720_000, pensionPct: 10, age: 58, grade: 12 },
-  { name: 'Lerato', gross: 240_000, pensionPct: 0, age: 29, grade: 11 },
+  // Tax-rate tables and rebates are introduced in Grade 12 (WCED ATP 2026,
+  // Grade 12 Term 1). Lerato was Grade 11 and put this on Grade 11 worksheets.
+  { name: 'Lerato', gross: 240_000, pensionPct: 0, age: 29, grade: 12 },
 ]
 
 const out: Question[] = []

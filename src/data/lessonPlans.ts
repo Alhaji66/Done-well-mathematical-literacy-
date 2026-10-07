@@ -33,7 +33,7 @@
 import type { Atp, AtpWeek } from './atp'
 import { getTopic } from './topics'
 import { getSubject } from './subjects'
-import { getTopicNote, type SubtopicNote, type TopicNote, type WorkedExample } from './topicNotes'
+import { getTopicNote, topicNoteForGrade, type SubtopicNote, type WorkedExample } from './topicNotes'
 import { subtopicFor } from './subtopics'
 import type { Grade, Question } from '@/types'
 
@@ -273,10 +273,11 @@ const LEVEL_NAMES: Record<number, string> = {
 export const levelName = (q: Question) => LEVEL_NAMES[level(q)] ?? LEVEL_NAMES[2]
 
 /** Worked examples filed under the sub-topic they illustrate, by the same rules as the questions. */
-function examplesBySubtopic(note: TopicNote | undefined, topicId: string): Map<string, WorkedExample[]> {
+function examplesBySubtopic(note: { example?: WorkedExample; moreExamples?: WorkedExample[] } | undefined, topicId: string): Map<string, WorkedExample[]> {
   const out = new Map<string, WorkedExample[]>()
   if (!note) return out
   for (const ex of [note.example, ...(note.moreExamples ?? [])]) {
+    if (!ex) continue
     const name = subtopicFor({ topicId, prompt: ex.problem } as Question)
     if (!name) continue
     out.set(name, [...(out.get(name) ?? []), ex])
@@ -284,8 +285,9 @@ function examplesBySubtopic(note: TopicNote | undefined, topicId: string): Map<s
   return out
 }
 
-function notesFor(topicId: string, subtopics: string[]): TeacherNotes | undefined {
-  const note = getTopicNote(topicId)
+/** The teacher notes for one grade: only what that grade is taught (topicNoteForGrade). */
+function notesFor(topicId: string, subtopics: string[], grade: Grade): TeacherNotes | undefined {
+  const note = topicNoteForGrade(topicId, grade)
   const topic = getTopic(topicId)
   if (!note || !topic) return undefined
   const wanted = new Set(subtopics)
@@ -297,7 +299,7 @@ function notesFor(topicId: string, subtopics: string[]): TeacherNotes | undefine
     subtopics: (note.subtopics ?? []).filter((s) => !wanted.size || wanted.has(s.name)),
     formulae: note.formulae ?? [],
     commonMistakes: note.commonMistakes ?? [],
-    examples: [note.example, ...(note.moreExamples ?? [])],
+    examples: [note.example, ...(note.moreExamples ?? [])].flatMap((ex) => (ex ? [ex] : [])),
   }
 }
 
@@ -388,7 +390,7 @@ export function buildLessonPlan({ atp, weekIndex, grade, questions, lessonMinute
     const lessons: Lesson[] = []
     topicIds.forEach((topicId, ti) => {
       const topic = getTopic(topicId)
-      const note = getTopicNote(topicId)
+      const note = topicNoteForGrade(topicId, grade)
       const pool = gradePool.filter((q) => q.topicId === topicId)
       for (let k = 0; k < perTopic[ti]; k++) {
         const name = topic?.name ?? topicId
@@ -437,14 +439,14 @@ export function buildLessonPlan({ atp, weekIndex, grade, questions, lessonMinute
       ...base,
       subtopics: [],
       lessons,
-      notes: topicIds.map((id) => notesFor(id, [])).filter((n): n is TeacherNotes => !!n),
+      notes: topicIds.map((id) => notesFor(id, [], grade)).filter((n): n is TeacherNotes => !!n),
     }
   }
 
   // ---------------------------------------------------------------- teaching
   const topicId = week.topicId
   const topic = getTopic(topicId)
-  const note = getTopicNote(topicId)
+  const note = topicNoteForGrade(topicId, grade)
   const noteByName = new Map((note?.subtopics ?? []).map((s) => [s.name, s]))
   const examples = examplesBySubtopic(note, topicId)
   const pool = gradePool.filter((q) => q.topicId === topicId)
@@ -599,7 +601,7 @@ export function buildLessonPlan({ atp, weekIndex, grade, questions, lessonMinute
     })
   }
 
-  const notes = notesFor(topicId, subtopics)
+  const notes = notesFor(topicId, subtopics, grade)
   return {
     ...base,
     topicName: topic?.name,

@@ -1,5 +1,7 @@
 import type { Grade, TreeSpec, VennSpec } from '@/types'
 import { bagTree, countsVenn, repeatTree } from '@/lib/probabilityDiagrams'
+import { getTopic } from '@/data/topics'
+import { taughtInGrade } from '@/data/capsConcepts'
 
 export interface WorkedExample {
   problem: string
@@ -124,18 +126,19 @@ export const topicNotes: TopicNote[] = [
       {
         name: 'Taxation: income tax, VAT and UIF',
         points: [
-          'The order never changes: gross income \u2192 subtract deductions \u2192 TAXABLE income \u2192 read the SARS table \u2192 subtract rebates \u2192 annual tax \u2192 \u00f7 12 for monthly PAYE. Doing the steps out of order is the most common way to lose the whole question.',
-          'Pension fund, provident fund and retirement annuity contributions are DEDUCTED from gross income before the table is used. So taxable income is smaller than gross income, and using gross income in the table overcharges the tax.',
-          'A pension contribution given as a percentage is a percentage of gross salary, not of taxable income \u2014 work it out first, then subtract it.',
-          'Income tax is read off a bracket table: find the bracket the TAXABLE income falls in, take the fixed amount in that row, then add the stated percentage of the income ABOVE that row\'s lower limit.',
-          'Never apply the bracket percentage to the whole income \u2014 only to the portion above the threshold shown in that row. That is what the fixed amount in front already accounts for.',
-          'Rebates are subtracted AFTER the tax has been calculated, never from the income. The primary rebate applies to everyone; the secondary is added from age 65 and the tertiary from age 75, and they stack.',
-          'The tax threshold is the income below which no tax is payable. It is not a separate rule \u2014 it is simply the income at which the tax from the table exactly equals the rebates.',
-          'Medical aid tax credits, where a question gives them, are also subtracted after the table, in the same step as the rebates.',
+          'Grade 10 works with VAT; Grade 11 adds UIF. Calculating income tax from the SARS tax-rate table, with rebates and thresholds, starts in Grade 12 (WCED ATP 2026).',
           'VAT in South Africa is 15%. To add VAT, multiply by 1,15. To find the VAT inside an inclusive price, multiply by 15 and divide by 115.',
           'To get back to the exclusive price from an inclusive one, divide by 1,15. Subtracting 15% is wrong and is heavily penalised.',
           'Zero-rated items such as brown bread, maize meal, rice, milk, fruit, vegetables and paraffin carry no VAT.',
           'UIF is 1% of gross salary from the employee and 1% from the employer, up to a monthly earnings ceiling.',
+          'Grade 12: The order never changes: gross income \u2192 subtract deductions \u2192 TAXABLE income \u2192 read the SARS table \u2192 subtract rebates \u2192 annual tax \u2192 \u00f7 12 for monthly PAYE. Doing the steps out of order is the most common way to lose the whole question.',
+          'Grade 12: Pension fund, provident fund and retirement annuity contributions are DEDUCTED from gross income before the table is used. So taxable income is smaller than gross income, and using gross income in the table overcharges the tax.',
+          'Grade 12: A pension contribution given as a percentage is a percentage of gross salary, not of taxable income \u2014 work it out first, then subtract it.',
+          'Grade 12: Income tax is read off a bracket table: find the bracket the TAXABLE income falls in, take the fixed amount in that row, then add the stated percentage of the income ABOVE that row\'s lower limit.',
+          'Grade 12: Never apply the bracket percentage to the whole income \u2014 only to the portion above the threshold shown in that row. That is what the fixed amount in front already accounts for.',
+          'Grade 12: Rebates are subtracted AFTER the tax has been calculated, never from the income. The primary rebate applies to everyone; the secondary is added from age 65 and the tertiary from age 75, and they stack.',
+          'Grade 12: The tax threshold is the income below which no tax is payable. It is not a separate rule \u2014 it is simply the income at which the tax from the table exactly equals the rebates.',
+          'Grade 12: Medical aid tax credits, where a question gives them, are also subtracted after the table, in the same step as the rebates.',
         ],
       },
       {
@@ -175,8 +178,8 @@ export const topicNotes: TopicNote[] = [
     ],
     commonMistakes: [
       'Applying a tax-bracket percentage to the whole income instead of only the part above the threshold.',
-      'Reading the tax table with GROSS income when a pension or retirement contribution should have been deducted first.',
-      'Subtracting the rebate from the income instead of from the tax.',
+      'Grade 12: Reading the tax table with GROSS income when a pension or retirement contribution should have been deducted first.',
+      'Grade 12: Subtracting the rebate from the income instead of from the tax.',
       'Using A = P(1 + i)\u207F for compound interest. That is the Mathematics method; Mathematical Literacy works year by year and the formula is not supplied.',
       'Putting all electricity or water usage through the highest tariff block instead of charging each block at its own rate.',
       'Confusing gross and net salary on a payslip.',
@@ -5232,13 +5235,13 @@ export const topicNotes: TopicNote[] = [
   },
   {
     topicId: 'phys-electric-circuits-g11',
-    summary: 'Current, potential difference and resistance, how they combine in series and parallel, and the effect of the internal resistance of a battery.',
+    summary: 'Current, potential difference and resistance, how they combine in series and parallel, and the power and energy a circuit transfers. (Internal resistance is Grade 12.)',
     keyIdeas: [
       'Current is the rate of flow of charge; potential difference is the energy transferred per coulomb',
       'Ohm\'s law: V = I R, for an ohmic conductor at constant temperature',
       'In series the current is the same everywhere and the potential differences add',
       'In parallel the potential difference is the same across each branch and the currents add',
-      'Emf is the total energy per coulomb supplied by the cell, and some of it is lost across the internal resistance',
+      'Electrical power is the rate at which electrical energy is transferred: P = V I',
     ],
     subtopics: [
       {
@@ -5260,11 +5263,10 @@ export const topicNotes: TopicNote[] = [
         ],
       },
       {
-        name: 'Internal resistance and power',
+        name: 'Power and energy',
         points: [
-          'emf = I(R + r), so the terminal potential difference V = emf - I r',
-          'The terminal potential difference falls as the current drawn increases',
-          'Power: P = V I = I^2 R = V^2 / R',
+          'Power is the rate at which electrical energy is converted: P = W / Δt',
+          'For a resistor, P = V I = I^2 R = V^2 / R',
           'Energy: E = P t, measured in joules, or in kilowatt hours for electricity accounts',
         ],
       },
@@ -5273,12 +5275,12 @@ export const topicNotes: TopicNote[] = [
       'V = I R',
       'Rs = R1 + R2 + R3',
       '1 / Rp = 1 / R1 + 1 / R2',
-      'emf = I(R + r); V(terminal) = emf - I r',
       'P = V I = I^2 R = V^2 / R',
+      'E = P t',
     ],
     commonMistakes: [
       'Adding a resistor in parallel decreases the total resistance, because it adds another path for the current',
-      'The terminal potential difference is less than the emf whenever current flows, because of internal resistance',
+      'Power uses the current through and the potential difference across the SAME component, not values from different parts of the circuit',
       'In parallel the potential difference is the same across each branch; it is not divided between them',
     ],
     example: {
@@ -5293,14 +5295,14 @@ export const topicNotes: TopicNote[] = [
     },
     moreExamples: [
       {
-        problem: 'A battery of emf 9 V and internal resistance 0.5 ohm is connected to a 4 ohm resistor. Calculate the current and the terminal potential difference, and explain why the terminal potential difference is less than the emf.',
+        problem: 'A 6 ohm resistor carries a current of 2 A. Calculate the potential difference across it, the power it dissipates, and the electrical energy it converts in 5 minutes.',
         steps: [
-          'Use emf = I(R + r): 9 = I(4 + 0.5) = I(4.5).',
-          'Therefore I = 9 / 4.5 = 2 A.',
-          'Terminal potential difference V = emf - I r = 9 - (2 x 0.5) = 9 - 1 = 8 V.',
-          'The terminal value is lower because the current also passes through the internal resistance of the cell, so 1 V of energy per coulomb is used inside the battery itself.',
+          'Ohm\'s law: V = I R = 2 x 6 = 12 V.',
+          'Power: P = V I = 12 x 2 = 24 W. Check with P = I^2 R = 4 x 6 = 24 W.',
+          'Time in seconds: 5 minutes = 300 s.',
+          'Energy: E = P t = 24 x 300 = 7 200 J.',
         ],
-        answer: 'I = 2 A and V = 8 V; the missing 1 V is lost across the internal resistance inside the battery.',
+        answer: 'V = 12 V, P = 24 W and E = 7 200 J (7,2 kJ).',
       },
     ],
   },
@@ -6747,6 +6749,41 @@ export const topicNotes: TopicNote[] = [
 ]
 
 export const getTopicNote = (topicId: string) => topicNotes.find((n) => n.topicId === topicId)
+
+/**
+ * A topic's notes as one grade should see them.
+ *
+ * Mathematical Literacy and Mathematics topics run through all three grades
+ * with ONE note each, so the note carries every grade's content: a Grade 10
+ * learner opening Finance was shown how to use the SARS tax table and its
+ * rebates, which is Grade 12 work. This drops the sub-topics whose `grades`
+ * leave the grade out, and every line and worked example that names a concept
+ * CAPS teaches only in other grades (the rules in capsConcepts.ts, the same
+ * ones check:caps-concepts holds the questions to). With no grade -- a
+ * teacher's resource page browsing the whole topic -- the note is unchanged.
+ *
+ * `example` may come back undefined when no worked example is in the grade.
+ */
+export function topicNoteForGrade(topicId: string, grade?: Grade): (Omit<TopicNote, 'example'> & { example?: WorkedExample }) | undefined {
+  const note = getTopicNote(topicId)
+  if (!note || !grade) return note
+  const subject = getTopic(topicId)?.subjectId ?? ''
+  const ok = (text: string) => taughtInGrade(subject, grade, text)
+  const exampleOk = (ex: WorkedExample) => ok([ex.problem, ...ex.steps, ex.answer].join(' '))
+  const examples = [note.example, ...(note.moreExamples ?? [])].filter(exampleOk)
+  return {
+    ...note,
+    keyIdeas: note.keyIdeas.filter(ok),
+    subtopics: note.subtopics
+      ?.filter((sub) => !sub.grades || sub.grades.includes(grade))
+      .map((sub) => ({ ...sub, points: sub.points.filter(ok) }))
+      .filter((sub) => sub.points.length > 0),
+    formulae: note.formulae?.filter(ok),
+    commonMistakes: note.commonMistakes?.filter(ok),
+    example: examples[0],
+    moreExamples: examples.slice(1),
+  }
+}
 
 /**
  * The sub-topic names a topic is taught in, in teaching order.

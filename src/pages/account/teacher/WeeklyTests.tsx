@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { takesSubject } from '@/lib/learnerSubjects'
 import { Link } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { subjects } from '@/data/subjects'
@@ -569,7 +570,7 @@ export function WeeklyTests() {
                 : null
             const forGrade = inClass
               ? learners.filter((l) => inClass.has(l.id))
-              : expected.filter((l) => l.grade === test.grade && l.subject_id === test.subject_id)
+              : expected.filter((l) => l.grade === test.grade && takesSubject(l, test.subject_id))
             const average =
               rows.length > 0
                 ? Math.round(

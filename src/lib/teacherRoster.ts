@@ -1,3 +1,4 @@
+import { fetchSubjectsByLearner } from '@/lib/learnerSubjects'
 import { supabase } from '@/lib/supabaseClient'
 import type { Grade } from '@/types'
 
@@ -6,6 +7,8 @@ export interface RosterLearner {
   full_name: string
   grade: Grade | null
   subject_id: string | null
+  /** Every subject the learner takes (STEP 38); falls back to [subject_id]. */
+  subjects: string[]
 }
 
 export interface RosterProgressRow {
@@ -31,9 +34,16 @@ export async function fetchSchoolLearners(schoolId: string): Promise<RosterLearn
     console.error('Failed to load school learners:', error)
     return []
   }
-  return ((data ?? []) as unknown as (RosterLearner & { learner_approved_at?: string | null })[])
+  const subjectsOf = await fetchSubjectsByLearner()
+  return ((data ?? []) as unknown as (Omit<RosterLearner, 'subjects'> & { learner_approved_at?: string | null })[])
     .filter((l) => l.learner_approved_at !== null)
-    .map(({ id, full_name, grade, subject_id }) => ({ id, full_name, grade, subject_id }))
+    .map(({ id, full_name, grade, subject_id }) => ({
+      id,
+      full_name,
+      grade,
+      subject_id,
+      subjects: subjectsOf?.get(id) ?? (subject_id ? [subject_id] : []),
+    }))
 }
 
 export async function fetchProgressForLearners(learnerIds: string[]): Promise<RosterProgressRow[]> {

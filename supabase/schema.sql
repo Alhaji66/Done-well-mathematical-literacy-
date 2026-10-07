@@ -5592,3 +5592,211 @@ end;
 $$;
 revoke all on function public.submit_feedback(text, text, integer, text, text) from public;
 grant execute on function public.submit_feedback(text, text, integer, text, text) to anon, authenticated;
+
+-- ============================================================================
+-- STEP 38: A LEARNER TAKES SEVERAL SUBJECTS
+-- ============================================================================
+--
+-- WHAT WAS WRONG. A learner profile held ONE subject_id. A Grade 12 learner who
+-- takes Mathematics, Physical Sciences and Life Sciences could only be
+-- registered for one of them, so the other two teachers never saw the learner
+-- in their roster, could not put them in their class, and a whole-grade test
+-- in those subjects never reached them.
+--
+-- THE FIX. learner_subjects lists every subject a learner takes. The learner
+-- chooses them; school staff and linked parents can read them. CAPS lets a
+-- learner take Mathematics OR Mathematical Literacy, never both, and the
+-- database holds that rule. profiles.subject_id stays as the learner's main
+-- subject (what the app opens on) and is always one of the list.
+--
+-- Existing learners keep their one subject: it is copied in below.
+
+create table if not exists public.learner_subjects (
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  subject_id text not null check (subject_id in ('mat-lit', 'mathematics', 'physical-sciences', 'life-sciences')),
+  added_at timestamptz not null default now(),
+  primary key (learner_id, subject_id)
+);
+
+alter table public.learner_subjects enable row level security;
+revoke all on public.learner_subjects from anon, authenticated;
+grant select, insert, delete on public.learner_subjects to authenticated;
+
+create or replace function public.learner_school(p_learner uuid)
+returns uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select school_id from public.profiles where id = p_learner and role::text = 'learner';
+$$;
+
+drop policy if exists "Learners see their own subjects" on public.learner_subjects;
+create policy "Learners see their own subjects"
+  on public.learner_subjects for select
+  to authenticated
+  using (learner_id = auth.uid());
+
+drop policy if exists "Learners choose their own subjects" on public.learner_subjects;
+create policy "Learners choose their own subjects"
+  on public.learner_subjects for insert
+  to authenticated
+  with check (learner_id = auth.uid()
+              and exists (select 1 from public.profiles where id = auth.uid() and role::text = 'learner'));
+
+drop policy if exists "Learners drop their own subjects" on public.learner_subjects;
+create policy "Learners drop their own subjects"
+  on public.learner_subjects for delete
+  to authenticated
+  using (learner_id = auth.uid());
+
+drop policy if exists "Staff see the subjects of their school's learners" on public.learner_subjects;
+create policy "Staff see the subjects of their school's learners"
+  on public.learner_subjects for select
+  to authenticated
+  using (public.is_school_staff(public.learner_school(learner_id)));
+
+drop policy if exists "Linked parents see their child's subjects" on public.learner_subjects;
+create policy "Linked parents see their child's subjects"
+  on public.learner_subjects for select
+  to authenticated
+  using (exists (select 1 from public.parent_learner_links l where l.learner_id = learner_subjects.learner_id and l.parent_id = auth.uid()));
+
+-- Mathematics or Mathematical Literacy, never both.
+create or replace function public.learner_subjects_rules()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  -- set_my_subjects() checks the whole new list itself and swaps it in one go
+  -- (Mat Lit -> Mathematics would otherwise be refused at every single step).
+  if current_setting('done_well.replacing_subjects', true) = 'on' then
+    return coalesce(new, old);
+  end if;
+  if tg_op = 'INSERT' then
+    if new.subject_id in ('mathematics', 'mat-lit') and exists (
+      select 1 from public.learner_subjects
+      where learner_id = new.learner_id
+        and subject_id = case new.subject_id when 'mathematics' then 'mat-lit' else 'mathematics' end
+    ) then
+      raise exception 'A learner takes Mathematics or Mathematical Literacy, not both.';
+    end if;
+    return new;
+  end if;
+  -- DELETE: the last subject cannot go (unless the whole profile is going),
+  -- and the main subject moves to one that is left.
+  if exists (select 1 from public.profiles where id = old.learner_id) then
+    if not exists (select 1 from public.learner_subjects where learner_id = old.learner_id and subject_id <> old.subject_id) then
+      raise exception 'A learner keeps at least one subject.';
+    end if;
+    update public.profiles
+      set subject_id = (select subject_id from public.learner_subjects
+                        where learner_id = old.learner_id and subject_id <> old.subject_id
+                        order by added_at limit 1)
+      where id = old.learner_id and subject_id = old.subject_id;
+  end if;
+  return old;
+end;
+$$;
+
+drop trigger if exists learner_subjects_rules on public.learner_subjects;
+create trigger learner_subjects_rules
+  before insert or delete on public.learner_subjects
+  for each row execute function public.learner_subjects_rules();
+
+-- The main subject on the profile is always in the list.
+create or replace function public.profile_subject_in_list()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.role::text = 'learner' and new.subject_id is not null then
+    insert into public.learner_subjects (learner_id, subject_id)
+      values (new.id, new.subject_id)
+      on conflict do nothing;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists profile_subject_in_list on public.profiles;
+create trigger profile_subject_in_list
+  after insert or update of subject_id, role on public.profiles
+  for each row execute function public.profile_subject_in_list();
+
+insert into public.learner_subjects (learner_id, subject_id)
+  select id, subject_id from public.profiles
+  where role::text = 'learner' and subject_id in ('mat-lit', 'mathematics', 'physical-sciences', 'life-sciences')
+  on conflict do nothing;
+
+-- The app's one way to change a learner's subjects: the whole list at once.
+create or replace function public.set_my_subjects(p_subjects text[])
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_list text[] := array(select distinct x from unnest(coalesce(p_subjects, '{}')) x);
+  v_main text;
+begin
+  if not exists (select 1 from public.profiles where id = auth.uid() and role::text = 'learner') then
+    raise exception 'Only a learner chooses their own subjects.';
+  end if;
+  if coalesce(array_length(v_list, 1), 0) = 0 then
+    raise exception 'Choose at least one subject.';
+  end if;
+  if exists (select 1 from unnest(v_list) x where x not in ('mat-lit', 'mathematics', 'physical-sciences', 'life-sciences')) then
+    raise exception 'That is not a DONE WELL subject.';
+  end if;
+  if 'mathematics' = any(v_list) and 'mat-lit' = any(v_list) then
+    raise exception 'A learner takes Mathematics or Mathematical Literacy, not both.';
+  end if;
+  perform set_config('done_well.replacing_subjects', 'on', true);
+  delete from public.learner_subjects where learner_id = auth.uid() and not (subject_id = any(v_list));
+  insert into public.learner_subjects (learner_id, subject_id)
+    select auth.uid(), x from unnest(v_list) x
+    on conflict do nothing;
+  select subject_id into v_main from public.profiles where id = auth.uid();
+  if v_main is null or not (v_main = any(v_list)) then
+    update public.profiles set subject_id = v_list[1] where id = auth.uid();
+  end if;
+  perform set_config('done_well.replacing_subjects', 'off', true);
+end;
+$$;
+revoke all on function public.set_my_subjects(text[]) from public;
+grant execute on function public.set_my_subjects(text[]) to authenticated;
+
+-- A whole-grade test reaches every learner who takes its subject.
+create or replace function public.notify_weekly_test()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_learners uuid[];
+begin
+  if new.intervention_id is not null then
+    select array_agg(learner_id) into v_learners from public.intervention_learners where intervention_id = new.intervention_id;
+  elsif new.class_id is not null then
+    select array_agg(learner_id) into v_learners from public.class_members where class_id = new.class_id;
+  else
+    select array_agg(p.id) into v_learners from public.profiles p
+      where p.school_id = new.school_id and p.role::text = 'learner' and p.grade = new.grade
+        and p.learner_approved_at is not null
+        and (p.subject_id is null or p.subject_id = new.subject_id
+             or exists (select 1 from public.learner_subjects ls where ls.learner_id = p.id and ls.subject_id = new.subject_id));
+  end if;
+  perform public.notify(v_learners, 'weekly_test.set',
+    jsonb_build_object('test_id', new.id, 'title', new.title, 'due_at', new.due_at,
+                       'catch_up', new.intervention_id is not null, 'kind', new.kind),
+    'tests');
+  return new;
+end;
+$$;

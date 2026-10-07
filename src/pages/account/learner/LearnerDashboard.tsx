@@ -17,6 +17,8 @@ const ComingUp = lazy(() => import('@/components/markbook/ComingUp'))
 const MyLevels = lazy(() => import('@/components/levels/MyLevels'))
 import { PencilIcon, TrendingUpIcon, ClipboardIcon, CheckIcon } from '@/components/ui/Icons'
 import { subjects } from '@/data/subjects'
+import { MySubjects } from '@/components/account/MySubjects'
+import { fetchMySubjects } from '@/lib/learnerSubjects'
 
 function FamilyLinkCode({ code }: { code: string }) {
   const [copied, setCopied] = useState(false)
@@ -51,7 +53,23 @@ function FamilyLinkCode({ code }: { code: string }) {
 const subjectNames: Record<string, string> = Object.fromEntries(subjects.map((s) => [s.id, s.name]))
 
 export function LearnerDashboard() {
-  const { profile } = useAccountAuth()
+  const { profile, refreshProfile } = useAccountAuth()
+  // Every subject the learner takes (STEP 38), main subject first, and the one
+  // whose revision plan is showing.
+  const [mySubjects, setMySubjects] = useState<string[]>([])
+  const [activeSubject, setActiveSubject] = useState<string | null>(null)
+  useEffect(() => {
+    if (!profile?.id) return
+    let live = true
+    fetchMySubjects(profile.id, profile.subject_id).then((list) => {
+      if (!live) return
+      setMySubjects(list)
+      setActiveSubject((current) => (current && list.includes(current) ? current : list[0] ?? null))
+    })
+    return () => {
+      live = false
+    }
+  }, [profile?.id, profile?.subject_id])
   const [schoolName, setSchoolName] = useState<string | null>(null)
   const [progress, setProgress] = useState<ProgressRow[]>([])
   const [loading, setLoading] = useState(true)
@@ -100,8 +118,21 @@ export function LearnerDashboard() {
       <SectionHeading
         eyebrow="Dashboard"
         title={`Welcome, ${profile.full_name}`}
-        description={`Grade ${profile.grade} — ${profile.subject_id ? subjectNames[profile.subject_id] ?? profile.subject_id : ''}${schoolName ? ` · ${schoolName}` : ''}`}
+        description={`Grade ${profile.grade} — ${(mySubjects.length ? mySubjects : profile.subject_id ? [profile.subject_id] : []).map((id) => subjectNames[id] ?? id).join(', ')}${schoolName ? ` · ${schoolName}` : ''}`}
       />
+
+      {mySubjects.length ? (
+        <MySubjects
+          subjects={mySubjects}
+          active={activeSubject}
+          onPick={setActiveSubject}
+          onSaved={(next) => {
+            setMySubjects(next)
+            setActiveSubject((current) => (current && next.includes(current) ? current : next[0]))
+            void refreshProfile()
+          }}
+        />
+      ) : null}
 
       <SchoolMembership />
 
@@ -118,11 +149,11 @@ export function LearnerDashboard() {
         <MyLevels learners={[{ id: profile.id }]} />
       </Suspense>
 
-      {profile.subject_id && profile.grade ? (
+      {activeSubject && profile.grade ? (
         <PlanShortcuts
           basePath="/account/learner"
           scope={profile.id}
-          subjectId={profile.subject_id}
+          subjectId={activeSubject}
           grade={profile.grade}
           marks={progress.map((p) => ({ topicId: p.topic_id, mastery: p.mastery_percent }))}
         />
@@ -182,7 +213,7 @@ export function LearnerDashboard() {
         </Link>
       </div>
 
-      {profile.subject_id ? <SaveOffline subjectId={profile.subject_id} /> : null}
+      {activeSubject ? <SaveOffline subjectId={activeSubject} /> : null}
 
       <FamilyLinkCode code={profile.id} />
     </div>

@@ -456,7 +456,7 @@ export function Reports() {
       const p = week?.get(l.id)
       report = (
         <div className="print-area card space-y-6 p-6">
-          {header(`${l.full_name} — learner report`, `${l.grade ? `Grade ${l.grade}` : ''}${l.subject_id ? ` ${subjectName(l.subject_id)}` : ''}`)}
+          {header(`${l.full_name} — learner report`, `${l.grade ? `Grade ${l.grade}` : ''}${l.subjects.length ? ` ${l.subjects.map(subjectName).join(', ')}` : ''}`)}
           <dl className="grid grid-cols-3 gap-4">
             <div>
               <dt className="text-xs text-navy-500">Overall mastery</dt>

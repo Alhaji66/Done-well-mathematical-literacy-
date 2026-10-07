@@ -196,7 +196,7 @@ export function TeacherDashboard() {
                     <h4 className="font-semibold text-navy-900">{learner.full_name}</h4>
                     <p className="text-xs text-navy-500">
                       {learner.grade ? `Grade ${learner.grade}` : ''}
-                      {learner.subject_id ? ` · ${subjectNames[learner.subject_id] ?? learner.subject_id}` : ''}
+                      {learner.subjects.length ? ` · ${learner.subjects.map((id) => subjectNames[id] ?? id).join(', ')}` : ''}
                     </p>
                   </div>
                   <span className="text-lg font-bold text-navy-900">{mastery !== null ? `${mastery}%` : '—'}</span>

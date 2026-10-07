@@ -2802,5 +2802,176 @@ insert into results
          status = 'done' and message = 'The demo is easy to use.' and (select refused from t137)
   from public.feedback where role = 'demo:learner';
 
+-- ===========================================================================
+-- A LEARNER TAKES SEVERAL SUBJECTS (STEP 38)
+-- ===========================================================================
+
+-- A fresh Grade 12 learner at Gojela High, approved, with a linked parent.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000bd'), ('00000000-0000-0000-0000-0000000000ad');
+select pg_temp.act('00000000-0000-0000-0000-0000000000bd');
+set role authenticated;
+insert into public.profiles (id, role, full_name, school_id, grade, subject_id)
+  select '00000000-0000-0000-0000-0000000000bd', 'learner', 'Learner Seven', school_id, 12, 'mat-lit' from s;
+reset role;
+update public.profiles set learner_approved_at = now() where id = '00000000-0000-0000-0000-0000000000bd';
+insert into public.profiles (id, role, full_name) values ('00000000-0000-0000-0000-0000000000ad', 'parent', 'Parent Seven');
+insert into public.parent_learner_links (parent_id, learner_id)
+  values ('00000000-0000-0000-0000-0000000000ad', '00000000-0000-0000-0000-0000000000bd');
+
+-- 138. The subject a learner signs up with is already on their list.
+insert into results
+  select '138. the sign-up subject is on the learner''s list', string_agg(subject_id, ','), string_agg(subject_id, ',') = 'mat-lit'
+  from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+
+-- 139. A learner adds two more subjects.
+select pg_temp.act('00000000-0000-0000-0000-0000000000bd');
+set role authenticated;
+insert into public.learner_subjects (learner_id, subject_id) values
+  ('00000000-0000-0000-0000-0000000000bd', 'physical-sciences'),
+  ('00000000-0000-0000-0000-0000000000bd', 'life-sciences');
+insert into results
+  select '139. a learner adds Physical and Life Sciences', count(*)::text || ' subjects', count(*) = 3
+  from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+
+-- 140. Mathematics and Mathematical Literacy cannot both be taken.
+create temp table t140 (refused boolean);
+do $$
+begin
+  begin
+    insert into public.learner_subjects (learner_id, subject_id) values ('00000000-0000-0000-0000-0000000000bd', 'mathematics');
+    insert into t140 values (false);
+  exception when others then insert into t140 values (true);
+  end;
+end $$;
+insert into results select '140. Mathematics on top of Mat Lit is refused', case when refused then 'refused' else 'ALLOWED' end, refused from t140;
+
+-- 141. A learner cannot choose subjects for someone else.
+create temp table t141 (refused boolean);
+do $$
+begin
+  begin
+    insert into public.learner_subjects (learner_id, subject_id) values ('00000000-0000-0000-0000-0000000000b2', 'life-sciences');
+    insert into t141 values (false);
+  exception when others then insert into t141 values (true);
+  end;
+end $$;
+insert into results select '141. a learner cannot add a subject for another learner', case when refused then 'refused' else 'ALLOWED' end, refused from t141;
+reset role;
+
+-- 142. Their school's teacher sees all three; a teacher at another school sees none.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '142. a teacher at the learner''s school sees their subjects', count(*)::text || ' visible', count(*) = 3
+  from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f1');
+set role authenticated;
+insert into results
+  select '142b. a teacher at another school sees none', count(*)::text || ' visible', count(*) = 0
+  from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+reset role;
+
+-- 143. The linked parent sees them; another learner does not.
+select pg_temp.act('00000000-0000-0000-0000-0000000000ad');
+set role authenticated;
+insert into results
+  select '143. a linked parent sees their child''s subjects', count(*)::text || ' visible', count(*) = 3
+  from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+insert into results
+  select '143b. another learner sees none', count(*)::text || ' visible', count(*) = 0
+  from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+reset role;
+
+-- 144. A whole-grade Physical Sciences test reaches the learner.
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'Grade 12 electric circuits', 'physical-sciences', 12, array['phys-electric-circuits'], 10, now() + interval '7 days'
+  from s;
+insert into results
+  select '144. a whole-grade test in a second subject reaches the learner', count(*)::text || ' notice(s)', count(*) = 1
+  from public.notifications
+  where recipient_id = '00000000-0000-0000-0000-0000000000bd' and kind = 'weekly_test.set'
+    and data->>'title' = 'Grade 12 electric circuits';
+
+-- 145. Dropping the main subject moves the main subject to one that is left.
+select pg_temp.act('00000000-0000-0000-0000-0000000000bd');
+set role authenticated;
+delete from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd' and subject_id = 'mat-lit';
+reset role;
+insert into results
+  select '145. dropping the main subject moves it to one that is left', coalesce(p.subject_id, 'none') || ', ' || (select count(*) from public.learner_subjects where learner_id = p.id)::text || ' left',
+         p.subject_id in ('physical-sciences', 'life-sciences') and (select count(*) from public.learner_subjects where learner_id = p.id) = 2
+  from public.profiles p where p.id = '00000000-0000-0000-0000-0000000000bd';
+
+-- 146. The last subject cannot be dropped.
+select pg_temp.act('00000000-0000-0000-0000-0000000000bd');
+set role authenticated;
+delete from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd' and subject_id = 'life-sciences';
+create temp table t146 (refused boolean);
+do $$
+begin
+  begin
+    delete from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+    insert into t146 values (false);
+  exception when others then insert into t146 values (true);
+  end;
+end $$;
+reset role;
+insert into results
+  select '146. the last subject cannot be dropped', case when refused then 'refused' else 'ALLOWED' end
+           || ' (' || (select count(*) from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd') || ' left)',
+         refused and (select count(*) from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd') = 1
+  from t146;
+
+-- 147. Deleting the learner's account takes their subjects with it.
+delete from public.profiles where id = '00000000-0000-0000-0000-0000000000bd';
+insert into results
+  select '147. a deleted account leaves no subjects behind', count(*)::text || ' left', count(*) = 0
+  from public.learner_subjects where learner_id = '00000000-0000-0000-0000-0000000000bd';
+
+-- 148. A learner with only Mat Lit switches to Mathematics in one step.
+insert into auth.users values ('00000000-0000-0000-0000-0000000000be');
+select pg_temp.act('00000000-0000-0000-0000-0000000000be');
+set role authenticated;
+insert into public.profiles (id, role, full_name, school_id, grade, subject_id)
+  select '00000000-0000-0000-0000-0000000000be', 'learner', 'Learner Eight', school_id, 11, 'mat-lit' from s;
+select public.set_my_subjects(array['mathematics', 'physical-sciences']);
+reset role;
+insert into results
+  select '148. a learner swaps Mat Lit for Mathematics and adds a subject in one step',
+         p.subject_id || ' / ' || (select string_agg(subject_id, ',' order by subject_id) from public.learner_subjects where learner_id = p.id),
+         p.subject_id = 'mathematics'
+           and (select string_agg(subject_id, ',' order by subject_id) from public.learner_subjects where learner_id = p.id) = 'mathematics,physical-sciences'
+  from public.profiles p where p.id = '00000000-0000-0000-0000-0000000000be';
+
+-- 149. The one-step change still refuses both Maths subjects, an empty list, and a non-learner.
+select pg_temp.act('00000000-0000-0000-0000-0000000000be');
+set role authenticated;
+create temp table t149 (what text, refused boolean);
+do $$
+begin
+  begin perform public.set_my_subjects(array['mathematics', 'mat-lit']); insert into t149 values ('both', false);
+  exception when others then insert into t149 values ('both', true); end;
+  begin perform public.set_my_subjects(array[]::text[]); insert into t149 values ('empty', false);
+  exception when others then insert into t149 values ('empty', true); end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+do $$
+begin
+  begin perform public.set_my_subjects(array['life-sciences']); insert into t149 values ('teacher', false);
+  exception when others then insert into t149 values ('teacher', true); end;
+end $$;
+reset role;
+insert into results
+  select '149. both Maths subjects, an empty list and a teacher are refused',
+         string_agg(what || '=' || case when refused then 'refused' else 'ALLOWED' end, ', ' order by what),
+         bool_and(refused) and count(*) = 3
+  from t149;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

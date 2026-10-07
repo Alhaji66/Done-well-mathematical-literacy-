@@ -1,5 +1,7 @@
 import type { Grade, TreeSpec, VennSpec } from '@/types'
 import { bagTree, countsVenn, repeatTree } from '@/lib/probabilityDiagrams'
+import { getTopic } from '@/data/topics'
+import { taughtInGrade } from '@/data/capsConcepts'
 
 export interface WorkedExample {
   problem: string
@@ -6747,6 +6749,41 @@ export const topicNotes: TopicNote[] = [
 ]
 
 export const getTopicNote = (topicId: string) => topicNotes.find((n) => n.topicId === topicId)
+
+/**
+ * A topic's notes as one grade should see them.
+ *
+ * Mathematical Literacy and Mathematics topics run through all three grades
+ * with ONE note each, so the note carries every grade's content: a Grade 10
+ * learner opening Finance was shown how to use the SARS tax table and its
+ * rebates, which is Grade 12 work. This drops the sub-topics whose `grades`
+ * leave the grade out, and every line and worked example that names a concept
+ * CAPS teaches only in other grades (the rules in capsConcepts.ts, the same
+ * ones check:caps-concepts holds the questions to). With no grade -- a
+ * teacher's resource page browsing the whole topic -- the note is unchanged.
+ *
+ * `example` may come back undefined when no worked example is in the grade.
+ */
+export function topicNoteForGrade(topicId: string, grade?: Grade): (Omit<TopicNote, 'example'> & { example?: WorkedExample }) | undefined {
+  const note = getTopicNote(topicId)
+  if (!note || !grade) return note
+  const subject = getTopic(topicId)?.subjectId ?? ''
+  const ok = (text: string) => taughtInGrade(subject, grade, text)
+  const exampleOk = (ex: WorkedExample) => ok([ex.problem, ...ex.steps, ex.answer].join(' '))
+  const examples = [note.example, ...(note.moreExamples ?? [])].filter(exampleOk)
+  return {
+    ...note,
+    keyIdeas: note.keyIdeas.filter(ok),
+    subtopics: note.subtopics
+      ?.filter((sub) => !sub.grades || sub.grades.includes(grade))
+      .map((sub) => ({ ...sub, points: sub.points.filter(ok) }))
+      .filter((sub) => sub.points.length > 0),
+    formulae: note.formulae?.filter(ok),
+    commonMistakes: note.commonMistakes?.filter(ok),
+    example: examples[0],
+    moreExamples: examples.slice(1),
+  }
+}
 
 /**
  * The sub-topic names a topic is taught in, in teaching order.

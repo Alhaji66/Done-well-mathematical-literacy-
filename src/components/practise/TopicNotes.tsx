@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getTopicNote } from '@/data/topicNotes'
+import { topicNoteForGrade } from '@/data/topicNotes'
+import type { Grade } from '@/types'
 import { BookIcon, SparkleIcon, ChevronRightIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { TreeDiagram, VennDiagram } from '@/components/practise/ProbabilityDiagrams'
@@ -13,12 +14,15 @@ export function TopicNotes({
   topicId,
   defaultOpen = true,
   showSubtopics = true,
+  grade,
 }: {
   topicId: string
   defaultOpen?: boolean
   showSubtopics?: boolean
+  /** Show only what this grade is taught. Absent: the whole topic, for teachers browsing resources. */
+  grade?: Grade
 }) {
-  const note = getTopicNote(topicId)
+  const note = topicNoteForGrade(topicId, grade)
   const [open, setOpen] = useState(defaultOpen)
 
   useEffect(() => {
@@ -48,6 +52,7 @@ export function TopicNotes({
 
       {open ? (
         <div className="space-y-5 border-t border-navy-100 p-4 pt-4">
+          {note.keyIdeas.length ? (
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wide text-navy-500">Key ideas</h4>
             <ul className="mt-2 space-y-1.5">
@@ -59,6 +64,7 @@ export function TopicNotes({
               ))}
             </ul>
           </div>
+          ) : null}
 
           {showSubtopics && note.subtopics?.length ? (
             <div>
@@ -113,7 +119,7 @@ export function TopicNotes({
             </div>
           ) : null}
 
-          {[note.example, ...(note.moreExamples ?? [])].map((example, exampleIndex) => (
+          {[note.example, ...(note.moreExamples ?? [])].flatMap((ex) => (ex ? [ex] : [])).map((example, exampleIndex) => (
             <div key={exampleIndex} className="rounded-lg bg-navy-50 p-4">
               <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-navy-500">
                 <SparkleIcon className="h-3.5 w-3.5 text-gold-700" />

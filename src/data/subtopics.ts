@@ -1,5 +1,5 @@
 import type { Question, TreeSpec, VennSpec } from '@/types'
-import { getTopicNote, type SubtopicNote } from '@/data/topicNotes'
+import { getTopicNote, topicNoteForGrade, type SubtopicNote } from '@/data/topicNotes'
 
 /**
  * Which sub-topic a question belongs to.
@@ -1102,6 +1102,12 @@ export interface SubtopicGroup {
  * Empty sub-topics are dropped; unmatched questions come last under UNSORTED.
  */
 export function groupBySubtopic(topicId: string, questions: Question[]): SubtopicGroup[] {
+  // The points printed above each sub-topic's questions are that grade's
+  // points: when every question shown is from one grade, the note is filtered
+  // to it (topicNoteForGrade), so Grade 11 Taxation shows VAT and UIF and not
+  // the Grade 12 tax table.
+  const grade = questions.length && questions.every((q) => q.grade === questions[0].grade) ? questions[0].grade : undefined
+  const pointsFor = new Map((topicNoteForGrade(topicId, grade)?.subtopics ?? []).map((s) => [s.name, s.points]))
   const subs = getTopicNote(topicId)?.subtopics ?? []
   if (!subs.length) return [{ name: UNSORTED, questions }]
 
@@ -1118,7 +1124,7 @@ export function groupBySubtopic(topicId: string, questions: Question[]): Subtopi
   const groups: SubtopicGroup[] = []
   for (const sub of subs) {
     const qs = buckets.get(sub.name) ?? []
-    if (qs.length) groups.push({ name: sub.name, points: sub.points, tree: sub.tree, venn: sub.venn, questions: qs })
+    if (qs.length) groups.push({ name: sub.name, points: pointsFor.get(sub.name) ?? [], tree: sub.tree, venn: sub.venn, questions: qs })
   }
   if (unsorted.length) groups.push({ name: UNSORTED, questions: unsorted })
   return groups

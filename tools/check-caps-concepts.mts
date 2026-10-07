@@ -10,7 +10,7 @@
  */
 import { subjects } from '../src/data/subjects'
 import { subjectContent } from '../src/data/contentSource'
-import { conceptRules, reviewedAllowed } from './caps-concepts.mts'
+import { conceptRules, reviewedAllowed } from '../src/data/capsConcepts'
 import type { Question } from '../src/types'
 
 const verbose = process.argv.includes('--list')

@@ -301,7 +301,7 @@ export function LearnerPractise() {
       </div>
 
       {/* Each sub-topic's own explanation is rendered above its questions. */}
-      {topicId ? <TopicNotes topicId={topicId} showSubtopics={false} /> : null}
+      {topicId ? <TopicNotes topicId={topicId} showSubtopics={false} grade={grade} /> : null}
 
       {loadingQuestions ? (
         <p className="text-sm text-navy-500">Loading questions…</p>

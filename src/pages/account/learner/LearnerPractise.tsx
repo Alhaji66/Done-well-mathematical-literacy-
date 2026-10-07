@@ -302,7 +302,7 @@ export function LearnerPractise() {
 
       {/* The topic overview only. Each sub-topic's own explanation is rendered
           directly above its questions, where it is actually needed. */}
-      {topicId ? <TopicNotes topicId={topicId} showSubtopics={false} /> : null}
+      {topicId ? <TopicNotes topicId={topicId} showSubtopics={false} grade={profile?.grade ?? undefined} /> : null}
 
       {savedMessage ? (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">

@@ -187,7 +187,7 @@ export const conceptRules: ConceptRule[] = [
     subject: 'mathematics',
     concept: 'Reduction formulae, trigonometric identities, general solutions, sine, cosine and area rules',
     grades: [11, 12],
-    pattern: /\b(reduction formula|general solution|sine rule|cosine rule|area rule|trigonometric identit(y|ies))\b|sin\s*²\s*\w\s*\+\s*cos\s*²/i,
+    pattern: /\b(reduction formula|general solution|sine rule|cosine rule|area rule|trigonometric identit(y|ies)|quotient identity|square identity|prov(e|ing) (an|the|that the) identity|CAST)\b|sin\s*²\s*\w\s*\+\s*cos\s*²|½\s*·?\s*ab\s*·?\s*sin/i,
     source: 'CAPS Grade 11 Trigonometry',
   },
   {
@@ -452,4 +452,22 @@ export const reviewedAllowed: Record<string, string> = {
   'ps5-11-lenz-free-energy-evaluate': "Grade 11 Lenz's law: the 'free electricity' idea is the misconception being refuted, not generator theory.",
   'ps6-11-alcohol-chain-solubility-data': 'Grade 11 intermolecular forces: alcohols are the standard example of hydrogen bonding and solubility.',
   'psci-g11-p2-2023-6-6': 'Grade 11 acids and bases: compares a strong and a weak acid qualitatively; no pH calculation.',
+}
+
+/**
+ * Is this piece of text inside what the grade is taught? False when it names
+ * a concept that CAPS teaches only in other grades. Rules with no grades at
+ * all describe methods a subject never uses (interest formulae in Mat Lit);
+ * notes mention those precisely to warn against them, so they do not hide a
+ * note.
+ */
+export function taughtInGrade(subject: string, grade: number, text: string): boolean {
+  // A note line can say outright which grade it belongs to.
+  const marked = text.match(/^Grade (1[0-2]):/)
+  if (marked && Number(marked[1]) > grade) return false
+  for (const r of conceptRules) {
+    if (r.subject !== subject || r.grades.length === 0) continue
+    if (!r.grades.includes(grade as 10 | 11 | 12) && r.pattern.test(text)) return false
+  }
+  return true
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { takesSubject } from '@/lib/learnerSubjects'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { subjects } from '@/data/subjects'
@@ -158,7 +159,7 @@ export function ClassDetail() {
   // subject unless the teacher asks to see everyone.
   const candidates = roster
     .filter((l) => !memberIds.includes(l.id))
-    .filter((l) => otherGrades || (l.grade === cls.grade && (l.subject_id === null || l.subject_id === cls.subject_id)))
+    .filter((l) => otherGrades || (l.grade === cls.grade && takesSubject(l, cls.subject_id)))
     .sort((a, b) => a.full_name.localeCompare(b.full_name))
 
   const run = async (action: () => Promise<string | undefined>) => {
@@ -322,7 +323,7 @@ export function ClassDetail() {
                       <span className="flex-1 text-navy-800">{l.full_name}</span>
                       <span className="text-xs text-navy-400">
                         {l.grade ? `Gr ${l.grade}` : ''}
-                        {l.subject_id ? ` · ${subjectName(l.subject_id)}` : ''}
+                        {l.subjects.length ? ` · ${l.subjects.map(subjectName).join(', ')}` : ''}
                       </span>
                     </label>
                   )

@@ -108,10 +108,12 @@ export async function fetchTestsForSchool(schoolId: string): Promise<WeeklyTest[
  */
 export async function fetchTestsForLearner(
   schoolId: string,
-  subjectId: string | null,
+  /** Every subject the learner takes (STEP 38); one id or null still work. */
+  subjectId: string | string[] | null,
   grade: Grade | null,
   learnerId?: string,
 ): Promise<WeeklyTest[]> {
+  const subjectIds = subjectId === null ? [] : Array.isArray(subjectId) ? subjectId : [subjectId]
   const none = Promise.resolve([] as string[])
   const [all, myClasses, myGroups] = await Promise.all([
     fetchTestsForSchool(schoolId),
@@ -123,7 +125,7 @@ export async function fetchTestsForLearner(
     // learner is registered in.
     if (t.intervention_id) return myGroups.includes(t.intervention_id)
     return (
-      (!subjectId || t.subject_id === subjectId) &&
+      (!subjectIds.length || subjectIds.includes(t.subject_id)) &&
       (!grade || t.grade === grade) &&
       (!t.class_id || myClasses.includes(t.class_id))
     )

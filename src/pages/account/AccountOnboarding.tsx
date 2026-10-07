@@ -5,6 +5,8 @@ import { useAccountAuth, type AccountRole } from '@/context/AccountAuthContext'
 import { UserIcon, HeartHandshakeIcon, BookIcon, SchoolIcon, CheckCircleIcon } from '@/components/ui/Icons'
 import { recordConsent } from '@/lib/privacy'
 import { createSchool, joinSchool, normaliseJoinCode } from '@/lib/schools'
+import { SubjectPicker } from '@/components/account/SubjectPicker'
+import { saveMySubjects } from '@/lib/learnerSubjects'
 import { cn } from '@/lib/utils'
 import { usePlatformAccess } from '@/lib/platform'
 import { useContentAccess } from '@/lib/content'
@@ -46,6 +48,8 @@ export function AccountOnboarding() {
   const [newCode, setNewCode] = useState('')
   const [grade, setGrade] = useState<Grade>(12)
   const [subjectId, setSubjectId] = useState('mat-lit')
+  // A learner takes several subjects (STEP 38); the first is their main one.
+  const [learnerSubjects, setLearnerSubjects] = useState<string[]>(['mat-lit'])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -127,9 +131,17 @@ export function AccountOnboarding() {
         // An HOD without a subject_id has no department, so the whole role
         // would load to an empty screen. It is as required here as it is for
         // a teacher.
-        subject_id: role === 'learner' || role === 'teacher' || role === 'hod' ? subjectId : null,
+        subject_id: role === 'learner' ? learnerSubjects[0] : role === 'teacher' || role === 'hod' ? subjectId : null,
       })
       if (profileError) throw profileError
+
+      // The rest of a learner's subjects. The profile is saved already, so a
+      // failure here is shown but does not undo the sign-up: the learner can
+      // add the subjects from their dashboard.
+      if (role === 'learner' && learnerSubjects.length > 1) {
+        const subjectsError = await saveMySubjects(learnerSubjects)
+        if (subjectsError) console.error('Could not save all subjects:', subjectsError)
+      }
 
       // Record the consent in the same submit as the profile it covers. A
       // consent that is not written down is one you cannot show the Regulator.
@@ -375,9 +387,20 @@ export function AccountOnboarding() {
                     </select>
                   </div>
                 ) : null}
+                {role === 'learner' ? (
+                  <div>
+                    <p className="text-xs font-medium text-navy-500">Your subjects (tick all you take)</p>
+                    <div className="mt-1.5">
+                      <SubjectPicker value={learnerSubjects} onChange={setLearnerSubjects} />
+                    </div>
+                    <p className="mt-1 text-xs text-navy-400">
+                      Each of your teachers will see you in their subject. You take Mathematics or Mathematical Literacy, not both. You can change these later.
+                    </p>
+                  </div>
+                ) : (
                 <div>
                   <label className="text-xs font-medium text-navy-500">
-                    {role === 'teacher' ? 'Subject you teach' : role === 'hod' ? 'Department you head' : 'Subject'}
+                    {role === 'teacher' ? 'Subject you teach' : 'Department you head'}
                   </label>
                   <select className="select mt-1" value={subjectId} onChange={(e) => setSubjectId(e.target.value)}>
                     {subjectOptions.map((s) => (
@@ -396,13 +419,14 @@ export function AccountOnboarding() {
                     </p>
                   ) : null}
                 </div>
+                )}
               </div>
             ) : null}
 
             <div className="rounded-lg border border-navy-200 bg-navy-50 p-4">
               <h2 className="text-sm font-bold text-navy-900">Permission to keep this information</h2>
               <p className="mt-1.5 text-xs leading-relaxed text-navy-600">
-                We keep your name, grade, subject, school and the topics you practise, so that your progress is
+                We keep your name, grade, subjects, school and the topics you practise, so that your progress is
                 there when you come back. The{' '}
                 <Link to="/popia" target="_blank" className="font-semibold underline">
                   POPIA notice

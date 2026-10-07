@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { takesSubject } from '@/lib/learnerSubjects'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { subjects } from '@/data/subjects'
@@ -167,7 +168,7 @@ export function Interventions() {
       const ids = new Set(classMembers.filter((m) => m.class_id === chosenClass.id).map((m) => m.learner_id))
       return learners.filter((l) => ids.has(l.id))
     }
-    return learners.filter((l) => l.grade === formGrade && (l.subject_id === null || l.subject_id === formSubject))
+    return learners.filter((l) => l.grade === formGrade && takesSubject(l, formSubject))
   }, [chosenClass, classMembers, learners, formGrade, formSubject])
 
   // Each learner's starting point, from the chosen evidence.

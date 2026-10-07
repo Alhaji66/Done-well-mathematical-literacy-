@@ -1,3 +1,4 @@
+import { takesSubject } from '@/lib/learnerSubjects'
 import { supabase } from '@/lib/supabaseClient'
 import { getTopic } from '@/data/topics'
 import type { AccountProfile } from '@/context/AccountAuthContext'
@@ -29,7 +30,8 @@ export function scopeSubjectFor(profile: AccountProfile | null): string | null {
 
 export function learnersInScope(learners: RosterLearner[], subjectId: string | null): RosterLearner[] {
   if (!subjectId) return learners
-  return learners.filter((l) => l.subject_id === subjectId)
+  // Every learner who TAKES the subject, not only those whose main subject it is.
+  return learners.filter((l) => takesSubject(l, subjectId))
 }
 
 /**

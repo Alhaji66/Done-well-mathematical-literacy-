@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { fetchMySubjects } from '@/lib/learnerSubjects'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import {
   buildTestPaper,
@@ -64,7 +65,7 @@ export function LearnerWeeklyTests() {
     }
     let live = true
     Promise.all([
-      fetchTestsForLearner(profile.school_id, profile.subject_id, profile.grade, profile.id),
+      fetchMySubjects(profile.id, profile.subject_id).then((mine) => fetchTestsForLearner(profile.school_id!, mine, profile.grade, profile.id)),
       fetchMyAttempts(profile.id),
     ]).then(([t, a]) => {
       if (!live) return

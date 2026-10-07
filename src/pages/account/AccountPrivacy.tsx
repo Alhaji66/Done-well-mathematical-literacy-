@@ -45,7 +45,7 @@ export function AccountPrivacy() {
     { label: 'Your email address', value: session?.user.email ?? '—' },
     { label: 'Your role', value: profile.role },
     ...(profile.grade ? [{ label: 'Your grade', value: `Grade ${profile.grade}` }] : []),
-    ...(profile.subject_id ? [{ label: 'Your subject', value: profile.subject_id }] : []),
+    ...(profile.subject_id ? [{ label: profile.role === 'learner' ? 'Your main subject' : 'Your subject', value: profile.subject_id }] : []),
     { label: 'Topics you have practised', value: 'One row per topic, with a mastery percentage' },
     { label: 'Devices you are signed in on', value: 'The browser and system name, and when each was last used: see below' },
     ...(profile.role === 'parent'

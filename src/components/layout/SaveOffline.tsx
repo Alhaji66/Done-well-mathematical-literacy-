@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { subjects } from '@/data/subjects'
 import { CheckCircleIcon, DownloadIcon } from '@/components/ui/Icons'
-import { savedSubjects, subjectPack } from '@/lib/contentPacks'
+import { hasFullAccess, savedSubjects, subjectPack } from '@/lib/contentPacks'
 
 /**
  * "Use DONE WELL offline": every subject, each with its own Save button, so a
@@ -42,6 +42,8 @@ export function SaveOffline({ subjectId, demo = false }: { subjectId: string; de
 
   const check = async () => {
     if (!('caches' in window) || !navigator.serviceWorker?.controller) return setSupported(false)
+    // Only the full bank is saved, so an account on the sample has nothing to save.
+    if (!demo && (await hasFullAccess()) === false) return setSupported(false)
     try {
       const saved = await savedSubjects()
       setSupported(true)

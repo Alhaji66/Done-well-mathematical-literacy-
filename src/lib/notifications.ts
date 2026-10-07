@@ -140,6 +140,18 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       const said = d.choice === 'call' ? 'asks you to call them' : 'has seen it and will practise at home'
       return `The parent of ${who} replied to the early warning on “${String(d.title ?? '')}”: ${said}.${d.message ? ` “${String(d.message)}”` : ''}`
     }
+    case 'licence.ending':
+      return `Your school’s DONE WELL licence ends on ${dayOf(d.ends_on)}, in ${String(d.days)} days. Contact DONE WELL to renew it, so learners and teachers keep the full question bank.`
+    case 'licence.ended':
+      return `Your school’s DONE WELL licence ended on ${dayOf(d.ends_on)}. New learners wait to be let in, and everyone sees only a sample until it is renewed.`
+    case 'licence.admin_ending':
+      return `${String(d.school ?? 'A school')}: licence ends on ${dayOf(d.ends_on)}, in ${String(d.days)} days.`
+    case 'licence.admin_ended':
+      return `${String(d.school ?? 'A school')}: licence ended on ${dayOf(d.ends_on)}.`
+    case 'plan.ending':
+      return `Your DONE WELL plan ends on ${dayOf(d.ends_on)}. Renew it to keep every question and paper.`
+    case 'trial.ending':
+      return 'Your free trial ends in 2 days. After that you see a sample of each topic, unless your school has a licence or you get a plan.'
     case 'parent_link.created':
       return 'A parent or guardian has linked to your account. You can see and remove links under Privacy & data.'
     default:

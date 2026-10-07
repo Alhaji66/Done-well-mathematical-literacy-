@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { onPackSource, packSource, type PackSource } from '@/lib/contentPacks'
 
 /**
@@ -22,6 +23,17 @@ export function ContentNotice({ subjectId }: { subjectId: string }) {
       <p className="rounded-lg bg-navy-50 px-3 py-2 text-xs text-navy-600">
         This demo shows a sample of the question bank: a few questions per topic and one paper per grade. Every question and
         paper comes with an account.
+      </p>
+    )
+  }
+  if (source === 'locked') {
+    return (
+      <p role="status" className="rounded-lg border border-gold-300 bg-gold-50 px-3 py-2 text-xs text-navy-800">
+        You are seeing a sample: a few questions per topic and one paper per grade. Your free trial has ended, and your
+        account has no school licence or personal plan.{' '}
+        <Link to="/account/access" className="font-semibold text-navy-900 underline">
+          Get every question and paper
+        </Link>
       </p>
     )
   }

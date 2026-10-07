@@ -5124,7 +5124,10 @@ $$;
 revoke execute on function public.my_school_request() from public, anon;
 grant execute on function public.my_school_request() to authenticated;
 
-create or replace function public.school_seat_status()
+-- Dropped first because STEP 39 widens what it returns, and a re-run of this
+-- whole file must not trip over the newer shape.
+drop function if exists public.school_seat_status();
+create function public.school_seat_status()
 returns table (seats integer, used integer, pending integer, approval text)
 language plpgsql
 security definer
@@ -5800,3 +5803,472 @@ begin
   return new;
 end;
 $$;
+
+-- ============================================================================
+-- STEP 39: THE FULL QUESTION BANK IS FOR PAID ACCESS, AND AN ENDED LICENCE ENDS
+-- ============================================================================
+--
+-- WHAT WAS WRONG. Two things stood between DONE WELL and charging for it.
+--
+--   1. has_content_access() (STEP 36) let ANY signed-in account download every
+--      paper and question, so an individual had nothing to pay for.
+--   2. When a school's licence ended, school_learner_seats() found no current
+--      licence and returned "no limit" -- a school that stopped paying could
+--      approve as many learners as it liked. A licence marked "Payment
+--      overdue" did the same.
+--
+-- THE FIX.
+--
+--   The full bank is for an account that has ONE of:
+--     - a place at a school with a current licence (an approved learner, or
+--       approved staff, at a school that is not paused). A licence is current
+--       from its start date to its end date while it is Active or Payment
+--       overdue -- overdue is the warning, not the cut-off;
+--     - its own personal plan, recorded by DONE WELL after payment
+--       (admin_grant_plan) until the plan's end date;
+--     - a free trial: 14 days from sign-up. Accounts that already existed when
+--       this step was run get 30 days from that moment, so nobody already
+--       using the app is cut off without warning;
+--     - a DONE WELL administrator or content editor.
+--   Everyone else -- and every visitor -- keeps the free sample of each subject.
+--
+--   A school whose licence has ENDED has no free places: new learners wait
+--   and approve_learner() says why. Learners already approved keep their
+--   accounts and progress. A school that has never had a licence keeps "no
+--   limit" on places, but its learners only have the trial until it is
+--   licensed. Overdue licences keep their seat limit.
+--
+--   my_access() tells the app which of these applies, so a page can say
+--   "Free trial: 5 days left" or "Your school's licence has ended".
+--   send_licence_reminders() runs daily (where pg_cron is on) and tells the
+--   administrators and the school's principal and HODs 30 and 7 days before a
+--   licence ends and the day after it ended; it also tells a person 3 days
+--   before their plan ends and 2 days before their trial ends.
+
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'profiles' and column_name = 'trial_ends_at'
+  ) then
+    alter table public.profiles add column trial_ends_at timestamptz;
+    update public.profiles set trial_ends_at = now() + interval '30 days';
+  end if;
+end $$;
+alter table public.profiles alter column trial_ends_at set default (now() + interval '14 days');
+
+-- The trial is set by the database, never by the app: a new profile gets 14
+-- days whatever it sent, and nobody signed in can move the date.
+create or replace function public.guard_trial()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  if current_user not in ('authenticated', 'anon') then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.trial_ends_at := now() + interval '14 days';
+  else
+    new.trial_ends_at := old.trial_ends_at;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists guard_trial on public.profiles;
+create trigger guard_trial
+  before insert or update on public.profiles
+  for each row execute function public.guard_trial();
+
+create table if not exists public.personal_plans (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  plan text not null check (plan in ('month', 'year', 'exam_season', 'custom')),
+  starts_on date not null default current_date,
+  ends_on date not null,
+  reference text check (reference is null or char_length(reference) <= 120),
+  created_at timestamptz not null default now(),
+  check (ends_on >= starts_on)
+);
+create index if not exists personal_plans_user_idx on public.personal_plans (user_id, ends_on desc);
+
+alter table public.personal_plans enable row level security;
+revoke all on public.personal_plans from anon, authenticated;
+grant select on public.personal_plans to authenticated;
+
+drop policy if exists "People see their own plans" on public.personal_plans;
+create policy "People see their own plans"
+  on public.personal_plans for select
+  to authenticated
+  using (user_id = auth.uid());
+
+drop policy if exists "Administrators see every plan" on public.personal_plans;
+create policy "Administrators see every plan"
+  on public.personal_plans for select
+  to authenticated
+  using (public.is_platform_admin());
+
+create or replace function public.audit_personal_plans()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.personal_plans := case when tg_op = 'DELETE' then old else new end;
+begin
+  perform public.write_audit(null,
+    'personal_plan.' || case tg_op when 'INSERT' then 'granted' when 'UPDATE' then 'changed' else 'removed' end,
+    'personal_plans', r.id::text,
+    jsonb_build_object('user_id', r.user_id, 'plan', r.plan, 'starts_on', r.starts_on, 'ends_on', r.ends_on));
+  return r;
+end;
+$$;
+
+drop trigger if exists audit_personal_plans on public.personal_plans;
+create trigger audit_personal_plans
+  after insert or update or delete on public.personal_plans
+  for each row execute function public.audit_personal_plans();
+
+-- The licence that applies to a school today, or nothing.
+create or replace function public.current_licence(p_school uuid)
+returns public.subscriptions
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select * from public.subscriptions s
+  where s.school_id = p_school
+    and s.status in ('active', 'past_due')
+    and s.starts_on <= current_date
+    and (s.ends_on is null or s.ends_on >= current_date)
+  order by s.starts_on desc, s.created_at desc
+  limit 1;
+$$;
+revoke execute on function public.current_licence(uuid) from public, anon, authenticated;
+
+create or replace function public.school_learner_seats(p_school uuid)
+returns integer
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select case
+    when l.id is not null then l.learner_seats
+    when exists (select 1 from public.subscriptions x where x.school_id = p_school and x.starts_on <= current_date) then 0
+  end
+  from public.current_licence(p_school) l;
+$$;
+revoke execute on function public.school_learner_seats(uuid) from public, anon;
+
+create or replace function public.access_reason(p_user uuid)
+returns text
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select case
+    when p_user is null then null
+    when exists (select 1 from public.platform_admins where user_id = p_user) then 'admin'
+    when exists (select 1 from public.content_editors where user_id = p_user) then 'editor'
+    when exists (
+      select 1 from public.profiles p
+      join public.schools s on s.id = p.school_id
+      where p.id = p_user
+        and s.suspended_at is null
+        and ((p.role::text = 'learner' and p.learner_approved_at is not null)
+             or (p.role::text in ('teacher', 'school', 'hod') and p.staff_approved_at is not null))
+        and (public.current_licence(s.id)).id is not null
+    ) then 'school'
+    when exists (
+      select 1 from public.personal_plans pp
+      where pp.user_id = p_user and pp.starts_on <= current_date and pp.ends_on >= current_date
+    ) then 'plan'
+    when exists (select 1 from public.profiles where id = p_user and trial_ends_at > now()) then 'trial'
+  end;
+$$;
+revoke execute on function public.access_reason(uuid) from public, anon, authenticated;
+
+create or replace function public.has_content_access()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select public.access_reason(auth.uid()) is not null;
+$$;
+grant execute on function public.has_content_access() to authenticated;
+
+drop function if exists public.my_access();
+create function public.my_access()
+returns table (reason text, trial_ends_at timestamptz, plan_ends_on date, school_state text, licence_ends_on date)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+declare
+  v_me public.profiles;
+  v_school public.schools;
+  v_licence public.subscriptions;
+  v_state text;
+  v_ends date;
+begin
+  select * into v_me from public.profiles where id = auth.uid();
+  if v_me.school_id is not null then
+    select * into v_school from public.schools where id = v_me.school_id;
+    v_licence := public.current_licence(v_me.school_id);
+    if v_school.suspended_at is not null then
+      v_state := 'paused';
+    elsif (v_me.role::text = 'learner' and v_me.learner_approved_at is null)
+       or (v_me.role::text in ('teacher', 'school', 'hod') and v_me.staff_approved_at is null) then
+      v_state := 'waiting';
+    elsif v_licence.id is not null then
+      v_state := case when v_licence.status = 'past_due' then 'overdue' else 'current' end;
+      v_ends := v_licence.ends_on;
+    elsif exists (select 1 from public.subscriptions x where x.school_id = v_me.school_id and x.starts_on <= current_date) then
+      v_state := 'ended';
+      select max(x.ends_on) into v_ends from public.subscriptions x
+        where x.school_id = v_me.school_id and x.starts_on <= current_date;
+    else
+      v_state := 'none';
+    end if;
+  end if;
+  return query select
+    public.access_reason(auth.uid()),
+    v_me.trial_ends_at,
+    (select max(pp.ends_on) from public.personal_plans pp where pp.user_id = auth.uid() and pp.starts_on <= current_date),
+    v_state,
+    v_ends;
+end;
+$$;
+revoke execute on function public.my_access() from public, anon;
+grant execute on function public.my_access() to authenticated;
+
+create or replace function public.admin_grant_plan(p_email text, p_plan text, p_ends_on date, p_reference text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user uuid;
+  v_starts date := current_date;
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a DONE WELL administrator can record a personal plan.' using errcode = '42501';
+  end if;
+  select id into v_user from auth.users where lower(email) = lower(trim(p_email));
+  if v_user is null then
+    return false;
+  end if;
+  select greatest(current_date, max(ends_on) + 1) into v_starts from public.personal_plans
+    where user_id = v_user and ends_on >= current_date;
+  v_starts := coalesce(v_starts, current_date);
+  if p_ends_on is null or p_ends_on < v_starts then
+    raise exception 'The plan must end on or after %.', v_starts;
+  end if;
+  insert into public.personal_plans (user_id, plan, starts_on, ends_on, reference)
+    values (v_user, p_plan, v_starts, p_ends_on, nullif(trim(coalesce(p_reference, '')), ''));
+  return true;
+end;
+$$;
+revoke execute on function public.admin_grant_plan(text, text, date, text) from public, anon;
+grant execute on function public.admin_grant_plan(text, text, date, text) to authenticated;
+
+create or replace function public.admin_end_plan(p_plan uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a DONE WELL administrator can end a personal plan.' using errcode = '42501';
+  end if;
+  delete from public.personal_plans where id = p_plan and starts_on >= current_date;
+  update public.personal_plans set ends_on = current_date - 1
+    where id = p_plan and ends_on >= current_date;
+end;
+$$;
+revoke execute on function public.admin_end_plan(uuid) from public, anon;
+grant execute on function public.admin_end_plan(uuid) to authenticated;
+
+drop function if exists public.admin_personal_plans();
+create function public.admin_personal_plans()
+returns table (id uuid, email text, plan text, starts_on date, ends_on date, reference text, created_at timestamptz)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+begin
+  if not public.is_platform_admin() then
+    raise exception 'Only a DONE WELL administrator can see personal plans.' using errcode = '42501';
+  end if;
+  return query
+  select pp.id, u.email::text, pp.plan, pp.starts_on, pp.ends_on, pp.reference, pp.created_at
+  from public.personal_plans pp
+  join auth.users u on u.id = pp.user_id
+  order by pp.ends_on desc, pp.created_at desc
+  limit 500;
+end;
+$$;
+revoke execute on function public.admin_personal_plans() from public, anon;
+grant execute on function public.admin_personal_plans() to authenticated;
+
+create or replace function public.approve_learner(p_profile uuid, p_approve boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_target public.profiles;
+  v_seats integer;
+begin
+  select * into v_target from public.profiles where id = p_profile;
+  if v_target.id is null or v_target.school_id is null or v_target.role::text <> 'learner' then
+    raise exception 'That learner was not found at your school.';
+  end if;
+  if not public.is_school_staff(v_target.school_id) then
+    raise exception 'Only approved staff at this school can approve learners.' using errcode = '42501';
+  end if;
+  if v_target.learner_approved_at is not null then
+    raise exception 'That learner is already approved.';
+  end if;
+
+  if p_approve then
+    perform 1 from public.schools where id = v_target.school_id for update;
+    v_seats := public.school_learner_seats(v_target.school_id);
+    if v_seats is not null and public.school_learners_approved(v_target.school_id) >= v_seats then
+      if (public.current_licence(v_target.school_id)).id is null then
+        raise exception 'Your school''s DONE WELL licence has ended, so new learners cannot be approved. Ask DONE WELL to renew it.';
+      end if;
+      raise exception 'All % paid learner places at this school are in use. Remove a learner who has left, or ask DONE WELL for more places.', v_seats;
+    end if;
+    update public.profiles set learner_approved_at = now() where id = p_profile;
+  else
+    update public.profiles set school_id = null where id = p_profile;
+  end if;
+end;
+$$;
+revoke execute on function public.approve_learner(uuid, boolean) from public, anon;
+grant execute on function public.approve_learner(uuid, boolean) to authenticated;
+
+drop function if exists public.school_seat_status();
+create function public.school_seat_status()
+returns table (seats integer, used integer, pending integer, approval text, licence text, licence_ends_on date)
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+declare
+  v_school uuid := public.current_school_id();
+  v_licence public.subscriptions;
+begin
+  if v_school is null or not public.is_school_staff(v_school) then
+    raise exception 'Only approved staff at the school can see its learner places.' using errcode = '42501';
+  end if;
+  v_licence := public.current_licence(v_school);
+  return query
+  select public.school_learner_seats(v_school),
+         public.school_learners_approved(v_school),
+         (select count(*)::integer from public.profiles
+           where profiles.school_id = v_school and role::text = 'learner' and learner_approved_at is null),
+         (select s.learner_approval from public.schools s where s.id = v_school),
+         case
+           when v_licence.id is not null then case when v_licence.status = 'past_due' then 'overdue' else 'current' end
+           when exists (select 1 from public.subscriptions x where x.school_id = v_school and x.starts_on <= current_date) then 'ended'
+           else 'none'
+         end,
+         case
+           when v_licence.id is not null then v_licence.ends_on
+           else (select max(x.ends_on) from public.subscriptions x where x.school_id = v_school and x.starts_on <= current_date)
+         end;
+end;
+$$;
+revoke execute on function public.school_seat_status() from public, anon;
+grant execute on function public.school_seat_status() to authenticated;
+
+create or replace function public.send_licence_reminders()
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r record;
+  v_sent integer := 0;
+  v_admins uuid[] := array(select a.user_id from public.platform_admins a join public.profiles p on p.id = a.user_id);
+  v_heads uuid[];
+begin
+  for r in
+    select s.id, s.name, l.ends_on, l.ends_on - current_date as days_left
+    from public.schools s
+    cross join lateral public.current_licence(s.id) l
+    where l.id is not null and l.ends_on - current_date in (30, 7)
+  loop
+    v_heads := array(select p.id from public.profiles p
+      where p.school_id = r.id and p.role::text in ('school', 'hod') and p.staff_approved_at is not null);
+    perform public.notify(v_heads, 'licence.ending', jsonb_build_object('ends_on', r.ends_on, 'days', r.days_left), 'dashboard');
+    perform public.notify(v_admins, 'licence.admin_ending',
+      jsonb_build_object('school', r.name, 'ends_on', r.ends_on, 'days', r.days_left), null);
+    v_sent := v_sent + 1;
+  end loop;
+
+  for r in
+    select s.id, s.name, max(x.ends_on) as ends_on
+    from public.schools s
+    join public.subscriptions x on x.school_id = s.id
+    where x.ends_on = current_date - 1
+      and (public.current_licence(s.id)).id is null
+    group by s.id, s.name
+  loop
+    v_heads := array(select p.id from public.profiles p
+      where p.school_id = r.id and p.role::text in ('school', 'hod') and p.staff_approved_at is not null);
+    perform public.notify(v_heads, 'licence.ended', jsonb_build_object('ends_on', r.ends_on), 'dashboard');
+    perform public.notify(v_admins, 'licence.admin_ended', jsonb_build_object('school', r.name, 'ends_on', r.ends_on), null);
+    v_sent := v_sent + 1;
+  end loop;
+
+  for r in
+    select pp.user_id, max(pp.ends_on) as ends_on
+    from public.personal_plans pp
+    join public.profiles pr on pr.id = pp.user_id
+    group by pp.user_id
+    having max(pp.ends_on) = current_date + 3
+  loop
+    if public.access_reason(r.user_id) = 'plan' then
+      perform public.notify(array[r.user_id], 'plan.ending', jsonb_build_object('ends_on', r.ends_on), 'dashboard');
+      v_sent := v_sent + 1;
+    end if;
+  end loop;
+
+  for r in
+    select p.id, p.trial_ends_at from public.profiles p
+    where p.trial_ends_at >= current_date + 2 and p.trial_ends_at < current_date + 3
+  loop
+    if public.access_reason(r.id) = 'trial' then
+      perform public.notify(array[r.id], 'trial.ending', jsonb_build_object('ends_at', r.trial_ends_at), 'dashboard');
+      v_sent := v_sent + 1;
+    end if;
+  end loop;
+  return v_sent;
+end;
+$$;
+revoke execute on function public.send_licence_reminders() from public, anon, authenticated;
+
+do $$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('licence-reminders', '0 6 * * *', 'select public.send_licence_reminders()');
+  end if;
+end $$;

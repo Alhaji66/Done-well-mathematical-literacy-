@@ -59,6 +59,7 @@ const AccountReports = lazy(() => import('@/pages/account/Reports').then((m) => 
 const AccountAdminConsole = lazy(() =>
   import('@/pages/account/admin/AdminConsole').then((m) => ({ default: m.AdminConsole })),
 )
+const AccountAccess = lazy(() => import('@/pages/account/AccountAccess').then((m) => ({ default: m.AccountAccess })))
 const AccountSponsorDashboard = lazy(() =>
   import('@/pages/account/sponsor/SponsorDashboard').then((m) => ({ default: m.SponsorDashboard })),
 )
@@ -216,9 +217,10 @@ export default function App() {
           <Route element={<AccountGate require="session" />}>
             <Route path="onboarding" element={<AccountOnboarding />} />
           </Route>
-          {/* Outside any school: DONE WELL's own administrators, and sponsors. */}
+          {/* Outside any school: DONE WELL's own administrators, sponsors, and anyone's own access page. */}
           <Route element={<AccountGate require="signed-in" />}>
             <Route path="admin" element={<AccountAdminConsole />} />
+            <Route path="access" element={<AccountAccess />} />
             <Route path="sponsor" element={<AccountSponsorDashboard />} />
             <Route path="content" element={<AccountContentStudio />} />
           </Route>

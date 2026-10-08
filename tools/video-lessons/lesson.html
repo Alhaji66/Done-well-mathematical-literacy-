@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: 'InterV'; src: url(fonts/fontsource-variable-inter/files/inter-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'MonoV'; src: url(fonts/fontsource-variable-jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+:root { --n950:#070f1f; --n900:#0b1730; --n800:#101f3a; --n700:#182e52; --n600:#24406e; --n300:#8499bd; --n200:#adbbd3; --n100:#d6dde9;
+  --g300:#edc561; --g400:#e6af38; --g500:#d99a22; --ok:#5fd0a0; --bad:#ff8a7a; --blue:#7fb3ff; --red:#ff8f8f; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--n950); }
+body { font-family: 'InterV', system-ui, sans-serif; color: #fff; -webkit-font-smoothing: antialiased; font-feature-settings: 'cv11', 'ss01'; }
+#stage { position: absolute; inset: 0; background: radial-gradient(800px 500px at 75% 45%, rgba(36,64,110,.5), transparent 70%), var(--n950); }
+#grid { position: absolute; inset: 0; opacity: .5; background-image: linear-gradient(rgba(173,187,211,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(173,187,211,.06) 1px, transparent 1px); background-size: 32px 32px; }
+#brand { position: absolute; left: 56px; top: 30px; display: flex; align-items: center; gap: 10px; font-size: 15px; z-index: 5; }
+.mark { width: 30px; height: 30px; border-radius: 8px; background: var(--n800); border: 1px solid var(--n600); display: grid; place-items: center; color: var(--g400); }
+.mark svg { width: 15px; height: 15px; }
+#brand b { font-weight: 800; } #brand b sup { font-size: 8px; color: var(--g400); }
+#brand span { color: var(--n300); padding-left: 10px; border-left: 1px solid var(--n700); font-weight: 500; }
+#progress { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(132,153,189,.15); z-index: 5; }
+#progress i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--g500), var(--g300)); }
+#cap { position: absolute; left: 0; right: 0; bottom: 22px; display: flex; justify-content: center; z-index: 6; }
+#cap span { max-width: 1100px; text-align: center; font-size: 22px; line-height: 1.35; font-weight: 600; background: rgba(7,15,31,.86); padding: 7px 16px; border-radius: 10px; border: 1px solid rgba(132,153,189,.22); text-wrap: balance; }
+.scene { position: absolute; inset: 0; padding: 78px 76px 92px; opacity: 0; display: flex; flex-direction: column; justify-content: center; }
+.eyebrow { font-family: 'MonoV', monospace; font-size: 16px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--g400); }
+h2 { margin-top: 10px; font-size: 48px; line-height: 1.08; font-weight: 800; letter-spacing: -.03em; text-wrap: balance; max-width: 1100px; }
+.lead { margin-top: 14px; font-size: 26px; color: var(--n100); max-width: 1050px; line-height: 1.4; }
+ul.pts { list-style: none; margin-top: 30px; display: flex; flex-direction: column; gap: 18px; max-width: 1080px; }
+ul.pts li { display: flex; gap: 16px; align-items: baseline; font-size: 29px; line-height: 1.35; color: var(--n100); }
+ul.pts li::before { content: ''; flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--g400); transform: translateY(-3px); }
+ul.pts li b, .hl { color: #fff; font-weight: 700; }
+em.k { font-style: normal; color: var(--g300); font-weight: 700; }
+.box { margin-top: 22px; background: rgba(16,31,58,.85); border: 1px solid var(--n600); border-radius: 14px; padding: 18px 22px; max-width: 1080px; }
+.box.gold { border-color: rgba(230,175,56,.6); background: rgba(230,175,56,.07); }
+.problem { font-size: 30px; line-height: 1.45; color: var(--n100); }
+.steps { margin-top: 26px; display: flex; flex-direction: column; gap: 14px; max-width: 1100px; }
+.step { display: flex; gap: 18px; align-items: center; font-family: 'MonoV', monospace; font-size: 28px; line-height: 1.35; color: #fff; background: rgba(16,31,58,.7); border: 1px solid var(--n700); border-radius: 10px; padding: 9px 16px; }
+.step .lbl { font-family: 'InterV'; font-size: 16px; font-weight: 700; color: var(--g400); text-transform: uppercase; letter-spacing: .08em; min-width: 108px; }
+.step.ans { border-color: rgba(230,175,56,.7); background: rgba(230,175,56,.1); }
+.math { font-family: 'MonoV', monospace; }
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 4px; }
+.frac > span:first-child { border-bottom: 2px solid currentColor; padding: 0 4px 2px; }
+.frac > span:last-child { padding: 2px 4px 0; }
+.lim { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin-right: 4px; line-height: 1; }
+.lim small { font-size: .55em; margin-top: 3px; }
+table.t { margin-top: 24px; border-collapse: separate; border-spacing: 0; font-size: 27px; min-width: 900px; }
+table.t th, table.t td { padding: 11px 22px; text-align: left; border-bottom: 1px solid var(--n700); }
+table.t th { font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--n300); font-weight: 700; }
+table.t td.num { font-family: 'MonoV', monospace; text-align: right; }
+table.t tr.tot td { color: var(--g300); font-weight: 800; border-bottom: none; }
+.cols { display: flex; gap: 22px; margin-top: 22px; }
+.col { flex: 1; background: rgba(16,31,58,.8); border: 1px solid var(--n600); border-radius: 14px; padding: 18px 20px; }
+.col h3 { font-size: 22px; color: var(--g300); margin-bottom: 10px; }
+.col p { font-size: 21px; color: var(--n100); line-height: 1.45; }
+.big { font-family: 'MonoV', monospace; font-size: 46px; font-weight: 700; color: var(--g300); }
+.warn li::before { background: var(--bad) !important; border-radius: 50% !important; }
+/* title card */
+.title .subject { font-family: 'MonoV', monospace; font-size: 16px; letter-spacing: .16em; text-transform: uppercase; color: var(--g400); }
+.title h1 { margin-top: 18px; font-size: 64px; line-height: 1.02; font-weight: 900; letter-spacing: -.04em; max-width: 1000px; text-wrap: balance; }
+.title .sub { margin-top: 20px; font-size: 26px; color: var(--n200); max-width: 900px; }
+.title .meta { margin-top: 34px; display: flex; gap: 10px; }
+.pill { font-size: 15px; font-weight: 700; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(230,175,56,.5); color: var(--g300); background: rgba(230,175,56,.08); }
+.title { display: flex; flex-direction: column; justify-content: center; }
+.outro { display: flex; flex-direction: column; justify-content: center; }
+.outro h1 { font-size: 56px; font-weight: 900; letter-spacing: -.035em; line-height: 1.05; }
+.outro h1 em { font-style: normal; color: var(--g400); }
+.outro .cta { margin-top: 26px; display: inline-flex; align-self: flex-start; font-size: 24px; font-weight: 800; color: var(--n950); background: var(--g400); padding: 12px 22px; border-radius: 12px; }
+.outro .url { margin-top: 16px; font-family: 'MonoV', monospace; font-size: 18px; color: var(--n300); }
+svg text { font-family: 'InterV'; }
+sub { font-family: 'InterV'; font-size: .6em; line-height: 0; vertical-align: -.32em; margin-left: 1px; font-weight: 700; }
+.steps.tight { gap: 9px; margin-top: 18px; } .steps.tight .step { font-size: 25px; padding: 7px 16px; }
+.diagram { position: absolute; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="grid"></div>
+  <div id="brand"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 12 5l7 10"/><circle cx="12" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg></div><b>DONE WELL<sup>®</sup></b><span id="crumb"></span></div>
+  <div id="scenes"></div>
+  <div id="cap"><span></span></div>
+  <div id="progress"><i></i></div>
+</div>
+<script>
+const clamp = (x) => Math.max(0, Math.min(1, x))
+const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3)
+window.setup = function () {
+  const L = window.LESSON, T = window.TIMING
+  document.getElementById('crumb').textContent = L.crumb
+  const host = document.getElementById('scenes')
+  let t = 0
+  for (const sc of L.scenes) {
+    const tm = T.find((x) => x.id === sc.id)
+    sc.lines = tm.lines
+    sc.lead = sc.id === 'title' ? 0.9 : 0.5
+    sc.t0 = t
+    sc.dur = sc.lead + tm.dur + (sc.id === 'outro' ? 2.2 : 0.9)
+    t += sc.dur
+    const el = document.createElement('div')
+    el.className = 'scene ' + (sc.cls || '')
+    el.innerHTML = sc.html
+    host.appendChild(el)
+    sc.el = el
+    // A step is a flex row: keep everything after its label in one box, so a
+    // subscript or fraction is not pushed apart by the row's gap.
+    for (const st of el.querySelectorAll('.step')) {
+      const lbl = st.querySelector('.lbl'), box = document.createElement('span')
+      for (const n of [...st.childNodes]) if (n !== lbl) box.appendChild(n)
+      st.appendChild(box)
+    }
+    sc.items = [...el.querySelectorAll('[data-at]')]
+  }
+  window.TOTAL = t
+  return t
+}
+window.render = function (t) {
+  const L = window.LESSON
+  let cap = ''
+  for (const sc of L.scenes) {
+    const local = t - sc.t0
+    const on = local >= 0 && local < sc.dur
+    const fadeIn = easeOut(local / 0.4), fadeOut = clamp((sc.dur - local) / 0.35)
+    sc.el.style.opacity = on ? Math.min(fadeIn, sc.id === 'outro' ? 1 : fadeOut) : 0
+    if (!on) continue
+    const speech = local - sc.lead
+    for (const it of sc.items) {
+      const k = +it.dataset.at
+      const at = k < 0 ? -1 : sc.lines[k].start - 0.15
+      const u = easeOut((speech - at) / 0.45)
+      const targets = it.tagName === 'TR' ? [...it.children] : [it]
+      for (const el of targets) { el.style.opacity = u; el.style.transform = `translateY(${(1 - u) * 14}px)` }
+    }
+    for (const ln of sc.lines) if (speech >= ln.start - 0.05 && speech < ln.end + 0.25) cap = ln.text
+    if (sc.anim) sc.anim(sc.el, speech, sc.lines)
+  }
+  const span = document.querySelector('#cap span')
+  span.textContent = cap
+  span.style.display = cap ? '' : 'none'
+  document.querySelector('#progress i').style.width = `${(t / window.TOTAL) * 100}%`
+}
+</script>
+</body>
+</html>

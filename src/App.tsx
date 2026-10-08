@@ -66,6 +66,9 @@ const AccountSponsorDashboard = lazy(() =>
 const AccountResourceCentre = lazy(() =>
   import('@/pages/account/resources/ResourceCentre').then((m) => ({ default: m.ResourceCentre })),
 )
+const AccountVideoLesson = lazy(() =>
+  import('@/pages/account/resources/VideoLesson').then((m) => ({ default: m.VideoLesson })),
+)
 const AccountResourceItem = lazy(() =>
   import('@/pages/account/resources/ResourceItem').then((m) => ({ default: m.ResourceItem })),
 )
@@ -242,6 +245,7 @@ export default function App() {
                 <Route path="countdown" element={<AccountLearnerCountdown />} />
                 <Route path="resources" element={<AccountResourceCentre />} />
                 <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/video/:videoId" element={<AccountVideoLesson />} />
                 <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
                 <Route path="search" element={<AccountSearch />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
@@ -254,6 +258,7 @@ export default function App() {
                 <Route path="dashboard" element={<AccountTeacherDashboard />} />
                 <Route path="resources" element={<AccountResourceCentre />} />
                 <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/video/:videoId" element={<AccountVideoLesson />} />
                 <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
                 <Route path="search" element={<AccountSearch />} />
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
@@ -282,6 +287,7 @@ export default function App() {
                 <Route path="marks" element={<AccountParentSbaMarks />} />
                 <Route path="resources" element={<AccountResourceCentre />} />
                 <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/video/:videoId" element={<AccountVideoLesson />} />
                 <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
                 <Route path="search" element={<AccountSearch />} />
                 <Route path="support" element={<AccountParentSupport />} />
@@ -319,6 +325,7 @@ export default function App() {
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="resources" element={<AccountResourceCentre />} />
                 <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/video/:videoId" element={<AccountVideoLesson />} />
                 <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
                 <Route path="search" element={<AccountSearch />} />
                 <Route path="privacy" element={<AccountPrivacy />} />
@@ -346,6 +353,7 @@ export default function App() {
                 <Route path="activity" element={<AccountActivityLog />} />
                 <Route path="resources" element={<AccountResourceCentre />} />
                 <Route path="resources/item/:itemId" element={<AccountResourceItem />} />
+                <Route path="resources/video/:videoId" element={<AccountVideoLesson />} />
                 <Route path="resources/topic/:topicId" element={<AccountTopicGuide />} />
                 <Route path="search" element={<AccountSearch />} />
                 <Route path="privacy" element={<AccountPrivacy />} />

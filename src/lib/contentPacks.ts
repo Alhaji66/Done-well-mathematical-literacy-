@@ -191,7 +191,7 @@ async function load(subject: string): Promise<SubjectPack> {
     return sample(subject)
   }
   const [m, saved] = await Promise.all([manifest(), readSaved(subject)])
-  const entry = m?.subjects[subject]
+  const entry = m?.subjects?.[subject]
   if (entry && saved?.version === entry.version) {
     setSource(subject, 'full')
     return saved

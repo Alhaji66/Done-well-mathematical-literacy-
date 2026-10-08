@@ -36,12 +36,14 @@ interface QuestionCardProps {
    * went -- never guessed from the fact that they looked at the answer.
    */
   onResult?: (correct: boolean) => void
+  /** Open with the answer and memo already showing: a teacher's memo copy of a paper. */
+  startRevealed?: boolean
 }
 
-export function QuestionCard({ question, index, onAttempt, label, onResult }: QuestionCardProps) {
+export function QuestionCard({ question, index, onAttempt, label, onResult, startRevealed = false }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [attemptedText, setAttemptedText] = useState('')
-  const [revealed, setRevealed] = useState(false)
+  const [revealed, setRevealed] = useState(startRevealed)
   const [selfMark, setSelfMark] = useState<boolean | null>(null)
 
   // A figure or graph written on the question always wins; otherwise one

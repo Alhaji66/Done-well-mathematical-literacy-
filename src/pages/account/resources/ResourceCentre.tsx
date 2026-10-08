@@ -84,6 +84,11 @@ export function ResourceCentre() {
 
   if (!profile) return null
   const topics = topicsForSubject(subjectId, grade ?? undefined)
+  // Only the types this person has something in, so no choice leads nowhere.
+  // Video stays listed: it fills from the content studio, and the empty
+  // result says so.
+  const offeredKinds = new Set<ContentKind>([...entries.map((e) => e.kind), 'video'])
+  if (profile.role === 'learner') offeredKinds.delete('teacher_resource')
 
   return (
     <div className="space-y-6">
@@ -128,7 +133,7 @@ export function ResourceCentre() {
           </select>
           <select className="select" value={kind ?? ''} onChange={(e) => set('type', e.target.value || null)} aria-label="Resource type">
             <option value="">All types</option>
-            {RESOURCE_KINDS.filter((k) => k !== 'teacher_resource' || profile.role !== 'learner').map((k) => (
+            {RESOURCE_KINDS.filter((k) => offeredKinds.has(k) || k === kind).map((k) => (
               <option key={k} value={k}>
                 {KIND_LABEL[k]}
               </option>
@@ -154,11 +159,19 @@ export function ResourceCentre() {
       </div>
 
       {!loading && results.length === 0 ? (
-        <EmptyState
-          icon={<BookIcon className="h-6 w-6" />}
-          title="Nothing matches"
-          description="Try fewer words, or clear a filter. Difficulty applies only to resources that have one."
-        />
+        kind === 'video' && !entries.some((e) => e.kind === 'video') ? (
+          <EmptyState
+            icon={<BookIcon className="h-6 w-6" />}
+            title="No videos yet"
+            description="Videos are added by DONE WELL's editors in the Content studio and appear here, by topic, as soon as they are published."
+          />
+        ) : (
+          <EmptyState
+            icon={<BookIcon className="h-6 w-6" />}
+            title="Nothing matches"
+            description="Try fewer words, or clear a filter. Difficulty applies only to resources that have one."
+          />
+        )
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           {results.slice(0, shown).map((e) => (

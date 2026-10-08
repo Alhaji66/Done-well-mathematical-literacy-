@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { linkChoice } from '@/lib/linkChoice'
 import { filterSubjectQuestions } from '@/data/questionBank'
 import { topics, getTopic } from '@/data/topics'
 import { subjects } from '@/data/subjects'
@@ -63,10 +65,16 @@ function pick(qs: Question[], limit: Length): Question[] {
 }
 
 export function TeacherQuestionBank() {
-  const [subjectId, setSubjectId] = useState<string>('mat-lit')
-  const [grade, setGrade] = useState<Grade>(12)
+  // A link from the resource centre opens at its subject, grade and topic.
+  const [params] = useSearchParams()
+  const [start] = useState(() => linkChoice(params))
+  const [subjectId, setSubjectId] = useState<string>(start.subjectId ?? 'mat-lit')
+  const [grade, setGrade] = useState<Grade>(start.grade ?? 12)
   const [topicId, setTopicId] = useState<string>(
-    topics.find((t) => t.subjectId === 'mat-lit' && t.grades.includes(12))!.id,
+    () =>
+      start.topicId ??
+      topics.find((t) => t.subjectId === (start.subjectId ?? 'mat-lit') && t.grades.includes(start.grade ?? 12))?.id ??
+      '',
   )
   const [difficulty, setDifficulty] = useState<Difficulty | 'All'>('All')
   const [length, setLength] = useState<Length>(15)

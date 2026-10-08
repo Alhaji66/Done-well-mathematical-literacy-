@@ -11,6 +11,8 @@ interface PaperRunnerProps {
   onItemAnswered?: (itemId: string) => void
   /** Omit for a read-only review -- whether the learner got an item right, for My Mistakes. */
   onResult?: (itemId: string, topicId: string, correct: boolean) => void
+  /** Every answer and memo shown from the start: the memo copy, for staff only. */
+  showAnswers?: boolean
 }
 
 /**
@@ -19,7 +21,7 @@ interface PaperRunnerProps {
  * and a countdown on their screen would only be noise.
  */
 
-export function PaperRunner({ paper, onAttempt, onItemAnswered, onResult }: PaperRunnerProps) {
+export function PaperRunner({ paper, onAttempt, onItemAnswered, onResult, showAnswers = false }: PaperRunnerProps) {
   let itemIndex = 0
 
   return (
@@ -40,7 +42,8 @@ export function PaperRunner({ paper, onAttempt, onItemAnswered, onResult }: Pape
             const index = itemIndex++
             return (
               <QuestionCard
-                key={item.id}
+                key={`${item.id}-${showAnswers ? 'memo' : 'paper'}`}
+                startRevealed={showAnswers}
                 question={item}
                 index={index}
                 label={item.label}

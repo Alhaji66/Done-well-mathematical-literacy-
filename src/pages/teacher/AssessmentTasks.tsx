@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { linkChoice } from '@/lib/linkChoice'
+import { Link, useSearchParams } from 'react-router-dom'
 import { subjects, getSubject } from '@/data/subjects'
 import { topics } from '@/data/topics'
 import { questionsForSubject } from '@/data/questionBank'
@@ -34,8 +35,11 @@ type Copy = 'learner' | 'memo' | 'marksheet'
  * Everything is assembled by src/data/sba.ts; this page chooses and lays out.
  */
 export function TeacherAssessmentTasks() {
-  const [subjectId, setSubjectId] = useState('mathematics')
-  const [grade, setGrade] = useState<Grade>(12)
+  // A link from the resource centre opens at its subject and grade.
+  const [params] = useSearchParams()
+  const [start] = useState(() => linkChoice(params))
+  const [subjectId, setSubjectId] = useState(start.subjectId ?? 'mathematics')
+  const [grade, setGrade] = useState<Grade>(start.grade ?? 12)
   const [taskKey, setTaskKey] = useState('')
   const [copy, setCopy] = useState<Copy>('learner')
   const [version, setVersion] = useState(0)

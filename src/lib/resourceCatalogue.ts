@@ -1,5 +1,6 @@
 import { topicsForSubject, getTopic } from '@/data/topics'
 import { papersForSubject } from '@/data/papers'
+import { atpFor } from '@/data/atp'
 import type { AccountRole } from '@/context/AccountAuthContext'
 import type { Difficulty, Grade } from '@/types'
 import type { ContentItem, ContentKind } from '@/lib/content'
@@ -13,6 +14,16 @@ import type { ContentItem, ContentKind } from '@/lib/content'
  * content workflow, which the database has already filtered to what this
  * person may see. A link is built for the viewer's own role, so a learner is
  * sent to practise and a teacher to the question bank.
+ *
+ * Every resource type the filter offers is filled from what the app already
+ * has, for the roles that have the page it opens:
+ *   lesson           -- the week's lesson plans, one per ATP week (teachers)
+ *   worksheet        -- a printable worksheet and memo per topic and grade (teachers, HODs)
+ *   memo             -- each paper's memo copy (staff); learners see answers after trying
+ *   revision         -- the exam countdown plan and My mistakes (learners)
+ *   teacher_resource -- year plans, SBA tasks, coverage, mark book, sign-off (staff)
+ *   study_guide, practice, assessment -- as before.
+ * Videos come only from the content studio.
  */
 
 export interface CatalogueEntry {
@@ -33,6 +44,15 @@ export interface CatalogueEntry {
 const isLearner = (r: AccountRole) => r === 'learner'
 const isStaff = (r: AccountRole) => r === 'teacher' || r === 'hod' || r === 'school'
 
+/** The pages each staff role has (src/App.tsx); an entry is only made where its link works. */
+const STAFF_PAGES: Partial<Record<AccountRole, string[]>> = {
+  teacher: ['lesson-plans', 'assessment-tasks', 'question-bank', 'markbook', 'coverage'],
+  hod: ['question-bank', 'markbook', 'coverage', 'plan-signoff'],
+  school: ['markbook', 'coverage', 'plan-signoff'],
+}
+const has = (role: AccountRole, page: string) => STAFF_PAGES[role]?.includes(page) ?? false
+const GRADES: Grade[] = [10, 11, 12]
+
 /** The built-in part, for one subject (papers load per subject). */
 export async function builtInEntries(subjectId: string, role: AccountRole): Promise<CatalogueEntry[]> {
   const out: CatalogueEntry[] = []
@@ -51,7 +71,7 @@ export async function builtInEntries(subjectId: string, role: AccountRole): Prom
         topicId: t.id,
         difficulty: null,
         teachersOnly: false,
-        to: isLearner(role) ? `practise?subject=${subjectId}&topic=${t.id}` : `resources/topic/${t.id}`,
+        to: `resources/topic/${t.id}`,
         source: 'done-well',
       })
     }
@@ -72,6 +92,147 @@ export async function builtInEntries(subjectId: string, role: AccountRole): Prom
     }
   }
 
+  // A printable worksheet with its memo, per topic and grade.
+  if (has(role, 'question-bank')) {
+    for (const t of topicsForSubject(subjectId)) {
+      for (const g of t.grades) {
+        out.push({
+          key: `worksheet:${t.id}:${g}`,
+          kind: 'worksheet',
+          title: `${t.name}: Grade ${g} worksheet`,
+          summary: 'Choose the week or sub-topics, the length and difficulty, then print the worksheet and its memo.',
+          subjectId,
+          grades: [g],
+          topicId: t.id,
+          difficulty: null,
+          teachersOnly: true,
+          to: `question-bank?subject=${subjectId}&grade=${g}&topic=${t.id}`,
+          source: 'done-well',
+        })
+      }
+    }
+  }
+
+  for (const g of GRADES) {
+    const atp = atpFor(subjectId, g)
+    // A lesson per ATP teaching week: plans, activities, homework and notes.
+    if (has(role, 'lesson-plans') && atp) {
+      atp.weeks.forEach((w, i) => {
+        if (!w.topicId) return
+        out.push({
+          key: `lesson:${subjectId}:${g}:${i}`,
+          kind: 'lesson',
+          title: `Grade ${g} · Term ${w.term} · Week ${w.weeks}: ${w.label}`,
+          summary: 'Ready-to-teach lessons for the week, with activities, homework, a learner copy and teacher notes.',
+          subjectId,
+          grades: [g],
+          topicId: w.topicId,
+          difficulty: null,
+          teachersOnly: true,
+          to: `lesson-plans?subject=${subjectId}&grade=${g}&week=${i}`,
+          source: 'done-well',
+        })
+      })
+    }
+    const staffPages: { page: string; key: string; title: string; summary: string; to: string; kind: ContentKind }[] = [
+      {
+        page: 'lesson-plans',
+        key: 'year-plan',
+        kind: 'teacher_resource',
+        title: `Grade ${g} lesson plans for the year`,
+        summary: 'Every ATP week as printable lessons, in order, with a learner copy of each.',
+        to: `lesson-plans?subject=${subjectId}&grade=${g}`,
+      },
+      {
+        page: 'assessment-tasks',
+        key: 'sba',
+        kind: 'teacher_resource',
+        title: `Grade ${g} formal assessment tasks (SBA)`,
+        summary: 'The year\u2019s formal tasks, each with a learner copy, a memo or rubric and a class mark sheet.',
+        to: `assessment-tasks?subject=${subjectId}&grade=${g}`,
+      },
+      {
+        page: 'assessment-tasks',
+        key: 'sba-memo',
+        kind: 'memo',
+        title: `Grade ${g} SBA task memos and rubrics`,
+        summary: 'The memo or rubric for each formal assessment task, ready to print for marking and moderation.',
+        to: `assessment-tasks?subject=${subjectId}&grade=${g}`,
+      },
+    ]
+    for (const e of staffPages) {
+      if (!has(role, e.page)) continue
+      out.push({
+        key: `${e.key}:${subjectId}:${g}`,
+        kind: e.kind,
+        title: e.title,
+        summary: e.summary,
+        subjectId,
+        grades: [g],
+        topicId: null,
+        difficulty: null,
+        teachersOnly: true,
+        to: e.to,
+        source: 'done-well',
+      })
+    }
+  }
+
+  // School-wide tools, not tied to a grade.
+  const tools: { page: string; title: string; summary: string }[] = [
+    { page: 'coverage', title: 'Curriculum coverage tracker', summary: 'Which ATP weeks each class has covered, and what is behind.' },
+    { page: 'markbook', title: 'Mark book', summary: 'SBA marks by class and task, with moderation and the term mark worked out.' },
+    { page: 'plan-signoff', title: 'Lesson plan sign-off', summary: 'Weeks teachers have submitted, to check, sign or return with a comment.' },
+  ]
+  for (const t of tools) {
+    if (!has(role, t.page)) continue
+    out.push({
+      key: `tool:${t.page}`,
+      kind: 'teacher_resource',
+      title: t.title,
+      summary: t.summary,
+      subjectId: null,
+      grades: [],
+      topicId: null,
+      difficulty: null,
+      teachersOnly: true,
+      to: t.page,
+      source: 'done-well',
+    })
+  }
+
+  // Revision tools a learner works through on their own.
+  if (isLearner(role)) {
+    out.push(
+      {
+        key: `revision:countdown:${subjectId}`,
+        kind: 'revision',
+        title: 'Exam countdown and revision plan',
+        summary: 'Days to each exam paper, and a day-by-day plan of what to revise first.',
+        subjectId,
+        grades: [],
+        topicId: null,
+        difficulty: null,
+        teachersOnly: false,
+        to: 'countdown',
+        source: 'done-well',
+      },
+      {
+        key: `revision:mistakes:${subjectId}`,
+        kind: 'revision',
+        title: 'Revise my mistakes',
+        summary: 'The questions you got wrong, to try again until they stick.',
+        subjectId,
+        grades: [],
+        topicId: null,
+        difficulty: null,
+        teachersOnly: false,
+        to: 'mistakes',
+        source: 'done-well',
+      },
+    )
+  }
+
   if (isLearner(role) || isStaff(role)) {
     for (const p of await papersForSubject(subjectId)) {
       out.push({
@@ -87,6 +248,22 @@ export async function builtInEntries(subjectId: string, role: AccountRole): Prom
         to: `assessments/${p.id}`,
         source: 'done-well',
       })
+      // The memo copy is for staff: a learner sees each answer after trying it.
+      if (isStaff(role)) {
+        out.push({
+          key: `memo:${p.id}`,
+          kind: 'memo',
+          title: `${p.title}: memo`,
+          summary: `Every answer with its marking memo, ${p.totalMarks} marks, ready to print.`,
+          subjectId,
+          grades: [p.grade],
+          topicId: null,
+          difficulty: null,
+          teachersOnly: true,
+          to: `assessments/${p.id}?view=memo`,
+          source: 'done-well',
+        })
+      }
     }
   }
   return out

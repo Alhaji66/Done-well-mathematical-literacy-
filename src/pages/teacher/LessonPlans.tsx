@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { linkChoice } from '@/lib/linkChoice'
 import { subjects } from '@/data/subjects'
 import { topics } from '@/data/topics'
 import { atpFor } from '@/data/atp'
@@ -45,8 +47,12 @@ const teachableSubjects = subjects.filter((s) => topics.some((t) => t.subjectId 
  * and the question bank; this page only chooses and lays out.
  */
 export function TeacherLessonPlans() {
-  const [subjectId, setSubjectId] = useState('mat-lit')
-  const [grade, setGrade] = useState<Grade>(12)
+  // A link from the resource centre opens at its subject, grade and ATP week.
+  const [params] = useSearchParams()
+  const [start] = useState(() => linkChoice(params))
+  const [subjectId, setSubjectId] = useState(start.subjectId ?? 'mat-lit')
+  const [grade, setGrade] = useState<Grade>(start.grade ?? 12)
+  const linkedWeek = useRef(start.week)
   const [weekKey, setWeekKey] = useState('')
   const [lessonMinutes, setLessonMinutes] = useState<LessonLength>(60)
   const [weeksOverride, setWeeksOverride] = useState<number | undefined>()
@@ -84,7 +90,9 @@ export function TeacherLessonPlans() {
       return
     }
     const first = atp?.weeks.findIndex((w) => w.topicId) ?? -1
-    setWeekKey(first >= 0 ? String(first) : '')
+    const linked = linkedWeek.current
+    linkedWeek.current = undefined
+    setWeekKey(linked !== undefined && atp?.weeks[linked] ? String(linked) : first >= 0 ? String(first) : '')
     setWeeksOverride(undefined)
     setDatesOverride(undefined)
     setOnly('all')

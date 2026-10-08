@@ -6272,3 +6272,93 @@ begin
     perform cron.schedule('licence-reminders', '0 6 * * *', 'select public.send_licence_reminders()');
   end if;
 end $$;
+
+-- ============================================================================
+-- STEP 40: A TEACHER SEES THE TEST MARKS OF THEIR OWN SUBJECT, NOT THE SCHOOL'S
+-- ============================================================================
+--
+-- WHAT WAS WRONG. Any approved member of staff could read every learner's
+-- weekly-test marks at the school, and change or delete any test. A Life
+-- Sciences teacher opening Weekly tests saw the Mathematical Literacy tests
+-- with each learner's name and mark, and a Delete button on tests a colleague
+-- had set.
+--
+-- THE FIX. A test is in a staff member's view when:
+--   - they are the school account (the principal sees the whole school);
+--   - they set it;
+--   - it is in their subject (a teacher's or an HOD's subject_id);
+--   - it is for a class they teach, or a catch-up group they run.
+-- Only those tests' marks can be read. Changing or deleting a test is for the
+-- person who set it, the school account, or the HOD of its subject. Learners
+-- and parents keep their own rules, and test details without marks (title,
+-- topics, due date) stay visible to the school as before.
+
+create or replace function public.test_in_my_view(p_test uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.weekly_tests t
+    join public.profiles me on me.id = auth.uid()
+    where t.id = p_test
+      and me.school_id = t.school_id
+      and public.is_school_staff(t.school_id)
+      and (
+        me.role::text = 'school'
+        or t.created_by = me.id
+        or (me.role::text in ('teacher', 'hod') and me.subject_id = t.subject_id)
+        or exists (select 1 from public.classes c where c.id = t.class_id and c.teacher_id = me.id)
+        or exists (select 1 from public.interventions i where i.id = t.intervention_id and i.created_by = me.id)
+      )
+  );
+$$;
+revoke execute on function public.test_in_my_view(uuid) from public, anon;
+grant execute on function public.test_in_my_view(uuid) to authenticated;
+
+create or replace function public.can_manage_test(p_test uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.weekly_tests t
+    join public.profiles me on me.id = auth.uid()
+    where t.id = p_test
+      and me.school_id = t.school_id
+      and public.is_school_staff(t.school_id)
+      and (
+        me.role::text = 'school'
+        or t.created_by = me.id
+        or (me.role::text = 'hod' and me.subject_id = t.subject_id)
+      )
+  );
+$$;
+revoke execute on function public.can_manage_test(uuid) from public, anon;
+grant execute on function public.can_manage_test(uuid) to authenticated;
+
+drop policy if exists "Staff can view attempts at their school" on public.weekly_test_attempts;
+create policy "Staff can view attempts at their school"
+  on public.weekly_test_attempts for select
+  using (public.test_in_my_view(test_id));
+
+drop policy if exists "Staff can change a test at their school" on public.weekly_tests;
+create policy "Staff can change a test at their school"
+  on public.weekly_tests for update
+  using (public.can_manage_test(id))
+  with check (
+    public.is_school_staff(school_id)
+    and (class_id is null or public.class_school(class_id) = school_id)
+    and (intervention_id is null or public.intervention_school(intervention_id) = school_id)
+  );
+
+drop policy if exists "Staff can remove a test at their school" on public.weekly_tests;
+create policy "Staff can remove a test at their school"
+  on public.weekly_tests for delete
+  using (public.can_manage_test(id));

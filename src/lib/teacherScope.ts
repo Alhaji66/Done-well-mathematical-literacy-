@@ -126,3 +126,33 @@ export async function setAccountRole(
   }
   return undefined
 }
+
+/**
+ * The tests whose marks a staff member sees (STEP 40, where the database holds
+ * the same rule): the principal's school account sees every test; anyone else
+ * the tests they set, the tests in their own subject, and the tests for a
+ * class they teach. A Life Sciences teacher no longer sees the Mathematical
+ * Literacy marks.
+ */
+export function testInView(
+  profile: Pick<AccountProfile, 'id' | 'role' | 'subject_id'>,
+  test: { created_by: string; subject_id: string; class_id?: string | null },
+  classes: { id: string; teacher_id: string | null }[],
+): boolean {
+  if (profile.role === 'school') return true
+  if (test.created_by === profile.id) return true
+  if (profile.subject_id && profile.subject_id === test.subject_id) return true
+  return Boolean(test.class_id && classes.some((c) => c.id === test.class_id && c.teacher_id === profile.id))
+}
+
+/** Changing or deleting a test: whoever set it, the school account, or the HOD of its subject. */
+export function canManageTest(
+  profile: Pick<AccountProfile, 'id' | 'role' | 'subject_id'>,
+  test: { created_by: string; subject_id: string },
+): boolean {
+  return (
+    profile.role === 'school' ||
+    test.created_by === profile.id ||
+    (profile.role === 'hod' && profile.subject_id === test.subject_id)
+  )
+}

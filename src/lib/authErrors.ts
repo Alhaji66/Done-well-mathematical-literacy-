@@ -7,17 +7,45 @@
  * looking in the Supabase dashboard. Each message below names what actually
  * happened AND what to do next, because "it didn't work" is not a fix.
  */
-export function describeAuthError(raw: unknown): string {
-  const message =
-    typeof raw === 'object' && raw !== null && 'message' in raw ? String((raw as { message: unknown }).message) : String(raw ?? '')
+const messageOf = (raw: unknown) =>
+  typeof raw === 'object' && raw !== null && 'message' in raw ? String((raw as { message: unknown }).message) : String(raw ?? '')
+
+const isRateLimit = (lower: string) =>
+  lower.includes('rate limit') || lower.includes('too many requests') || lower.includes('over_email_send_rate')
+const isNoAccount = (lower: string) =>
+  lower.includes('signups not allowed') || lower.includes('otp_disabled') || lower.includes('signup is disabled')
+
+/**
+ * The two refusals the sign-in screen answers with a button as well as words:
+ * the email limit (switch to a password, which sends no email) and an email
+ * with no account behind it (create one, with the address already typed).
+ */
+export type AuthErrorKind = 'rate_limit' | 'no_account' | 'no_match' | 'other'
+
+export function authErrorKind(raw: unknown): AuthErrorKind {
+  const lower = messageOf(raw).toLowerCase()
+  if (isRateLimit(lower)) return 'rate_limit'
+  if (isNoAccount(lower)) return 'no_account'
+  if (lower.includes('invalid login credentials')) return 'no_match'
+  return 'other'
+}
+
+/** What the person was doing: it changes what "try something else" means. */
+export type AuthAction = 'signin' | 'signup' | 'link'
+
+export function describeAuthError(raw: unknown, action: AuthAction = 'signin'): string {
+  const message = messageOf(raw)
   const lower = message.toLowerCase()
 
   // The one that broke the class test. Supabase's built-in email sender is
   // rate-limited per project per hour -- a handful of messages, not a class of
   // thirty -- so the first few learners get their link and everyone after them
   // is refused. It is a project setting, not anything the learner did.
-  if (lower.includes('rate limit') || lower.includes('too many requests') || lower.includes('over_email_send_rate')) {
-    return 'Too many sign-in emails have been sent from this site in the last hour, so this one could not go out. Use a password instead — it does not send any email.'
+  if (isRateLimit(lower)) {
+    if (action === 'signup') {
+      return 'Too many emails have been sent from this site in the last hour, so your confirmation email could not go out and the account was not created. Try again in an hour.'
+    }
+    return 'Too many emails have been sent from this site in the last hour, so this one could not go out. If you have a password, sign in with it — that sends no email. Otherwise try again in an hour.'
   }
 
   if (lower.includes('invalid login credentials')) {
@@ -51,8 +79,8 @@ export function describeAuthError(raw: unknown): string {
   // to create one for any address typed, and a typo became an email bounced
   // back to Supabase). Supabase's wording for that refusal also says "not
   // allowed", so it is caught before the redirect case below.
-  if (lower.includes('signups not allowed') || lower.includes('otp_disabled') || lower.includes('signup is disabled')) {
-    return 'There is no account with this email yet. Check the spelling, or choose Password and then Create one.'
+  if (isNoAccount(lower)) {
+    return 'There is no account with this email yet. If you are new to DONE WELL, create your account first.'
   }
 
   if (lower.includes('redirect') || lower.includes('not allowed')) {

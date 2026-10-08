@@ -3180,5 +3180,68 @@ insert into results
   left join public.profiles p on p.id = n.recipient_id
   where n.kind like 'licence.%' or n.kind like 'trial.%';
 
+-- ===========================================================================
+-- TEST MARKS BY SUBJECT (STEP 40)
+-- ===========================================================================
+insert into auth.users values ('00000000-0000-0000-0000-0000000000da', null);
+insert into public.profiles (id, role, full_name, school_id, subject_id, staff_approved_at)
+  select '00000000-0000-0000-0000-0000000000da', 'teacher', 'Life Sciences Teacher', school_id, 'life-sciences', now() from s;
+update public.profiles set subject_id = 'mat-lit' where id = '00000000-0000-0000-0000-00000000000a';
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-00000000000a', 'S40 Mat Lit test', 'mat-lit', 12, array['finance'], 5, now() + interval '7 days' from s;
+insert into public.weekly_tests (school_id, created_by, title, subject_id, grade, topic_ids, question_count, due_at)
+  select school_id, '00000000-0000-0000-0000-0000000000f7', 'S40 Life Sciences test', 'life-sciences', 12, array['cells'], 5, now() + interval '7 days' from s;
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, '00000000-0000-0000-0000-0000000000b1', now(), 4, 5 from public.weekly_tests where title = 'S40 Mat Lit test';
+insert into public.weekly_test_attempts (test_id, learner_id, submitted_at, marks_awarded, marks_total)
+  select id, '00000000-0000-0000-0000-0000000000b2', now(), 3, 5 from public.weekly_tests where title = 'S40 Life Sciences test';
+create temp table s40 as select id, title from public.weekly_tests where title like 'S40 %';
+grant select on s40 to authenticated;
+
+-- 164. A Life Sciences teacher reads the Life Sciences marks, not the Mathematical Literacy ones.
+select pg_temp.act('00000000-0000-0000-0000-0000000000da');
+set role authenticated;
+insert into results
+  select '164. a Life Sciences teacher reads only Life Sciences test marks',
+         string_agg(t.title, ', ' order by t.title),
+         count(*) = 1 and bool_and(t.title = 'S40 Life Sciences test')
+  from public.weekly_test_attempts a join s40 t on t.id = a.test_id;
+reset role;
+
+-- 165. The Mathematical Literacy teacher reads their own test's marks, not Life Sciences.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into results
+  select '165. a Mathematical Literacy teacher reads only Mathematical Literacy test marks',
+         string_agg(t.title, ', ' order by t.title),
+         count(*) = 1 and bool_and(t.title = 'S40 Mat Lit test')
+  from public.weekly_test_attempts a join s40 t on t.id = a.test_id;
+reset role;
+
+-- 166. The principal reads both.
+select pg_temp.act('00000000-0000-0000-0000-0000000000f7');
+set role authenticated;
+insert into results
+  select '166. the principal reads every subject''s test marks',
+         count(*)::text || ' attempt(s)', count(*) = 2
+  from public.weekly_test_attempts a join s40 t on t.id = a.test_id;
+reset role;
+
+-- 167. The Life Sciences teacher cannot change or delete the Mathematical Literacy test; its teacher can change it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000da');
+set role authenticated;
+update public.weekly_tests set title = 'S40 renamed by someone else' where title = 'S40 Mat Lit test';
+delete from public.weekly_tests where title = 'S40 Mat Lit test';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+update public.weekly_tests set question_count = 6 where title = 'S40 Mat Lit test';
+reset role;
+insert into results
+  select '167. another subject''s teacher cannot change or delete a test; the teacher who set it can',
+         coalesce(string_agg(title || ' (' || question_count || ' questions)', ', '), 'test gone'),
+         count(*) = 1 and bool_and(question_count = 6)
+  from public.weekly_tests where title in ('S40 Mat Lit test', 'S40 renamed by someone else');
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

@@ -15,6 +15,7 @@ import {
   type TestAttempt,
 } from '@/lib/weeklyTests'
 import { fetchSchoolLearners, type RosterLearner } from '@/lib/teacherRoster'
+import { canManageTest, testInView } from '@/lib/teacherScope'
 import { classesInView, fetchClassMembers, fetchClasses, type ClassMember, type SchoolClass } from '@/lib/classes'
 import { fetchInterventionLearners, type InterventionLearner } from '@/lib/interventions'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -54,7 +55,7 @@ export function WeeklyTests() {
 
   const [title, setTitle] = useState('')
   const [kind, setKind] = useState<TestKind>('weekly')
-  const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? 'mat-lit')
+  const [subjectId, setSubjectId] = useState(profile?.subject_id ?? subjects[0]?.id ?? 'mat-lit')
   const [grade, setGrade] = useState<Grade>(12)
   const [topicIds, setTopicIds] = useState<string[]>([])
   /** Qualified `topicId::name`. Empty means the whole topic. */
@@ -250,6 +251,9 @@ export function WeeklyTests() {
   }
 
   const expected = learners.filter((l) => l.grade !== null)
+  // Only the tests this person may see marks for (STEP 40): a teacher's own
+  // subject, classes and tests; the principal's school account sees them all.
+  const shown = tests.filter((t) => testInView(profile, t, classes))
 
   return (
     <div className="space-y-6">
@@ -550,7 +554,7 @@ export function WeeklyTests() {
 
       {loading ? (
         <p className="text-sm text-navy-500">Loading your tests…</p>
-      ) : tests.length === 0 ? (
+      ) : shown.length === 0 ? (
         <EmptyState
           icon={<ClipboardIcon className="h-6 w-6" />}
           title="No tests set yet"
@@ -558,7 +562,7 @@ export function WeeklyTests() {
         />
       ) : (
         <div className="space-y-4">
-          {tests.map((test) => {
+          {shown.map((test) => {
             const rows = (attempts[test.id] ?? []).filter((a) => a.submitted_at)
             // A class test is sat by that class; any other by the whole grade.
             // A reassessment is sat by its catch-up group; a class test by the
@@ -609,9 +613,11 @@ export function WeeklyTests() {
                       </span>
                     </p>
                   </div>
-                  <button type="button" onClick={() => remove(test)} className="btn-outline text-xs">
-                    Delete
-                  </button>
+                  {canManageTest(profile, test) ? (
+                    <button type="button" onClick={() => remove(test)} className="btn-outline text-xs">
+                      Delete
+                    </button>
+                  ) : null}
                 </div>
 
                 <dl className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">

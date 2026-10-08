@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { supabase } from '@/lib/supabaseClient'
 import { useAccountAuth } from '@/context/AccountAuthContext'
-import { describeAuthError } from '@/lib/authErrors'
+import { authErrorKind, describeAuthError, type AuthErrorKind } from '@/lib/authErrors'
 import { MessageIcon } from '@/components/ui/Icons'
 import { cn } from '@/lib/utils'
 import { SIGNED_OUT_REASON_KEY } from '@/lib/devices'
@@ -41,6 +41,7 @@ export function AccountSignIn() {
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState<'idle' | 'working' | 'sent' | 'confirm' | 'error'>('idle')
   const [error, setError] = useState('')
+  const [errorKind, setErrorKind] = useState<AuthErrorKind>('other')
   // "Did you mean …@gmail.com?" -- and the address the person said was right anyway.
   const [suggestion, setSuggestion] = useState<string | null>(null)
   const [keptEmail, setKeptEmail] = useState('')
@@ -67,6 +68,20 @@ export function AccountSignIn() {
   const reset = () => {
     setStatus('idle')
     setError('')
+    setErrorKind('other')
+  }
+
+  const fail = (raw: unknown, action: 'signin' | 'signup' | 'link') => {
+    setStatus('error')
+    setError(describeAuthError(raw, action))
+    setErrorKind(authErrorKind(raw))
+  }
+
+  /** From an error, straight to the right form with the email kept. */
+  const switchTo = (next: Mode, create: boolean) => {
+    setMode(next)
+    setCreating(create)
+    reset()
   }
 
   /**
@@ -117,8 +132,7 @@ export function AccountSignIn() {
     setCaptchaRound((r) => r + 1)
 
     if (authError) {
-      setStatus('error')
-      setError(describeAuthError(authError))
+      fail(authError, creating ? 'signup' : 'signin')
       return
     }
 
@@ -151,8 +165,7 @@ export function AccountSignIn() {
     })
     setCaptchaRound((r) => r + 1)
     if (sendError) {
-      setStatus('error')
-      setError(describeAuthError(sendError))
+      fail(sendError, 'link')
     } else {
       setStatus('sent')
     }
@@ -323,7 +336,21 @@ export function AccountSignIn() {
 
                 <Captcha onToken={setCaptchaToken} round={captchaRound} onUnavailable={setCaptchaDown} />
 
-                {status === 'error' ? <p className="text-sm text-rose-600">{error}</p> : null}
+                {status === 'error' ? (
+                  <div className="space-y-2">
+                    <p className="text-sm text-rose-600">{error}</p>
+                    {(errorKind === 'no_account' || (errorKind === 'no_match' && !creating)) ? (
+                      <button type="button" onClick={() => switchTo('password', true)} className="btn-outline btn-sm w-full">
+                        Create an account with this email
+                      </button>
+                    ) : null}
+                    {errorKind === 'rate_limit' && mode === 'link' ? (
+                      <button type="button" onClick={() => switchTo('password', false)} className="btn-outline btn-sm w-full">
+                        Sign in with my password instead
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
 
                 <button type="submit" disabled={busy || waitingForCaptcha} className="btn-primary w-full">
                   {busy

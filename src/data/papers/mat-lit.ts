@@ -9104,7 +9104,7 @@ const g11P2Y2020: Paper = {
           difficulty: 'Easy',
           cognitiveLevel: 1,
           marks: 2,
-          prompt: 'A map has a scale of 1 : 50 000. State what 1 cm on the map represents in real life, in kilometres.',
+          prompt: 'A map has a scale of 1 : 50 000. State what 1 cm on a map with this scale represents in real life, in kilometres.',
           answer: '0,5 km',
           explanation: '1 cm represents 50 000 cm. 50 000 ÷ 100 = 500 m = 0,5 km. Converting all the way to kilometres is what makes a map scale usable for a journey.',
         },

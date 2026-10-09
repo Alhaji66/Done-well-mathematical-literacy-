@@ -6,39 +6,5 @@
  * --write to take an item off this list.
  */
 export const awaitingStimulus = new Set<string>([
-  'ml-g11-p2-20-2-5-r', // on the map
-  'ml-p2-20n-2-2-1', // On the map
-  'ml-p2-20n-2-2-2', // On the map
-  'ml-p2-20n-2-2-3', // On the map
-  'ml-p2-20n-2-2-4', // On the map
-  'ml-p2-20n-2-2-5', // On the map
-  'ml-p2-21n-2-1-1', // on the map
-  'ml-p2-21n-2-1-2', // on the map
-  'ml-p2-21n-2-1-3', // on the map
-  'ml-p2-21n-2-1-4', // on the map
-  'ml-p2-21n-2-1-5', // on the map
-  'ml-p2-21n-2-1-6', // on the map
-  'ml-p2-22n-2-2-1', // On the map
-  'ml-p2-22n-2-2-2', // On the map
-  'ml-p2-22n-2-2-3', // On the map
-  'ml-p2-22n-2-2-4', // On the map
-  'ml-p2-22n-2-2-5', // On the map
-  'ml-p2-25n-2-2-1', // On the map
-  'ml-p2-25n-2-2-2', // On the map
-  'ml-p2-25n-2-2-3', // On the map
-  'ml-p2-25n-2-2-4', // On the map
-  'ml-p2-25n-2-2-5', // On the map
-  'ml-p2-an-2-2-1', // this map
-  'ml-p2-an-2-2-2', // on the map
-  'ml-p2-bn-2-2-1', // On the map
-  'ml-p2-bn-2-2-2', // On the map
-  'ml-p2-bn-2-2-3', // On the map
-  'ml-p2-bn-2-2-4', // On the map
-  'ml-p2-bn-2-2-5', // On the map
-  'ml-p2-cn-5-1-1', // on the map
-  'ml-p2-cn-5-1-2', // on the map
-  'ml-p2-cn-5-1-3', // on the map
-  'ml-p2-cn-5-1-4', // on the map
-  'ml-p2-cn-5-1-5', // on the map
-  'ml-p2-cn-5-1-6', // on the map
+
 ])

@@ -34,6 +34,16 @@ const fail = (id: string, msg: string) => problems.push(`${id}: ${msg}`)
 
 const numbersIn = (text: string) =>
   [...text.replace(/(\d) (\d{3})\b/g, '$1$2').matchAll(/\d+(?:[.,]\d+)?/g)].map((m) => Number(m[0].replace(',', '.')))
+/**
+ * What a text states: its numbers, and every whole number in a stated range --
+ * "rows numbered 1 to 6" states rows 2 to 5 as surely as it states 1 and 6,
+ * so a map may label them.
+ */
+const statedIn = (text: string) => {
+  const out = numbersIn(text)
+  for (const m of text.matchAll(/\b(\d{1,2}) to (\d{1,2})\b/g)) for (let k = Number(m[1]); k <= Number(m[2]); k++) out.push(k)
+  return out
+}
 const labelNumber = (label: string) => {
   const m = label.replace(/(\d) (\d{3})\b/g, '$1$2').match(/\d+(?:[.,]\d+)?/)
   return m ? Number(m[0].replace(',', '.')) : null
@@ -41,7 +51,7 @@ const labelNumber = (label: string) => {
 
 function check(id: string, text: string, s: SceneSpec) {
   const P = new Map(s.points.map((p) => [p.id, p]))
-  const stated = numbersIn(text)
+  const stated = statedIn(text)
   const labels = [
     ...(s.segments ?? []).map((g) => g.label),
     ...(s.angles ?? []).map((a) => a.label),

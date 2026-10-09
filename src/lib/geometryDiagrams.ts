@@ -1,4 +1,6 @@
 import type { Question, SceneSpec, ScenePoint } from '@/types'
+import { mapSceneFor } from '@/data/mapScenes'
+import { circleProofScenes } from '@/data/circleProofs'
 
 /**
  * Geometry sketches built from the question's own words.
@@ -960,6 +962,11 @@ const GEOMETRY_TOPICS = new Set(['math-euclidean-geometry', 'math-trigonometry',
 /** The sketch to show with a question, or null. */
 export function geometryDiagramFor(q: Q): SceneSpec | null {
   if (!GEOMETRY_TOPICS.has(q.topicId)) return null
+  // A map a paper describes in words is drawn once, by hand, in mapScenes.ts;
+  // so is the diagram for each circle-geometry rider in circleProofs.ts.
+  const map = mapSceneFor(q)
+  if (map) return map
+  if (circleProofScenes[q.id]) return circleProofScenes[q.id]
   const t = norm([q.context ?? '', q.prompt].join(' '))
   const proof = /\bProve\b/.test(q.prompt) ? proofFigure(t) : null
   if (proof) return proof

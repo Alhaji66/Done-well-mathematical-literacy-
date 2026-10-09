@@ -24,7 +24,7 @@ export function EarlyWarningCard({ data, today, to, named }: { data: LevelData; 
   const warnings = useMemo(() => earlyWarnings(data.results, {}, today), [data.results, today])
   // The last seven days, counted as the Monday summary to principals and HODs counts its week.
   const week = useMemo(() => warningWeek(data.results, {}, isoDay(today.getTime() - 6 * DAY), isoDay(today.getTime() + DAY)), [data.results, today])
-  if (!data.results.some((r) => r.source === 'weekly')) return null
+  if (!data.results.some((r) => r.source !== 'sba')) return null
   const className = new Map(data.classes.map((c) => [c.id, c.name]))
   const perSubject = new Map<string, number>()
   for (const w of warnings) perSubject.set(w.subjectId, (perSubject.get(w.subjectId) ?? 0) + 1)

@@ -102,6 +102,12 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       return `Reminder: ${names.get(String(d.learner_id)) ?? 'Your child'}’s ${sbaTaskOf(d)} is tomorrow.${d.note ? ` ${String(d.note).replace(/\.$/, '')}.` : ''}`
     case 'sba_date.child_set':
       return `${names.get(String(d.learner_id)) ?? 'Your child'}’s ${sbaTaskOf(d)} ${d.moved ? 'has moved to' : 'is on'} ${dayOf(d.due_on)}.`
+    case 'paper.marked': {
+      const who = names.get(String(d.learner_id)) ?? 'A learner'
+      return `${who} wrote “${String(d.title ?? 'a paper')}”: ${String(d.percent)}% (Level ${String(d.level)}). Open Paper results to see where marks were lost.`
+    }
+    case 'paper.own_marked':
+      return `Your paper “${String(d.title ?? '')}” is marked: ${String(d.percent)}% (Level ${String(d.level)}). Open it to see where you lost marks.`
     case 'level.early_warning': {
       const who = names.get(String(d.learner_id)) ?? 'A learner'
       const what = d.reason === 'below_40' ? `scored ${String(d.percent)}% (Level ${String(d.level)})` : `dropped from Level ${String(d.previous_level)} to Level ${String(d.level)} (${String(d.percent)}%)`

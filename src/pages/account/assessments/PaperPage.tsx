@@ -2,30 +2,28 @@ import { useEffect, useState } from 'react'
 import { useParams, Navigate, Link, useSearchParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { getPaper, type Paper } from '@/data/papers'
-import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
-import { recordAnswer } from '@/lib/mistakes'
-import { logActivity } from '@/lib/activity'
-import { getAnsweredItemIds, markItemAnswered, countPaperItems } from '@/lib/paperProgress'
 import { PaperRunner } from '@/components/assessments/PaperRunner'
+import { PaperExam } from '@/components/assessments/PaperExam'
 import { RouteLoading } from '@/components/layout/RouteLoading'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { ArrowLeftIcon } from '@/components/ui/Icons'
 
 /**
  * Shared "take/review a paper" route for all three roles
- * (/account/{learner,teacher,school}/assessments/:paperId). Only a Learner's
- * answers get recorded to learner_progress; Teacher/School see the same
- * content read-only, since they aren't the ones whose mastery it tracks.
+ * (/account/{learner,teacher,school}/assessments/:paperId).
+ *
+ * A learner WRITES the paper under exam conditions (PaperExam, STEP 41): the
+ * memo stays closed until they hand in or the time runs out, then the paper
+ * is marked and their teacher sees the result. Teacher and school see the
+ * same content read-only, with a memo copy to print.
  */
 export function PaperPage() {
   const { paperId } = useParams()
   const { profile } = useAccountAuth()
-  const [progress, setProgress] = useState<ProgressRow[]>([])
-  const [savedMessage, setSavedMessage] = useState('')
 
   const isLearner = profile?.role === 'learner'
   // Staff can open the memo copy: every answer and marking memo showing, ready
-  // to print. Learners never get it -- they see each answer after trying.
+  // to print. Learners never get it -- the memo opens only after the paper.
   const [params, setParams] = useSearchParams()
   const memoView = !isLearner && params.get('view') === 'memo'
   const setView = (memo: boolean) => {
@@ -36,8 +34,6 @@ export function PaperPage() {
   }
   const [paper, setPaper] = useState<Paper | null>(null)
   const [paperLoaded, setPaperLoaded] = useState(false)
-
-  const [answeredCount, setAnsweredCount] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -58,39 +54,9 @@ export function PaperPage() {
     }
   }, [paperId])
 
-  useEffect(() => {
-    if (isLearner && profile) fetchLearnerProgress(profile.id).then(setProgress)
-  }, [profile, isLearner])
-
-  useEffect(() => {
-    if (isLearner && profile && paper) setAnsweredCount(getAnsweredItemIds(profile.id, paper.id).size)
-  }, [profile, isLearner, paper])
-
   if (!profile) return null
   if (!paperLoaded) return <RouteLoading />
   if (!paper) return <Navigate to=".." relative="path" replace />
-
-  const totalItems = countPaperItems(paper)
-
-  const handleAttempt = isLearner
-    ? async (topicId: string, correct: boolean | null) => {
-        void logActivity(profile.id, 'paper_answer', topicId)
-        const existing = progress.find((p) => p.topic_id === topicId)
-        const updated = await recordAttempt(profile.id, topicId, correct, existing)
-        if (updated) {
-          setProgress((prev) => [...prev.filter((p) => p.topic_id !== topicId), updated])
-          setSavedMessage('Progress saved')
-          setTimeout(() => setSavedMessage(''), 2000)
-        }
-      }
-    : undefined
-
-  const handleItemAnswered = isLearner
-    ? (itemId: string) => {
-        markItemAnswered(profile.id, paper.id, itemId)
-        setAnsweredCount(getAnsweredItemIds(profile.id, paper.id).size)
-      }
-    : undefined
 
   const hours = Math.round((paper.durationMinutes / 60) * 10) / 10
 
@@ -100,7 +66,7 @@ export function PaperPage() {
         <ArrowLeftIcon className="h-4 w-4" /> Back to Assessments
       </Link>
 
-      <SectionHeading eyebrow={`Paper ${paper.paperNumber}`} title={paper.title} description={`${paper.totalMarks} marks · suggested time ${hours} hours`} />
+      <SectionHeading eyebrow={`Paper ${paper.paperNumber}`} title={paper.title} description={`${paper.totalMarks} marks · ${hours} hours`} />
 
       {!isLearner ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-navy-200 bg-navy-50 p-3 text-xs text-navy-600 print:hidden">
@@ -128,34 +94,7 @@ export function PaperPage() {
         </div>
       ) : null}
 
-      {isLearner && savedMessage ? (
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">{savedMessage}</div>
-      ) : null}
-
-      {isLearner ? (
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs font-medium text-navy-500">
-            <span>Your progress on this paper</span>
-            <span>
-              {answeredCount} of {totalItems} answered
-            </span>
-          </div>
-          <div className="h-2 overflow-hidden rounded-full bg-navy-100">
-            <div
-              className="h-full rounded-full bg-gold-500 transition-[width]"
-              style={{ width: `${totalItems === 0 ? 0 : Math.round((answeredCount / totalItems) * 100)}%` }}
-            />
-          </div>
-        </div>
-      ) : null}
-
-      <PaperRunner
-        paper={paper}
-        onAttempt={handleAttempt}
-        onItemAnswered={handleItemAnswered}
-        onResult={isLearner ? (itemId, topicId, correct) => recordAnswer(itemId, topicId, 'paper', correct) : undefined}
-        showAnswers={memoView}
-      />
+      {isLearner ? <PaperExam paper={paper} /> : <PaperRunner paper={paper} showAnswers={memoView} />}
     </div>
   )
 }

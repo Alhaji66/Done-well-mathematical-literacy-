@@ -6362,3 +6362,178 @@ drop policy if exists "Staff can remove a test at their school" on public.weekly
 create policy "Staff can remove a test at their school"
   on public.weekly_tests for delete
   using (public.can_manage_test(id));
+
+-- ============================================================================
+-- STEP 41: A PAST OR PREDICTED PAPER IS WRITTEN UNDER EXAM CONDITIONS AND MARKED
+-- ============================================================================
+--
+-- A learner who opens a past or predicted paper now WRITES it: the clock is
+-- the paper's real duration, kept here (deadline) rather than on the device,
+-- and the memo stays closed until the learner hands in or the time runs out.
+-- Then the paper is marked -- multiple choice exactly, written answers by the
+-- marking service against the memo (supabase/functions/mark-paper) -- and the
+-- learner's teacher sees the mark, the level and the topics where marks were
+-- lost straight away.
+--
+-- Learners cannot write to this table directly. They start, save and hand in
+-- through the three functions below, which only touch their own attempt and
+-- only while it is open. The marks are written by the marking service alone
+-- (service role), so a learner cannot award themselves marks.
+--
+-- Staff read an attempt when it is in their view, as STEP 40 decides for test
+-- marks: the school account; a teacher or HOD of the paper's subject; or the
+-- teacher of a class in that subject and grade that the learner is in.
+create table if not exists public.paper_attempts (
+  id uuid primary key default gen_random_uuid(),
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  school_id uuid references public.schools (id) on delete set null,
+  paper_id text not null check (length(paper_id) between 1 and 80),
+  subject_id text not null check (length(subject_id) between 1 and 40),
+  grade smallint not null check (grade in (10, 11, 12)),
+  title text not null check (length(title) between 1 and 200),
+  started_at timestamptz not null default now(),
+  deadline timestamptz not null,
+  submitted_at timestamptz,
+  answers jsonb not null default '{}'::jsonb,
+  status text not null default 'writing' check (status in ('writing', 'submitted', 'marking', 'marked')),
+  marked_at timestamptz,
+  marked_by text check (marked_by in ('ai', 'auto')),
+  provisional boolean not null default false,
+  marks_awarded numeric(6, 1),
+  marks_total smallint,
+  percent numeric(5, 1),
+  marking jsonb,
+  per_topic jsonb
+);
+
+create unique index if not exists paper_attempts_one_open on public.paper_attempts (learner_id, paper_id) where submitted_at is null;
+create index if not exists paper_attempts_learner_idx on public.paper_attempts (learner_id, started_at desc);
+create index if not exists paper_attempts_school_idx on public.paper_attempts (school_id, subject_id, started_at desc);
+
+alter table public.paper_attempts enable row level security;
+revoke insert, update, delete, truncate on public.paper_attempts from authenticated, anon;
+
+create or replace function public.paper_attempt_in_my_view(p_learner uuid, p_school uuid, p_subject text, p_grade smallint)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.profiles me
+    where me.id = auth.uid()
+      and p_school is not null
+      and me.school_id = p_school
+      and public.is_school_staff(p_school)
+      and (
+        me.role::text = 'school'
+        or (me.role::text in ('teacher', 'hod') and me.subject_id = p_subject)
+        or exists (
+          select 1 from public.classes c
+          join public.class_members m on m.class_id = c.id
+          where c.teacher_id = me.id and c.subject_id = p_subject and c.grade = p_grade and m.learner_id = p_learner
+        )
+      )
+  );
+$$;
+revoke execute on function public.paper_attempt_in_my_view(uuid, uuid, text, smallint) from public, anon;
+grant execute on function public.paper_attempt_in_my_view(uuid, uuid, text, smallint) to authenticated;
+
+drop policy if exists "Learners read their own paper attempts" on public.paper_attempts;
+create policy "Learners read their own paper attempts"
+  on public.paper_attempts for select
+  using (learner_id = auth.uid());
+
+drop policy if exists "Staff read paper attempts in their view" on public.paper_attempts;
+create policy "Staff read paper attempts in their view"
+  on public.paper_attempts for select
+  using (public.paper_attempt_in_my_view(learner_id, school_id, subject_id, grade));
+
+create or replace function public.start_paper(p_paper text, p_subject text, p_grade smallint, p_title text, p_minutes integer)
+returns public.paper_attempts
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  me public.profiles%rowtype;
+  open_row public.paper_attempts%rowtype;
+  new_row public.paper_attempts%rowtype;
+begin
+  select * into me from public.profiles where id = auth.uid();
+  if me.id is null or me.role::text <> 'learner' then
+    raise exception 'Only a learner can write a paper' using errcode = '42501';
+  end if;
+  if public.access_reason(me.id) is null then
+    raise exception 'Writing a full paper needs paid access or the free trial' using errcode = '42501';
+  end if;
+  select * into open_row from public.paper_attempts
+  where learner_id = me.id and paper_id = p_paper and submitted_at is null;
+  if open_row.id is not null then
+    return open_row;
+  end if;
+  insert into public.paper_attempts (learner_id, school_id, paper_id, subject_id, grade, title, deadline)
+  values (me.id, me.school_id, p_paper, p_subject, p_grade, left(p_title, 200),
+          now() + make_interval(mins => greatest(30, least(coalesce(p_minutes, 180), 240))))
+  returning * into new_row;
+  return new_row;
+end;
+$$;
+revoke execute on function public.start_paper(text, text, smallint, text, integer) from public, anon;
+grant execute on function public.start_paper(text, text, smallint, text, integer) to authenticated;
+
+create or replace function public.save_paper_answers(p_attempt uuid, p_answers jsonb)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if jsonb_typeof(p_answers) <> 'object' or pg_column_size(p_answers) > 300000 then
+    raise exception 'Answers must be an object of at most 300 kB' using errcode = '22023';
+  end if;
+  update public.paper_attempts
+  set answers = p_answers
+  where id = p_attempt
+    and learner_id = auth.uid()
+    and submitted_at is null
+    and now() <= deadline + interval '2 minutes';
+  return found;
+end;
+$$;
+revoke execute on function public.save_paper_answers(uuid, jsonb) from public, anon;
+grant execute on function public.save_paper_answers(uuid, jsonb) to authenticated;
+
+create or replace function public.submit_paper(p_attempt uuid, p_answers jsonb default null)
+returns public.paper_attempts
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.paper_attempts%rowtype;
+begin
+  select * into r from public.paper_attempts where id = p_attempt and learner_id = auth.uid();
+  if r.id is null then
+    raise exception 'No such paper attempt' using errcode = '42501';
+  end if;
+  if r.submitted_at is not null then
+    return r;
+  end if;
+  if p_answers is not null and jsonb_typeof(p_answers) = 'object' and pg_column_size(p_answers) <= 300000
+     and now() <= r.deadline + interval '2 minutes' then
+    r.answers := p_answers;
+  end if;
+  update public.paper_attempts
+  set answers = r.answers,
+      submitted_at = least(now(), deadline),
+      status = 'submitted'
+  where id = p_attempt
+  returning * into r;
+  return r;
+end;
+$$;
+revoke execute on function public.submit_paper(uuid, jsonb) from public, anon;
+grant execute on function public.submit_paper(uuid, jsonb) to authenticated;

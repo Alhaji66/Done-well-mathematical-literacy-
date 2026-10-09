@@ -173,6 +173,7 @@ const TeacherAssessmentTasks = lazy(() =>
 const AccountMarkBook = lazy(() => import('@/pages/account/MarkBook').then((m) => ({ default: m.MarkBook })))
 const DemoMarkBook = lazy(() => import('@/pages/teacher/MarkBook').then((m) => ({ default: m.DemoMarkBook })))
 const AccountLevels = lazy(() => import('@/pages/account/Levels').then((m) => ({ default: m.Levels })))
+const AccountPaperResults = lazy(() => import('@/pages/account/PaperResults').then((m) => ({ default: m.PaperResults })))
 const DemoInterventionReport = lazy(() =>
   import('@/pages/teacher/InterventionReport').then((m) => ({ default: m.DemoInterventionReport })),
 )
@@ -264,6 +265,7 @@ export default function App() {
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="paper-results" element={<AccountPaperResults />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="lesson-plans" element={<TeacherLessonPlans />} />
                 <Route path="assessment-tasks" element={<TeacherAssessmentTasks />} />
@@ -315,6 +317,7 @@ export default function App() {
                 <Route path="question-bank" element={<TeacherQuestionBank />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="paper-results" element={<AccountPaperResults />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
@@ -343,6 +346,7 @@ export default function App() {
                 <Route path="levels" element={<AccountLevels />} />
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
+                <Route path="paper-results" element={<AccountPaperResults />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />

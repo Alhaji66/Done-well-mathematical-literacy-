@@ -72,6 +72,23 @@ works), `TUTOR_DAILY_LIMIT` (default 20 per learner),
 `TUTOR_ALLOW_DEMO=true` with `TUTOR_DEMO_DAILY_LIMIT` (default 3) to let the demo make live checks. Until the
 function is deployed, the demo shows a worked example and signed-in learners see "not switched on yet".
 
+## Papers written under exam conditions, and marked
+
+A learner writes a past or predicted paper against the clock: the memo stays closed until they hand in or the time
+runs out (STEP 41 of `supabase/schema.sql`). Then the `mark-paper` Edge Function marks it -- multiple choice
+exactly, written answers against the memo through the same AI gateway as the tutor -- and the learner's teacher sees
+the mark, the level and the topics to re-teach under **Paper results** straight away. To switch marking on:
+
+1. Run STEP 41 of `supabase/schema.sql`.
+2. Deploy the function: `supabase functions deploy mark-paper --no-verify-jwt` (or, in the Supabase dashboard:
+   Edge Functions → Deploy a new function → Via editor, name it `mark-paper`, paste
+   `supabase/functions/mark-paper/index.ts`, and turn **Verify JWT** off -- the function checks the caller itself).
+3. It uses the tutor's secrets (`AI_GATEWAY_API_KEY`, `TUTOR_MODEL`). Optional: `MARKING_MODEL` to mark with a
+   different model, `PAPER_MARK_DAILY_LIMIT` (default 6 AI-marked papers per learner per day).
+
+Without the gateway, or over the daily limit, a paper is still marked -- by the values the memo asks for -- and is
+flagged *provisional* for learner and teacher.
+
 ## Offline
 
 The app installs as a PWA and works offline once installed. Each subject's questions are downloaded the first

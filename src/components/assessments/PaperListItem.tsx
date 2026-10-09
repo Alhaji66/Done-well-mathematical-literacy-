@@ -1,15 +1,19 @@
 import { Link } from 'react-router-dom'
 import type { Paper } from '@/data/papers'
 import { ChevronRightIcon } from '@/components/ui/Icons'
+import { levelOf } from '@/lib/levels'
+import { memoOpen, type PaperAttempt } from '@/lib/paperAttempts'
 
 interface PaperListItemProps {
   paper: Paper
   to: string
   /** Omit to hide the progress row entirely (e.g. Teacher/School read-only browse). */
   progress?: { answered: number; total: number }
+  /** A signed-in learner's latest attempt at it under exam conditions (STEP 41). */
+  attempt?: PaperAttempt | null
 }
 
-export function PaperListItem({ paper, to, progress }: PaperListItemProps) {
+export function PaperListItem({ paper, to, progress, attempt }: PaperListItemProps) {
   const hours = Math.round((paper.durationMinutes / 60) * 10) / 10
   const isComplete = progress ? progress.total > 0 && progress.answered >= progress.total : false
   const isStarted = progress ? progress.answered > 0 : false
@@ -22,7 +26,21 @@ export function PaperListItem({ paper, to, progress }: PaperListItemProps) {
             {paper.kind === 'predicted' ? `Predicted — Set ${paper.setLabel}` : `${paper.year}`}
           </span>
           <span className="badge-slate">{paper.totalMarks} marks</span>
-          {isComplete ? <span className="badge-green">Completed</span> : isStarted ? <span className="badge-gold">In progress</span> : null}
+          {attempt ? (
+            attempt.status === 'marked' ? (
+              <span className="badge-green">
+                Marked: {Math.round(attempt.percent ?? 0)}% · Level {levelOf(attempt.percent ?? 0)}
+              </span>
+            ) : memoOpen(attempt) ? (
+              <span className="badge-gold">Handed in</span>
+            ) : (
+              <span className="badge-gold">Writing</span>
+            )
+          ) : isComplete ? (
+            <span className="badge-green">Completed</span>
+          ) : isStarted ? (
+            <span className="badge-gold">In progress</span>
+          ) : null}
         </div>
         <h4 className="mt-1.5 truncate font-semibold text-navy-900">{paper.title}</h4>
         <p className="text-xs text-navy-500">

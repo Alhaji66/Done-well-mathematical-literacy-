@@ -6,6 +6,10 @@ const META = {
   'maths-first-principles': { file: 'l_calculus.js', subjectId: 'mathematics', topicId: 'math-calculus', grades: [12], title: 'The derivative from first principles', summary: 'Where the definition comes from, and a full first-principles example, line by line.' },
   'physics-momentum-impulse': { file: 'l_momentum.js', subjectId: 'physical-sciences', topicId: 'phys-momentum-impulse', grades: [12], title: 'Momentum and impulse', summary: 'Momentum, impulse and Newton’s second law, with a ball rebounding off a wall worked in full.' },
   'lifesci-meiosis': { file: 'l_meiosis.js', subjectId: 'life-sciences', topicId: 'life-sci-meiosis', grades: [12], title: 'Meiosis: making gametes', summary: 'Meiosis I and II with diagrams, the three sources of variation, and how it differs from mitosis.' },
+  'matlit-data-summary': { file: 'l_data.js', subjectId: 'mat-lit', topicId: 'data-handling', grades: [10, 11, 12], title: 'Mean, median, mode, range and quartiles', summary: 'Summarising a data set step by step, the box-and-whisker plot, and finding a missing value from the mean.' },
+  'maths-reduction-formulae': { file: 'l_reduction.js', subjectId: 'mathematics', topicId: 'math-trigonometry', grades: [11, 12], title: 'Reduction formulae and the CAST diagram', summary: 'Signs from CAST, the reduction formulae and co-functions, with two "without a calculator" examples.' },
+  'chem-organic-naming': { file: 'l_organic.js', subjectId: 'physical-sciences', topicId: 'phys-organic-chemistry', grades: [12], title: 'Naming organic molecules', summary: 'The IUPAC rules step by step: chain, numbering, branches, punctuation and esters, with five named examples.' },
+  'lifesci-monohybrid': { file: 'l_monohybrid.js', subjectId: 'life-sciences', topicId: 'life-sci-genetics', grades: [12], title: 'Monohybrid crosses', summary: 'The key terms of genetics, a full genetic cross set out the way the memo marks it, a Punnett square and a test cross.' },
 }
 const out = []
 for (const [id, m] of Object.entries(META)) {

@@ -10,6 +10,7 @@ const META = {
   'maths-reduction-formulae': { file: 'l_reduction.js', subjectId: 'mathematics', topicId: 'math-trigonometry', grades: [11, 12], title: 'Reduction formulae and the CAST diagram', summary: 'Signs from CAST, the reduction formulae and co-functions, with two "without a calculator" examples.' },
   'chem-organic-naming': { file: 'l_organic.js', subjectId: 'physical-sciences', topicId: 'phys-organic-chemistry', grades: [12], title: 'Naming organic molecules', summary: 'The IUPAC rules step by step: chain, numbering, branches, punctuation and esters, with five named examples.' },
   'lifesci-monohybrid': { file: 'l_monohybrid.js', subjectId: 'life-sciences', topicId: 'life-sci-genetics', grades: [12], title: 'Monohybrid crosses', summary: 'The key terms of genetics, a full genetic cross set out the way the memo marks it, a Punnett square and a test cross.' },
+  'matlit-income-tax': { file: 'l_tax.js', subjectId: 'mat-lit', topicId: 'finance', grades: [12], title: 'Income tax and the tax threshold', summary: 'Taxable income, the SARS tax table and rebates worked in full, and how to find each tax threshold yourself.' },
 }
 const out = []
 for (const [id, m] of Object.entries(META)) {

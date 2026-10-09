@@ -29,6 +29,9 @@ import type { Prob, Question, TreeSpec, VennSpec } from '../src/types'
 /** Questions in those sub-topics that rightly have no diagram. */
 const exempt: Record<string, string> = {
   'gap-tree-g10-two-way-table': 'Its data is a two-way table, printed with the question -- the table is the diagram.',
+  'mty-11-contingency-complete': 'Its data is a two-way table, printed with the question -- the table is the diagram.',
+  'mty-12-contingency-find-x': 'Its data is a two-way table, printed with the question -- the table is the diagram.',
+  'mty-12-contingency-grades': 'Its data is a two-way table, printed with the question -- the table is the diagram.',
 }
 
 const items: Question[] = [...questions]

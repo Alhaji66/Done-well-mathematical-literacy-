@@ -811,6 +811,78 @@ export const derivedGraphs: Record<string, GraphSpec> = {
         "label": "f"
       }
     ]
+  },
+  "mty-10-graph-ineq-exponential": {
+    "title": "The graph of f",
+    "xRange": [
+      -4,
+      5
+    ],
+    "yRange": [
+      -8,
+      18
+    ],
+    "curves": [
+      {
+        "kind": "exponential",
+        "a": 1,
+        "b": 2,
+        "q": -4,
+        "label": "f"
+      }
+    ]
+  },
+  "mty-10-graph-ineq-hyperbola-line": {
+    "title": "The graphs in this question",
+    "xRange": [
+      -8,
+      8
+    ],
+    "yRange": [
+      -9,
+      11
+    ],
+    "curves": [
+      {
+        "kind": "hyperbola",
+        "a": 6,
+        "p": 0,
+        "q": 0,
+        "label": "h"
+      },
+      {
+        "kind": "line",
+        "m": 1,
+        "c": 1,
+        "label": "g"
+      }
+    ]
+  },
+  "mty-10-graph-ineq-parabola-line": {
+    "title": "The graphs in this question",
+    "xRange": [
+      -8,
+      8
+    ],
+    "yRange": [
+      -14,
+      12
+    ],
+    "curves": [
+      {
+        "kind": "parabola",
+        "a": -1,
+        "b": 0,
+        "c": 4,
+        "label": "f"
+      },
+      {
+        "kind": "line",
+        "m": 1,
+        "c": 2,
+        "label": "g"
+      }
+    ]
   }
 }
 

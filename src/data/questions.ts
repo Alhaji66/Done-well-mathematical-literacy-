@@ -17,6 +17,8 @@ import { thinSubtopicQuestions } from '@/data/thinSubtopicQuestions'
 import { dataHandlingTypes } from '@/data/dataHandlingTypes'
 import { matlitTypes } from '@/data/matlitTypes'
 import { mathTypes } from '@/data/mathTypes'
+import { physicsInvestigations } from '@/data/physicsInvestigations'
+import { lifeSciInvestigations } from '@/data/lifeSciInvestigations'
 import { lifeSciThinQuestions } from '@/data/lifeSciThinQuestions'
 import { lifeSciThin3Questions } from '@/data/lifeSciThin3Questions'
 import { physicsThinQuestions } from '@/data/physicsThinQuestions'
@@ -41,6 +43,8 @@ export const questions: Question[] = [
   ...dataHandlingTypes,
   ...matlitTypes,
   ...mathTypes,
+  ...physicsInvestigations,
+  ...lifeSciInvestigations,
   ...lessonGapQuestions,
   ...physicsGapQuestions,
   ...lifeSciGapQuestions,

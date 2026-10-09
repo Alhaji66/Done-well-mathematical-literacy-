@@ -63,7 +63,8 @@ question from the bank on the same topic. The model is reached through an AI gat
 Function, so the gateway key never reaches the browser. To switch it on:
 
 1. Run STEP 19 of `supabase/schema.sql` (the `tutor_requests` table the daily limit counts).
-2. Deploy the function: `supabase functions deploy tutor --no-verify-jwt`
+2. Deploy the function: `supabase functions deploy tutor --no-verify-jwt` -- or let GitHub do it (see
+   *Deploying the functions from GitHub* below)
 3. Set the key and the model: `supabase secrets set AI_GATEWAY_API_KEY=... TUTOR_MODEL=...` (any model on the
    gateway that reads images, named the way the gateway lists it)
 
@@ -88,6 +89,19 @@ the mark, the level and the topics to re-teach under **Paper results** straight 
 
 Without the gateway, or over the daily limit, a paper is still marked -- by the values the memo asks for -- and is
 flagged *provisional* for learner and teacher.
+
+## Deploying the functions from GitHub
+
+The **Deploy Edge Functions** workflow deploys `tutor` and `mark-paper` (with JWT verification off) whenever a
+function changes on `main`, so nothing has to be pasted into the dashboard editor. Once:
+
+1. Supabase → your avatar → **Access Tokens** → **Generate new token**; copy it.
+2. GitHub → **Settings → Secrets and variables → Actions → New repository secret**: name
+   `SUPABASE_ACCESS_TOKEN`, paste the token.
+3. GitHub → **Actions → Deploy Edge Functions → Run workflow**.
+
+The functions' own secrets (`AI_GATEWAY_API_KEY`, `TUTOR_MODEL`, ...) stay in Supabase under
+**Edge Functions → Secrets**.
 
 ## Offline
 

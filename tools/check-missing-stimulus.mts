@@ -12,8 +12,8 @@
  * What counts as needing one: the question (or the context it carries, see
  * sharedStimulus.ts) names a map, TABLE n, FIGURE n or "shown below", or reads from "the graph"/"the diagram" -- unless it gives an equation to
  * work from, or asks the learner to draw or sketch it. What counts as having
- * one: a table in the context, or a graph, figure, chart or circuit on the
- * item or an earlier sub-question.
+ * one: a table in the context, a graph, figure, chart or circuit on the item
+ * or an earlier sub-question, or a map drawn for it in mapScenes.ts.
  *
  *   npm run check:missing-stimulus            -- check
  *   npm run check:missing-stimulus -- --write  -- rewrite the list
@@ -26,6 +26,7 @@ import { derivedFigures } from '../src/data/derivedFigures.ts'
 import { derivedCircuits } from '../src/data/derivedCircuits.ts'
 import { chartSpecs } from '../src/data/chartSpecs.ts'
 import { awaitingStimulus } from '../src/data/awaitingStimulus.ts'
+import { mapSceneFor } from '../src/data/mapScenes.ts'
 
 const NAMED = /\b(TABLE\s*\d+|shown below|given below|below shows|the map|this map|on the map|FIGURE\s*\d+)\b/i
 const READS = /\b(the graph|the sketch|the diagram)\b/i
@@ -40,7 +41,7 @@ for (const subject of ['mat-lit', 'mathematics', 'physical-sciences', 'life-scie
       for (const q of withSectionStimulus(s.items)) {
         const text = `${q.context ?? ''}\n${q.prompt}`
         const hasTable = /^\s*\|/m.test(q.context ?? '')
-        const hasVisual = q.graph || q.figure || q.chart || q.circuit || visual(q.id) || (q.stimulusIds ?? []).some(visual)
+        const hasVisual = q.graph || q.figure || q.chart || q.circuit || visual(q.id) || (q.stimulusIds ?? []).some(visual) || mapSceneFor(q)
         if (hasTable || hasVisual) continue
         const named = text.match(NAMED)
         const reads = !named && READS.test(text) && !WORKS_FROM_EQUATION.test(text) && !ASKS_TO_DRAW.test(q.prompt) ? text.match(READS) : null

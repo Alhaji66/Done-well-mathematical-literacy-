@@ -37,6 +37,8 @@
     "check:memo-coverage": "tsx tools/memo-coverage.mts",
     "check:totals": "tsx tools/check-paper-totals.mts",
     "check:orphans": "tsx tools/check-orphans.mts",
+    "check:missing-stimulus": "tsx tools/check-missing-stimulus.mts",
+    "report:question-types": "tsx tools/question-type-coverage.mts",
     "check:ambiguous": "tsx tools/check-ambiguous.mts",
     "check:repeats": "tsx tools/check-repeats.mts",
     "check:practise-links": "tsx tools/check-practise-links.mts",

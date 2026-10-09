@@ -1061,7 +1061,9 @@ export const subtopicRulesFor = (topicId: string): SubtopicRule[] => rules[topic
 
 /** The sub-topic a single question belongs to, or null if nothing places it. */
 export function subtopicFor(q: Question): string | null {
-  const text = `${q.prompt} ${q.context ?? ''}`
+  // ownContext: what the item was written with, not the section tables it
+  // carries when taken out of its paper (sharedStimulus.ts).
+  const text = `${q.prompt} ${q.ownContext ?? q.context ?? ''}`
 
   // Hand-written rules decide first, because they encode orderings the scorer
   // cannot know -- "the VAT on the municipal account" is a taxation question,

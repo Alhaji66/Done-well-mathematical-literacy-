@@ -49,13 +49,21 @@ export function QuestionCard({ question, index, onAttempt, label, onResult, star
   // A figure or graph written on the question always wins; otherwise one
   // derived from the question's own words. See src/data/graphSpecs.ts and
   // tools/derive-figures.mts.
-  const promptGraph = question.graph ?? derivedGraphs[question.id]
+  // A paper sub-question used on its own shows the nearest visual drawn for an
+  // earlier sub-question of its section, when it has none (sharedStimulus.ts).
+  const ownVisual = Boolean(
+    question.graph || question.figure || question.circuit || question.chart ||
+      derivedGraphs[question.id] || derivedFigures[question.id] || derivedCircuits[question.id] || chartSpecs[question.id]?.chart,
+  )
+  const shared = <V,>(pick: (id: string) => V | undefined): V | undefined =>
+    ownVisual ? undefined : question.stimulusIds?.map(pick).find(Boolean)
+  const promptGraph = question.graph ?? derivedGraphs[question.id] ?? shared((id) => derivedGraphs[id])
   const answerGraph = question.answerGraph ?? derivedAnswerGraphs[question.id]
-  const promptFigure = question.figure ?? derivedFigures[question.id]
+  const promptFigure = question.figure ?? derivedFigures[question.id] ?? shared((id) => derivedFigures[id])
   const answerFigureId = question.answerFigure ?? derivedAnswerFigures[question.id]
-  const promptCircuit = question.circuit ?? derivedCircuits[question.id]
+  const promptCircuit = question.circuit ?? derivedCircuits[question.id] ?? shared((id) => derivedCircuits[id])
   const answerCircuit = question.answerCircuit ?? derivedAnswerCircuits[question.id]
-  const promptChart = question.chart ?? chartSpecs[question.id]?.chart
+  const promptChart = question.chart ?? chartSpecs[question.id]?.chart ?? shared((id) => chartSpecs[id]?.chart)
   const answerChart = question.answerChart ?? chartSpecs[question.id]?.answerChart
   // A sketch read off the question's words, when nothing else is drawn for it.
   const drawnAlready = Boolean(promptFigure || promptGraph || promptCircuit || promptChart)

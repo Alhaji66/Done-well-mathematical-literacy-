@@ -90,6 +90,18 @@ export interface Question {
    */
   memo?: MemoStep[]
   /**
+   * Set only on a paper sub-question taken out of its section (see
+   * src/data/sharedStimulus.ts): the earlier sub-questions, nearest first, so
+   * a graph or figure drawn for one of them can be shown with this one.
+   */
+  stimulusIds?: string[]
+  /**
+   * The context the item was written with, before its section's tables and
+   * facts were added (sharedStimulus.ts). Sub-topic sorting reads this, so a
+   * question is filed by what it asks, not by the table above it.
+   */
+  ownContext?: string
+  /**
    * An inline SVG figure to show with the question, by id.
    *
    * For a picture that exists exactly once -- the CAST diagram, a free-body

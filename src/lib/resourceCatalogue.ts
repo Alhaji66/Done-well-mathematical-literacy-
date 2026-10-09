@@ -1,6 +1,7 @@
 import { topicsForSubject, getTopic } from '@/data/topics'
 import { papersForSubject } from '@/data/papers'
 import { atpFor } from '@/data/atp'
+import { topicVideos, videoMinutes } from '@/data/topicVideos'
 import type { AccountRole } from '@/context/AccountAuthContext'
 import type { Difficulty, Grade } from '@/types'
 import type { ContentItem, ContentKind } from '@/lib/content'
@@ -23,7 +24,8 @@ import type { ContentItem, ContentKind } from '@/lib/content'
  *   revision         -- the exam countdown plan and My mistakes (learners)
  *   teacher_resource -- year plans, SBA tasks, coverage, mark book, sign-off (staff)
  *   study_guide, practice, assessment -- as before.
- * Videos come only from the content studio.
+ * Videos: DONE WELL's own video lessons (src/data/topicVideos.ts), for
+ * everyone, plus any the content studio publishes.
  */
 
 export interface CatalogueEntry {
@@ -58,6 +60,22 @@ export async function builtInEntries(subjectId: string, role: AccountRole): Prom
   const out: CatalogueEntry[] = []
   const { topicNotes } = await import('@/data/topicNotes')
   const withNotes = new Set(topicNotes.map((n) => n.topicId))
+
+  for (const v of topicVideos.filter((x) => x.subjectId === subjectId)) {
+    out.push({
+      key: `video:${v.id}`,
+      kind: 'video',
+      title: v.title,
+      summary: `${v.summary} About ${videoMinutes(v)} minutes.`,
+      subjectId,
+      grades: v.grades,
+      topicId: v.topicId,
+      difficulty: null,
+      teachersOnly: false,
+      to: `resources/video/${v.id}`,
+      source: 'done-well',
+    })
+  }
 
   for (const t of topicsForSubject(subjectId)) {
     if (withNotes.has(t.id)) {

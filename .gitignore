@@ -12,3 +12,8 @@ npm-debug.log*
 
 # Full content packs: built and uploaded by the deploy, never committed.
 content-packs/
+
+# Video lesson tooling: the voice model, fonts and render output stay local.
+tools/video-lessons/build/
+tools/video-lessons/model/
+tools/video-lessons/fonts/

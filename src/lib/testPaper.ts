@@ -7,6 +7,7 @@
  * `npm run check:test-coverage` does.
  */
 import { questionsForSubject } from '@/data/questionBank'
+import { varied } from '@/lib/questionVariety'
 import { subtopicFor, UNSORTED } from '@/data/subtopics'
 import type { Grade, Question } from '@/types'
 
@@ -125,7 +126,9 @@ export async function buildTestPaper(test: TestSpec): Promise<Question[]> {
   // Shuffle the bucket ORDER too, so the same sub-topic does not always open
   // the paper, and shuffle within each bucket so the question does not either.
   const order = shuffle([...buckets.keys()].sort(), rand)
-  const queues = order.map((key) => shuffle(buckets.get(key)!, rand))
+  // Within a sub-topic: one question per template, the skills taken in turn,
+  // so a "Mean, median and mode" test is not five means (questionVariety.ts).
+  const queues = order.map((key) => varied(shuffle(buckets.get(key)!, rand)))
 
   const out: Question[] = []
   for (let round = 0; out.length < test.question_count; round++) {

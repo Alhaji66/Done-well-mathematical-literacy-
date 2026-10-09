@@ -14,6 +14,7 @@ import { physicsGapQuestions } from '@/data/physicsGapQuestions'
 import { lifeSciGapQuestions } from '@/data/lifeSciGapQuestions'
 import { mathThinGaps } from '@/data/mathThinGaps'
 import { thinSubtopicQuestions } from '@/data/thinSubtopicQuestions'
+import { dataHandlingTypes } from '@/data/dataHandlingTypes'
 import { lifeSciThinQuestions } from '@/data/lifeSciThinQuestions'
 import { lifeSciThin3Questions } from '@/data/lifeSciThin3Questions'
 import { physicsThinQuestions } from '@/data/physicsThinQuestions'
@@ -35,6 +36,7 @@ export const questions: Question[] = [
   ...matlitGraphGaps,
   ...matlitChartGaps,
   ...matlitLessonGaps,
+  ...dataHandlingTypes,
   ...lessonGapQuestions,
   ...physicsGapQuestions,
   ...lifeSciGapQuestions,

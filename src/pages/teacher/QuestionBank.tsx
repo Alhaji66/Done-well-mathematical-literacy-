@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { linkChoice } from '@/lib/linkChoice'
+import { varied } from '@/lib/questionVariety'
 import { filterSubjectQuestions } from '@/data/questionBank'
 import { topics, getTopic } from '@/data/topics'
 import { subjects } from '@/data/subjects'
@@ -37,7 +38,9 @@ const byDemand = (qs: Question[]) =>
  * are bucketed by level and taken round-robin: every level present keeps a
  * share, and a 10-question worksheet still runs from recall to reasoning.
  */
-function pick(qs: Question[], limit: Length): Question[] {
+function pick(all: Question[], limit: Length): Question[] {
+  // One question per template, the skills taken in turn (questionVariety.ts).
+  const qs = varied(all)
   if (limit === 'all' || qs.length <= limit) return byDemand(qs)
 
   const buckets = new Map<number, Question[]>()

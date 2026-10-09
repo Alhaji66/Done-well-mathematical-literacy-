@@ -75,6 +75,7 @@ export function PaperExam({ paper }: { paper: Paper }) {
   const [error, setError] = useState('')
   const [saved, setSaved] = useState<'saved' | 'saving' | 'offline' | ''>('')
   const [markError, setMarkError] = useState<MarkError | null>(null)
+  const [remarking, setRemarking] = useState(false)
   const saveTimer = useRef<number | null>(null)
   const answersRef = useRef(answers)
   answersRef.current = answers
@@ -318,10 +319,25 @@ export function PaperExam({ paper }: { paper: Paper }) {
             </button>
           </div>
           {attempt.provisional ? (
-            <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-900">
-              Some answers were marked only by the values the memo asks for, so a written explanation may deserve more marks than shown. Your teacher can
-              see this.
-            </p>
+            <div className="rounded-lg bg-amber-50 p-3 text-xs text-amber-900">
+              <p>
+                Some answers were marked only by the values the memo asks for, so a written explanation may deserve more marks than shown. Your teacher can
+                see this.
+              </p>
+              <button
+                type="button"
+                disabled={remarking}
+                onClick={async () => {
+                  setRemarking(true)
+                  await mark(attempt, true)
+                  setRemarking(false)
+                }}
+                className="btn-outline btn-sm mt-2"
+              >
+                {remarking ? 'Marking again…' : 'Mark my written answers again'}
+              </button>
+              {markError && !remarking ? <p className="mt-2">{MARK_ERRORS[markError]}</p> : null}
+            </div>
           ) : null}
           {topics.length ? (
             <div>

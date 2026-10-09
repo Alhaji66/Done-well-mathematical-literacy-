@@ -123,6 +123,108 @@ export const topicVideos: TopicVideo[] = [
       "Three mistakes to avoid. The chromosome number is halved in anaphase one, when whole chromosomes separate, not in anaphase two. In metaphase one, chromosomes line up in pairs. In metaphase two, they line up singly. And know non-disjunction. If chromosomes fail to separate, a gamete gets one too many or one too few. Down syndrome is an example.",
       "Now it's your turn. Open Meiosis in DONE WELL, and practise exam questions with diagrams and every mark explained."
     ]
+  },
+  {
+    "id": "matlit-data-summary",
+    "subjectId": "mat-lit",
+    "topicId": "data-handling",
+    "grades": [
+      10,
+      11,
+      12
+    ],
+    "title": "Mean, median, mode, range and quartiles",
+    "summary": "Summarising a data set step by step, the box-and-whisker plot, and finding a missing value from the mean.",
+    "file": "matlit-data-summary.mp4",
+    "poster": "matlit-data-summary.jpg",
+    "seconds": 182,
+    "megabytes": 4.8,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to summarise a set of data with the mean, the median, the mode, the range and the quartiles, and how to work backwards from the mean to find a missing value.",
+      "Here are the test marks of eleven learners, out of twenty. Before you calculate anything, write the data in order, from smallest to largest. Seven, nine, eleven, twelve, fourteen, fifteen, fifteen, fifteen, sixteen, eighteen, twenty. Count the values. There are eleven, so n equals eleven.",
+      "The mean is the average. Add all the values, and divide by how many there are. The sum of the eleven marks is one hundred and fifty two. One hundred and fifty two divided by eleven is thirteen comma eight one eight. So the mean is about thirteen comma eight marks.",
+      "The median is the middle value of the sorted data. Its position is n plus one, divided by two. Eleven plus one, divided by two, is six. So the median is the sixth value, which is fifteen. With an even number of values, there are two middle values, and the median is halfway between them. The mode is the value that appears most often. Fifteen appears three times, so the mode is fifteen.",
+      "The range is the largest value minus the smallest value. Twenty minus seven is thirteen. In Grade twelve you also need the quartiles. The median splits the data into a lower half and an upper half. The lower quartile, Q one, is the median of the lower half: seven, nine, eleven, twelve, fourteen. That is eleven. The upper quartile, Q three, is the median of the upper half: fifteen, fifteen, sixteen, eighteen, twenty. That is sixteen. The interquartile range is Q three minus Q one. Sixteen minus eleven is five. It tells you how spread out the middle half of the data is.",
+      "These five numbers are the five-number summary: the minimum, Q one, the median, Q three and the maximum. A box-and-whisker plot shows them on a number line. The box runs from Q one to Q three, with a line at the median, and the whiskers reach out to the minimum and the maximum. Here the median is close to Q three, so the top half of the middle marks is bunched together.",
+      "Examiners often turn the question around. The mean of five marks is fourteen. Four of the marks are twelve, fifteen, nine and eighteen. Determine the fifth mark. If the mean of five marks is fourteen, then the five marks add up to five times fourteen, which is seventy. The four known marks add up to fifty four. So the missing mark is seventy minus fifty four, which is sixteen. Check: seventy divided by five is fourteen.",
+      "Three mistakes to avoid. Never find the median before sorting the data. The median is a value, not a position. Say fifteen, not \"the sixth\". And the range is one number, the difference. Thirteen, not \"seven to twenty\".",
+      "Now it's your turn. Open Data Handling in DONE WELL, and practise these questions, with every mark explained."
+    ]
+  },
+  {
+    "id": "maths-reduction-formulae",
+    "subjectId": "mathematics",
+    "topicId": "math-trigonometry",
+    "grades": [
+      11,
+      12
+    ],
+    "title": "Reduction formulae and the CAST diagram",
+    "summary": "Signs from CAST, the reduction formulae and co-functions, with two \"without a calculator\" examples.",
+    "file": "maths-reduction-formulae.mp4",
+    "poster": "maths-reduction-formulae.jpg",
+    "seconds": 236,
+    "megabytes": 5.9,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn the reduction formulae: how to change the trig ratio of any angle into a ratio of an acute angle, with the correct sign, and how to simplify expressions without a calculator.",
+      "Angles are measured anticlockwise from the positive x axis, and the sign of each ratio depends on the quadrant the angle ends in. In the first quadrant, from zero to ninety degrees, all the ratios are positive. In the second quadrant, only sine is positive. In the third quadrant, only tangent is positive. And in the fourth quadrant, only cosine is positive. Read anticlockwise from the fourth quadrant, the letters spell C A S T.",
+      "With one hundred and eighty or three hundred and sixty degrees, the ratio stays the same, and CAST gives the sign. One hundred and eighty minus theta is in the second quadrant, so sine stays positive, and cosine and tangent become negative. One hundred and eighty plus theta is in the third quadrant, so only tangent stays positive. Three hundred and sixty minus theta, and negative theta, are in the fourth quadrant, so only cosine stays positive. With ninety degrees, the ratio changes to its co-function: sine becomes cosine, and cosine becomes sine. Sine of ninety plus theta is cos theta, and cos of ninety plus theta is negative sine theta.",
+      "Here is an example. Without a calculator, determine sin one hundred and fifty degrees, times cos two hundred and forty degrees, divided by tan three hundred and fifteen degrees. One hundred and fifty degrees is one hundred and eighty minus thirty. It is in the second quadrant, where sine is positive, so sin one hundred and fifty equals sin thirty, which is one half. Two hundred and forty degrees is one hundred and eighty plus sixty, in the third quadrant, where cosine is negative. So cos two hundred and forty is negative cos sixty, which is negative one half. Three hundred and fifteen degrees is three hundred and sixty minus forty five, in the fourth quadrant, where tangent is negative. So tan three hundred and fifteen is negative tan forty five, which is negative one. Substitute: one half times negative one half is negative one quarter. Divided by negative one, that gives positive one quarter.",
+      "Now simplify sin of one hundred and eighty minus x, times cos of negative x, all over cos of ninety plus x, times cos of three hundred and sixty minus x. Sin of one hundred and eighty minus x is sin x. Cos of negative x is cos x. So the top is sin x cos x. Cos of ninety plus x is negative sin x, a co-function, and cos of three hundred and sixty minus x is cos x. So the bottom is negative sin x cos x. Everything cancels, except the minus sign. The answer is negative one.",
+      "For an angle bigger than three hundred and sixty degrees, first subtract three hundred and sixty, as many times as you need. The ratios repeat every full turn. Cos four hundred and eighty degrees equals cos of four hundred and eighty minus three hundred and sixty, which is cos one hundred and twenty. Then cos one hundred and twenty is cos of one hundred and eighty minus sixty, which is negative cos sixty, negative one half.",
+      "Three mistakes to avoid. The sign comes from the quadrant of the original angle. Sin of two hundred and ten degrees is negative, because two hundred and ten is in the third quadrant. Only ninety degrees changes sine into cosine. One hundred and eighty and three hundred and sixty never change the ratio. And show every reduction step. In a \"without a calculator\" question, the answer alone earns very few marks.",
+      "Now it's your turn. Open Trigonometry in DONE WELL, and practise reduction formulae with every step explained."
+    ]
+  },
+  {
+    "id": "chem-organic-naming",
+    "subjectId": "physical-sciences",
+    "topicId": "phys-organic-chemistry",
+    "grades": [
+      12
+    ],
+    "title": "Naming organic molecules",
+    "summary": "The IUPAC rules step by step: chain, numbering, branches, punctuation and esters, with five named examples.",
+    "file": "chem-organic-naming.mp4",
+    "poster": "chem-organic-naming.jpg",
+    "seconds": 208,
+    "megabytes": 5.3,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to give an organic molecule its IUPAC name, step by step, and how to avoid the mistakes that cost marks.",
+      "Every IUPAC name is built from three parts. The stem tells you how many carbons are in the longest chain. Meth is one, eth is two, prop is three, but is four, pent is five, hex is six, hept is seven, and oct is eight. The ending tells you the functional group. An alkane ends in A N E, an alkene in E N E, an alcohol in O L, an aldehyde in A L, a ketone in O N E, and a carboxylic acid in O I C acid. And the prefix names any branches, such as methyl or ethyl, and halogen atoms, such as chloro or bromo.",
+      "Use the same four steps every time. First, find the longest continuous chain of carbon atoms that contains the functional group. It does not have to be drawn in a straight line. Second, number the chain from the end that gives the functional group the lowest possible number. If there is no functional group, start from the end nearest the first branch. Third, name each branch, with the number of the carbon it is on, and list the branches in alphabetical order. Fourth, punctuation. Put commas between numbers, and hyphens between numbers and words.",
+      "Example one. The longest chain has four carbons, and all the bonds are single, so the name ends in butane. Number the chain from the end nearest the branch. Then the branch, a methyl group, is on carbon two. Numbering from the other end would put it on carbon three, which is higher. So the name is two methyl butane, written as one word, with a hyphen after the two.",
+      "Example two contains an O H group, so it is an alcohol, and the name ends in O L. Number from the end nearest the O H group. From the right, the O H is on carbon two. The chain has four carbons, so the stem is butan. The name is butan two ol, with the number between the stem and the ending.",
+      "Example three has a double bond, so it is an alkene, ending in E N E. The double bond must get the lowest number, so number from the left. The double bond starts at carbon one. Now the methyl branch is on carbon three. The double bond decides the numbering, not the branch. The name is three methyl but one ene.",
+      "When the same branch appears more than once, use di for two, tri for three, and tetra for four. This chain has five carbons, so it is pentane. There are methyl groups on carbons two and three. That is two comma three dimethyl. The name is two comma three dimethyl pentane: a comma between the numbers, and a hyphen before the word.",
+      "Esters are named in two words. An ester forms when an alcohol reacts with a carboxylic acid. For example, ethanol and propanoic acid. The alcohol gives the first word, ending in Y L. The acid gives the second word, ending in O A T E. So this ester is ethyl propanoate.",
+      "Three mistakes to avoid. Choosing a chain that is not the longest. A chain can bend, so check every path. Numbering from the wrong end. The functional group gets the lowest number first, and only then the branches. And punctuation. Commas between numbers, hyphens between numbers and letters, and no spaces in the name.",
+      "Now it's your turn. Open Organic Chemistry in DONE WELL, and practise naming molecules, with every mark explained."
+    ]
+  },
+  {
+    "id": "lifesci-monohybrid",
+    "subjectId": "life-sciences",
+    "topicId": "life-sci-genetics",
+    "grades": [
+      12
+    ],
+    "title": "Monohybrid crosses",
+    "summary": "The key terms of genetics, a full genetic cross set out the way the memo marks it, a Punnett square and a test cross.",
+    "file": "lifesci-monohybrid.mp4",
+    "poster": "lifesci-monohybrid.jpg",
+    "seconds": 201,
+    "megabytes": 5.2,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn the key terms of genetics, and how to set out a monohybrid cross, step by step, the way the examiners mark it.",
+      "Alleles are different forms of the same gene. In pea plants, the gene for flower colour has an allele for purple and an allele for white. A dominant allele shows its effect whenever it is present. We write it with a capital letter. A recessive allele only shows when there are two of them, and we write it with the small letter. The genotype is the pair of alleles an organism has, such as capital P small p. The phenotype is the characteristic you can see, such as purple flowers. Homozygous means the two alleles are the same, like capital P capital P, or small p small p. Heterozygous means they are different: capital P small p.",
+      "Here is a typical question. In pea plants, purple flowers, capital P, are dominant over white flowers, small p. Two plants that are heterozygous for flower colour are crossed. Represent a genetic cross to show the possible genotypes and phenotypes of the offspring. Heterozygous means each parent is capital P small p, so both parents have purple flowers.",
+      "Start with the parents, labelled P one. Write their phenotypes, purple times purple, and their genotypes, capital P small p times capital P small p. Next write meiosis, and the gametes each parent makes. Each gamete gets only one allele, so each parent makes gametes with capital P and gametes with small p. Then write fertilisation: any gamete from one parent can join any gamete from the other. The offspring, labelled F one, have the genotypes capital P capital P, capital P small p, capital P small p, and small p small p. So the phenotypes are three purple to one white.",
+      "A Punnett square shows fertilisation clearly. Put one parent's gametes across the top, and the other parent's down the side, and fill in each box. The genotype ratio is one capital P capital P, to two capital P small p, to one small p small p. Three of the four boxes have at least one capital P, so the phenotype ratio is three purple to one white. So each offspring has a one in four chance, twenty five percent, of having white flowers.",
+      "A purple plant could be capital P capital P or capital P small p. You cannot tell by looking. So cross it with a white plant, small p small p, which can only give small p gametes. If all the offspring are purple, the purple parent was most likely homozygous, capital P capital P. If any offspring are white, the purple parent must have given a small p, so it is heterozygous, capital P small p.",
+      "Three mistakes to avoid. Use the same letter for both alleles of a gene: capital P and small p. Never P for purple and W for white. Label every line: P one, meiosis, gametes, fertilisation and F one. Each of these labels earns marks. And three to one is a probability for each offspring. Four seeds will not always give exactly three purple plants and one white.",
+      "Now it's your turn. Open Genetics and Inheritance in DONE WELL, and practise genetic crosses, with every mark explained."
+    ]
   }
 ]
 

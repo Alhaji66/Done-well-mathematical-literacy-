@@ -6,7 +6,8 @@ import { fetchSchoolTeachers } from '@/lib/schoolStaff'
 import { fetchContacts, fetchReplies } from '@/lib/parentReplies'
 import { fetchMarksFor } from '@/lib/sbaMarks'
 import { fetchAttemptsForTests, fetchTestsForSchool } from '@/lib/weeklyTests'
-import { sbaResults, weeklyResults, type LevelData } from '@/lib/levels'
+import { fetchPaperResultsForStaff } from '@/lib/paperAttempts'
+import { paperResults, sbaResults, weeklyResults, type LevelData } from '@/lib/levels'
 
 /**
  * Everything the Levels page and the early-warning card need, for one person:
@@ -38,15 +39,17 @@ export async function fetchLevelData(profile: AccountProfile): Promise<LevelData
   if (profile.role === 'hod' && profile.subject_id) subjectsInView.add(profile.subject_id)
   // A principal sees every test; a teacher or HOD the tests in their subjects.
   const tests = allTests.filter((t) => profile.role === 'school' || subjectsInView.has(t.subject_id))
-  const [members, rows, attempts, replies] = await Promise.all([
+  const [members, rows, attempts, replies, papers] = await Promise.all([
     fetchClassMembers(ids),
     fetchMarksFor(ids, year),
     fetchAttemptsForTests(tests.map((t) => t.id)),
     named ? fetchReplies(`${year}-01-01`) : Promise.resolve([]),
+    // The database shows each person only the papers in their view (STEP 41).
+    fetchPaperResultsForStaff(schoolId, `${year}-01-01`),
   ])
   const byClass = new Map<string, string[]>()
   for (const m of members) byClass.set(m.class_id, [...(byClass.get(m.class_id) ?? []), m.learner_id])
-  let results = [...weeklyResults(tests, attempts, classes, byClass, year), ...sbaResults(rows ?? [], classes)]
+  let results = [...weeklyResults(tests, attempts, classes, byClass, year), ...paperResults(papers, classes, byClass, year), ...sbaResults(rows ?? [], classes)]
   // A teacher's view is their own classes' learners.
   if (teacher) results = results.filter((r) => r.classId && ids.includes(r.classId))
   const callers = [...new Set(replies.filter((r) => r.choice === 'call').map((r) => r.parent_id))]

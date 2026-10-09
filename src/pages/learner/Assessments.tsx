@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { demoLearner } from '@/data/learner'
 import { papersForSubject, type Paper } from '@/data/papers'
 import type { Grade } from '@/types'
-import { getAnsweredItemIds, countPaperItems } from '@/lib/paperProgress'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PaperListItem } from '@/components/assessments/PaperListItem'
@@ -20,9 +19,8 @@ const subjectOptions = [
 /**
  * Demo-mode equivalent of the real AssessmentsBrowse (under /account/.../assessments)
  * -- same real papers.ts content, but standalone from AccountAuthContext so
- * it works for the zero-signup "Try the demo" flow. Progress here is tracked
- * locally per browser (paperProgress.ts), keyed to the fixed demo persona;
- * nothing is written to any backend.
+ * it works for the zero-signup "Try the demo" flow. A demo paper is written
+ * under the same exam rules but nothing is saved (DemoPaperExam).
  */
 export function LearnerAssessments() {
   const [subjectId, setSubjectId] = useState(demoLearner.subjectId)
@@ -44,11 +42,6 @@ export function LearnerAssessments() {
   const basePath = '/app/learner/assessments'
   const predicted = (papers ?? []).filter((p) => p.kind === 'predicted').sort((a, b) => (a.setLabel ?? '').localeCompare(b.setLabel ?? ''))
   const past = (papers ?? []).filter((p) => p.kind === 'past').sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
-
-  const progressFor = (paper: Paper) => ({
-    answered: getAnsweredItemIds(demoLearner.id, paper.id).size,
-    total: countPaperItems(paper),
-  })
 
   return (
     <div className="space-y-6">
@@ -139,7 +132,7 @@ export function LearnerAssessments() {
         ) : (
           <div className="space-y-3">
             {predicted.map((p) => (
-              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} progress={progressFor(p)} />
+              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} />
             ))}
           </div>
         )}
@@ -159,7 +152,7 @@ export function LearnerAssessments() {
         ) : (
           <div className="space-y-3">
             {past.map((p) => (
-              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} progress={progressFor(p)} />
+              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} />
             ))}
           </div>
         )}

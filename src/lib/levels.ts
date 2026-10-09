@@ -2,6 +2,7 @@ import { capsLevel } from '@/lib/capsScale'
 import { markBookTasks, programmeFor } from '@/data/sba'
 import type { SbaMarkRow } from '@/lib/sbaMarks'
 import type { TestAttempt, WeeklyTest } from '@/lib/weeklyTests'
+import type { PaperAttempt } from '@/lib/paperAttempts'
 import type { TestKind } from '@/lib/testKinds'
 import type { Grade } from '@/types'
 import type { ParentContact, ParentReply } from '@/lib/parentReplyTypes'
@@ -20,7 +21,7 @@ import type { ParentContact, ParentReply } from '@/lib/parentReplyTypes'
  * is not counted as nought here, because a level describes what they showed.
  */
 
-export type LevelSource = 'weekly' | 'sba'
+export type LevelSource = 'weekly' | 'sba' | 'paper'
 export type Term = 1 | 2 | 3 | 4
 export const LEVELS = [7, 6, 5, 4, 3, 2, 1] as const
 
@@ -248,6 +249,41 @@ export function weeklyResults(
   return out
 }
 
+/**
+ * Results from past and predicted papers written under exam conditions
+ * (STEP 41): marked attempts only, and a learner's latest attempt at each
+ * paper, so writing a paper twice does not count it twice.
+ */
+export function paperResults(attempts: PaperAttempt[], classes: LevelClass[], members: Map<string, string[]>, year: number): LevelResult[] {
+  const classOf = classFinder(classes, members)
+  const latest = new Map<string, PaperAttempt>()
+  for (const a of attempts) {
+    if (a.status !== 'marked' || !a.submitted_at || !a.marks_total) continue
+    const key = `${a.learner_id}|${a.paper_id}`
+    const seen = latest.get(key)
+    if (!seen || seen.submitted_at! < a.submitted_at) latest.set(key, a)
+  }
+  const out: LevelResult[] = []
+  for (const a of latest.values()) {
+    const date = a.submitted_at!.slice(0, 10)
+    if (Number(date.slice(0, 4)) !== year) continue
+    out.push({
+      learnerId: a.learner_id,
+      classId: classOf(a.learner_id, a.subject_id, a.grade),
+      subjectId: a.subject_id,
+      grade: a.grade,
+      source: 'paper',
+      itemId: a.paper_id,
+      title: a.title,
+      date,
+      term: termOfDate(date),
+      percent: a.percent ?? ((a.marks_awarded ?? 0) / (a.marks_total ?? 1)) * 100,
+      topicIds: Object.keys(a.per_topic ?? {}),
+    })
+  }
+  return out
+}
+
 /** Results from the formal tasks in the mark book: marked entries only. */
 export function sbaResults(
   rows: Pick<SbaMarkRow, 'class_id' | 'learner_id' | 'task_key' | 'mark' | 'status' | 'out_of'>[],
@@ -351,7 +387,8 @@ export function earlyWarnings(results: LevelResult[], f: { classId?: string; sub
   const now = today.getTime()
   const groups = new Map<string, LevelResult[]>()
   for (const r of results) {
-    if (r.source !== 'weekly' || !r.date) continue
+    // Tests set in the app and papers written in it carry a date; SBA tasks do not.
+    if (r.source === 'sba' || !r.date) continue
     if (f.classId && r.classId !== f.classId) continue
     if (f.subjectId && r.subjectId !== f.subjectId) continue
     const key = `${r.learnerId}|${r.subjectId}|${r.grade}`

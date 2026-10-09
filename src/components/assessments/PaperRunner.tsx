@@ -28,12 +28,7 @@ export function PaperRunner({ paper, onAttempt, onItemAnswered, onResult, showAn
     <div className="space-y-8">
       {onAttempt ? <ExamTimer paperId={paper.id} durationMinutes={paper.durationMinutes} /> : null}
 
-      <div className="rounded-lg border border-gold-200 bg-gold-50 p-4 text-sm text-navy-700">
-        <strong>{paper.kind === 'predicted' ? 'DONE WELL Predicted Paper.' : `DONE WELL Practice Paper — ${paper.year} style.`}</strong>{' '}
-        {paper.kind === 'predicted'
-          ? "This is one of DONE WELL's own predicted question sets, written in the style and topics of a real exam -- it is not a guarantee of what will actually be asked. Practise all three predicted sets for broader coverage."
-          : `Written by DONE WELL in the style of a ${paper.year} exam, for extra practice -- not a transcript of the real ${paper.year} paper.`}
-      </div>
+      <PaperNotice paper={paper} />
 
       {paper.sections.map((section) => (
         <div key={section.number} className="space-y-4">
@@ -61,6 +56,18 @@ export function PaperRunner({ paper, onAttempt, onItemAnswered, onResult, showAn
           })}
         </div>
       ))}
+    </div>
+  )
+}
+
+/** What a DONE WELL paper is, and is not: shown above every paper. */
+export function PaperNotice({ paper }: { paper: Paper }) {
+  return (
+    <div className="rounded-lg border border-gold-200 bg-gold-50 p-4 text-sm text-navy-700">
+      <strong>{paper.kind === 'predicted' ? 'DONE WELL Predicted Paper.' : `DONE WELL Practice Paper — ${paper.year} style.`}</strong>{' '}
+      {paper.kind === 'predicted'
+        ? "This is one of DONE WELL's own predicted question sets, written in the style and topics of a real exam -- it is not a guarantee of what will actually be asked. Practise all three predicted sets for broader coverage."
+        : `Written by DONE WELL in the style of a ${paper.year} exam, for extra practice -- not a transcript of the real ${paper.year} paper.`}
     </div>
   )
 }

@@ -38,12 +38,30 @@ interface QuestionCardProps {
   onResult?: (correct: boolean) => void
   /** Open with the answer and memo already showing: a teacher's memo copy of a paper. */
   startRevealed?: boolean
+  /**
+   * A paper written under exam conditions (STEP 41). The answer is the
+   * caller's, and nothing about the right answer shows -- no "Check answer",
+   * no green or red option -- until `showMemo`: after the paper is handed in
+   * or its time is up. Then the marks the paper earned (`result`) and the
+   * memo appear together.
+   */
+  exam?: {
+    value: string
+    onChange?: (value: string) => void
+    locked?: boolean
+    showMemo?: boolean
+    result?: { awarded: number; outOf: number; feedback: string; how: string }
+  }
 }
 
-export function QuestionCard({ question, index, onAttempt, label, onResult, startRevealed = false }: QuestionCardProps) {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null)
-  const [attemptedText, setAttemptedText] = useState('')
-  const [revealed, setRevealed] = useState(startRevealed)
+export function QuestionCard({ question, index, onAttempt, label, onResult, startRevealed = false, exam }: QuestionCardProps) {
+  const [ownOption, setSelectedOption] = useState<string | null>(null)
+  const [ownText, setAttemptedText] = useState('')
+  const [ownRevealed, setRevealed] = useState(startRevealed)
+  // In an exam the answer lives with the paper, and the memo opens only when it is over.
+  const selectedOption = exam ? exam.value || null : ownOption
+  const attemptedText = exam ? exam.value : ownText
+  const revealed = exam ? Boolean(exam.showMemo) : ownRevealed
   const [selfMark, setSelfMark] = useState<boolean | null>(null)
 
   // A figure or graph written on the question always wins; otherwise one
@@ -113,20 +131,24 @@ export function QuestionCard({ question, index, onAttempt, label, onResult, star
           {question.options!.map((opt) => {
             const isSelected = selectedOption === opt.id
             const isCorrect = opt.id === question.correctOptionId
-            const showState = selectedOption !== null
+            const showState = exam ? revealed : selectedOption !== null
+            const choosing = Boolean(exam) && !revealed
             return (
               <button
                 key={opt.id}
                 type="button"
-                disabled={selectedOption !== null}
+                aria-pressed={choosing ? isSelected : undefined}
+                disabled={exam ? exam.locked || revealed : selectedOption !== null}
                 onClick={() => {
+                  if (exam) return exam.onChange?.(opt.id)
                   setSelectedOption(opt.id)
                   onAttempt?.(opt.id === question.correctOptionId)
                   onResult?.(opt.id === question.correctOptionId)
                 }}
                 className={cn(
                   'flex w-full items-center justify-between rounded-lg border px-4 py-3 text-left text-sm transition-colors disabled:cursor-default',
-                  !showState && 'border-navy-200 hover:border-navy-400 hover:bg-navy-50',
+                  choosing && isSelected && 'border-navy-700 bg-navy-50 font-semibold text-navy-900',
+                  !showState && !(choosing && isSelected) && 'border-navy-200 hover:border-navy-400 hover:bg-navy-50',
                   showState && isCorrect && 'border-emerald-400 bg-emerald-50 text-emerald-800',
                   showState && isSelected && !isCorrect && 'border-rose-400 bg-rose-50 text-rose-800',
                   showState && !isSelected && !isCorrect && 'border-navy-100 text-navy-400',
@@ -142,21 +164,36 @@ export function QuestionCard({ question, index, onAttempt, label, onResult, star
       ) : (
         <div className="mt-4">
           <label className="text-xs font-medium text-navy-500" htmlFor={`attempt-${question.id}`}>
-            Your working / answer (optional, for your own reference)
+            {exam ? 'Your answer, with your working' : 'Your working / answer (optional, for your own reference)'}
           </label>
           <textarea
             id={`attempt-${question.id}`}
             value={attemptedText}
-            onChange={(e) => setAttemptedText(e.target.value)}
-            disabled={revealed}
-            rows={2}
+            onChange={(e) => (exam ? exam.onChange?.(e.target.value) : setAttemptedText(e.target.value))}
+            disabled={exam ? exam.locked || revealed : revealed}
+            rows={exam ? 3 : 2}
             className="input mt-1.5 disabled:bg-navy-50"
-            placeholder="Type your answer or working here before checking..."
+            placeholder={exam ? 'Show your working: method marks are given for it.' : 'Type your answer or working here before checking...'}
           />
         </div>
       )}
 
-      {!isMcq && !revealed ? (
+      {exam?.result ? (
+        <div
+          className={cn(
+            'mt-4 rounded-lg border p-3 sm:p-4',
+            exam.result.awarded >= exam.result.outOf ? 'border-emerald-200 bg-emerald-50' : exam.result.awarded > 0 ? 'border-amber-200 bg-amber-50' : 'border-rose-200 bg-rose-50',
+          )}
+        >
+          <p className="text-sm font-semibold text-navy-900">
+            {exam.result.awarded} / {exam.result.outOf} marks
+            {exam.result.how === 'auto' ? <span className="ml-2 text-xs font-medium text-navy-500">(marked by the values in the memo)</span> : null}
+          </p>
+          {exam.result.feedback ? <p className="mt-1 text-sm leading-relaxed text-navy-700">{exam.result.feedback}</p> : null}
+        </div>
+      ) : null}
+
+      {!exam && !isMcq && !revealed ? (
         <button
           type="button"
           onClick={() => {
@@ -169,7 +206,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult, star
         </button>
       ) : null}
 
-      {(revealed || (isMcq && hasAttempted)) && (
+      {(revealed || (!exam && isMcq && hasAttempted)) && (
         <div
           className={cn(
             'mt-4 rounded-lg border p-3 sm:p-4',
@@ -181,7 +218,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult, star
           )}
         >
           <p className="text-sm font-semibold text-navy-900">
-            {isMcq ? (isCorrectMcq ? 'Correct!' : 'Not quite — here\'s the answer:') : 'Answer & explanation'}
+            {exam ? 'Memo' : isMcq ? (isCorrectMcq ? 'Correct!' : 'Not quite — here\'s the answer:') : 'Answer & explanation'}
           </p>
           <p className="mt-1.5 text-sm font-semibold text-navy-800">
             <MathText>{question.answer}</MathText>
@@ -200,7 +237,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult, star
           {answerDrawnAlready ? null : physics.answer.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
           {lifeSci.answer.map((s) => <GeometryDiagram key={s.title} spec={s} />)}
           {question.memo?.length ? <MarkingMemo steps={question.memo} totalMarks={question.marks} /> : null}
-          {!isMcq && onResult ? (
+          {!exam && !isMcq && onResult ? (
             selfMark === null ? (
               <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-navy-200 pt-3">
                 <span className="text-xs font-medium text-navy-600">How did you do?</span>
@@ -234,7 +271,7 @@ export function QuestionCard({ question, index, onAttempt, label, onResult, star
         </div>
       )}
 
-      {(revealed || (isMcq && hasAttempted)) && (
+      {!exam && (revealed || (isMcq && hasAttempted)) && (
         <button type="button" onClick={reset} className="btn-ghost btn-sm mt-3">
           Try again
         </button>

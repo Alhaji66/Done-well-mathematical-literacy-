@@ -51,7 +51,7 @@ export function EarlyWarningPanel({
   const warnings = useMemo(() => earlyWarnings(data.results, { classId: cls.id }, today), [data.results, cls.id, today])
   const [picked, setPicked] = useState<Set<string>>(() => new Set(warnings.map((w) => w.learnerId)))
   const chosen = warnings.filter((w) => picked.has(w.learnerId))
-  const hasTests = data.results.some((r) => r.source === 'weekly' && r.classId === cls.id)
+  const hasTests = data.results.some((r) => r.source !== 'sba' && r.classId === cls.id)
 
   // The topics the chosen learners last slipped on come first, then the rest of the ATP.
   const hits = new Map<string, number>()

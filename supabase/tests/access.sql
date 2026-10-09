@@ -3243,5 +3243,116 @@ insert into results
          count(*) = 1 and bool_and(question_count = 6)
   from public.weekly_tests where title in ('S40 Mat Lit test', 'S40 renamed by someone else');
 
+-- ===========================================================================
+-- PAPERS WRITTEN UNDER EXAM CONDITIONS (STEP 41)
+-- ===========================================================================
+update public.profiles set trial_ends_at = now() + interval '7 days' where id = '00000000-0000-0000-0000-0000000000b1';
+insert into auth.users values ('00000000-0000-0000-0000-0000000000db', null);
+insert into public.profiles (id, role, full_name) values ('00000000-0000-0000-0000-0000000000db', 'learner', 'Learner Without Access');
+update public.profiles set trial_ends_at = now() - interval '1 day' where id = '00000000-0000-0000-0000-0000000000db';
+
+-- 168. A learner starts a paper; starting it again returns the same open attempt.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+select public.start_paper('ml-p2-test', 'mat-lit', 12::smallint, 'S41 Mat Lit Paper 2', 180);
+select public.start_paper('ml-p2-test', 'mat-lit', 12::smallint, 'S41 Mat Lit Paper 2', 180);
+insert into results
+  select '168. a learner starts a paper once; starting it again returns the open attempt',
+         count(*)::text || ' attempt(s), ' || coalesce(max(extract(epoch from deadline - started_at) / 60)::int::text, '?') || ' minutes',
+         count(*) = 1 and max(extract(epoch from deadline - started_at) / 60)::int = 180
+  from public.paper_attempts where paper_id = 'ml-p2-test';
+reset role;
+
+-- 169. The learner cannot give themselves marks, or write the table at all.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin
+    update public.paper_attempts set marks_awarded = 150, status = 'marked' where paper_id = 'ml-p2-test';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.paper_attempts (learner_id, paper_id, subject_id, grade, title, deadline, marks_awarded)
+      values ('00000000-0000-0000-0000-0000000000b1', 'forged', 'mat-lit', 12, 'Forged', now(), 150);
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+reset role;
+insert into results
+  select '169. a learner cannot write marks or insert an attempt directly',
+         coalesce(string_agg(paper_id || ' ' || status || ' ' || coalesce(marks_awarded::text, 'unmarked'), ', '), 'none'),
+         count(*) = 1 and bool_and(marks_awarded is null and status = 'writing')
+  from public.paper_attempts where learner_id = '00000000-0000-0000-0000-0000000000b1';
+
+-- 170. Answers save while the paper is open; once the time is up they do not.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+create temp table s41 as select public.save_paper_answers((select id from public.paper_attempts where paper_id = 'ml-p2-test'), '{"q1": "R1 385,00"}'::jsonb) as saved;
+reset role;
+update public.paper_attempts set deadline = now() - interval '10 minutes' where paper_id = 'ml-p2-test';
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into s41 select public.save_paper_answers((select id from public.paper_attempts where paper_id = 'ml-p2-test'), '{"q1": "changed after time"}'::jsonb);
+reset role;
+insert into results
+  select '170. answers save while the paper is open, not after the time is up',
+         (select string_agg(saved::text, ', ') from s41) || '; answer ' || (answers ->> 'q1'),
+         (select array_agg(saved) from s41) = array[true, false] and answers ->> 'q1' = 'R1 385,00'
+  from public.paper_attempts where paper_id = 'ml-p2-test';
+
+-- 171. Handing in after the time is up records the deadline as the hand-in time.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+select public.submit_paper((select id from public.paper_attempts where paper_id = 'ml-p2-test'), '{"q1": "too late"}'::jsonb);
+reset role;
+insert into results
+  select '171. a paper handed in late closes at its deadline, with the answers saved in time',
+         status || ', ' || (answers ->> 'q1'),
+         status = 'submitted' and submitted_at = deadline and answers ->> 'q1' = 'R1 385,00'
+  from public.paper_attempts where paper_id = 'ml-p2-test';
+
+-- 172. The Mathematical Literacy teacher and the principal see the attempt; the Life Sciences teacher and another learner do not.
+create temp table s41v (who text, n int);
+grant all on s41v to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into s41v select 'mat-lit teacher', count(*) from public.paper_attempts where paper_id = 'ml-p2-test';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000f7');
+set role authenticated;
+insert into s41v select 'principal', count(*) from public.paper_attempts where paper_id = 'ml-p2-test';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000da');
+set role authenticated;
+insert into s41v select 'life sciences teacher', count(*) from public.paper_attempts where paper_id = 'ml-p2-test';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+insert into s41v select 'other learner', count(*) from public.paper_attempts where paper_id = 'ml-p2-test';
+reset role;
+insert into results
+  select '172. the subject teacher and principal see a paper attempt; another subject''s teacher and other learners do not',
+         string_agg(who || ' ' || n, ', ' order by who),
+         sum(n) filter (where who in ('mat-lit teacher', 'principal')) = 2 and sum(n) filter (where who in ('life sciences teacher', 'other learner')) = 0
+  from s41v;
+
+-- 173. A learner without paid access or a trial cannot start a paper.
+select pg_temp.act('00000000-0000-0000-0000-0000000000db');
+set role authenticated;
+create temp table s41n (started boolean);
+do $$ begin
+  begin
+    perform public.start_paper('ml-p2-test', 'mat-lit', 12::smallint, 'S41 Mat Lit Paper 2', 180);
+    insert into s41n values (true);
+  exception when insufficient_privilege then insert into s41n values (false);
+  end;
+end $$;
+reset role;
+insert into results
+  select '173. a learner without paid access or a trial cannot start a paper',
+         case when bool_or(started) then 'started' else 'refused' end,
+         not bool_or(started)
+  from s41n;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

@@ -3,7 +3,8 @@ import { ContentNotice } from '@/components/content/ContentNotice'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { papersForSubject, type Paper } from '@/data/papers'
 import type { Grade } from '@/types'
-import { getAnsweredItemIds, countPaperItems } from '@/lib/paperProgress'
+import { supabase } from '@/lib/supabaseClient'
+import type { PaperAttempt } from '@/lib/paperAttempts'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PaperListItem } from '@/components/assessments/PaperListItem'
@@ -44,6 +45,20 @@ export function AssessmentsBrowse() {
   const [paperNumber, setPaperNumber] = useState<1 | 2>(1)
   const [grade, setGrade] = useState<Grade>(profile?.grade ?? 12)
   const [papers, setPapers] = useState<Paper[] | null>(null)
+  // A learner's latest attempt at each paper, for its badge: writing, handed in, or marked.
+  const [latest, setLatest] = useState<Map<string, PaperAttempt>>(new Map())
+  useEffect(() => {
+    if (profile?.role !== 'learner' || !supabase) return
+    supabase
+      .from('paper_attempts')
+      .select('id, paper_id, status, percent, deadline, submitted_at, started_at')
+      .order('started_at', { ascending: false })
+      .then(({ data }) => {
+        const m = new Map<string, PaperAttempt>()
+        for (const a of (data ?? []) as PaperAttempt[]) if (!m.has(a.paper_id)) m.set(a.paper_id, { ...a, percent: a.percent === null ? null : Number(a.percent) })
+        setLatest(m)
+      })
+  }, [profile?.role])
 
   useEffect(() => {
     let cancelled = false
@@ -63,9 +78,7 @@ export function AssessmentsBrowse() {
   const predicted = (papers ?? []).filter((p) => p.kind === 'predicted').sort((a, b) => (a.setLabel ?? '').localeCompare(b.setLabel ?? ''))
   const past = (papers ?? []).filter((p) => p.kind === 'past').sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
 
-  const isLearner = profile.role === 'learner'
-  const progressFor = (paper: Paper) =>
-    isLearner ? { answered: getAnsweredItemIds(profile.id, paper.id).size, total: countPaperItems(paper) } : undefined
+  const attemptFor = (paper: Paper) => (profile.role === 'learner' ? (latest.get(paper.id) ?? null) : undefined)
 
   return (
     <div className="space-y-6">
@@ -152,7 +165,7 @@ export function AssessmentsBrowse() {
         ) : (
           <div className="space-y-3">
             {predicted.map((p) => (
-              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} progress={progressFor(p)} />
+              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} attempt={attemptFor(p)} />
             ))}
           </div>
         )}
@@ -172,7 +185,7 @@ export function AssessmentsBrowse() {
         ) : (
           <div className="space-y-3">
             {past.map((p) => (
-              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} progress={progressFor(p)} />
+              <PaperListItem key={p.id} paper={p} to={`${basePath}/${p.id}`} attempt={attemptFor(p)} />
             ))}
           </div>
         )}

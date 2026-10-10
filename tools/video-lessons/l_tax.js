@@ -6,7 +6,7 @@ window.LESSON = {
       <div class="subject">Mathematical Literacy · Finance · Grade 12</div>
       <h1>Income tax and the tax threshold</h1>
       <div class="sub">Reading the SARS tax table, subtracting rebates, and finding the threshold yourself.</div>
-      <div class="meta"><span class="pill">CAPS-aligned</span><span class="pill">2025/2026 tax year</span><span class="pill">About 5 minutes</span></div>`,
+      <div class="meta"><span class="pill">CAPS-aligned</span><span class="pill">2026/2027 tax year</span><span class="pill">About 5 minutes</span></div>`,
       say: ['Welcome to DONE WELL. In this lesson you will learn how to calculate income tax from the SARS tax table, and how to find the tax threshold yourself, step by step.'] },
     { id: 'chain', html: `
       <div class="eyebrow">The method</div>
@@ -25,21 +25,21 @@ window.LESSON = {
         'That gives the tax for the year. Divide by twelve for the tax each month, called PAYE.',
       ] },
     { id: 'table', html: `
-      <div class="eyebrow">The SARS table, 2025/2026</div>
+      <div class="eyebrow">The SARS table, 2026/2027</div>
       <h2>Each row: a fixed amount, plus a percentage of the part above the row's start</h2>
       <table class="t">
         <tr><th>Taxable income (R)</th><th>Rates of tax (R)</th></tr>
-        <tr data-at="1"><td>1 – 237&nbsp;100</td><td>18% of taxable income</td></tr>
-        <tr data-at="2"><td>237&nbsp;101 – 370&nbsp;500</td><td>42&nbsp;678 + 26% of taxable income above 237&nbsp;100</td></tr>
-        <tr data-at="3"><td>370&nbsp;501 – 512&nbsp;800</td><td>77&nbsp;362 + 31% of taxable income above 370&nbsp;500</td></tr>
+        <tr data-at="1"><td>1 – 245&nbsp;100</td><td>18% of taxable income</td></tr>
+        <tr data-at="2"><td>245&nbsp;101 – 383&nbsp;100</td><td>44&nbsp;118 + 26% of taxable income above 245&nbsp;100</td></tr>
+        <tr data-at="3"><td>383&nbsp;101 – 530&nbsp;200</td><td>79&nbsp;998 + 31% of taxable income above 383&nbsp;100</td></tr>
       </table>
-      <div class="box" data-at="4"><span class="lead" style="margin:0">Rebates: <b>primary R17&nbsp;235</b> · <b>secondary R9&nbsp;444</b> (65+) · <b>tertiary R3&nbsp;145</b> (75+)</span></div>`,
+      <div class="box" data-at="4"><span class="lead" style="margin:0">Rebates: <b>primary R17&nbsp;820</b> · <b>secondary R9&nbsp;765</b> (65+) · <b>tertiary R3&nbsp;249</b> (75+)</span></div>`,
       say: [
-        'Here are the first three rows of the SARS table for the twenty twenty five, twenty twenty six tax year.',
-        'In the first row, up to two hundred and thirty seven thousand one hundred rand, the tax is simply eighteen percent of the taxable income.',
-        'In the second row, the tax is forty two thousand six hundred and seventy eight rand, plus twenty six percent of the part above two hundred and thirty seven thousand one hundred rand.',
+        'Here are the first three rows of the SARS table for the twenty twenty six, twenty twenty seven tax year.',
+        'In the first row, up to two hundred and forty five thousand one hundred rand, the tax is simply eighteen percent of the taxable income.',
+        'In the second row, the tax is forty four thousand one hundred and eighteen rand, plus twenty six percent of the part above two hundred and forty five thousand one hundred rand.',
         'Every other row works the same way: a fixed amount, plus a percentage of only the part above where that row starts.',
-        'Then the rebates. Everyone gets the primary rebate of seventeen thousand two hundred and thirty five rand. At sixty five or older, add the secondary rebate. At seventy five or older, add the tertiary rebate as well.',
+        'Then the rebates. Everyone gets the primary rebate of seventeen thousand eight hundred and twenty rand. At sixty five or older, add the secondary rebate. At seventy five or older, add the tertiary rebate as well.',
       ] },
     { id: 'problem', html: `
       <div class="eyebrow">Worked example</div>
@@ -55,18 +55,18 @@ window.LESSON = {
       <div class="steps tight">
         <div class="step" data-at="0"><span class="lbl">Pension</span>7,5% × R348&nbsp;000 = R26&nbsp;100</div>
         <div class="step" data-at="1"><span class="lbl">Taxable</span>R348&nbsp;000 − R26&nbsp;100 = R321&nbsp;900 → row 2</div>
-        <div class="step" data-at="2"><span class="lbl">Above</span>R321&nbsp;900 − R237&nbsp;100 = R84&nbsp;800</div>
-        <div class="step" data-at="3"><span class="lbl">Table</span>R42&nbsp;678 + 26% × R84&nbsp;800 = R42&nbsp;678 + R22&nbsp;048 = R64&nbsp;726</div>
-        <div class="step" data-at="4"><span class="lbl">Rebate</span>R64&nbsp;726 − R17&nbsp;235 = R47&nbsp;491 per year</div>
-        <div class="step ans" data-at="5"><span class="lbl">Monthly</span>R47&nbsp;491 ÷ 12 = R3&nbsp;957,58</div>
+        <div class="step" data-at="2"><span class="lbl">Above</span>R321&nbsp;900 − R245&nbsp;100 = R76&nbsp;800</div>
+        <div class="step" data-at="3"><span class="lbl">Table</span>R44&nbsp;118 + 26% × R76&nbsp;800 = R44&nbsp;118 + R19&nbsp;968 = R64&nbsp;086</div>
+        <div class="step" data-at="4"><span class="lbl">Rebate</span>R64&nbsp;086 − R17&nbsp;820 = R46&nbsp;266 per year</div>
+        <div class="step ans" data-at="5"><span class="lbl">Monthly</span>R46&nbsp;266 ÷ 12 = R3&nbsp;855,50</div>
       </div>`,
       say: [
         'Seven comma five percent of three hundred and forty eight thousand rand is twenty six thousand one hundred rand.',
         'So her taxable income is three hundred and twenty one thousand nine hundred rand. That falls in the second row of the table.',
-        'The tax is forty two thousand six hundred and seventy eight rand, plus twenty six percent of the part above two hundred and thirty seven thousand one hundred. That part is eighty four thousand eight hundred rand.',
-        'Twenty six percent of eighty four thousand eight hundred is twenty two thousand and forty eight rand, so the tax from the table is sixty four thousand seven hundred and twenty six rand.',
-        'Nomsa is under sixty five, so she gets only the primary rebate. Sixty four thousand seven hundred and twenty six, minus seventeen thousand two hundred and thirty five, is forty seven thousand four hundred and ninety one rand for the year.',
-        'Divide by twelve: her tax is three thousand nine hundred and fifty seven rand, fifty eight cents a month.',
+        'The tax is forty four thousand one hundred and eighteen rand, plus twenty six percent of the part above two hundred and forty five thousand one hundred. That part is seventy six thousand eight hundred rand.',
+        'Twenty six percent of seventy six thousand eight hundred is nineteen thousand nine hundred and sixty eight rand, so the tax from the table is sixty four thousand and eighty six rand.',
+        'Nomsa is under sixty five, so she gets only the primary rebate. Sixty four thousand and eighty six, minus seventeen thousand eight hundred and twenty, is forty six thousand two hundred and sixty six rand for the year.',
+        'Divide by twelve: her tax is three thousand eight hundred and fifty five rand, fifty cents a month.',
       ] },
     { id: 'threshold', html: `
       <div class="eyebrow">The tax threshold</div>
@@ -89,30 +89,30 @@ window.LESSON = {
       <h2>Add the rebates for the age, then divide by 0,18</h2>
       <table class="t">
         <tr><th>Age</th><th>Rebates</th><th>Threshold</th></tr>
-        <tr data-at="1"><td>Under 65</td><td class="num">R17&nbsp;235</td><td class="num">R17&nbsp;235 ÷ 0,18 = <b>R95&nbsp;750</b></td></tr>
-        <tr data-at="3"><td>65 to 74</td><td class="num">R17&nbsp;235 + R9&nbsp;444 = R26&nbsp;679</td><td class="num">R26&nbsp;679 ÷ 0,18 = <b>R148&nbsp;217</b></td></tr>
-        <tr data-at="4"><td>75 and older</td><td class="num">R26&nbsp;679 + R3&nbsp;145 = R29&nbsp;824</td><td class="num">R29&nbsp;824 ÷ 0,18 = <b>R165&nbsp;689</b></td></tr>
+        <tr data-at="1"><td>Under 65</td><td class="num">R17&nbsp;820</td><td class="num">R17&nbsp;820 ÷ 0,18 = <b>R99&nbsp;000</b></td></tr>
+        <tr data-at="3"><td>65 to 74</td><td class="num">R17&nbsp;820 + R9&nbsp;765 = R27&nbsp;585</td><td class="num">R27&nbsp;585 ÷ 0,18 = <b>R153&nbsp;250</b></td></tr>
+        <tr data-at="4"><td>75 and older</td><td class="num">R27&nbsp;585 + R3&nbsp;249 = R30&nbsp;834</td><td class="num">R30&nbsp;834 ÷ 0,18 = <b>R171&nbsp;300</b></td></tr>
       </table>
-      <div class="box" data-at="2"><span class="lead" style="margin:0">Check: 18% × R95&nbsp;750 = R17&nbsp;235, and R17&nbsp;235 − R17&nbsp;235 = <b class="hl">R0</b></span></div>`,
+      <div class="box" data-at="2"><span class="lead" style="margin:0">Check: 18% × R99&nbsp;000 = R17&nbsp;820, and R17&nbsp;820 − R17&nbsp;820 = <b class="hl">R0</b></span></div>`,
       say: [
         "Let's find all three thresholds.",
-        'Under sixty five, there is only the primary rebate. Seventeen thousand two hundred and thirty five, divided by zero comma one eight, is ninety five thousand seven hundred and fifty rand.',
-        'Check it. Eighteen percent of ninety five thousand seven hundred and fifty is seventeen thousand two hundred and thirty five, and taking off the rebate leaves exactly zero.',
-        'From sixty five, add the secondary rebate: twenty six thousand six hundred and seventy nine rand. Divided by zero comma one eight, that is one hundred and forty eight thousand two hundred and seventeen rand, rounded.',
-        'From seventy five, add the tertiary rebate as well: twenty nine thousand eight hundred and twenty four rand. Divided by zero comma one eight, that is one hundred and sixty five thousand six hundred and eighty nine rand.',
+        'Under sixty five, there is only the primary rebate. Seventeen thousand eight hundred and twenty, divided by zero comma one eight, is ninety nine thousand rand.',
+        'Check it. Eighteen percent of ninety nine thousand is seventeen thousand eight hundred and twenty, and taking off the rebate leaves exactly zero.',
+        'From sixty five, add the secondary rebate: twenty seven thousand five hundred and eighty five rand. Divided by zero comma one eight, that is one hundred and fifty three thousand two hundred and fifty rand.',
+        'From seventy five, add the tertiary rebate as well: thirty thousand eight hundred and thirty four rand. Divided by zero comma one eight, that is one hundred and seventy one thousand three hundred rand.',
       ] },
     { id: 'use', html: `
       <div class="eyebrow">Using the threshold</div>
       <h2>Mr Dlamini is 70, with a taxable income of R140&nbsp;000</h2>
       <div class="steps">
-        <div class="step" data-at="1"><span class="lbl">Compare</span>R140&nbsp;000 is below his threshold of R148&nbsp;217</div>
-        <div class="step" data-at="2"><span class="lbl">Check</span>18% × R140&nbsp;000 = R25&nbsp;200, less than R26&nbsp;679 in rebates</div>
+        <div class="step" data-at="1"><span class="lbl">Compare</span>R140&nbsp;000 is below his threshold of R153&nbsp;250</div>
+        <div class="step" data-at="2"><span class="lbl">Check</span>18% × R140&nbsp;000 = R25&nbsp;200, less than R27&nbsp;585 in rebates</div>
         <div class="step ans" data-at="3"><span class="lbl">Answer</span>He pays no income tax</div>
       </div>`,
       say: [
         'Here is how a question uses it. Mr Dlamini is seventy, with a taxable income of one hundred and forty thousand rand. Does he pay tax?',
-        'He is between sixty five and seventy four, so his threshold is one hundred and forty eight thousand two hundred and seventeen rand. His income is below it.',
-        'You can check: eighteen percent of one hundred and forty thousand is twenty five thousand two hundred rand, which is less than his rebates of twenty six thousand six hundred and seventy nine rand.',
+        'He is between sixty five and seventy four, so his threshold is one hundred and fifty three thousand two hundred and fifty rand. His income is below it.',
+        'You can check: eighteen percent of one hundred and forty thousand is twenty five thousand two hundred rand, which is less than his rebates of twenty seven thousand five hundred and eighty five rand.',
         'So he pays no income tax. Never write a negative tax. The answer is zero.',
       ] },
     { id: 'mistakes', html: `

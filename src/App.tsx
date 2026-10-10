@@ -174,6 +174,8 @@ const AccountMarkBook = lazy(() => import('@/pages/account/MarkBook').then((m) =
 const DemoMarkBook = lazy(() => import('@/pages/teacher/MarkBook').then((m) => ({ default: m.DemoMarkBook })))
 const AccountLevels = lazy(() => import('@/pages/account/Levels').then((m) => ({ default: m.Levels })))
 const AccountPaperResults = lazy(() => import('@/pages/account/PaperResults').then((m) => ({ default: m.PaperResults })))
+const AccountClassWorkStaff = lazy(() => import('@/pages/account/classwork/ClassWorkStaff').then((m) => ({ default: m.ClassWorkStaff })))
+const AccountClassWorkLearner = lazy(() => import('@/pages/account/classwork/ClassWorkLearner').then((m) => ({ default: m.ClassWorkLearner })))
 const DemoInterventionReport = lazy(() =>
   import('@/pages/teacher/InterventionReport').then((m) => ({ default: m.DemoInterventionReport })),
 )
@@ -239,6 +241,8 @@ export default function App() {
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="tests" element={<LearnerWeeklyTests />} />
+                <Route path="class-work" element={<AccountClassWorkLearner />} />
+                <Route path="class-work/:id" element={<AccountClassWorkLearner />} />
                 <Route path="progress" element={<AccountLearnerProgress />} />
                 <Route path="mistakes" element={<AccountMyMistakes />} />
                 <Route path="marks" element={<AccountLearnerSbaMarks />} />
@@ -266,6 +270,9 @@ export default function App() {
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="paper-results" element={<AccountPaperResults />} />
+                <Route path="class-work" element={<AccountClassWorkStaff />} />
+                <Route path="class-work/:id" element={<AccountClassWorkStaff />} />
+                <Route path="class-work/:id/edit" element={<AccountClassWorkStaff />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="lesson-plans" element={<TeacherLessonPlans />} />
                 <Route path="assessment-tasks" element={<TeacherAssessmentTasks />} />
@@ -318,6 +325,9 @@ export default function App() {
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="paper-results" element={<AccountPaperResults />} />
+                <Route path="class-work" element={<AccountClassWorkStaff />} />
+                <Route path="class-work/:id" element={<AccountClassWorkStaff />} />
+                <Route path="class-work/:id/edit" element={<AccountClassWorkStaff />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />
@@ -347,6 +357,9 @@ export default function App() {
                 <Route path="assessments" element={<AssessmentsBrowse />} />
                 <Route path="assessments/:paperId" element={<PaperPage />} />
                 <Route path="paper-results" element={<AccountPaperResults />} />
+                <Route path="class-work" element={<AccountClassWorkStaff />} />
+                <Route path="class-work/:id" element={<AccountClassWorkStaff />} />
+                <Route path="class-work/:id/edit" element={<AccountClassWorkStaff />} />
                 <Route path="tests" element={<TeacherWeeklyTests />} />
                 <Route path="analytics" element={<MasteryAnalytics />} />
                 <Route path="coverage" element={<CurriculumCoverage />} />

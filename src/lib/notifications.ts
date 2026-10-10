@@ -106,6 +106,12 @@ export function describeNotification(n: AppNotification, names: Map<string, stri
       const who = names.get(String(d.learner_id)) ?? 'A learner'
       return `${who} wrote “${String(d.title ?? 'a paper')}”: ${String(d.percent)}% (Level ${String(d.level)}). Open Paper results to see where marks were lost.`
     }
+    case 'classwork.set': {
+      const due = d.due_at ? new Date(String(d.due_at)).toLocaleString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''
+      return `New class work from your teacher: “${String(d.title ?? '')}”${due ? `, due ${due}` : ''}.`
+    }
+    case 'classwork.marked':
+      return `Your class work “${String(d.title ?? '')}” is marked${d.percent !== undefined && d.percent !== null ? `: ${String(d.percent)}%` : ''}. Open it to see your marks and the memo.`
     case 'paper.own_marked':
       return `Your paper “${String(d.title ?? '')}” is marked: ${String(d.percent)}% (Level ${String(d.level)}). Open it to see where you lost marks.`
     case 'level.early_warning': {

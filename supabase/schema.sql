@@ -6537,3 +6537,526 @@ end;
 $$;
 revoke execute on function public.submit_paper(uuid, jsonb) from public, anon;
 grant execute on function public.submit_paper(uuid, jsonb) to authenticated;
+
+-- ============================================================================
+-- STEP 42: CLASS WORK -- A TEACHER'S OWN WORK FOR THEIR CLASSES
+-- ============================================================================
+--
+-- A teacher (or HOD, or the school account) gives their classes work from
+-- outside DONE WELL's own material: a district common test, a past paper from
+-- the DBE site, their own worksheet. It is uploaded as files (a PDF or photos),
+-- or typed as questions with marks, or both, with a memo and a due date and,
+-- if wanted, a time limit.
+--
+-- THE MEMO is kept in its own table and its own folder, and opens for the
+-- whole class at the due date, or earlier if the teacher releases it -- not
+-- when each learner hands in, which would let an early finisher pass it to a
+-- classmate still writing.
+--
+-- LEARNERS hand in typed answers, photos of their written work, or both,
+-- through the functions below, only while their time is open. Multiple-choice
+-- questions are marked on hand-in against the memo; the teacher marks the rest
+-- (mark_class_work), and the learner is told.
+--
+-- FILES live in the private bucket `class-work`, at
+--   <school>/<work>/paper/...   the question paper  (staff write; class reads)
+--   <school>/<work>/memo/...    the memo            (staff write; class reads once it opens)
+--   <school>/<work>/answers/<learner>/...  a learner's work (that learner writes while open; staff read)
+-- and class_work_file_access() decides every read and write.
+
+create table if not exists public.class_work (
+  id uuid primary key default gen_random_uuid(),
+  school_id uuid not null references public.schools (id) on delete cascade,
+  created_by uuid references public.profiles (id) on delete set null,
+  subject_id text not null check (length(subject_id) between 1 and 40),
+  grade smallint not null check (grade in (10, 11, 12)),
+  title text not null check (length(btrim(title)) between 1 and 200),
+  instructions text not null default '' check (length(instructions) <= 5000),
+  class_ids uuid[] not null check (cardinality(class_ids) between 1 and 20),
+  items jsonb not null default '[]'::jsonb check (jsonb_typeof(items) = 'array'),
+  paper_files text[] not null default '{}' check (cardinality(paper_files) <= 20),
+  total_marks smallint not null check (total_marks between 1 and 300),
+  minutes smallint check (minutes is null or minutes between 5 and 300),
+  opens_at timestamptz not null default now(),
+  due_at timestamptz not null,
+  memo_released_at timestamptz,
+  status text not null default 'draft' check (status in ('draft', 'published')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (due_at > opens_at)
+);
+create index if not exists class_work_school_idx on public.class_work (school_id, subject_id, grade, due_at desc);
+
+create table if not exists public.class_work_memos (
+  work_id uuid primary key references public.class_work (id) on delete cascade,
+  answers jsonb not null default '{}'::jsonb check (jsonb_typeof(answers) = 'object'),
+  memo_text text not null default '' check (length(memo_text) <= 20000),
+  memo_files text[] not null default '{}' check (cardinality(memo_files) <= 20)
+);
+
+create table if not exists public.class_work_submissions (
+  id uuid primary key default gen_random_uuid(),
+  work_id uuid not null references public.class_work (id) on delete cascade,
+  learner_id uuid not null references public.profiles (id) on delete cascade,
+  school_id uuid not null references public.schools (id) on delete cascade,
+  started_at timestamptz not null default now(),
+  deadline timestamptz not null,
+  submitted_at timestamptz,
+  answers jsonb not null default '{}'::jsonb,
+  files text[] not null default '{}',
+  status text not null default 'writing' check (status in ('writing', 'submitted', 'marked')),
+  marking jsonb not null default '{}'::jsonb,
+  marks_awarded numeric(6, 1),
+  marks_total smallint,
+  percent numeric(5, 1),
+  comment text check (comment is null or length(comment) <= 2000),
+  marked_by uuid references public.profiles (id) on delete set null,
+  marked_at timestamptz,
+  unique (work_id, learner_id)
+);
+create index if not exists class_work_submissions_learner_idx on public.class_work_submissions (learner_id, started_at desc);
+
+alter table public.class_work enable row level security;
+alter table public.class_work_memos enable row level security;
+alter table public.class_work_submissions enable row level security;
+revoke insert, update, delete, truncate on public.class_work, public.class_work_memos, public.class_work_submissions from authenticated, anon;
+
+-- Staff who may see, edit and mark a piece of work: whoever set it, the school
+-- account, an HOD of its subject, or the teacher of one of its classes.
+create or replace function public.class_work_is_staff(p_work uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.class_work w
+    join public.profiles me on me.id = auth.uid()
+    where w.id = p_work
+      and me.school_id = w.school_id
+      and public.is_school_staff(w.school_id)
+      and (
+        w.created_by = me.id
+        or me.role::text = 'school'
+        or (me.role::text = 'hod' and me.subject_id = w.subject_id)
+        or exists (select 1 from public.classes c where c.id = any (w.class_ids) and c.teacher_id = me.id)
+      )
+  );
+$$;
+revoke execute on function public.class_work_is_staff(uuid) from public, anon;
+grant execute on function public.class_work_is_staff(uuid) to authenticated;
+
+-- The signed-in learner is in one of the work's classes and it has been set.
+create or replace function public.class_work_is_mine(p_work uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.class_work w
+    join public.class_members m on m.class_id = any (w.class_ids) and m.learner_id = auth.uid()
+    where w.id = p_work and w.status = 'published' and w.opens_at <= now()
+  );
+$$;
+revoke execute on function public.class_work_is_mine(uuid) from public, anon;
+grant execute on function public.class_work_is_mine(uuid) to authenticated;
+
+create or replace function public.class_work_memo_open(p_work uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.class_work w
+    where w.id = p_work and (w.due_at <= now() or w.memo_released_at <= now())
+  );
+$$;
+revoke execute on function public.class_work_memo_open(uuid) from public, anon;
+grant execute on function public.class_work_memo_open(uuid) to authenticated;
+
+drop policy if exists "Staff and the class read class work" on public.class_work;
+create policy "Staff and the class read class work"
+  on public.class_work for select
+  using (public.class_work_is_staff(id) or public.class_work_is_mine(id));
+
+drop policy if exists "Staff, and the class once it opens, read the memo" on public.class_work_memos;
+create policy "Staff, and the class once it opens, read the memo"
+  on public.class_work_memos for select
+  using (public.class_work_is_staff(work_id) or (public.class_work_is_mine(work_id) and public.class_work_memo_open(work_id)));
+
+drop policy if exists "Learners read their own class work, staff theirs to mark" on public.class_work_submissions;
+create policy "Learners read their own class work, staff theirs to mark"
+  on public.class_work_submissions for select
+  using (learner_id = auth.uid() or public.class_work_is_staff(work_id));
+
+-- Create or change a piece of work. p_work carries the fields; p_memo the memo.
+-- Classes must be the school's, in the work's subject and grade, and -- for a
+-- teacher -- their own. Publishing tells the classes' learners, once.
+create or replace function public.save_class_work(p_id uuid, p_work jsonb, p_memo jsonb)
+returns public.class_work
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  me public.profiles%rowtype;
+  old public.class_work%rowtype;
+  r public.class_work%rowtype;
+  v_classes uuid[];
+  v_subject text := p_work ->> 'subject_id';
+  v_grade smallint := (p_work ->> 'grade')::smallint;
+  v_files text[] := coalesce(array(select jsonb_array_elements_text(coalesce(p_work -> 'paper_files', '[]'::jsonb))), '{}');
+  v_memo_files text[] := coalesce(array(select jsonb_array_elements_text(coalesce(p_memo -> 'memo_files', '[]'::jsonb))), '{}');
+  v_status text := coalesce(p_work ->> 'status', 'draft');
+  f text;
+begin
+  select * into me from public.profiles where id = auth.uid();
+  if me.id is null or me.role::text not in ('teacher', 'hod', 'school') or not public.is_school_staff(me.school_id) then
+    raise exception 'Only approved school staff can set class work' using errcode = '42501';
+  end if;
+  select * into old from public.class_work where id = p_id;
+  if old.id is not null and not public.class_work_is_staff(old.id) then
+    raise exception 'This work belongs to someone else' using errcode = '42501';
+  end if;
+  v_classes := array(select (jsonb_array_elements_text(coalesce(p_work -> 'class_ids', '[]'::jsonb)))::uuid);
+  if cardinality(v_classes) = 0 then
+    raise exception 'Choose at least one class' using errcode = '22023';
+  end if;
+  if exists (
+    select 1 from unnest(v_classes) cid
+    left join public.classes c on c.id = cid
+    where c.id is null or c.school_id <> me.school_id or c.subject_id <> v_subject or c.grade <> v_grade
+       or (me.role::text = 'teacher' and c.teacher_id is distinct from me.id)
+  ) then
+    raise exception 'Every class must be one of yours, in this subject and grade' using errcode = '42501';
+  end if;
+  foreach f in array v_files loop
+    if f not like me.school_id::text || '/' || p_id::text || '/paper/%' then
+      raise exception 'A question paper file is not in this work''s folder' using errcode = '22023';
+    end if;
+  end loop;
+  foreach f in array v_memo_files loop
+    if f not like me.school_id::text || '/' || p_id::text || '/memo/%' then
+      raise exception 'A memo file is not in this work''s folder' using errcode = '22023';
+    end if;
+  end loop;
+  if v_status not in ('draft', 'published') then
+    v_status := 'draft';
+  end if;
+
+  insert into public.class_work as w (id, school_id, created_by, subject_id, grade, title, instructions, class_ids, items,
+                                      paper_files, total_marks, minutes, opens_at, due_at, memo_released_at, status)
+  values (p_id, me.school_id, me.id, v_subject, v_grade, left(btrim(p_work ->> 'title'), 200),
+          left(coalesce(p_work ->> 'instructions', ''), 5000), v_classes, coalesce(p_work -> 'items', '[]'::jsonb),
+          v_files, (p_work ->> 'total_marks')::smallint, nullif(p_work ->> 'minutes', '')::smallint,
+          coalesce((p_work ->> 'opens_at')::timestamptz, now()), (p_work ->> 'due_at')::timestamptz,
+          (p_work ->> 'memo_released_at')::timestamptz, v_status)
+  on conflict (id) do update
+    set subject_id = excluded.subject_id, grade = excluded.grade, title = excluded.title,
+        instructions = excluded.instructions, class_ids = excluded.class_ids, items = excluded.items,
+        paper_files = excluded.paper_files, total_marks = excluded.total_marks, minutes = excluded.minutes,
+        opens_at = excluded.opens_at, due_at = excluded.due_at, memo_released_at = excluded.memo_released_at,
+        status = excluded.status, updated_at = now()
+  returning * into r;
+
+  insert into public.class_work_memos (work_id, answers, memo_text, memo_files)
+  values (r.id, coalesce(p_memo -> 'answers', '{}'::jsonb), left(coalesce(p_memo ->> 'memo_text', ''), 20000), v_memo_files)
+  on conflict (work_id) do update
+    set answers = excluded.answers, memo_text = excluded.memo_text, memo_files = excluded.memo_files;
+
+  if r.status = 'published' and (old.id is null or old.status <> 'published') then
+    perform public.notify(
+      array(select distinct m.learner_id from public.class_members m where m.class_id = any (r.class_ids)),
+      'classwork.set',
+      jsonb_build_object('work_id', r.id, 'title', r.title, 'due_at', r.due_at),
+      'class-work/' || r.id);
+  end if;
+  return r;
+end;
+$$;
+revoke execute on function public.save_class_work(uuid, jsonb, jsonb) from public, anon;
+grant execute on function public.save_class_work(uuid, jsonb, jsonb) to authenticated;
+
+create or replace function public.delete_class_work(p_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.class_work_is_staff(p_id) then
+    raise exception 'This work belongs to someone else' using errcode = '42501';
+  end if;
+  delete from public.class_work where id = p_id;
+  return found;
+end;
+$$;
+revoke execute on function public.delete_class_work(uuid) from public, anon;
+grant execute on function public.delete_class_work(uuid) to authenticated;
+
+-- A learner opens the work: their own row, with a deadline that is the time
+-- limit (if any) from now, never later than the due date.
+create or replace function public.start_class_work(p_work uuid)
+returns public.class_work_submissions
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  w public.class_work%rowtype;
+  r public.class_work_submissions%rowtype;
+begin
+  if not public.class_work_is_mine(p_work) then
+    raise exception 'This work is not set for you' using errcode = '42501';
+  end if;
+  select * into r from public.class_work_submissions where work_id = p_work and learner_id = auth.uid();
+  if r.id is not null then
+    return r;
+  end if;
+  select * into w from public.class_work where id = p_work;
+  if now() >= w.due_at then
+    raise exception 'This work closed on %', w.due_at using errcode = '42501';
+  end if;
+  insert into public.class_work_submissions (work_id, learner_id, school_id, deadline)
+  values (p_work, auth.uid(), w.school_id,
+          case when w.minutes is null then w.due_at else least(w.due_at, now() + make_interval(mins => w.minutes)) end)
+  returning * into r;
+  return r;
+end;
+$$;
+revoke execute on function public.start_class_work(uuid) from public, anon;
+grant execute on function public.start_class_work(uuid) to authenticated;
+
+-- Files a learner hands in must be in their own answers folder for this work.
+create or replace function public.class_work_own_files(p_sub public.class_work_submissions, p_files text[])
+returns boolean
+language sql
+stable
+set search_path = public
+as $$
+  select cardinality(p_files) <= 10 and not exists (
+    select 1 from unnest(p_files) f
+    where f not like p_sub.school_id::text || '/' || p_sub.work_id::text || '/answers/' || p_sub.learner_id::text || '/%'
+  );
+$$;
+
+create or replace function public.save_class_work_answers(p_sub uuid, p_answers jsonb, p_files text[] default null)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.class_work_submissions%rowtype;
+begin
+  if jsonb_typeof(p_answers) <> 'object' or pg_column_size(p_answers) > 300000 then
+    raise exception 'Answers must be an object of at most 300 kB' using errcode = '22023';
+  end if;
+  select * into r from public.class_work_submissions
+  where id = p_sub and learner_id = auth.uid() and submitted_at is null and now() <= deadline + interval '2 minutes';
+  if r.id is null then
+    return false;
+  end if;
+  if p_files is not null and not public.class_work_own_files(r, p_files) then
+    raise exception 'A file is not in your answers folder' using errcode = '22023';
+  end if;
+  update public.class_work_submissions
+  set answers = p_answers, files = coalesce(p_files, files)
+  where id = p_sub;
+  return true;
+end;
+$$;
+revoke execute on function public.save_class_work_answers(uuid, jsonb, text[]) from public, anon;
+grant execute on function public.save_class_work_answers(uuid, jsonb, text[]) to authenticated;
+
+-- Hand in. Late hand-ins close at the deadline with what was saved in time.
+-- Multiple-choice questions are marked here against the memo; when every mark
+-- is a multiple-choice mark and nothing was uploaded, the work is marked.
+create or replace function public.submit_class_work(p_sub uuid, p_answers jsonb default null, p_files text[] default null)
+returns public.class_work_submissions
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.class_work_submissions%rowtype;
+  w public.class_work%rowtype;
+  memo jsonb;
+  item jsonb;
+  v_marking jsonb := '{}'::jsonb;
+  v_auto numeric := 0;
+  v_auto_marks integer := 0;
+  v_given text;
+  v_correct text;
+begin
+  select * into r from public.class_work_submissions where id = p_sub and learner_id = auth.uid();
+  if r.id is null then
+    raise exception 'No such class work' using errcode = '42501';
+  end if;
+  if r.submitted_at is not null then
+    return r;
+  end if;
+  if now() <= r.deadline + interval '2 minutes' then
+    if p_answers is not null and jsonb_typeof(p_answers) = 'object' and pg_column_size(p_answers) <= 300000 then
+      r.answers := p_answers;
+    end if;
+    if p_files is not null and public.class_work_own_files(r, p_files) then
+      r.files := p_files;
+    end if;
+  end if;
+  select * into w from public.class_work where id = r.work_id;
+  select answers into memo from public.class_work_memos where work_id = r.work_id;
+  for item in select * from jsonb_array_elements(w.items) loop
+    if item ->> 'kind' = 'mcq' then
+      v_given := upper(btrim(coalesce(r.answers ->> (item ->> 'id'), '')));
+      v_correct := upper(btrim(coalesce(memo -> (item ->> 'id') ->> 'correct', '')));
+      v_marking := v_marking || jsonb_build_object(item ->> 'id', jsonb_build_object(
+        'awarded', case when v_given <> '' and v_given = v_correct then (item ->> 'marks')::numeric else 0 end,
+        'auto', true));
+      v_auto := v_auto + case when v_given <> '' and v_given = v_correct then (item ->> 'marks')::numeric else 0 end;
+      v_auto_marks := v_auto_marks + coalesce((item ->> 'marks')::integer, 0);
+    end if;
+  end loop;
+  update public.class_work_submissions
+  set answers = r.answers, files = r.files, submitted_at = least(now(), deadline), marking = v_marking,
+      status = case when v_auto_marks > 0 and v_auto_marks = w.total_marks and cardinality(w.paper_files) = 0 then 'marked' else 'submitted' end,
+      marks_awarded = case when v_auto_marks > 0 and v_auto_marks = w.total_marks and cardinality(w.paper_files) = 0 then v_auto end,
+      marks_total = w.total_marks,
+      percent = case when v_auto_marks > 0 and v_auto_marks = w.total_marks and cardinality(w.paper_files) = 0 then round(v_auto * 100 / w.total_marks, 1) end,
+      marked_at = case when v_auto_marks > 0 and v_auto_marks = w.total_marks and cardinality(w.paper_files) = 0 then now() end
+  where id = p_sub
+  returning * into r;
+  return r;
+end;
+$$;
+revoke execute on function public.submit_class_work(uuid, jsonb, text[]) from public, anon;
+grant execute on function public.submit_class_work(uuid, jsonb, text[]) to authenticated;
+
+-- The teacher's marks: { "<item id>": { "awarded": n, "feedback": "..." } },
+-- or { "_overall": { "awarded": n } } for work marked as a whole. The total is
+-- added up here and capped at the work's total, and the learner is told.
+create or replace function public.mark_class_work(p_sub uuid, p_marking jsonb, p_comment text default null)
+returns public.class_work_submissions
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r public.class_work_submissions%rowtype;
+  w public.class_work%rowtype;
+  v_total numeric;
+begin
+  select * into r from public.class_work_submissions where id = p_sub;
+  if r.id is null or not public.class_work_is_staff(r.work_id) then
+    raise exception 'Only the class''s teacher can mark this work' using errcode = '42501';
+  end if;
+  if r.submitted_at is null and now() <= r.deadline then
+    raise exception 'The learner is still writing' using errcode = '22023';
+  end if;
+  if jsonb_typeof(p_marking) <> 'object' or pg_column_size(p_marking) > 100000 then
+    raise exception 'Marks must be an object' using errcode = '22023';
+  end if;
+  select * into w from public.class_work where id = r.work_id;
+  select coalesce(sum(greatest(0, (v ->> 'awarded')::numeric)), 0) into v_total from jsonb_each(p_marking) as e(k, v);
+  v_total := least(v_total, w.total_marks);
+  update public.class_work_submissions
+  set marking = p_marking, comment = nullif(btrim(coalesce(p_comment, '')), ''), status = 'marked',
+      submitted_at = coalesce(submitted_at, deadline),
+      marks_awarded = v_total, marks_total = w.total_marks, percent = round(v_total * 100 / w.total_marks, 1),
+      marked_by = auth.uid(), marked_at = now()
+  where id = p_sub
+  returning * into r;
+  perform public.notify(array[r.learner_id], 'classwork.marked',
+    jsonb_build_object('work_id', w.id, 'title', w.title, 'percent', r.percent), 'class-work/' || w.id);
+  return r;
+end;
+$$;
+revoke execute on function public.mark_class_work(uuid, jsonb, text) from public, anon;
+grant execute on function public.mark_class_work(uuid, jsonb, text) to authenticated;
+
+-- Files. Every read and write in the bucket is decided here.
+insert into storage.buckets (id, name, public)
+values ('class-work', 'class-work', false)
+on conflict (id) do update set public = false;
+
+do $$
+begin
+  if exists (select 1 from information_schema.columns where table_schema = 'storage' and table_name = 'buckets' and column_name = 'file_size_limit') then
+    execute $q$update storage.buckets set file_size_limit = 15728640,
+      allowed_mime_types = array['application/pdf', 'image/jpeg', 'image/png', 'image/webp',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword']
+      where id = 'class-work'$q$;
+  end if;
+end $$;
+
+create or replace function public.class_work_file_access(p_name text, p_write boolean)
+returns boolean
+language plpgsql
+security definer
+stable
+set search_path = public
+as $$
+declare
+  parts text[] := string_to_array(coalesce(p_name, ''), '/');
+  v_work uuid;
+  w public.class_work%rowtype;
+begin
+  if cardinality(parts) < 4 or parts[2] !~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+    return false;
+  end if;
+  v_work := parts[2]::uuid;
+  select * into w from public.class_work where id = v_work;
+  if w.id is null or w.school_id::text <> parts[1] then
+    return false;
+  end if;
+  if parts[3] in ('paper', 'memo') then
+    if public.class_work_is_staff(v_work) then
+      return true;
+    end if;
+    if p_write then
+      return false;
+    end if;
+    return public.class_work_is_mine(v_work) and (parts[3] = 'paper' or public.class_work_memo_open(v_work));
+  end if;
+  if parts[3] = 'answers' and cardinality(parts) >= 5 then
+    if parts[4] = auth.uid()::text then
+      if not p_write then
+        return true;
+      end if;
+      return exists (
+        select 1 from public.class_work_submissions s
+        where s.work_id = v_work and s.learner_id = auth.uid() and s.submitted_at is null and now() <= s.deadline + interval '2 minutes'
+      );
+    end if;
+    return not p_write and public.class_work_is_staff(v_work);
+  end if;
+  return false;
+end;
+$$;
+revoke execute on function public.class_work_file_access(text, boolean) from public, anon;
+grant execute on function public.class_work_file_access(text, boolean) to authenticated;
+
+drop policy if exists "Class work files are read as class_work_file_access decides" on storage.objects;
+create policy "Class work files are read as class_work_file_access decides"
+  on storage.objects for select
+  to authenticated
+  using (bucket_id = 'class-work' and public.class_work_file_access(name, false));
+
+drop policy if exists "Class work files are added as class_work_file_access decides" on storage.objects;
+create policy "Class work files are added as class_work_file_access decides"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'class-work' and public.class_work_file_access(name, true));
+
+drop policy if exists "Class work files are removed as class_work_file_access decides" on storage.objects;
+create policy "Class work files are removed as class_work_file_access decides"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'class-work' and public.class_work_file_access(name, true));

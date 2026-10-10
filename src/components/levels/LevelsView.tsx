@@ -34,7 +34,7 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const shortDate = (iso: string) => `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]}`
 const periodLabel = (term: Term | null, year: number) => (term ? `Term ${term} ${year}` : `${year}`)
 const sourceLabel = (source: LevelSource | 'all') =>
-  source === 'all' ? 'weekly tests, papers and SBA tasks' : source === 'weekly' ? 'weekly tests' : source === 'paper' ? 'past and predicted papers' : 'SBA tasks'
+  source === 'all' ? 'weekly tests, papers and SBA tasks' : source === 'weekly' ? 'weekly tests' : source === 'paper' ? 'papers and class work' : 'SBA tasks'
 const slug = (s: string) =>
   s
     .toLowerCase()
@@ -127,7 +127,7 @@ function Segmented<T extends string | number>(props: { label: string; value: T; 
 const SOURCES: { value: LevelSource | 'all'; label: string }[] = [
   { value: 'all', label: 'All tests' },
   { value: 'weekly', label: 'Weekly tests' },
-  { value: 'paper', label: 'Papers' },
+  { value: 'paper', label: 'Papers & class work' },
   { value: 'sba', label: 'SBA tasks' },
 ]
 const PERIODS: { value: Term | 0; label: string }[] = [
@@ -814,7 +814,7 @@ function RowDetail({ data, results }: { data: LevelData; results: LevelResult[] 
               <span className="text-sm text-navy-800">
                 {t.title}
                 <span className="block text-xs text-navy-500">
-                  {t.source === 'sba' ? `SBA task · Term ${t.term}` : `${t.source === 'paper' ? 'Paper' : 'Weekly test'}${t.date ? ` · ${shortDate(t.date)}` : ''}`} · {t.written} wrote · average{' '}
+                  {t.source === 'sba' ? `SBA task · Term ${t.term}` : `${t.source === 'paper' ? (t.itemId.startsWith('cw:') ? 'Class work' : 'Paper') : 'Weekly test'}${t.date ? ` · ${shortDate(t.date)}` : ''}`} · {t.written} wrote · average{' '}
                   {t.average}%
                 </span>
               </span>

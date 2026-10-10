@@ -3354,5 +3354,193 @@ insert into results
          not bool_or(started)
   from s41n;
 
+
+-- ===========================================================================
+-- STEP 42: class work -- a teacher's own work for their classes
+-- ===========================================================================
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into public.classes (school_id, name, grade, subject_id, teacher_id)
+  select school_id, '12C S42', 12, 'mat-lit', '00000000-0000-0000-0000-00000000000a' from s;
+insert into public.class_members (class_id, learner_id)
+  select id, '00000000-0000-0000-0000-0000000000b1' from public.classes where name = '12C S42';
+select public.save_class_work('42000000-0000-0000-0000-000000000001',
+  jsonb_build_object('subject_id', 'mat-lit', 'grade', 12, 'title', 'S42 district test', 'status', 'published',
+    'class_ids', jsonb_build_array((select id from public.classes where name = '12C S42')),
+    'items', '[{"id":"q1","label":"1.1","prompt":"Pick one","marks":2,"kind":"mcq","options":["A","B","C"]},{"id":"q2","label":"1.2","prompt":"Pick again","marks":3,"kind":"mcq","options":["A","B"]}]'::jsonb,
+    'total_marks', 5, 'due_at', now() + interval '2 days'),
+  '{"answers": {"q1": {"correct": "B"}, "q2": {"correct": "A"}}, "memo_text": "1.1 B, 1.2 A"}'::jsonb);
+select public.save_class_work('42000000-0000-0000-0000-000000000002',
+  jsonb_build_object('subject_id', 'mat-lit', 'grade', 12, 'title', 'S42 written task', 'status', 'published',
+    'class_ids', jsonb_build_array((select id from public.classes where name = '12C S42')),
+    'paper_files', jsonb_build_array((select school_id::text from s) || '/42000000-0000-0000-0000-000000000002/paper/task.pdf'),
+    'total_marks', 20, 'due_at', now() + interval '2 days'),
+  '{"memo_text": "See the memo file"}'::jsonb);
+reset role;
+
+-- 174. Work set for a class reaches its learners and nobody else.
+create temp table s42v (who text, works int, notes int);
+grant all on s42v to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into s42v select 'in the class', (select count(*) from public.class_work where title like 'S42%'),
+  (select count(*) from public.notifications where kind = 'classwork.set' and recipient_id = auth.uid());
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+insert into s42v select 'not in the class', (select count(*) from public.class_work where title like 'S42%'),
+  (select count(*) from public.notifications where kind = 'classwork.set' and recipient_id = auth.uid());
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000da');
+set role authenticated;
+insert into s42v select 'life sciences teacher', (select count(*) from public.class_work where title like 'S42%'), 0;
+reset role;
+insert into results
+  select '174. class work reaches the learners of its classes (and tells them), not other learners or other subjects'' teachers',
+         string_agg(who || ' ' || works || '/' || notes, ', ' order by who),
+         bool_and(case who when 'in the class' then works = 2 and notes = 2 else works = 0 end)
+  from s42v;
+
+-- 175. The memo is closed to the class before the due date; the teacher sees it.
+create temp table s42m (who text, memos int);
+grant all on s42m to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into s42m select 'learner', count(*) from public.class_work_memos where work_id::text like '42000000%';
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+insert into s42m select 'teacher', count(*) from public.class_work_memos where work_id::text like '42000000%';
+reset role;
+insert into results
+  select '175. the memo stays closed to the class before the due date, and open to the teacher',
+         string_agg(who || ' ' || memos, ', ' order by who),
+         sum(memos) filter (where who = 'learner') = 0 and sum(memos) filter (where who = 'teacher') = 2
+  from s42m;
+
+-- 176. Nobody writes the tables directly; another subject's teacher cannot set work for a class that is not theirs.
+create temp table s42w (attempt text, ok boolean);
+grant all on s42w to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+do $$ begin
+  begin
+    insert into public.class_work_submissions (work_id, learner_id, school_id, deadline, status, percent)
+      select '42000000-0000-0000-0000-000000000001', auth.uid(), school_id, now(), 'marked', 100 from public.profiles where id = auth.uid();
+    insert into s42w values ('learner writes a mark directly', true);
+  exception when others then insert into s42w values ('learner writes a mark directly', false);
+  end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000da');
+set role authenticated;
+do $$ begin
+  begin
+    perform public.save_class_work('42000000-0000-0000-0000-000000000009',
+      jsonb_build_object('subject_id', 'mat-lit', 'grade', 12, 'title', 'Not mine', 'status', 'published',
+        'class_ids', jsonb_build_array((select id from public.classes where name = '12C S42')), 'total_marks', 5, 'due_at', now() + interval '1 day'),
+      '{}'::jsonb);
+    insert into s42w values ('other subject teacher sets work for the class', true);
+  exception when others then insert into s42w values ('other subject teacher sets work for the class', false);
+  end;
+end $$;
+reset role;
+insert into results
+  select '176. learners cannot write class work tables, and a teacher cannot set work for a class that is not theirs',
+         string_agg(attempt || ': ' || case when ok then 'allowed' else 'refused' end, '; '),
+         not bool_or(ok)
+  from s42w;
+
+-- 177. Files: the class reads the paper but not the memo before it opens; a learner writes only their own answers folder.
+create temp table s42f (what text, ok boolean);
+grant all on s42f to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+select public.start_class_work('42000000-0000-0000-0000-000000000002');
+insert into s42f
+  select 'read paper', public.class_work_file_access(school_id || '/42000000-0000-0000-0000-000000000002/paper/task.pdf', false) from s
+  union all select 'read memo', public.class_work_file_access(school_id || '/42000000-0000-0000-0000-000000000002/memo/memo.pdf', false) from s
+  union all select 'write paper', public.class_work_file_access(school_id || '/42000000-0000-0000-0000-000000000002/paper/x.pdf', true) from s
+  union all select 'write own answers', public.class_work_file_access(school_id || '/42000000-0000-0000-0000-000000000002/answers/00000000-0000-0000-0000-0000000000b1/p1.jpg', true) from s
+  union all select 'write another''s answers', public.class_work_file_access(school_id || '/42000000-0000-0000-0000-000000000002/answers/00000000-0000-0000-0000-0000000000b2/p1.jpg', true) from s;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b2');
+set role authenticated;
+insert into s42f select 'other learner reads paper', public.class_work_file_access(school_id || '/42000000-0000-0000-0000-000000000002/paper/task.pdf', false) from s;
+reset role;
+insert into results
+  select '177. class work files: the class reads the paper, not the memo; a learner writes only their own answers',
+         string_agg(what || ' ' || ok, ', '),
+         bool_and(case what when 'read paper' then ok when 'write own answers' then ok else not ok end)
+  from s42f;
+
+-- 178. Multiple choice is marked on hand-in against the memo.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+select public.start_class_work('42000000-0000-0000-0000-000000000001');
+select public.submit_class_work((select id from public.class_work_submissions where work_id = '42000000-0000-0000-0000-000000000001'),
+  '{"q1": "b", "q2": "B"}'::jsonb);
+reset role;
+insert into results
+  select '178. multiple-choice class work is marked on hand-in against the memo',
+         status || ' ' || marks_awarded || '/' || marks_total || ' (' || percent || '%)',
+         status = 'marked' and marks_awarded = 2 and marks_total = 5 and percent = 40.0
+  from public.class_work_submissions where work_id = '42000000-0000-0000-0000-000000000001';
+
+-- 179. The teacher marks uploaded work and the learner is told; another subject's teacher cannot mark it.
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+select public.submit_class_work((select id from public.class_work_submissions where work_id = '42000000-0000-0000-0000-000000000002'),
+  '{}'::jsonb, array[(select school_id::text from s) || '/42000000-0000-0000-0000-000000000002/answers/00000000-0000-0000-0000-0000000000b1/p1.jpg']);
+reset role;
+create temp table s42k (who text, ok boolean);
+grant all on s42k to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000da');
+set role authenticated;
+do $$ begin
+  begin
+    perform public.mark_class_work((select id from public.class_work_submissions where work_id = '42000000-0000-0000-0000-000000000002' limit 1), '{"_overall": {"awarded": 20}}'::jsonb);
+    insert into s42k values ('life sciences teacher', true);
+  exception when others then insert into s42k values ('life sciences teacher', false);
+  end;
+end $$;
+reset role;
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.mark_class_work(
+  (select id from public.class_work_submissions where work_id = '42000000-0000-0000-0000-000000000002' and learner_id = '00000000-0000-0000-0000-0000000000b1'),
+  '{"_overall": {"awarded": 14}}'::jsonb, 'Good method in 2.3');
+reset role;
+insert into results
+  select '179. the class teacher marks uploaded work and the learner is told; another subject''s teacher cannot',
+         c.status || ' ' || c.percent || '%, files ' || cardinality(c.files) || ', told ' ||
+           (select count(*) from public.notifications n where n.recipient_id = c.learner_id and n.kind = 'classwork.marked') ||
+           ', other teacher ' || (select case when bool_or(ok) then 'marked it' else 'refused' end from s42k),
+         c.status = 'marked' and c.percent = 70.0 and cardinality(c.files) = 1
+           and (select count(*) from public.notifications n where n.recipient_id = c.learner_id and n.kind = 'classwork.marked') = 1
+           and not (select bool_or(ok) from s42k)
+  from public.class_work_submissions c where c.work_id = '42000000-0000-0000-0000-000000000002';
+
+-- 180. Once the teacher releases the memo, the class reads it and its files.
+select pg_temp.act('00000000-0000-0000-0000-00000000000a');
+set role authenticated;
+select public.save_class_work('42000000-0000-0000-0000-000000000002',
+  (select to_jsonb(w) - 'memo_released_at' || jsonb_build_object('memo_released_at', now(), 'class_ids', to_jsonb(w.class_ids), 'paper_files', to_jsonb(w.paper_files))
+     from public.class_work w where id = '42000000-0000-0000-0000-000000000002'),
+  '{"memo_text": "See the memo file"}'::jsonb);
+reset role;
+create temp table s42r (memos int, file boolean);
+grant all on s42r to authenticated;
+select pg_temp.act('00000000-0000-0000-0000-0000000000b1');
+set role authenticated;
+insert into s42r select (select count(*) from public.class_work_memos where work_id = '42000000-0000-0000-0000-000000000002'),
+  public.class_work_file_access(school_id || '/42000000-0000-0000-0000-000000000002/memo/memo.pdf', false) from s;
+reset role;
+insert into results
+  select '180. a released memo opens to the class, with its files',
+         'memo rows ' || memos || ', memo file ' || file,
+         memos = 1 and file
+  from s42r;
+
 select test, outcome, case when ok then 'PASS' else 'FAIL' end as result from results order by test;
 select case when bool_and(ok) then 'ALL PASSED' else 'SOME FAILED' end as summary from results;

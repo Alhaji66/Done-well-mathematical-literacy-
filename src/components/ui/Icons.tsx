@@ -210,6 +210,12 @@ export const LevelsIcon = (p: IconProps) => (
   </svg>
 )
 
+export const UploadIcon = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3M12 4v11M7.5 8.5 12 4l4.5 4.5" />
+  </svg>
+)
+
 export const PlusIcon = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M12 5v14M5 12h14" />

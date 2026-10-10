@@ -22,6 +22,7 @@ import {
   SchoolIcon,
   TableIcon,
   MapIcon,
+  UploadIcon,
 } from '@/components/ui/Icons'
 
 export const learnerNav: RoleNavItem[] = [
@@ -97,6 +98,7 @@ export const accountLearnerNav: RoleNavItem[] = [
   { to: '/tutor', label: 'Check my working', shortLabel: 'Tutor', icon: SparkleIcon },
   { to: '/resources', label: 'Resources', icon: BookIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon, bar: true },
+  { to: '/class-work', label: 'Class work', shortLabel: 'Work', icon: UploadIcon },
   { to: '/progress', label: 'Progress', icon: TrendingUpIcon, bar: true },
   { to: '/marks', label: 'My SBA marks', shortLabel: 'Marks', icon: ClipboardCheckIcon },
   { to: '/privacy', label: 'Privacy & data', shortLabel: 'Privacy', icon: EyeIcon },
@@ -115,6 +117,7 @@ export const accountTeacherNav: RoleNavItem[] = [
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/paper-results', label: 'Paper results', shortLabel: 'Results', icon: ClipboardCheckIcon },
+  { to: '/class-work', label: 'Class work', shortLabel: 'Work', icon: UploadIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },
   { to: '/assessment-tasks', label: 'SBA tasks', shortLabel: 'SBA', icon: ClipboardCheckIcon },
   { to: '/markbook', label: 'Mark book', shortLabel: 'Marks', icon: TableIcon, bar: true },
@@ -154,6 +157,7 @@ export const accountHodNav: RoleNavItem[] = [
   { to: '/question-bank', label: 'Question Bank', shortLabel: 'Bank', icon: SparkleIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/paper-results', label: 'Paper results', shortLabel: 'Results', icon: ClipboardCheckIcon },
+  { to: '/class-work', label: 'Class work', shortLabel: 'Work', icon: UploadIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },
@@ -174,6 +178,7 @@ export const accountSchoolNav: RoleNavItem[] = [
   { to: '/levels', label: 'Levels', icon: LevelsIcon },
   { to: '/assessments', label: 'Assessments', shortLabel: 'Papers', icon: ClipboardIcon },
   { to: '/paper-results', label: 'Paper results', shortLabel: 'Results', icon: ClipboardCheckIcon },
+  { to: '/class-work', label: 'Class work', shortLabel: 'Work', icon: UploadIcon },
   { to: '/tests', label: 'Weekly tests', shortLabel: 'Tests', icon: PencilIcon },
   { to: '/analytics', label: 'Analytics', icon: BarChartIcon },
   { to: '/reports', label: 'Reports', icon: DownloadIcon },

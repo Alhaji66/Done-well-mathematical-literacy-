@@ -107,7 +107,7 @@ export async function pickPractice(
   exclude: Set<string>,
   verdict?: Verdict,
 ): Promise<Question | null> {
-  const pool = (await filterSubjectQuestions(subjectId, { topicId, grade })).filter((q) => !exclude.has(q.id))
+  const pool = (await filterSubjectQuestions(subjectId, { topicId, grade, learner: true })).filter((q) => !exclude.has(q.id))
   if (!pool.length) return null
   const same = subtopic ? pool.filter((q) => subtopicFor(q) === subtopic) : []
   let from = same.length ? same : pool

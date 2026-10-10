@@ -9,6 +9,7 @@ import { LEVEL_NAMES, levelOf } from '@/lib/levels'
 import {
   fetchMyPaperAttempts,
   fetchPaperAttempt,
+  forgetWrittenPapers,
   memoOpen,
   requestMarking,
   savePaperAnswers,
@@ -175,6 +176,8 @@ export function PaperExam({ paper }: { paper: Paper }) {
         return
       }
       writeLocal(attempt.id, null)
+      // Its questions join Practise now (questionBank.learnerQuestionsForSubject).
+      forgetWrittenPapers()
       setAttempt(done)
       setAnswers(done.answers)
       void mark(done)
@@ -234,6 +237,9 @@ export function PaperExam({ paper }: { paper: Paper }) {
             level and where you lost marks.
           </li>
           <li>Your teacher sees your result as soon as it is marked.</li>
+          {paper.kind === 'predicted' ? (
+            <li>This paper's questions are kept out of Practise until you have written it. After that, you can practise them with the memo.</li>
+          ) : null}
         </ul>
         {error ? <p className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p> : null}
         <button type="button" disabled={busy || attempts === null} onClick={() => void begin()} className="btn-primary">

@@ -124,6 +124,43 @@ function practisableItems(fromPapers: Question[]): Question[] {
 // demo's sample are different objects, so signing in recomputes the pool.
 const cache = new WeakMap<SubjectContent, Question[]>()
 
+/** Item id -> the predicted paper it comes from, per content pack. */
+const predictedPaperOf = new WeakMap<SubjectContent, Map<string, string>>()
+
+function predictedItems(content: SubjectContent): Map<string, string> {
+  let map = predictedPaperOf.get(content)
+  if (!map) {
+    map = new Map()
+    for (const p of content.papers) if (p.kind === 'predicted') for (const s of p.sections) for (const q of s.items) map.set(q.id, p.id)
+    predictedPaperOf.set(content, map)
+  }
+  return map
+}
+
+/**
+ * The pool a learner practises from. A predicted paper is written under exam
+ * conditions with its memo locked until the time is up (STEP 41), so its
+ * questions -- with their memos -- stay out of Practise until this learner has
+ * written that paper. Past papers stay in, for revision. Signed out (the demo),
+ * nothing is held back.
+ *
+ * Staff screens, and a weekly test resolving the questions a teacher chose, use
+ * questionsForSubject unfiltered.
+ */
+export async function learnerQuestionsForSubject(subjectId: string): Promise<Question[]> {
+  const [pool, content, written] = await Promise.all([
+    questionsForSubject(subjectId),
+    subjectContent(subjectId),
+    import('@/lib/paperAttempts').then((m) => m.writtenPaperIds()),
+  ])
+  if (!written) return pool
+  const predicted = predictedItems(content)
+  return pool.filter((q) => {
+    const paper = predicted.get(q.id)
+    return !paper || written.has(paper)
+  })
+}
+
 /** Every practisable question for a subject: the standalone bank plus its paper items. */
 export async function questionsForSubject(subjectId: string): Promise<Question[]> {
   const content = await subjectContent(subjectId)
@@ -167,9 +204,10 @@ export async function questionsById(subjectId: string, ids: string[]): Promise<M
 
 export async function filterSubjectQuestions(
   subjectId: string,
-  opts: { topicId?: string; difficulty?: Difficulty | string; grade?: Grade | number } = {},
+  opts: { topicId?: string; difficulty?: Difficulty | string; grade?: Grade | number; learner?: boolean } = {},
 ): Promise<Question[]> {
-  const pool = await questionsForSubject(subjectId)
+  // learner: the learner's pool, holding back predicted papers not yet written.
+  const pool = await (opts.learner ? learnerQuestionsForSubject(subjectId) : questionsForSubject(subjectId))
   return pool.filter(
     (q) =>
       (!opts.topicId || q.topicId === opts.topicId) &&

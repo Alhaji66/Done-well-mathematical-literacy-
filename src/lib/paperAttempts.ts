@@ -146,6 +146,42 @@ export async function fetchPaperResultsForStaff(schoolId: string, since: string)
   return (data ?? []).map(asAttempt)
 }
 
+/**
+ * The papers this learner has finished writing -- handed in, or out of time --
+ * so Practise can keep a predicted paper's questions back until then.
+ *
+ * null when nobody is signed in (the demo), which locks nothing. A failed fetch
+ * locks every predicted paper rather than none, and is not cached, so the next
+ * page tries again. A result is kept for five minutes, and forgotten as soon as
+ * the learner hands a paper in.
+ */
+const WRITTEN_TTL = 5 * 60_000
+let written: { userId: string; at: number; ids: Promise<Set<string>> } | null = null
+
+export async function writtenPaperIds(): Promise<Set<string> | null> {
+  if (!supabase) return null
+  const { data } = await supabase.auth.getSession()
+  const userId = data.session?.user.id
+  if (!userId) return null
+  if (written && written.userId === userId && Date.now() - written.at < WRITTEN_TTL) return written.ids
+  const entry = { userId, at: Date.now(), ids: loadWritten(userId) }
+  written = entry
+  return entry.ids
+}
+
+async function loadWritten(userId: string): Promise<Set<string>> {
+  const { data, error } = await supabase!.from('paper_attempts').select('paper_id, submitted_at, deadline').eq('learner_id', userId)
+  if (error) {
+    written = null
+    return new Set()
+  }
+  return new Set((data ?? []).filter((a) => memoOpen(a)).map((a) => a.paper_id as string))
+}
+
+export function forgetWrittenPapers() {
+  written = null
+}
+
 /** Minutes and seconds left, as "1:42:05" or "12:09". */
 export function timeLeft(deadline: string, now = Date.now()): string {
   const s = Math.max(0, Math.floor((new Date(deadline).getTime() - now) / 1000))

@@ -3,7 +3,7 @@ import { ContentNotice } from '@/components/content/ContentNotice'
 import { useSearchParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { topicsForSubject, getTopic } from '@/data/topics'
-import { filterSubjectQuestions, questionsForSubject } from '@/data/questionBank'
+import { filterSubjectQuestions, learnerQuestionsForSubject } from '@/data/questionBank'
 import { subjects } from '@/data/subjects'
 import { fetchLearnerProgress, recordAttempt, type ProgressRow } from '@/lib/learnerProgress'
 import { recordAnswer } from '@/lib/mistakes'
@@ -72,7 +72,7 @@ export function LearnerPractise() {
   useEffect(() => {
     let cancelled = false
     setLiveSubtopics(null)
-    questionsForSubject(subjectId).then((pool) => {
+    learnerQuestionsForSubject(subjectId).then((pool) => {
       if (cancelled) return
       const live = new Set<string>()
       for (const t of topicsForSubject(subjectId)) {
@@ -101,6 +101,7 @@ export function LearnerPractise() {
       topicId,
       difficulty: difficulty === 'All' ? undefined : difficulty,
       grade: profile?.grade ?? undefined,
+      learner: true,
     }).then((rows) => {
       if (cancelled) return
       setQuestions(rows)

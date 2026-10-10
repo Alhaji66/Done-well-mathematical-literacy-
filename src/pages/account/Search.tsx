@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useAccountAuth } from '@/context/AccountAuthContext'
 import { subjects } from '@/data/subjects'
 import { topics as allTopics, getTopic } from '@/data/topics'
-import { questionsForSubject } from '@/data/questionBank'
+import { learnerQuestionsForSubject, questionsForSubject } from '@/data/questionBank'
 import { papersForSubject } from '@/data/papers'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { KIND_LABEL, fetchContent, type ContentItem } from '@/lib/content'
@@ -88,7 +88,7 @@ export function Search() {
       const questionHits: Hit[] = []
       if (learner || staff) {
         for (const s of subjectOrder) {
-          const [papers, pool] = await Promise.all([papersForSubject(s.id), questionsForSubject(s.id)])
+          const [papers, pool] = await Promise.all([papersForSubject(s.id), learner ? learnerQuestionsForSubject(s.id) : questionsForSubject(s.id)])
           for (const p of papers) {
             if (matches(`${p.title} ${s.name}`, words)) {
               paperHits.push({ key: `p:${p.id}`, title: p.title, detail: `${s.name} · ${p.totalMarks} marks`, to: `assessments/${p.id}` })

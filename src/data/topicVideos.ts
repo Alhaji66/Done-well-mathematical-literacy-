@@ -251,6 +251,101 @@ export const topicVideos: TopicVideo[] = [
       "Watch out for four common mistakes. Subtract pension contributions before you use the table, not after. Apply the row's percentage only to the part above where the row starts. Never to the whole income. Rebates add up with age. Someone who is sixty five or older gets the primary and the secondary rebate together. And the table gives the tax for a year. Divide by twelve only when the question asks for a month.",
       "Now it's your turn. Open Finance in DONE WELL and practise taxation questions, with every mark explained."
     ]
+  },
+  {
+    "id": "matlit-measurement",
+    "subjectId": "mat-lit",
+    "topicId": "measurement",
+    "grades": [
+      10,
+      11,
+      12
+    ],
+    "title": "Area, volume and converting units",
+    "summary": "Perimeter, area and volume, why square and cubic units convert differently, a water tank in litres and a wall to paint.",
+    "file": "matlit-measurement.mp4",
+    "poster": "matlit-measurement.jpg",
+    "seconds": 188,
+    "megabytes": 5.1,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn the difference between perimeter, area and volume, how to convert their units, and how to answer two typical exam questions.",
+      "Measurement questions ask one of three different things. Perimeter is the distance around a shape, in metres. You need it for fencing, or a border. Area is the surface a shape covers, in square metres. You need it for paint, tiles or carpet. Volume is the space inside a solid, in cubic metres. You need it for water in a tank, or concrete. The exam gives you the formulas, so your job is to choose the right one and use the right units.",
+      "Converting units is where most marks are lost. For length you multiply or divide by ten, one hundred or one thousand. One metre is one hundred centimetres. But a square metre is one hundred centimetres by one hundred centimetres, so one square metre is ten thousand square centimetres, not one hundred. And a cubic metre is one hundred times one hundred times one hundred, which is one million cubic centimetres. For capacity, remember: one cubic metre holds one thousand litres, and one cubic centimetre is one millilitre.",
+      "Here is a typical question. A cylindrical water tank has a radius of zero comma six metres and a height of one comma five metres. How many litres does it hold? Substitute into the formula. Three comma one four two, times zero comma six squared, times one comma five. Square the radius first: zero comma three six. That gives one comma six nine seven cubic metres, rounded. Then convert. Each cubic metre holds one thousand litres, so the tank holds about one thousand six hundred and ninety seven litres. Convert using the unrounded value, and round only at the end.",
+      "Now an area question. A wall is four comma five metres long and two comma seven metres high, with a door of zero comma nine by two comma one metres. It needs two coats, and one litre of paint covers eight square metres. The wall is four comma five times two comma seven, which is twelve comma one five square metres. The door is one comma eight nine square metres. Subtract the door, because it is not painted: ten comma two six square metres. Two coats doubles it, to twenty comma five two square metres. Divide by eight square metres per litre: two comma five six five litres. You cannot buy part of a tin, and two tins would run out, so you must round up. The answer is three tins.",
+      "Watch out for four common mistakes. Converting square metres to square centimetres by multiplying by one hundred. It is ten thousand. Mixing units. Change every length to the same unit before you calculate. Rounding down when you have to buy whole items. Tins, bags and tiles always round up. And forgetting to subtract doors and windows, or to multiply by the number of coats.",
+      "Now it's your turn. Open Measurement in DONE WELL and practise area, volume and conversion questions, with every mark explained."
+    ]
+  },
+  {
+    "id": "maths-circle-geometry",
+    "subjectId": "mathematics",
+    "topicId": "math-euclidean-geometry",
+    "grades": [
+      11,
+      12
+    ],
+    "title": "Circle geometry: the angle theorems",
+    "summary": "The four angle theorems, a worked example with the centre, same segment and cyclic quadrilateral, and statements with reasons.",
+    "file": "maths-circle-geometry.mp4",
+    "poster": "maths-circle-geometry.jpg",
+    "seconds": 147,
+    "megabytes": 4,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn the angle theorems of circle geometry, how to set out each step with its reason, and how to solve a typical exam question.",
+      "Four angle theorems do most of the work in circle geometry. First: the angle at the centre is twice the angle at the circumference, when both stand on the same arc. Second: angles in the same segment are equal. They stand on the same chord, on the same side. Third: the opposite angles of a cyclic quadrilateral add up to one hundred and eighty degrees. A cyclic quadrilateral has all four corners on the circle. Fourth: the angle between a tangent and a chord equals the angle in the alternate segment.",
+      "Here is a typical question. O is the centre of the circle, and angle A O C is one hundred and thirty degrees. Find the angles at B, E and D. Angle A B C stands on the same arc as the angle at the centre, so it is half of one hundred and thirty degrees: sixty five degrees. Angle A E C is in the same segment as angle A B C, both standing on chord A C, so it is also sixty five degrees. A B C D is a cyclic quadrilateral, so angle A D C is one hundred and eighty minus sixty five: one hundred and fifteen degrees.",
+      "In the exam, write every step as a statement with its reason. A correct angle without a reason earns only half the marks. Angle A B C equals sixty five degrees. Reason: angle at centre equals twice the angle at the circumference. Angle A E C equals sixty five degrees. Reason: angles in the same segment. Angle A D C equals one hundred and fifteen degrees. Reason: opposite angles of cyclic quadrilateral A B C D. Name the quadrilateral, so the marker knows which one you mean.",
+      "Watch out for three common mistakes. Halving the wrong angle. The angle at the centre and the angle at the circumference must stand on the same arc. Check which arc each one faces. Calling a quadrilateral cyclic when one of its corners is not on the circle. The centre O is never on the circle, so a quadrilateral that uses O is not cyclic. And writing an angle with no reason, or with a vague one like circle theorem. Give the exact theorem.",
+      "Now it's your turn. Open Euclidean Geometry in DONE WELL and practise circle geometry, with every statement and reason explained."
+    ]
+  },
+  {
+    "id": "physics-newtons-laws",
+    "subjectId": "physical-sciences",
+    "topicId": "phys-newtons-laws",
+    "grades": [
+      11,
+      12
+    ],
+    "title": "Newton's laws and free-body diagrams",
+    "summary": "The three laws in plain words, a free-body diagram with friction, the second law worked in full, and third-law pairs.",
+    "file": "physics-newtons-laws.mp4",
+    "poster": "physics-newtons-laws.jpg",
+    "seconds": 174,
+    "megabytes": 4.6,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn Newton's three laws, how to draw a free-body diagram, and how to use the second law to solve a problem with friction.",
+      "Here are Newton's three laws in plain words. The first law is about inertia. An object stays at rest, or keeps moving at a constant velocity, unless a net force acts on it. The second law says that a net force makes an object accelerate, in the direction of the net force. The net force equals mass times acceleration. The third law says that when object A pushes on object B, B pushes back on A with a force that is equal in size and opposite in direction.",
+      "Here is a typical question. A five kilogram crate is pulled along a rough floor by a horizontal force of forty newtons. The coefficient of kinetic friction is zero comma three. First, draw a free-body diagram: the crate as a box, and an arrow for every force acting on it. The applied force is forty newtons, to the right. The weight is mass times g: five times nine comma eight, which is forty nine newtons, downwards. The floor pushes up with a normal force of forty nine newtons, because the crate does not move up or down. Friction acts against the motion. It is the coefficient times the normal force: zero comma three times forty nine, which is fourteen comma seven newtons, to the left.",
+      "Now use the second law along the direction of motion. Choose a positive direction. Take to the right as positive. The net force is forty newtons plus negative fourteen comma seven newtons, which is twenty five comma three newtons to the right. The weight and the normal force cancel, so they do not appear. Net force equals mass times acceleration: twenty five comma three equals five times a. So the acceleration is five comma zero six metres per second squared, to the right.",
+      "A last word on the third law, because it is often confused. The crate pushes down on the floor, and the floor pushes up on the crate. That is a third-law pair. The weight and the normal force are not a third-law pair, even though they are equal and opposite here. They both act on the same object, the crate. The partner of the crate's weight is the crate pulling the Earth upwards with forty nine newtons.",
+      "Watch out for four common mistakes. Using the applied force instead of the net force in F equals m a. Confusing mass, in kilograms, with weight, in newtons. Weight is mass times g. Drawing forces that the object exerts on other things, or forgetting to label the arrows. A free-body diagram shows only the forces acting on the object. And leaving out the direction of a force or an acceleration. Both are vectors.",
+      "Now it's your turn. Open Newton's Laws in DONE WELL and practise free-body diagrams and the second law, with every mark explained."
+    ]
+  },
+  {
+    "id": "lifesci-natural-selection",
+    "subjectId": "life-sciences",
+    "topicId": "life-sci-evolution",
+    "grades": [
+      12
+    ],
+    "title": "Evolution by natural selection",
+    "summary": "Darwin's theory step by step, drug-resistant TB as an example, Lamarck compared, and speciation through geographic isolation.",
+    "file": "lifesci-natural-selection.mp4",
+    "poster": "lifesci-natural-selection.jpg",
+    "seconds": 178,
+    "megabytes": 5.1,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how evolution happens by natural selection, how to explain it step by step in an exam, and how new species form.",
+      "Darwin's theory of natural selection has five steps, and the memo marks them in this order. One. There is variation among the individuals of a population, and much of it is inherited. Two. More offspring are produced than can survive, so there is competition for food, space and mates. Three. Individuals with favourable characteristics are more likely to survive and reproduce. Those without them are more likely to die. Four. The survivors pass the alleles for the favourable characteristic to their offspring. Five. Over many generations, the favourable characteristic becomes more common in the population.",
+      "South Africa has a clear example: drug-resistant tuberculosis. In a population of TB bacteria, a few carry a mutation that makes them resistant to an antibiotic. That is the variation. When a patient stops taking the treatment too early, the antibiotic has killed only the bacteria that are not resistant. The resistant bacteria survive, reproduce, and pass the resistance allele on. Soon most of the population is resistant, and the disease no longer responds to that drug. This is why patients must finish their treatment.",
+      "Exams often ask you to compare Lamarck and Darwin, using the giraffe. Lamarck said giraffes stretched their necks to reach leaves, the necks grew longer through use, and the longer neck was passed on to the offspring. Darwin said giraffes already varied in neck length. Those with longer necks reached more food, survived, and passed on the alleles for long necks. Lamarck was wrong, because characteristics acquired during a lifetime are not inherited. Stretching a neck does not change the DNA in the gametes.",
+      "New species form in a similar way, through geographic isolation. A barrier, such as a river, a mountain range or the sea, divides one population into two. The two groups can no longer interbreed, so there is no gene flow between them. Each group undergoes natural selection in its own environment, and over many generations they become more and more different. If they meet again and can no longer interbreed to produce fertile offspring, they have become two separate species.",
+      "Watch out for three common mistakes. Writing that the bacteria became resistant because they needed to. That is Lamarck. The resistance was already present in a few bacteria before the antibiotic was used. Writing that an individual evolves. Populations evolve. One organism cannot change its genes. And leaving out a step. Variation, competition, survival, inheritance, over many generations: each step earns a mark.",
+      "Now it's your turn. Open Evolution in DONE WELL and practise natural selection and speciation questions, with every mark explained."
+    ]
   }
 ]
 

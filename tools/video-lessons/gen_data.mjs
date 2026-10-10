@@ -11,6 +11,10 @@ const META = {
   'chem-organic-naming': { file: 'l_organic.js', subjectId: 'physical-sciences', topicId: 'phys-organic-chemistry', grades: [12], title: 'Naming organic molecules', summary: 'The IUPAC rules step by step: chain, numbering, branches, punctuation and esters, with five named examples.' },
   'lifesci-monohybrid': { file: 'l_monohybrid.js', subjectId: 'life-sciences', topicId: 'life-sci-genetics', grades: [12], title: 'Monohybrid crosses', summary: 'The key terms of genetics, a full genetic cross set out the way the memo marks it, a Punnett square and a test cross.' },
   'matlit-income-tax': { file: 'l_tax.js', subjectId: 'mat-lit', topicId: 'finance', grades: [12], title: 'Income tax and the tax threshold', summary: 'Taxable income, the SARS tax table and rebates worked in full, and how to find each tax threshold yourself.' },
+  'matlit-measurement': { file: 'l_measure.js', subjectId: 'mat-lit', topicId: 'measurement', grades: [10, 11, 12], title: 'Area, volume and converting units', summary: 'Perimeter, area and volume, why square and cubic units convert differently, a water tank in litres and a wall to paint.' },
+  'maths-circle-geometry': { file: 'l_circles.js', subjectId: 'mathematics', topicId: 'math-euclidean-geometry', grades: [11, 12], title: 'Circle geometry: the angle theorems', summary: 'The four angle theorems, a worked example with the centre, same segment and cyclic quadrilateral, and statements with reasons.' },
+  'physics-newtons-laws': { file: 'l_newton.js', subjectId: 'physical-sciences', topicId: 'phys-newtons-laws', grades: [11, 12], title: "Newton's laws and free-body diagrams", summary: "The three laws in plain words, a free-body diagram with friction, the second law worked in full, and third-law pairs." },
+  'lifesci-natural-selection': { file: 'l_evolution.js', subjectId: 'life-sciences', topicId: 'life-sci-evolution', grades: [12], title: 'Evolution by natural selection', summary: "Darwin's theory step by step, drug-resistant TB as an example, Lamarck compared, and speciation through geographic isolation." },
 }
 const out = []
 for (const [id, m] of Object.entries(META)) {

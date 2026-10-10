@@ -346,6 +346,99 @@ export const topicVideos: TopicVideo[] = [
       "Watch out for three common mistakes. Writing that the bacteria became resistant because they needed to. That is Lamarck. The resistance was already present in a few bacteria before the antibiotic was used. Writing that an individual evolves. Populations evolve. One organism cannot change its genes. And leaving out a step. Variation, competition, survival, inheritance, over many generations: each step earns a mark.",
       "Now it's your turn. Open Evolution in DONE WELL and practise natural selection and speciation questions, with every mark explained."
     ]
+  },
+  {
+    "id": "matlit-map-scale",
+    "subjectId": "mat-lit",
+    "topicId": "maps-plans",
+    "grades": [
+      10,
+      11,
+      12
+    ],
+    "title": "Using a scale on maps and plans",
+    "summary": "Number and bar scales, map distance to real distance and back, a floor plan, and turning a bar scale into a number scale.",
+    "file": "matlit-map-scale.mp4",
+    "poster": "matlit-map-scale.jpg",
+    "seconds": 164,
+    "megabytes": 4.4,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to use the scale on a map or a plan, how to change a measured distance into a real distance and back, and how to avoid the usual mistakes.",
+      "Maps and plans use two kinds of scale. A number scale, such as one to fifty thousand, has no units. One unit on the map stands for fifty thousand of the same unit in real life. So one centimetre on the map is fifty thousand centimetres on the ground. A bar scale is a line drawn on the map. Measure it with your ruler, for example two centimetres equals one kilometre. A bar scale stays correct even if the map is enlarged or reduced, because the bar changes size with it.",
+      "Here is a typical question. On a map with a scale of one to fifty thousand, two towns are six comma four centimetres apart. How far apart are they in real life? Multiply by the scale: six comma four centimetres times fifty thousand is three hundred and twenty thousand centimetres. Change to metres by dividing by one hundred: three thousand two hundred metres. Change to kilometres by dividing by one thousand: three comma two kilometres. Remember, this is the distance in a straight line. A road that bends is longer.",
+      "Now the other way. A room is four comma five metres long. How long is it on a floor plan drawn at a scale of one to fifty? First change to the unit you will measure in on the plan: four comma five metres is four hundred and fifty centimetres. Real life to plan means divide by the scale: four hundred and fifty divided by fifty is nine centimetres. Check by going back: nine centimetres times fifty is four hundred and fifty centimetres, which is four comma five metres.",
+      "Exams also ask you to turn a bar scale into a number scale. Suppose two comma five centimetres on the bar stands for one kilometre. Write both in the same unit. One kilometre is one hundred thousand centimetres. So the ratio is two comma five to one hundred thousand. Divide both sides by two comma five, so the first number is one. The number scale is one to forty thousand.",
+      "Watch out for three common mistakes. Getting the direction wrong. From the map to real life you multiply by the scale. From real life to the map you divide. Mixing units in a number scale. Both sides must be in the same unit, so change kilometres to centimetres before you write it. And giving an answer in a silly unit. Use kilometres for the distance between towns, and metres for a room.",
+      "Now it's your turn. Open Maps and Plans in DONE WELL and practise scale questions, with every mark explained."
+    ]
+  },
+  {
+    "id": "maths-sketch-parabola",
+    "subjectId": "mathematics",
+    "topicId": "math-functions",
+    "grades": [
+      10,
+      11,
+      12
+    ],
+    "title": "Sketching a parabola",
+    "summary": "Shape, intercepts and the turning point step by step, the labelled sketch, its range and axis of symmetry.",
+    "file": "maths-sketch-parabola.mp4",
+    "poster": "maths-sketch-parabola.jpg",
+    "seconds": 138,
+    "megabytes": 3.5,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to sketch a parabola step by step: the shape, the intercepts, the turning point, and then the sketch itself.",
+      "Let's sketch y equals negative x squared plus two x plus eight. Step one, the shape. The coefficient of x squared is negative one, which is less than zero, so the parabola opens downwards and has a maximum. Step two, the y intercept. Let x be zero: y is eight. So the graph cuts the y axis at zero, eight. Step three, the x intercepts. Let y be zero, and multiply through by negative one to get x squared minus two x minus eight equals zero. This factorises as x minus four, times x plus two. So x is four, or x is negative two. The graph cuts the x axis at four, zero and at negative two, zero.",
+      "Step four, the turning point. The x value is negative b divided by two a. Here b is two and a is negative one, so x is negative two divided by negative two, which is one. Substitute x equals one into the equation: negative one, plus two, plus eight, which is nine. So the turning point is one, nine, and it is a maximum. Check it: the turning point always lies halfway between the x intercepts. Negative two plus four, divided by two, is one. It matches.",
+      "Now plot what you found. The y intercept at zero, eight. The x intercepts at negative two and at four. And the turning point at one, nine. Draw one smooth curve through the points, symmetrical about the line x equals one, and label every point. The examiner marks the labels, not your artwork. The range is y less than or equal to nine, because nine is the highest point. The axis of symmetry is x equals one.",
+      "Watch out for three common mistakes. Drawing the wrong shape. Always check the sign of a first. Negative a opens downwards. Sign errors in negative b over two a, when a or b is negative. Write the values in brackets. And unlabelled points, or a sharp point at the turning point instead of a smooth turn.",
+      "Now it's your turn. Open Functions and Graphs in DONE WELL and practise sketching parabolas, with every mark explained."
+    ]
+  },
+  {
+    "id": "physics-series-parallel",
+    "subjectId": "physical-sciences",
+    "topicId": "phys-electric-circuits-g11",
+    "grades": [
+      11
+    ],
+    "title": "Series and parallel circuits",
+    "summary": "How current and voltage share out in series and parallel, and a full circuit worked out with Ohm's law.",
+    "file": "physics-series-parallel.mp4",
+    "poster": "physics-series-parallel.jpg",
+    "seconds": 144,
+    "megabytes": 3.7,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how current and potential difference behave in series and parallel circuits, and how to work out every current and voltage in a circuit using Ohm's law.",
+      "Here are the rules you need. In series, the same current flows through every resistor, and the voltages across them add up to the total. The resistances simply add. In parallel, every branch has the same voltage across it, and the currents in the branches add up to the total current. For the resistance, one over R parallel is one over R one plus one over R two. And Ohm's law, V equals I R, works for every part of the circuit.",
+      "Here is the circuit. A twelve volt battery, with a four ohm resistor in series with a six ohm and a three ohm resistor in parallel. Ignore the internal resistance of the battery. Start with the parallel part. One over R parallel is one sixth plus one third, which is one half. So R parallel is two ohms. That two ohms is in series with the four ohm resistor, so the total resistance is six ohms. The current from the battery is the voltage divided by the total resistance: twelve divided by six, which is two amperes.",
+      "Now find each part. All two amperes pass through the four ohm resistor, so the voltage across it is two times four, which is eight volts. The voltages in series add up to twelve, so the parallel part has twelve minus eight, which is four volts, across both branches. The current in the six ohm branch is four divided by six: zero comma six seven amperes. The current in the three ohm branch is four divided by three: one comma three three amperes. Check: the branch currents add up to two amperes, the current from the battery. The smaller resistance takes the bigger current.",
+      "Watch out for three common mistakes. Forgetting to invert at the end. If one over R parallel is a half, then R parallel is two ohms, not zero comma five. Using the full twelve volts across a resistor that only gets part of it. Use V equals I R on that resistor. And adding parallel resistors. A parallel combination is always smaller than the smallest resistor in it.",
+      "Now it's your turn. Open Electric Circuits in DONE WELL and practise series and parallel circuits, with every mark explained."
+    ]
+  },
+  {
+    "id": "lifesci-protein-synthesis",
+    "subjectId": "life-sciences",
+    "topicId": "life-sci-dna-code",
+    "grades": [
+      12
+    ],
+    "title": "Protein synthesis: transcription and translation",
+    "summary": "Where each stage happens, base pairing with uracil, and a DNA template worked through to its amino acids.",
+    "file": "lifesci-protein-synthesis.mp4",
+    "poster": "lifesci-protein-synthesis.jpg",
+    "seconds": 140,
+    "megabytes": 3.7,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how the code in DNA is used to make a protein, in two stages, transcription and translation, and how to work out an amino acid sequence step by step.",
+      "Protein synthesis happens in two stages. The first stage is transcription, in the nucleus. The DNA molecule unwinds, and one strand acts as a template. Free RNA nucleotides pair with it to form messenger RNA, which leaves the nucleus through a nuclear pore. The second stage is translation, at a ribosome in the cytoplasm. Each codon of three bases on the messenger RNA is matched by the anticodon of a transfer RNA. Each transfer RNA brings a particular amino acid, and the amino acids are joined by peptide bonds to form the protein.",
+      "The bases pair the same way as in DNA, with one difference: RNA has uracil instead of thymine. So adenine on the DNA template pairs with uracil on the messenger RNA, and thymine pairs with adenine. Cytosine pairs with guanine, and guanine with cytosine.",
+      "Here is a typical question. The template strand of DNA reads T A C, G G A, C T T. Give the messenger RNA, the transfer RNA anticodons, and the amino acids. Transcription: pair each base, remembering U instead of T. The messenger RNA codons are A U G, C C U, G A A. The transfer RNA anticodons pair with the codons: U A C, G G A, C U U. Then read each codon, not the anticodon, from the codon table you are given: A U G is methionine, C C U is proline, and G A A is glutamic acid. So this part of the protein is methionine, proline, glutamic acid.",
+      "Watch out for three common mistakes. Writing T in messenger RNA or transfer RNA. RNA uses U, uracil. Looking up the anticodon in the codon table. The table uses the messenger RNA codons. And mixing up where each stage happens. Transcription is in the nucleus, and translation is at the ribosome in the cytoplasm.",
+      "Now it's your turn. Open DNA: Code of Life in DONE WELL and practise protein synthesis, with every mark explained."
+    ]
   }
 ]
 

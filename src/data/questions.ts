@@ -19,6 +19,7 @@ import { matlitTypes } from '@/data/matlitTypes'
 import { mathTypes } from '@/data/mathTypes'
 import { physicsInvestigations } from '@/data/physicsInvestigations'
 import { lifeSciInvestigations } from '@/data/lifeSciInvestigations'
+import { scienceGapQuestions } from '@/data/scienceGapQuestions'
 import { circleProofs } from '@/data/circleProofs'
 import { lifeSciThinQuestions } from '@/data/lifeSciThinQuestions'
 import { lifeSciThin3Questions } from '@/data/lifeSciThin3Questions'
@@ -46,6 +47,7 @@ export const questions: Question[] = [
   ...mathTypes,
   ...physicsInvestigations,
   ...lifeSciInvestigations,
+  ...scienceGapQuestions,
   ...circleProofs,
   ...lessonGapQuestions,
   ...physicsGapQuestions,

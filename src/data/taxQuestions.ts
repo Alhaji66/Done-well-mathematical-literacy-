@@ -18,9 +18,10 @@
  */
 import type { Question } from '@/types'
 import {
-  SARS_2025_26 as TABLE,
+  SARS_2026_27 as TABLE,
   annualTax,
   bracketFor,
+  medicalCreditsPerYear,
   rand,
   rands,
   rebateFor,
@@ -121,6 +122,189 @@ out.push({
     'The threshold is not an extra rule, it is a consequence of the two rules already in the table. Showing that the arithmetic comes out at exactly zero is the whole answer, and it explains why the threshold moves whenever either the rebate or the first bracket changes.',
 })
 
+
+/* ===================================================================== */
+/* From payslip to tax: the full chain                                   */
+/* ===================================================================== */
+
+/**
+ * The long Grade 12 taxation question: a salary with extras on top (a 13th
+ * cheque, a travel allowance), deductions taken off it (pension, a retirement
+ * annuity, a donation), the table, the rebates, and then the medical scheme
+ * fees tax credit, which comes off the TAX and not off the income. Learners
+ * lose this one at a different step each time, so each step is its own
+ * question on the same employee, and the last ones put it all together.
+ *
+ * Every rule a learner needs is stated in the scenario, the way a paper states
+ * it, rather than assumed: what share of a travel allowance is taxed, that the
+ * deductions are allowed in full, and how net pay is defined.
+ */
+interface Employee {
+  name: string
+  age: number
+  job: string
+  /** Basic salary per month. */
+  basic: number
+  /** A 13th cheque equal to one month's basic salary. */
+  bonus: boolean
+  /** Pension contribution, as a percentage of the monthly basic salary. */
+  pensionPct: number
+  /** Retirement annuity, per month. */
+  ra: number
+  /** Travel allowance per month; 80% of it is taxable. */
+  travel: number
+  /** People on the medical scheme, the employee included. */
+  medicalMembers: number
+  /** The employee's medical scheme contribution per month. */
+  medical: number
+  /** A donation for the year to a registered public benefit organisation. */
+  donation: number
+}
+
+const TRAVEL_TAXABLE_PCT = 80
+
+const EMPLOYEES: Employee[] = [
+  { name: 'Nokuthula', age: 36, job: 'a nursing manager at a district hospital', basic: 38_400, bonus: true, pensionPct: 7.5, ra: 1_000, travel: 0, medicalMembers: 3, medical: 4_200, donation: 2_400 },
+  { name: 'Mr Pillay', age: 41, job: 'a sales representative for a seed company', basic: 29_500, bonus: false, pensionPct: 6, ra: 0, travel: 5_000, medicalMembers: 2, medical: 3_600, donation: 0 },
+  { name: 'Mrs Khoza', age: 66, job: 'the principal of a secondary school', basic: 61_200, bonus: true, pensionPct: 7.5, ra: 2_500, travel: 0, medicalMembers: 2, medical: 6_800, donation: 5_000 },
+  { name: 'Sizwe', age: 27, job: 'a junior technician at a cellphone tower company', basic: 14_500, bonus: false, pensionPct: 0, ra: 0, travel: 0, medicalMembers: 1, medical: 1_650, donation: 0 },
+]
+
+const pct = (n: number) => String(n).replace('.', ',')
+const people = (e: Employee) =>
+  e.medicalMembers === 1 ? `${e.name} only` : `${e.name} and ${e.medicalMembers === 2 ? 'one dependant' : `${e.medicalMembers - 1} dependants`}`
+
+function payslipChain(e: Employee) {
+  const salary = e.basic * 12
+  const bonus = e.bonus ? e.basic : 0
+  const travelYear = e.travel * 12
+  const travelTaxed = (travelYear * TRAVEL_TAXABLE_PCT) / 100
+  const income = salary + bonus + travelTaxed
+  const pension = (salary * e.pensionPct) / 100
+  const ra = e.ra * 12
+  const deductions = pension + ra + e.donation
+  const taxable = income - deductions
+  const b = bracketFor(taxable, TABLE)
+  const beforeRebates = taxBeforeRebates(taxable, TABLE)
+  const rebate = rebateFor(e.age, TABLE)
+  const afterRebates = Math.max(0, beforeRebates - rebate)
+  const credits = medicalCreditsPerYear(e.medicalMembers, TABLE)
+  const annual = Math.max(0, afterRebates - credits)
+  const paye = annual / 12
+  const net = e.basic + e.travel - paye - (e.basic * e.pensionPct) / 100 - e.ra - e.medical
+  return { salary, bonus, travelYear, travelTaxed, income, pension, ra, deductions, taxable, b, beforeRebates, rebate, afterRebates, credits, annual, paye, net }
+}
+
+/** "The pension and donation may be deducted ...", naming only what this employee has. */
+function deductible(e: Employee): string {
+  const items = [e.pensionPct ? 'pension' : '', e.ra ? 'retirement annuity' : '', e.donation ? 'donation' : ''].filter(Boolean)
+  if (!items.length) return ''
+  const list = items.length === 1 ? items[0] : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`
+  return `The ${list} ${items.length === 1 ? 'amount' : 'amounts'} may be deducted in full from income before the tax table is used.`
+}
+
+function scenario(e: Employee): string {
+  const lines = [
+    `${e.name} (${e.age}) is ${e.job}, earning a basic salary of ${rand(e.basic)} per month.`,
+    e.bonus ? `In December ${e.name} also receives a 13th cheque equal to one month's basic salary.` : '',
+    e.travel ? `${e.name} receives a travel allowance of ${rand(e.travel)} per month. SARS taxes ${TRAVEL_TAXABLE_PCT}% of a travel allowance.` : '',
+    e.pensionPct ? `${e.name} contributes ${pct(e.pensionPct)}% of the basic salary to a pension fund every month.` : '',
+    e.ra ? `${e.name} pays ${rand(e.ra)} per month into a retirement annuity.` : '',
+    e.donation ? `During the year ${e.name} donates ${rand(e.donation)} to a registered public benefit organisation and receives a tax certificate for it.` : '',
+    `${e.name}'s medical scheme covers ${people(e)}, at ${rand(e.medical)} per month.`,
+    deductible(e),
+  ].filter(Boolean)
+  return lines.join(' ')
+}
+
+for (const e of EMPLOYEES) {
+  const c = payslipChain(e)
+  const id = `taxslip-${e.name.toLowerCase().replace(/[^a-z]/g, '')}`
+  const base = { topicId: 'finance', grade: 12 as const, context: `${scenario(e)}\n\n${ctx}` }
+  const incomeParts = [
+    `basic salary ${rand(e.basic)} × 12 = ${rand(c.salary)}`,
+    e.bonus ? `13th cheque ${rand(c.bonus)}` : '',
+    e.travel ? `taxable travel allowance ${TRAVEL_TAXABLE_PCT}% × (${rand(e.travel)} × 12) = ${TRAVEL_TAXABLE_PCT}% × ${rand(c.travelYear)} = ${rands(c.travelTaxed)}` : '',
+  ].filter(Boolean)
+
+  out.push({
+    ...base,
+    id: `${id}-income`,
+    difficulty: e.travel || e.bonus ? 'Moderate' : 'Easy',
+    cognitiveLevel: 2,
+    marks: e.travel || e.bonus ? 3 : 2,
+    prompt: `Calculate ${e.name}'s total income for the year that SARS taxes, before any deductions.`,
+    answer: `${incomeParts.join('; ')}. Total = ${rands(c.income)}.`,
+    explanation: `${e.bonus ? 'The 13th cheque is salary too, so it is taxed: leaving it out is the commonest slip here. ' : ''}${e.travel ? `Only ${TRAVEL_TAXABLE_PCT}% of the travel allowance is added, because that is the share SARS taxes; the whole allowance still arrives on the payslip. ` : ''}Everything is worked out for the YEAR, because the tax table is an annual table.`,
+  })
+
+  if (c.deductions > 0) {
+    const parts = [
+      e.pensionPct ? `pension ${pct(e.pensionPct)}% × ${rand(c.salary)} = ${rands(c.pension)}` : '',
+      e.ra ? `retirement annuity ${rand(e.ra)} × 12 = ${rand(c.ra)}` : '',
+      e.donation ? `donation ${rand(e.donation)}` : '',
+    ].filter(Boolean)
+    out.push({
+      ...base,
+      id: `${id}-taxable`,
+      difficulty: 'Moderate',
+      cognitiveLevel: 2,
+      marks: 4,
+      prompt: `${e.name}'s income for the year that SARS taxes is ${rands(c.income)}. Calculate the total deductions and hence ${e.name}'s taxable income.`,
+      answer: `Deductions: ${parts.join('; ')}. Total deductions = ${rands(c.deductions)}. Taxable income = ${rands(c.income)} − ${rands(c.deductions)} = ${rands(c.taxable)}.`,
+      explanation: `${e.pensionPct ? `The pension is ${pct(e.pensionPct)}% of the BASIC salary only, so it is ${pct(e.pensionPct)}% of ${rand(c.salary)}${e.bonus ? ', not of the salary plus the 13th cheque' : ''}. ` : ''}The deductions come off the income BEFORE the table is read: they lower the income the tax is worked out on. The medical scheme contribution is not one of them, because medical costs are handled later, as a credit against the tax.`,
+    })
+  }
+
+  out.push({
+    ...base,
+    id: `${id}-annual-tax`,
+    difficulty: 'Challenge',
+    cognitiveLevel: 3,
+    marks: 7,
+    prompt: `${e.name}'s taxable income for the year is ${rands(c.taxable)}. Use the tax table to calculate the income tax ${e.name} must pay for the year, after rebates and the medical scheme fees tax credit.`,
+    answer: `${rands(c.taxable)} is in the bracket ${bandOf(c.b)}. Tax = ${c.b.base ? `${rand(c.b.base)} + ${c.b.rate}% × (${rands(c.taxable)} − ${rand(c.b.from - 1)})` : `${c.b.rate}% × ${rands(c.taxable)}`} = ${rands(c.beforeRebates)}. Rebates at age ${e.age}: ${e.age >= 65 ? `${rand(TABLE.rebates.primary)} + ${rand(TABLE.rebates.secondary)} = ${rand(c.rebate)}` : rand(c.rebate)}. After rebates: ${rands(c.beforeRebates)} − ${rand(c.rebate)} = ${rands(c.afterRebates)}. Medical tax credit: ${medicalCreditWorking(e.medicalMembers)} = ${rand(c.credits)} for the year. Tax for the year = ${rands(c.afterRebates)} − ${rand(c.credits)} = ${rands(c.annual)}.`,
+    explanation: `The order matters: the table gives tax on the taxable income, the rebates come off that tax, and the medical credit comes off what is left. Both the rebates and the medical credit are taken off the TAX, never off the income. The credit in the table is per MONTH, so it is multiplied by 12 before it is subtracted from an annual tax.`,
+  })
+
+  out.push({
+    ...base,
+    id: `${id}-net-pay`,
+    difficulty: 'Challenge',
+    cognitiveLevel: 3,
+    marks: 5,
+    prompt: `${e.name}'s income tax for the year is ${rands(c.annual)}, deducted in 12 equal monthly amounts (PAYE). Calculate ${e.name}'s net (take-home) pay ${e.bonus ? 'in a month with no 13th cheque' : 'for a month'}, where net pay = basic salary${e.travel ? ' + travel allowance' : ''} − PAYE${e.pensionPct ? ' − pension' : ''}${e.ra ? ' − retirement annuity' : ''} − medical scheme contribution.`,
+    answer: `PAYE = ${rands(c.annual)} ÷ 12 = ${rands(c.paye)}. Net pay = ${rand(e.basic)}${e.travel ? ` + ${rand(e.travel)}` : ''} − ${rands(c.paye)}${e.pensionPct ? ` − ${rands((e.basic * e.pensionPct) / 100)}` : ''}${e.ra ? ` − ${rand(e.ra)}` : ''} − ${rand(e.medical)} = ${rands(c.net)}.`,
+    explanation: `Net pay uses MONTHLY amounts throughout, so the annual tax is divided by 12 first.${e.travel ? ` The whole travel allowance is paid out, even though only ${TRAVEL_TAXABLE_PCT}% of it was taxed.` : ''}${e.pensionPct ? ` The pension is ${pct(e.pensionPct)}% of one month's basic salary: ${pct(e.pensionPct)}% × ${rand(e.basic)} = ${rands((e.basic * e.pensionPct) / 100)}.` : ''}`,
+  })
+}
+
+function medicalCreditWorking(members: number): string {
+  const m = TABLE.medicalCredits!
+  const parts = [rand(m.member)]
+  if (members >= 2) parts.push(rand(m.firstDependant))
+  if (members > 2) parts.push(`${members - 2} × ${rand(m.eachAdditional)}`)
+  return parts.length === 1 ? `${parts[0]} × 12` : `(${parts.join(' + ')}) × 12`
+}
+
+/** The two slips this chain is lost on, put to the learner to find. */
+{
+  const e = EMPLOYEES[1]
+  const c = payslipChain(e)
+  const wrongTable = (c.taxable * c.b.rate) / 100
+  out.push({
+    topicId: 'finance',
+    grade: 12,
+    context: `${scenario(e)}\n\n${ctx}`,
+    id: 'taxslip-pillay-find-the-errors',
+    difficulty: 'Challenge',
+    cognitiveLevel: 4,
+    marks: 6,
+    prompt: `${e.name}'s taxable income is ${rands(c.taxable)}. A learner worked out his tax like this: "${c.b.rate}% × ${rands(c.taxable)} = ${rands(wrongTable)}. Then ${rands(wrongTable)} − ${rand(c.rebate)} − ${rand(c.credits / 12)} = ${rands(wrongTable - c.rebate - c.credits / 12)}." Identify the TWO mistakes, and calculate the correct tax for the year.`,
+    answer: `Mistake 1: the ${c.b.rate}% applies only to the part of the income above ${rand(c.b.from - 1)}, with ${rand(c.b.base)} added for the income below it. Mistake 2: the medical tax credit in the table is per month, so it must be multiplied by 12 (${rand(c.credits / 12)} × 12 = ${rand(c.credits)}) before it is subtracted from an annual tax. Correct: ${rand(c.b.base)} + ${c.b.rate}% × (${rands(c.taxable)} − ${rand(c.b.from - 1)}) = ${rands(c.beforeRebates)}; − ${rand(c.rebate)} = ${rands(c.afterRebates)}; − ${rand(c.credits)} = ${rands(c.annual)}.`,
+    explanation: `Both mistakes come from not reading the table's own words: "of taxable income ABOVE" a figure, and a credit stated "per month" next to an annual table. Here the first mistake happens to overcharge and the second undercharges, so the wrong answer can even look reasonable, which is why checking each step against the table matters more than whether the total looks about right.`,
+  })
+}
 
 /* ===================================================================== */
 /* Compound interest, the Mathematical Literacy way                      */

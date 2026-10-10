@@ -31,6 +31,30 @@ export interface TaxTable {
   brackets: TaxBracket[]
   rebates: { primary: number; secondary: number; tertiary: number }
   thresholds: { under65: number; from65: number; from75: number }
+  /** Medical scheme fees tax credit, per month. Printed with the table when given. */
+  medicalCredits?: { member: number; firstDependant: number; eachAdditional: number }
+}
+
+/**
+ * 2026/2027 year of assessment (1 March 2026 to 28 February 2027): the 2026
+ * Budget raised the brackets, rebates and medical credits. From SARS's Guide
+ * for Employers in respect of Employees' Tax (2027) and the Treasury Budget
+ * 2026 tax guide.
+ */
+export const SARS_2026_27: TaxTable = {
+  taxYear: '2026/2027',
+  brackets: [
+    { from: 1, to: 245_100, base: 0, rate: 18 },
+    { from: 245_101, to: 383_100, base: 44_118, rate: 26 },
+    { from: 383_101, to: 530_200, base: 79_998, rate: 31 },
+    { from: 530_201, to: 695_800, base: 125_599, rate: 36 },
+    { from: 695_801, to: 887_000, base: 185_215, rate: 39 },
+    { from: 887_001, to: 1_878_600, base: 259_783, rate: 41 },
+    { from: 1_878_601, to: null, base: 666_339, rate: 45 },
+  ],
+  rebates: { primary: 17_820, secondary: 9_765, tertiary: 3_249 },
+  thresholds: { under65: 99_000, from65: 153_250, from75: 171_300 },
+  medicalCredits: { member: 376, firstDependant: 376, eachAdditional: 254 },
 }
 
 /**
@@ -112,7 +136,7 @@ export const SARS_2020_21: TaxTable = {
 }
 
 /** Every table held here, newest first -- what check:matlit-method verifies. */
-export const SARS_TABLES: TaxTable[] = [SARS_2025_26, SARS_2022_23, SARS_2021_22, SARS_2020_21]
+export const SARS_TABLES: TaxTable[] = [SARS_2026_27, SARS_2025_26, SARS_2022_23, SARS_2021_22, SARS_2020_21]
 
 /** Rands the way a South African paper prints them: R1 234 567. */
 export const rand = (n: number): string =>
@@ -154,8 +178,23 @@ export function tableContext(t: TaxTable = SARS_2025_26): string {
     `\nTax rebates: primary ${rand(t.rebates.primary)}; secondary (65 and older) ${rand(t.rebates.secondary)}; ` +
     `tertiary (75 and older) ${rand(t.rebates.tertiary)}.\n` +
     `Tax thresholds: under 65 ${rand(t.thresholds.under65)}; 65 to 74 ${rand(t.thresholds.from65)}; ` +
-    `75 and older ${rand(t.thresholds.from75)}.`
+    `75 and older ${rand(t.thresholds.from75)}.` +
+    (t.medicalCredits
+      ? `\nMedical scheme fees tax credit (per month): main member ${rand(t.medicalCredits.member)}; first dependant ` +
+        `${rand(t.medicalCredits.firstDependant)}; each additional dependant ${rand(t.medicalCredits.eachAdditional)}.`
+      : '')
   )
+}
+
+/**
+ * The medical scheme fees tax credit for a year, for a scheme with this many
+ * members (the taxpayer included). It comes off the TAX, after the rebates.
+ */
+export function medicalCreditsPerYear(members: number, t: TaxTable): number {
+  const c = t.medicalCredits
+  if (!c || members < 1) return 0
+  const perMonth = c.member + (members >= 2 ? c.firstDependant : 0) + Math.max(0, members - 2) * c.eachAdditional
+  return perMonth * 12
 }
 
 /** The bracket a taxable income falls in. */

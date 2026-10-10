@@ -90,6 +90,22 @@ the mark, the level and the topics to re-teach under **Paper results** straight 
 Without the gateway, or over the daily limit, a paper is still marked -- by the values the memo asks for -- and is
 flagged *provisional* for learner and teacher.
 
+## Class work: a teacher's own work for their classes
+
+Teachers, HODs and the school account can give their classes work from outside DONE WELL's material -- a district
+common test, a DBE past paper, their own worksheet -- under **Class work**:
+
+- Upload the question paper (PDF, photos or Word, up to 15 MB each), type questions (written or multiple choice), or both.
+- Add the memo, typed or uploaded. It opens to the class at the due date, or when the teacher releases it -- never
+  as each learner hands in, so an early finisher cannot pass it on.
+- Optionally set a time limit, which starts when the learner opens the work.
+- Learners type answers and/or photograph their written work and hand it in. Multiple choice is marked on hand-in;
+  the teacher marks the rest on screen, question by question or as a whole, and the learner is notified.
+- Marked work counts in Levels and the early warnings, with the papers.
+
+Switch it on by running STEP 42 of `supabase/schema.sql`. It creates the tables and the private `class-work` storage
+bucket with its rules. Only upload work you may share with your learners.
+
 ## Deploying the functions from GitHub
 
 The **Deploy Edge Functions** workflow deploys `tutor` and `mark-paper` (with JWT verification off) whenever a

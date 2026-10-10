@@ -3,6 +3,7 @@ import { markBookTasks, programmeFor } from '@/data/sba'
 import type { SbaMarkRow } from '@/lib/sbaMarks'
 import type { TestAttempt, WeeklyTest } from '@/lib/weeklyTests'
 import type { PaperAttempt } from '@/lib/paperAttempts'
+import type { MarkedWork } from '@/lib/classWork'
 import type { TestKind } from '@/lib/testKinds'
 import type { Grade } from '@/types'
 import type { ParentContact, ParentReply } from '@/lib/parentReplyTypes'
@@ -279,6 +280,34 @@ export function paperResults(attempts: PaperAttempt[], classes: LevelClass[], me
       term: termOfDate(date),
       percent: a.percent ?? ((a.marks_awarded ?? 0) / (a.marks_total ?? 1)) * 100,
       topicIds: Object.keys(a.per_topic ?? {}),
+    })
+  }
+  return out
+}
+
+/**
+ * Results from a teacher's own class work (STEP 42), marked. They count with
+ * the papers: written in the learner's own time against a memo, and in the
+ * early warnings the moment they are marked.
+ */
+export function classWorkResults(rows: MarkedWork[], classes: LevelClass[], members: Map<string, string[]>, year: number): LevelResult[] {
+  const classOf = classFinder(classes, members)
+  const out: LevelResult[] = []
+  for (const r of rows) {
+    const date = r.submitted_at.slice(0, 10)
+    if (Number(date.slice(0, 4)) !== year) continue
+    out.push({
+      learnerId: r.learner_id,
+      classId: classOf(r.learner_id, r.subject_id, r.grade),
+      subjectId: r.subject_id,
+      grade: r.grade,
+      source: 'paper',
+      itemId: `cw:${r.work_id}`,
+      title: r.title,
+      date,
+      term: termOfDate(date),
+      percent: r.percent,
+      topicIds: [],
     })
   }
   return out

@@ -197,7 +197,7 @@ export async function questionsForDay(
   const { filterSubjectQuestions } = await import('@/data/questionBank')
 
   if (day.kind === 'mixed') {
-    const pool = await filterSubjectQuestions(subjectId, { grade })
+    const pool = await filterSubjectQuestions(subjectId, { grade, learner: true })
     const weakest = plan.focus.slice(0, 3).map((f) => f.topicId)
     const out: Question[] = []
     weakest.forEach((topicId, i) => {
@@ -208,7 +208,7 @@ export async function questionsForDay(
     return out
   }
 
-  const pool = await filterSubjectQuestions(subjectId, { topicId: day.topicId!, grade })
+  const pool = await filterSubjectQuestions(subjectId, { topicId: day.topicId!, grade, learner: true })
   const inSub = day.subtopic ? pool.filter((q) => subtopicFor(q) === day.subtopic) : []
   const from = inSub.length >= 3 ? inSub : pool
   const out: Question[] = []

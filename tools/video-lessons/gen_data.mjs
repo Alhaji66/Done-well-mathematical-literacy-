@@ -23,6 +23,10 @@ const META = {
   'maths-optimisation': { file: 'l_optimise.js', subjectId: 'mathematics', topicId: 'math-calculus', grades: [12], title: 'Optimisation: the largest box', summary: 'The four steps of an optimisation question, worked on the open-box problem, with a check that it is a maximum.' },
   'chem-le-chatelier': { file: 'l_lechatelier.js', subjectId: 'physical-sciences', topicId: 'phys-chemical-equilibrium', grades: [12], title: "Le Chatelier's principle", summary: 'How the Haber equilibrium responds to concentration, pressure, temperature and a catalyst, and when Kc changes.' },
   'lifesci-dihybrid': { file: 'l_dihybrid.js', subjectId: 'life-sciences', topicId: 'life-sci-genetics', grades: [12], title: 'Dihybrid crosses', summary: 'Two characteristics at once: gametes, the 16-box Punnett square, the 9 : 3 : 3 : 1 ratio and independent assortment.' },
+  'matlit-probability': { file: 'l_probability.js', subjectId: 'mat-lit', topicId: 'data-handling', grades: [10, 11, 12], title: 'Probability: chance, outcomes and relative frequency', summary: 'The probability scale, a probability from outcomes, theory against an experiment, and two dice at once.' },
+  'maths-trig-identities': { file: 'l_identities.js', subjectId: 'mathematics', topicId: 'math-trigonometry', grades: [11, 12], title: 'Proving trigonometric identities', summary: 'The quotient and square identities, a method that always works, and two proofs set out step by step.' },
+  'chem-acids-titration': { file: 'l_acids.js', subjectId: 'physical-sciences', topicId: 'phys-acids-bases', grades: [12], title: 'Acids, bases, pH and titration', summary: 'Lowry-Brønsted definitions, strong against concentrated, pH from a concentration, and a titration worked in full.' },
+  'lifesci-menstrual-cycle': { file: 'l_menstrual.js', subjectId: 'life-sciences', topicId: 'life-sci-human-reproduction', grades: [12], title: 'The menstrual cycle and its hormones', summary: 'FSH, oestrogen, LH and progesterone, the 28-day cycle day by day, and the negative feedback that links them.' },
 }
 const out = []
 for (const [id, m] of Object.entries(META)) {

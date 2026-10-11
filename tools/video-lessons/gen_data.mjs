@@ -27,6 +27,10 @@ const META = {
   'maths-trig-identities': { file: 'l_identities.js', subjectId: 'mathematics', topicId: 'math-trigonometry', grades: [11, 12], title: 'Proving trigonometric identities', summary: 'The quotient and square identities, a method that always works, and two proofs set out step by step.' },
   'chem-acids-titration': { file: 'l_acids.js', subjectId: 'physical-sciences', topicId: 'phys-acids-bases', grades: [12], title: 'Acids, bases, pH and titration', summary: 'Lowry-Brønsted definitions, strong against concentrated, pH from a concentration, and a titration worked in full.' },
   'lifesci-menstrual-cycle': { file: 'l_menstrual.js', subjectId: 'life-sciences', topicId: 'life-sci-human-reproduction', grades: [12], title: 'The menstrual cycle and its hormones', summary: 'FSH, oestrogen, LH and progesterone, the 28-day cycle day by day, and the negative feedback that links them.' },
+  'matlit-budget-inflation': { file: 'l_budget.js', subjectId: 'mat-lit', topicId: 'finance', grades: [10, 11, 12], title: 'Household budgets and inflation', summary: 'A family budget, surplus or deficit, a share of income, and inflation over one and two years.' },
+  'maths-analytical-geometry': { file: 'l_analytic.js', subjectId: 'mathematics', topicId: 'math-analytical-geometry', grades: [10, 11], title: 'Analytical geometry: two points, everything else', summary: 'Distance, midpoint and gradient, the equation of the line, a perpendicular gradient and the angle of inclination.' },
+  'physics-generators-ac': { file: 'l_generators.js', subjectId: 'physical-sciences', topicId: 'phys-electrodynamics', grades: [12], title: 'Generators, motors and alternating current', summary: 'How a generator works, slip rings against a split-ring commutator, rms values and a kettle worked in full.' },
+  'lifesci-reflex-arc': { file: 'l_reflex.js', subjectId: 'life-sciences', topicId: 'life-sci-response-humans', grades: [12], title: 'The nervous system and the reflex arc', summary: 'The CNS and PNS, three kinds of neuron, the reflex arc step by step, and why it is fast.' },
 }
 const out = []
 for (const [id, m] of Object.entries(META)) {

@@ -531,6 +531,99 @@ export const topicVideos: TopicVideo[] = [
       "Watch out for three common mistakes. Writing gametes with two alleles of the same gene, like R R. Each gamete carries one allele for seed shape and one for seed colour. Giving the genotype ratio when the question asks for the phenotype ratio. Nine to three to three to one is the phenotype ratio. And leaving out the labels of a genetic cross: P one, F one, meiosis and fertilisation. Each one earns a mark.",
       "Now it's your turn. Open Genetics and Inheritance in DONE WELL and practise dihybrid crosses, with every mark explained."
     ]
+  },
+  {
+    "id": "matlit-probability",
+    "subjectId": "mat-lit",
+    "topicId": "data-handling",
+    "grades": [
+      10,
+      11,
+      12
+    ],
+    "title": "Probability: chance, outcomes and relative frequency",
+    "summary": "The probability scale, a probability from outcomes, theory against an experiment, and two dice at once.",
+    "file": "matlit-probability.mp4",
+    "poster": "matlit-probability.jpg",
+    "seconds": 145,
+    "megabytes": 3.9,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to work out a probability, how it compares with what happens in an experiment, and how to handle two events at once.",
+      "Every probability lies between zero and one. Zero means impossible, like rolling a seven on an ordinary die. Zero comma five means an even chance, like getting heads when you toss a coin. And one means certain. The probability of an event is the number of favourable outcomes, divided by the total number of possible outcomes. You can give it as a fraction, a decimal or a percentage.",
+      "Here is a typical question. A bag holds five red, three blue and two green sweets. One sweet is taken out without looking. First find the total: five plus three plus two is ten sweets. The probability of blue is three out of ten: zero comma three, or thirty percent. The probability that it is not red is the blue and green together, five out of ten: zero comma five, or fifty percent.",
+      "Now compare theory with an experiment. A spinner has four equal sections, one of them red. It is spun fifty times and lands on red twelve times. In theory, the probability of red is one out of four: zero comma two five. In the experiment, the relative frequency is twelve out of fifty: zero comma two four. They are close but not the same. The more times you spin, the closer the relative frequency usually gets to the theoretical probability.",
+      "With two events, list or count every outcome. Two dice are rolled. What is the probability that the total is seven? Each die has six faces, so there are six times six, thirty six, equally likely pairs. Six of them add up to seven: one and six, two and five, three and four, and the same three the other way round. So the probability is six out of thirty six, which is one sixth, about seventeen percent.",
+      "Watch out for three common mistakes. A probability bigger than one, or negative, is always wrong. Check your answer. Dividing by the wrong total. Count every possible outcome, not just some of them. And mixing up relative frequency, which is what actually happened, with probability, which is what you expect.",
+      "Now it's your turn. Open Data Handling in DONE WELL and practise probability questions, with every mark explained."
+    ]
+  },
+  {
+    "id": "maths-trig-identities",
+    "subjectId": "mathematics",
+    "topicId": "math-trigonometry",
+    "grades": [
+      11,
+      12
+    ],
+    "title": "Proving trigonometric identities",
+    "summary": "The quotient and square identities, a method that always works, and two proofs set out step by step.",
+    "file": "maths-trig-identities.mp4",
+    "poster": "maths-trig-identities.jpg",
+    "seconds": 134,
+    "megabytes": 3.4,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to prove trigonometric identities, with a method that works every time, and two proofs set out the way the memo marks them.",
+      "Two identities do most of the work. The quotient identity: tan x equals sin x divided by cos x. And the square identity: sin squared x plus cos squared x equals one. Rearranged, one minus cos squared x is sin squared x, and one minus sin squared x is cos squared x.",
+      "Here is a method that always works. Start with the more complicated side. Change tan into sin over cos, and look for one minus cos squared, or one minus sin squared. Write everything as a single fraction, then simplify. Finish by showing it equals the right-hand side. Never move terms across the equals sign: an identity is proved one side at a time.",
+      "Prove that one minus cos squared x, divided by sin x cos x, equals tan x. Start on the left. One minus cos squared x is sin squared x. Cancel one sin x from the top and the bottom, which leaves sin x over cos x. And sin x over cos x is tan x, which is the right-hand side.",
+      "A second one. Prove that one over cos x, minus cos x, equals sin x tan x. Start on the left and write it as one fraction, over cos x: one minus cos squared x, all over cos x. One minus cos squared x is sin squared x. Split sin squared x over cos x into sin x, times sin x over cos x. That is sin x tan x, the right-hand side.",
+      "Watch out for three common mistakes. Working on both sides at once, or cross-multiplying. That assumes the identity is true before you have proved it. Writing sin squared x as sin of x squared, or cancelling terms that are added rather than multiplied. And forgetting where the identity is undefined. Here, it is undefined wherever cos x is zero, because you cannot divide by zero.",
+      "Now it's your turn. Open Trigonometry in DONE WELL and practise proving identities, with every step explained."
+    ]
+  },
+  {
+    "id": "chem-acids-titration",
+    "subjectId": "physical-sciences",
+    "topicId": "phys-acids-bases",
+    "grades": [
+      12
+    ],
+    "title": "Acids, bases, pH and titration",
+    "summary": "Lowry-Brønsted definitions, strong against concentrated, pH from a concentration, and a titration worked in full.",
+    "file": "chem-acids-titration.mp4",
+    "poster": "chem-acids-titration.jpg",
+    "seconds": 178,
+    "megabytes": 4.5,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn what acids and bases are, how to calculate pH, and how to work out a titration, step by step.",
+      "In the Lowry-Brønsted theory, acids and bases are defined by protons. An acid is a proton donor. Hydrogen chloride gives its proton to water, forming hydronium ions. A base is a proton acceptor. Ammonia accepts a proton from water, forming hydroxide ions. Strong and concentrated are different things. A strong acid ionises completely in water. A concentrated acid has a lot of acid dissolved in a small volume. A weak acid can be concentrated, and a strong acid can be dilute.",
+      "pH is the negative log of the hydronium ion concentration. And at twenty five degrees, the hydronium and hydroxide concentrations multiply to ten to the minus fourteen. Hydrochloric acid of zero comma zero one moles per cubic decimetre is a strong acid, so the hydronium concentration is zero comma zero one. Its pH is the negative log of zero comma zero one, which is two. Sodium hydroxide of zero comma zero zero one moles per cubic decimetre gives a hydroxide concentration of zero comma zero zero one. So the hydronium concentration is ten to the minus fourteen divided by ten to the minus three: ten to the minus eleven. Its pH is eleven.",
+      "Now a titration. Twenty five cubic centimetres of sodium hydroxide is neutralised by twenty cubic centimetres of hydrochloric acid of zero comma one moles per cubic decimetre. Find the concentration of the sodium hydroxide. Write the balanced equation. Hydrochloric acid and sodium hydroxide react in a one to one ratio. Find the moles of acid: n equals c times V. Change the volume to cubic decimetres first: twenty cubic centimetres is zero comma zero two zero. So n is zero comma zero zero two moles. The ratio is one to one, so there are also zero comma zero zero two moles of sodium hydroxide. Its concentration is n divided by V: zero comma zero zero two divided by zero comma zero two five, which is zero comma zero eight moles per cubic decimetre.",
+      "Watch out for three common mistakes. Using cubic centimetres in n equals c V. Divide by one thousand to get cubic decimetres. Ignoring the mole ratio. Sulfuric acid reacts with sodium hydroxide in a one to two ratio, not one to one. And calling a dilute strong acid weak. Strength is about how completely it ionises, not how much is dissolved.",
+      "Now it's your turn. Open Acids and Bases in DONE WELL and practise pH and titration calculations, with every mark explained."
+    ]
+  },
+  {
+    "id": "lifesci-menstrual-cycle",
+    "subjectId": "life-sciences",
+    "topicId": "life-sci-human-reproduction",
+    "grades": [
+      12
+    ],
+    "title": "The menstrual cycle and its hormones",
+    "summary": "FSH, oestrogen, LH and progesterone, the 28-day cycle day by day, and the negative feedback that links them.",
+    "file": "lifesci-menstrual-cycle.mp4",
+    "poster": "lifesci-menstrual-cycle.jpg",
+    "seconds": 146,
+    "megabytes": 4.1,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how the menstrual cycle works, which hormones control it, and how negative feedback links them, the way exam questions ask it.",
+      "Four hormones control the cycle: two from the pituitary gland, and two from the ovary. F S H, follicle stimulating hormone, from the pituitary, makes a follicle develop in the ovary. The follicle produces oestrogen. Oestrogen makes the endometrium, the lining of the uterus, thicken. It also inhibits the production of F S H. L H, luteinising hormone, from the pituitary, causes ovulation. The empty follicle then becomes the corpus luteum. The corpus luteum produces progesterone, which keeps the endometrium thick and ready for an embryo. Progesterone inhibits F S H and L H.",
+      "Here is a typical twenty eight day cycle. Days one to five: menstruation, when the endometrium is shed. Days six to thirteen: F S H makes a follicle develop. It produces oestrogen, and the endometrium thickens. Around day fourteen, a surge of L H causes ovulation: the ovum is released. Days fifteen to twenty eight: the corpus luteum produces progesterone, which keeps the endometrium thick. If there is no embryo, the corpus luteum breaks down, progesterone levels fall, and the endometrium is shed. The next cycle begins.",
+      "The hormones are linked by negative feedback: a high level of one hormone switches off the production of another. While the progesterone level is high, it inhibits F S H, so no new follicle develops while the endometrium is ready for an embryo. When the progesterone level falls, F S H is no longer inhibited, and a new follicle, and a new cycle, begins. The contraceptive pill works the same way. Its hormones keep F S H and L H low, so no ovulation takes place.",
+      "Watch out for three common mistakes. Saying the pituitary gland makes oestrogen or progesterone. Those come from the ovary. Mixing up the roles of the pituitary hormones. F S H develops the follicle, and L H causes ovulation. And forgetting what the corpus luteum makes. Its job is to produce progesterone.",
+      "Now it's your turn. Open Human Reproduction in DONE WELL and practise the menstrual cycle, with every mark explained."
+    ]
   }
 ]
 

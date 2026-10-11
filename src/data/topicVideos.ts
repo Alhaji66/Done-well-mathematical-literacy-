@@ -439,6 +439,98 @@ export const topicVideos: TopicVideo[] = [
       "Watch out for three common mistakes. Writing T in messenger RNA or transfer RNA. RNA uses U, uracil. Looking up the anticodon in the codon table. The table uses the messenger RNA codons. And mixing up where each stage happens. Transcription is in the nucleus, and translation is at the ribosome in the cytoplasm.",
       "Now it's your turn. Open DNA: Code of Life in DONE WELL and practise protein synthesis, with every mark explained."
     ]
+  },
+  {
+    "id": "matlit-break-even",
+    "subjectId": "mat-lit",
+    "topicId": "finance",
+    "grades": [
+      10,
+      11,
+      12
+    ],
+    "title": "Break-even analysis",
+    "summary": "Fixed and variable costs, cost and income formulas, the break-even point by calculation and on a graph, and profit.",
+    "file": "matlit-break-even.mp4",
+    "poster": "matlit-break-even.jpg",
+    "seconds": 138,
+    "megabytes": 3.6,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to find the break-even point of a small business, by calculation and from a graph, and how to work out its profit.",
+      "Sipho sells vetkoek from a stall. He pays a fixed cost of six hundred rand a month for the stall. It stays the same however many he sells. Each vetkoek costs three rand fifty to make. That is a variable cost: it grows with every vetkoek. He sells them at eight rand each. So for n vetkoek, his total cost is six hundred plus three comma five zero times n, and his income is eight times n.",
+      "The break-even point is where the income exactly covers the costs: no profit and no loss. Set income equal to cost: eight n equals six hundred plus three comma five zero n. Subtract three comma five zero n from both sides: four comma five zero n equals six hundred, so n is one hundred and thirty three comma three. He cannot sell part of a vetkoek, and one hundred and thirty three would leave a small loss, so he must sell one hundred and thirty four to break even.",
+      "The same thing on a graph. The cost line starts at six hundred rand, the fixed cost, and rises by three rand fifty for each vetkoek. The income line starts at zero and rises more steeply, by eight rand for each one. The lines cross at the break-even point, about one hundred and thirty three vetkoek. To the left the cost line is higher, so he makes a loss. To the right the income line is higher, so he makes a profit.",
+      "Now the profit if he sells two hundred vetkoek in a month. Income: eight times two hundred is one thousand six hundred rand. Cost: six hundred plus three comma five zero times two hundred, which is one thousand three hundred rand. Profit is income minus cost: three hundred rand.",
+      "Watch out for three common mistakes. Forgetting the fixed cost. It has to be paid even if nothing is sold. Rounding the break-even point down. Round up to the next whole item, or there is still a small loss. And calling the break-even point a profit. At break-even, the profit is zero.",
+      "Now it's your turn. Open Finance in DONE WELL and practise break-even questions, with every mark explained."
+    ]
+  },
+  {
+    "id": "maths-optimisation",
+    "subjectId": "mathematics",
+    "topicId": "math-calculus",
+    "grades": [
+      12
+    ],
+    "title": "Optimisation: the largest box",
+    "summary": "The four steps of an optimisation question, worked on the open-box problem, with a check that it is a maximum.",
+    "file": "maths-optimisation.mp4",
+    "poster": "maths-optimisation.jpg",
+    "seconds": 156,
+    "megabytes": 4,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to use calculus to find a maximum or a minimum, with a classic exam problem: the largest box you can make from a sheet of card.",
+      "Every optimisation question uses the same four steps. First, write the quantity you want to make as large or as small as possible in terms of one variable. Second, differentiate. Third, set the derivative equal to zero and solve. At a maximum or a minimum, the gradient is zero. Fourth, choose the answer that makes sense in the situation, and answer the question that was asked.",
+      "Here is the problem. A square piece of card is twenty four centimetres wide. A square of side x is cut from each corner, and the sides are folded up to make an open box. Find the value of x that gives the largest volume. Cutting x from both ends of each side leaves a base of twenty four minus two x by twenty four minus two x. The height of the box is x. So the volume is x times twenty four minus two x, squared. Expand it: five hundred and seventy six x, minus ninety six x squared, plus four x cubed. And x must be between zero and twelve, or there is no box.",
+      "Differentiate: dV by dx is five hundred and seventy six, minus one hundred and ninety two x, plus twelve x squared. Set it equal to zero. Take out the common factor twelve, and factorise: twelve, times x minus four, times x minus twelve, equals zero. So x is four, or x is twelve. But x equals twelve cuts the whole card away and leaves no box, so x is four centimetres. The largest volume is four times sixteen squared, which is one thousand and twenty four cubic centimetres.",
+      "How do you know it is a maximum and not a minimum? Check a value on either side. At three, the volume is nine hundred and seventy two. At four, it is one thousand and twenty four. At five, it is nine hundred and eighty. The volume is largest at four, so x equals four gives the maximum.",
+      "Watch out for three common mistakes. Differentiating before the quantity is written in one variable. Use the information given to get rid of the others first. Keeping an answer that is impossible in the situation, like a box with no base. And stopping at x equals four when the question asks for the largest volume. Read the question again before you finish.",
+      "Now it's your turn. Open Differential Calculus in DONE WELL and practise optimisation, with every mark explained."
+    ]
+  },
+  {
+    "id": "chem-le-chatelier",
+    "subjectId": "physical-sciences",
+    "topicId": "phys-chemical-equilibrium",
+    "grades": [
+      12
+    ],
+    "title": "Le Chatelier's principle",
+    "summary": "How the Haber equilibrium responds to concentration, pressure, temperature and a catalyst, and when Kc changes.",
+    "file": "chem-le-chatelier.mp4",
+    "poster": "chem-le-chatelier.jpg",
+    "seconds": 136,
+    "megabytes": 3.7,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn Le Chatelier's principle, and how to predict what happens to an equilibrium when you change the concentration, the pressure or the temperature.",
+      "Le Chatelier's principle says that a system at equilibrium opposes any change made to it. In the words the memo wants: when the equilibrium in a closed system is disturbed, the system re-instates a new equilibrium by favouring the reaction that opposes the disturbance. We will use the Haber process: nitrogen plus three hydrogen forms two ammonia. The forward reaction is exothermic, with delta H negative ninety two kilojoules per mole.",
+      "Here is what happens with each change. Add nitrogen: the system opposes it by using nitrogen up, so the forward reaction is favoured and more ammonia forms. Increase the pressure: the system opposes it by reducing the number of gas molecules. There are four moles of gas on the left and two on the right, so the forward reaction is favoured, and more ammonia forms. Increase the temperature: the system opposes it by absorbing heat, so the endothermic reaction is favoured. Here that is the reverse reaction, so less ammonia forms. Add a catalyst: both reactions speed up equally, so the equilibrium is reached faster, but the yield does not change.",
+      "What about the equilibrium constant? K c is the concentration of ammonia squared, divided by the concentration of nitrogen times the concentration of hydrogen cubed. Changing a concentration or the pressure shifts the position of the equilibrium, but K c stays the same. Only a change in temperature changes K c. Here, raising the temperature favours the reverse reaction, so K c decreases.",
+      "Watch out for three common mistakes. Saying a catalyst increases the yield. It speeds up both reactions equally, so the yield stays the same. Counting the moles of every substance when the pressure changes. Count only the gases. And explaining without naming the favoured reaction. Always say forward or reverse, and why.",
+      "Now it's your turn. Open Chemical Equilibrium in DONE WELL and practise Le Chatelier's principle, with every mark explained."
+    ]
+  },
+  {
+    "id": "lifesci-dihybrid",
+    "subjectId": "life-sciences",
+    "topicId": "life-sci-genetics",
+    "grades": [
+      12
+    ],
+    "title": "Dihybrid crosses",
+    "summary": "Two characteristics at once: gametes, the 16-box Punnett square, the 9 : 3 : 3 : 1 ratio and independent assortment.",
+    "file": "lifesci-dihybrid.mp4",
+    "poster": "lifesci-dihybrid.jpg",
+    "seconds": 122,
+    "megabytes": 3.2,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to do a dihybrid cross, following two characteristics at the same time, and why it gives the ratio nine, three, three, one.",
+      "In pea plants, round seeds are dominant to wrinkled, and yellow seeds are dominant to green. A pure-breeding round yellow plant, R R Y Y, is crossed with a wrinkled green plant, r r y y. Every offspring in the first generation is R r Y y, so all of them have round, yellow seeds. Now cross two of these F one plants: R r Y y times R r Y y.",
+      "First, the gametes. Each gamete gets one allele of each gene, so an R r Y y plant makes four kinds of gamete: R Y, R small y, small r Y, and small r small y. All four are possible because the alleles of the two genes separate independently of each other during meiosis. That is the law of independent assortment.",
+      "Now the Punnett square. Write the four gametes of one parent along the top, and the four of the other down the side. Fill in each box by combining the gametes. That gives sixteen combinations. Sort them by phenotype. Any box with at least one capital R is round, and any box with at least one capital Y is yellow. There are nine round yellow, three round green, three wrinkled yellow, and one wrinkled green. The phenotypic ratio is nine to three to three to one.",
+      "Watch out for three common mistakes. Writing gametes with two alleles of the same gene, like R R. Each gamete carries one allele for seed shape and one for seed colour. Giving the genotype ratio when the question asks for the phenotype ratio. Nine to three to three to one is the phenotype ratio. And leaving out the labels of a genetic cross: P one, F one, meiosis and fertilisation. Each one earns a mark.",
+      "Now it's your turn. Open Genetics and Inheritance in DONE WELL and practise dihybrid crosses, with every mark explained."
+    ]
   }
 ]
 

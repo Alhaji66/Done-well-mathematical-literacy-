@@ -19,6 +19,10 @@ const META = {
   'maths-sketch-parabola': { file: 'l_parabola.js', subjectId: 'mathematics', topicId: 'math-functions', grades: [10, 11, 12], title: 'Sketching a parabola', summary: 'Shape, intercepts and the turning point step by step, the labelled sketch, its range and axis of symmetry.' },
   'physics-series-parallel': { file: 'l_circuits.js', subjectId: 'physical-sciences', topicId: 'phys-electric-circuits-g11', grades: [11], title: 'Series and parallel circuits', summary: "How current and voltage share out in series and parallel, and a full circuit worked out with Ohm's law." },
   'lifesci-protein-synthesis': { file: 'l_protein.js', subjectId: 'life-sciences', topicId: 'life-sci-dna-code', grades: [12], title: 'Protein synthesis: transcription and translation', summary: 'Where each stage happens, base pairing with uracil, and a DNA template worked through to its amino acids.' },
+  'matlit-break-even': { file: 'l_breakeven.js', subjectId: 'mat-lit', topicId: 'finance', grades: [10, 11, 12], title: 'Break-even analysis', summary: 'Fixed and variable costs, cost and income formulas, the break-even point by calculation and on a graph, and profit.' },
+  'maths-optimisation': { file: 'l_optimise.js', subjectId: 'mathematics', topicId: 'math-calculus', grades: [12], title: 'Optimisation: the largest box', summary: 'The four steps of an optimisation question, worked on the open-box problem, with a check that it is a maximum.' },
+  'chem-le-chatelier': { file: 'l_lechatelier.js', subjectId: 'physical-sciences', topicId: 'phys-chemical-equilibrium', grades: [12], title: "Le Chatelier's principle", summary: 'How the Haber equilibrium responds to concentration, pressure, temperature and a catalyst, and when Kc changes.' },
+  'lifesci-dihybrid': { file: 'l_dihybrid.js', subjectId: 'life-sciences', topicId: 'life-sci-genetics', grades: [12], title: 'Dihybrid crosses', summary: 'Two characteristics at once: gametes, the 16-box Punnett square, the 9 : 3 : 3 : 1 ratio and independent assortment.' },
 }
 const out = []
 for (const [id, m] of Object.entries(META)) {

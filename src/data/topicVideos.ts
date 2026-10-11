@@ -624,6 +624,100 @@ export const topicVideos: TopicVideo[] = [
       "Watch out for three common mistakes. Saying the pituitary gland makes oestrogen or progesterone. Those come from the ovary. Mixing up the roles of the pituitary hormones. F S H develops the follicle, and L H causes ovulation. And forgetting what the corpus luteum makes. Its job is to produce progesterone.",
       "Now it's your turn. Open Human Reproduction in DONE WELL and practise the menstrual cycle, with every mark explained."
     ]
+  },
+  {
+    "id": "matlit-budget-inflation",
+    "subjectId": "mat-lit",
+    "topicId": "finance",
+    "grades": [
+      10,
+      11,
+      12
+    ],
+    "title": "Household budgets and inflation",
+    "summary": "A family budget, surplus or deficit, a share of income, and inflation over one and two years.",
+    "file": "matlit-budget-inflation.mp4",
+    "poster": "matlit-budget-inflation.jpg",
+    "seconds": 155,
+    "megabytes": 4.1,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to read a household budget, find a surplus or a deficit, and work out what inflation does to prices next year.",
+      "Here is the Mokoena family's budget for one month. Their income is a net salary of twelve thousand six hundred rand, and child support grants of one thousand one hundred and twenty rand. Their expenses are rent, groceries, transport, electricity and water, and school and clothing. The total income is thirteen thousand seven hundred and twenty rand, and the total expenses are twelve thousand nine hundred and forty rand.",
+      "Subtract the expenses from the income. Thirteen thousand seven hundred and twenty minus twelve thousand nine hundred and forty is seven hundred and eighty rand. It is positive, so the family has a surplus of seven hundred and eighty rand, which they can save. If it were negative, it would be a deficit. Exams also ask for a percentage: groceries are four thousand two hundred and fifty out of thirteen thousand seven hundred and twenty, which is thirty one percent of the income.",
+      "Inflation is the rise in prices over time. If inflation is five comma five percent, what will the same groceries cost next year? The increase is five comma five percent of four thousand two hundred and fifty rand: two hundred and thirty three rand, seventy five cents. So next year they cost four thousand four hundred and eighty three rand, seventy five. The shortcut is to multiply by one comma zero five five. For a second year, the inflation is worked on the new price, not the old one: four thousand four hundred and eighty three, seventy five, times one comma zero five five, which is four thousand seven hundred and thirty rand, thirty six cents.",
+      "What does that mean for the family? If only the groceries rise, they cost two hundred and thirty three rand, seventy five more each month. If the salary stays the same, the surplus drops from seven hundred and eighty rand to five hundred and forty six rand, twenty five, from groceries alone. That is why salary increases are compared with inflation.",
+      "Watch out for three common mistakes. Using the gross salary when the budget is built on net, take-home pay. Working the second year of inflation on the original price. Use the new price. And calling a negative difference a surplus. Negative is a deficit.",
+      "Now it's your turn. Open Finance in DONE WELL and practise budget and inflation questions, with every mark explained."
+    ]
+  },
+  {
+    "id": "maths-analytical-geometry",
+    "subjectId": "mathematics",
+    "topicId": "math-analytical-geometry",
+    "grades": [
+      10,
+      11
+    ],
+    "title": "Analytical geometry: two points, everything else",
+    "summary": "Distance, midpoint and gradient, the equation of the line, a perpendicular gradient and the angle of inclination.",
+    "file": "maths-analytical-geometry.mp4",
+    "poster": "maths-analytical-geometry.jpg",
+    "seconds": 158,
+    "megabytes": 4,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how to get almost everything from just two points: the distance, the midpoint, the gradient, the equation of the line, and its angle of inclination.",
+      "For two points, A and B, there are three formulae on the formula sheet. The distance between them: the square root of the difference in x squared, plus the difference in y squared. The midpoint: the average of the x values, and the average of the y values. And the gradient: the difference in y divided by the difference in x.",
+      "Let's use the points A, negative two, three, and B, four, negative one. The distance: four minus negative two is six, and negative one minus three is negative four. Six squared plus negative four squared is fifty two, so A B is the square root of fifty two, about seven comma two one. The midpoint: negative two plus four, over two, is one. Three plus negative one, over two, is one. So M is one, one. The gradient: negative four over six, which is negative two thirds.",
+      "In Grade eleven, you find the equation of the line. Use y minus y one equals m, times x minus x one, with the gradient negative two thirds and the point A. Substitute: y minus three equals negative two thirds, times x plus two. Simplify: y equals negative two thirds x, plus five thirds. Check it with the other point. When x is four, y is negative eight thirds plus five thirds, which is negative one. That is point B, so the equation is right.",
+      "Two more things you are often asked. A line perpendicular to A B has the negative reciprocal gradient: three over two, because negative two thirds times three halves is negative one. The angle of inclination, theta, satisfies tan theta equals the gradient. Tan theta is negative two thirds, and the calculator gives a reference angle of thirty three comma six nine degrees. The gradient is negative, so the line slopes down and theta is obtuse: one hundred and eighty minus thirty three comma six nine, which is one hundred and forty six comma three one degrees.",
+      "Watch out for three common mistakes. Sign errors with negative coordinates. Write four minus negative two, in brackets. Mixing the order. If y two comes from B, then x two must come from B too. And giving a negative angle of inclination. When the gradient is negative, add one hundred and eighty degrees to the calculator answer.",
+      "Now it's your turn. Open Analytical Geometry in DONE WELL and practise with every mark explained."
+    ]
+  },
+  {
+    "id": "physics-generators-ac",
+    "subjectId": "physical-sciences",
+    "topicId": "phys-electrodynamics",
+    "grades": [
+      12
+    ],
+    "title": "Generators, motors and alternating current",
+    "summary": "How a generator works, slip rings against a split-ring commutator, rms values and a kettle worked in full.",
+    "file": "physics-generators-ac.mp4",
+    "poster": "physics-generators-ac.jpg",
+    "seconds": 159,
+    "megabytes": 4.2,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how a generator works, how AC and DC generators differ, and how to use rms values in an AC calculation.",
+      "A generator changes mechanical energy into electrical energy, with a coil turning in a magnetic field. As the coil rotates, the magnetic flux through it keeps changing. By Faraday's law of electromagnetic induction, a changing flux induces an emf, and a current flows in the circuit. A motor works the other way round: a current in a coil in a magnetic field experiences a force that makes it turn. It changes electrical energy into mechanical energy.",
+      "AC and DC generators differ in one part: how the coil connects to the outside circuit. An AC generator uses slip rings. Each end of the coil stays connected to the same brush, so the current reverses direction every half turn. That is alternating current. A DC generator uses a split-ring commutator. It swaps the connections every half turn, so the current in the outside circuit always flows in the same direction.",
+      "An AC voltage keeps changing, so we use its root mean square value: the DC value that would give the same power. The rms voltage is the maximum voltage divided by the square root of two. The same goes for current. The average power is the rms voltage times the rms current. South African mains electricity peaks at about three hundred and twenty five volts. Divided by the square root of two, that is about two hundred and thirty volts rms, the value printed on appliances.",
+      "Here is a typical question. A two thousand watt kettle runs on two hundred and thirty volts rms. Find the rms current and the maximum current. Average power is V rms times I rms, so I rms is two thousand divided by two hundred and thirty: eight comma seven zero amperes. The maximum current is the rms current times the square root of two: twelve comma three zero amperes.",
+      "Watch out for three common mistakes. Using the maximum voltage in P equals V I. Power calculations use rms values. Multiplying by the square root of two when you should divide. The rms value is always smaller than the maximum. And mixing up slip rings, which give AC, with the split-ring commutator, which gives DC.",
+      "Now it's your turn. Open Electrodynamics in DONE WELL and practise generators and AC, with every mark explained."
+    ]
+  },
+  {
+    "id": "lifesci-reflex-arc",
+    "subjectId": "life-sciences",
+    "topicId": "life-sci-response-humans",
+    "grades": [
+      12
+    ],
+    "title": "The nervous system and the reflex arc",
+    "summary": "The CNS and PNS, three kinds of neuron, the reflex arc step by step, and why it is fast.",
+    "file": "lifesci-reflex-arc.mp4",
+    "poster": "lifesci-reflex-arc.jpg",
+    "seconds": 128,
+    "megabytes": 3.6,
+    "transcript": [
+      "Welcome to DONE WELL. In this lesson you will learn how the nervous system is organised, the three kinds of neuron, and how a reflex arc works, step by step.",
+      "The nervous system has two parts. The central nervous system is the brain and the spinal cord. It processes information and decides on a response. The peripheral nervous system is made up of the nerves that carry impulses between the central nervous system and the rest of the body. There are three kinds of neuron. Sensory neurons carry impulses to the central nervous system. Interneurons connect neurons inside it. Motor neurons carry impulses to effectors, the muscles and glands.",
+      "A reflex is a quick, automatic response. Suppose you touch a hot plate. Heat receptors in the skin are stimulated, and an impulse starts. A sensory neuron carries the impulse to the spinal cord. In the spinal cord, an interneuron passes the impulse on. A motor neuron carries the impulse to the effector, a muscle in the arm. The muscle contracts, and your hand is pulled away before the brain has even registered the pain.",
+      "Why is a reflex so fast? The impulse travels a short pathway through the spinal cord, with only a few synapses, instead of going all the way to the brain and back. That protects the body from damage before you have time to think. At each synapse, the gap between two neurons, a chemical called a neurotransmitter carries the impulse across. It can only cross in one direction, so impulses always travel one way along the arc.",
+      "Watch out for three common mistakes. Saying the brain controls the reflex. The response is coordinated in the spinal cord. Mixing up sensory and motor neurons. Sensory neurons carry impulses to the central nervous system, and motor neurons carry them away from it. And leaving out a step of the arc. Receptor, sensory neuron, interneuron, motor neuron, effector: each one earns a mark.",
+      "Now it's your turn. Open Responding to the Environment in DONE WELL and practise the nervous system, with every mark explained."
+    ]
   }
 ]
 
